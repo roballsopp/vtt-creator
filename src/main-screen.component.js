@@ -10,5 +10,5 @@ export default function MainScreen() {
 			</Typography>
 			<FileSelector />
 		</React.Fragment>
-	)
+	);
 }

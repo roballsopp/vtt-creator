@@ -5,6 +5,6 @@ export default createMuiTheme({
 		useNextVariants: true,
 	},
 	palette: {
-		type: 'dark'
+		type: 'dark',
 	},
 });

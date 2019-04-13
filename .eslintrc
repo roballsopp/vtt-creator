@@ -1,0 +1,56 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "prettier",
+    "prettier/react"
+  ],
+  "plugins": [
+    "react",
+    "prettier"
+  ],
+  "globals": {
+    "document": false,
+    "newrelic": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2017,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true,
+      "experimentalDecorators": true
+    }
+  },
+  "env": {
+    "node": true,
+    "browser": true,
+    "es6": true
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js"]
+      }
+    },
+    "react": {
+      "version": "16.8"
+    }
+  },
+  "rules": {
+    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "no-unused-vars": 2,
+    "no-duplicate-imports": 0,
+    "react/prefer-stateless-function": 2,
+    "react/prop-types": [1, { "skipUndeclared": true }],
+    "react/display-name": 2,
+    "prettier/prettier": ["error", {
+      "useTabs": true,
+      "tabWidth": 2,
+      "printWidth": 80,
+      "singleQuote": true,
+      "jsxBracketSameLine": true,
+      "trailingComma": "es5"
+    }],
+    "space-before-function-paren": 0
+  }
+}

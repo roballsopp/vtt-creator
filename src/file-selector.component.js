@@ -12,10 +12,10 @@ export default function FileSelector() {
 				type="file"
 			/>
 			<label htmlFor="raised-button-file">
-				<Button variant="contained" component="span">
+				<Button variant="contained" component="span" color="primary">
 					Upload
 				</Button>
 			</label>
 		</React.Fragment>
-	)
+	);
 }

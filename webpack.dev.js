@@ -7,16 +7,16 @@ module.exports = {
 	output: {
 		filename: 'main.js',
 		path: path.resolve(__dirname, 'dist'),
-		publicPath: '/dist/'
+		publicPath: '/dist/',
 	},
 	module: {
 		rules: [
 			{
 				test: /\.(js)$/,
 				exclude: /(node_modules)/,
-				loader: "babel-loader",
-			}
-		]
+				loader: 'babel-loader',
+			},
+		],
 	},
 	// plugins: [
 	// 	new HtmlWebPackPlugin({
@@ -26,9 +26,9 @@ module.exports = {
 	// 	})
 	// ],
 	devServer: {
-		contentBase: path.join(__dirname, "public/"),
+		contentBase: path.join(__dirname, 'public/'),
 		port: 3000,
-		publicPath: "http://localhost:3000/dist/",
-		hotOnly: true
+		publicPath: 'http://localhost:3000/dist/',
+		hotOnly: true,
 	},
 };
