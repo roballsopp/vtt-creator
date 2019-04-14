@@ -10,15 +10,13 @@
     "prettier"
   ],
   "globals": {
-    "document": false,
-    "newrelic": true
+    "document": false
   },
   "parserOptions": {
-    "ecmaVersion": 2017,
+    "ecmaVersion": 8,
     "sourceType": "module",
     "ecmaFeatures": {
-      "jsx": true,
-      "experimentalDecorators": true
+      "jsx": true
     }
   },
   "env": {
