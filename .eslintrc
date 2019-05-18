@@ -44,7 +44,7 @@
     "prettier/prettier": ["error", {
       "useTabs": true,
       "tabWidth": 2,
-      "printWidth": 80,
+      "printWidth": 120,
       "singleQuote": true,
       "jsxBracketSameLine": true,
       "trailingComma": "es5"
