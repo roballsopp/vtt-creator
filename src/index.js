@@ -1,6 +1,7 @@
+import './bootstrap';
 import * as React from 'react';
 import ReactDOM from 'react-dom';
-import { MuiThemeProvider } from '@material-ui/core/styles';
+import MuiThemeProvider from '@material-ui/styles/ThemeProvider';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import theme from './mui-theme';
 import MainScreen from './main-screen.component';

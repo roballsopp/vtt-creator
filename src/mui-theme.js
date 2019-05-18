@@ -7,4 +7,11 @@ export default createMuiTheme({
 	palette: {
 		type: 'dark',
 	},
+	overrides: {
+		MuiSnackbarContent: {
+			root: {
+				color: 'white',
+			},
+		},
+	},
 });
