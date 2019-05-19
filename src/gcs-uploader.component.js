@@ -1,9 +1,10 @@
 import * as React from 'react';
+import * as PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';
 import FileSelector from './file-selector.component';
-import { uploadFile } from './services/rest-api.service';
+import { getUploadUrl, uploadFile } from './services/rest-api.service';
 import { useToast } from './toast-context';
 import { makeStyles } from '@material-ui/styles';
 
@@ -17,7 +18,12 @@ const bytesToMB = bytes => {
 	return (bytes / 1048576).toFixed(2);
 };
 
-export default function GcsUploader() {
+GcsUploader.propTypes = {
+	onUploadComplete: PropTypes.func.isRequired,
+};
+
+export default function GcsUploader(props) {
+	const { onUploadComplete } = props;
 	const classes = useStyles();
 	const [progress, setProgress] = React.useState(0);
 	const [progressMessage, setProgressMessage] = React.useState('');
@@ -26,13 +32,15 @@ export default function GcsUploader() {
 	const toast = useToast();
 
 	const onFileSelected = async file => {
+		const { url, filename } = await getUploadUrl();
 		setFileName(file.name);
 		setUploadState('uploading');
 		try {
-			await uploadFile(file, e => {
+			await uploadFile(file, url, e => {
 				setProgress(100 * (e.loaded / e.total));
 				setProgressMessage(`${bytesToMB(e.loaded)} of ${bytesToMB(e.total)} MB`);
 			});
+			onUploadComplete({ url, filename });
 			setUploadState('success');
 			toast.success('Upload successful!');
 		} catch (e) {
@@ -47,7 +55,7 @@ export default function GcsUploader() {
 			<Grid container alignItems="center" spacing={8}>
 				<Grid item>
 					<FileSelector
-						label={uploadState === 'uploading' ? 'Please Wait...' : 'Select File'}
+						label={uploadState === 'uploading' ? 'Uploading...' : 'Select File'}
 						disabled={uploadState === 'uploading'}
 						onFileSelected={onFileSelected}
 						className={classes.button}

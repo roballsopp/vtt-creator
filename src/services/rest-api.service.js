@@ -2,13 +2,10 @@ import { ApiURL } from '../config';
 
 export const getUploadUrl = async () => {
 	const resp = await fetch(`${ApiURL}/upload`);
-	const { url } = await resp.json();
-	return url;
+	return resp.json();
 };
 
-export const uploadFile = async (file, onProgress) => {
-	const url = await getUploadUrl();
-
+export const uploadFile = async (file, url, onProgress) => {
 	return new Promise((resolve, reject) => {
 		const xhr = new XMLHttpRequest();
 
@@ -21,4 +18,10 @@ export const uploadFile = async (file, onProgress) => {
 		xhr.open('PUT', url);
 		xhr.send(file);
 	});
+};
+
+export const getTextFromSpeech = async filename => {
+	await fetch(`${ApiURL}/text-from-speech/${filename}`);
+	// const { url } = await resp.json();
+	// return url;
 };
