@@ -13,15 +13,19 @@ FileSelector.defaultProps = {
 };
 
 export default function FileSelector(props) {
-	const onFileSelected = e => {
-		props.onFileSelected(e.target.files[0]);
-	};
+	const { onFileSelected, ...buttonProps } = props;
 
 	return (
 		<React.Fragment>
-			<input hidden accept="audio/*" id="raised-button-file" type="file" onChange={onFileSelected} />
+			<input
+				hidden
+				accept="audio/*"
+				id="raised-button-file"
+				type="file"
+				onChange={e => onFileSelected(e.target.files[0])}
+			/>
 			<label htmlFor="raised-button-file">
-				<Button variant="contained" component="span" color="primary" disabled={props.disabled}>
+				<Button variant="contained" component="span" color="primary" disabled={props.disabled} {...buttonProps}>
 					{props.label}
 				</Button>
 			</label>

@@ -44,7 +44,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 SnackbarContent.propTypes = {
-	className: PropTypes.string,
 	message: PropTypes.node,
 	onClose: PropTypes.func,
 	variant: PropTypes.oneOf(['success', 'error']).isRequired,
@@ -52,7 +51,7 @@ SnackbarContent.propTypes = {
 
 function SnackbarContent(props) {
 	const classes = useStyles();
-	const { className, message, onClose, variant, ...other } = props;
+	const { message, onClose, variant, ...other } = props;
 	const Icon = variantIcon[variant];
 
 	return (
@@ -61,18 +60,12 @@ function SnackbarContent(props) {
 			aria-describedby="client-snackbar"
 			message={
 				<span id="client-snackbar" className={classes.message}>
-          <Icon className={classes.indicatorIcon} />
+					<Icon className={classes.indicatorIcon} />
 					{message}
-        </span>
+				</span>
 			}
 			action={[
-				<IconButton
-					key="close"
-					aria-label="Close"
-					color="inherit"
-					className={classes.close}
-					onClick={onClose}
-				>
+				<IconButton key="close" aria-label="Close" color="inherit" className={classes.close} onClick={onClose}>
 					<CloseIcon className={classes.closeIcon} />
 				</IconButton>,
 			]}
@@ -119,12 +112,8 @@ export function ToastProvider(props) {
 				}}
 				autoHideDuration={4000}
 				open={show}
-				onClose={() => setShow(false)}
-			>
-				<SnackbarContent
-					onClose={() => setShow(false)}
-					{...snackBarConfig}
-				/>
+				onClose={() => setShow(false)}>
+				<SnackbarContent onClose={() => setShow(false)} {...snackBarConfig} />
 			</Snackbar>
 		</ToastContext.Provider>
 	);

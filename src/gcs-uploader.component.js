@@ -5,12 +5,20 @@ import Typography from '@material-ui/core/Typography';
 import FileSelector from './file-selector.component';
 import { uploadFile } from './services/rest-api.service';
 import { useToast } from './toast-context';
+import { makeStyles } from '@material-ui/styles';
+
+const useStyles = makeStyles({
+	button: {
+		width: 150,
+	},
+});
 
 const bytesToMB = bytes => {
 	return (bytes / 1048576).toFixed(2);
 };
 
 export default function GcsUploader() {
+	const classes = useStyles();
 	const [progress, setProgress] = React.useState(0);
 	const [progressMessage, setProgressMessage] = React.useState('');
 	const [uploadState, setUploadState] = React.useState();
@@ -42,19 +50,26 @@ export default function GcsUploader() {
 						label={uploadState === 'uploading' ? 'Please Wait...' : 'Select File'}
 						disabled={uploadState === 'uploading'}
 						onFileSelected={onFileSelected}
+						className={classes.button}
 					/>
 				</Grid>
-				<Grid item xs zeroMinWidth>
-					<Typography noWrap>{fileName}</Typography>
-				</Grid>
-				<Grid item xs>
-					<Typography align="right" noWrap>
-						{progressMessage}
-					</Typography>
-				</Grid>
-				<Grid item xs={12}>
-					<LinearProgress variant="determinate" value={progress} />
-				</Grid>
+				{uploadState && (
+					<Grid item xs>
+						<Grid container spacing={8}>
+							<Grid item xs zeroMinWidth>
+								<Typography noWrap>{fileName}</Typography>
+							</Grid>
+							<Grid item>
+								<Typography align="right" noWrap>
+									{progressMessage}
+								</Typography>
+							</Grid>
+							<Grid item xs={12}>
+								<LinearProgress variant="determinate" value={progress} />
+							</Grid>
+						</Grid>
+					</Grid>
+				)}
 			</Grid>
 		</div>
 	);
