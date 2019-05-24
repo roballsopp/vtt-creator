@@ -6,6 +6,7 @@ FileSelector.propTypes = {
 	onFileSelected: PropTypes.func.isRequired,
 	label: PropTypes.string.isRequired,
 	disabled: PropTypes.bool,
+	accept: PropTypes.string,
 };
 
 FileSelector.defaultProps = {
@@ -13,13 +14,13 @@ FileSelector.defaultProps = {
 };
 
 export default function FileSelector(props) {
-	const { onFileSelected, ...buttonProps } = props;
+	const { onFileSelected, accept, ...buttonProps } = props;
 
 	return (
 		<React.Fragment>
 			<input
 				hidden
-				accept="audio/*"
+				accept={accept}
 				id="raised-button-file"
 				type="file"
 				onChange={e => onFileSelected(e.target.files[0])}

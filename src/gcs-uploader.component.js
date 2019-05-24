@@ -57,6 +57,7 @@ export default function GcsUploader(props) {
 					<FileSelector
 						label={uploadState === 'uploading' ? 'Uploading...' : 'Select File'}
 						disabled={uploadState === 'uploading'}
+						accept="audio/*"
 						onFileSelected={onFileSelected}
 						className={classes.button}
 					/>
