@@ -29,16 +29,12 @@ export default function CueEditor({ cue, onChange, onDelete }) {
 	const classes = useStyles();
 	const [text, setText] = React.useState(cue.text);
 
+	const debouncedOnChangeText = React.useCallback(debounce(text => onChange({ ...cue, text }), 400), [cue, onChange]);
+
 	React.useEffect(() => {
 		setText(cue.text);
+		return debouncedOnChangeText.flush;
 	}, [cue.text]);
-
-	const debouncedOnChangeText = React.useCallback(
-		debounce(text => {
-			onChange({ ...cue, text });
-		}, 500),
-		[cue]
-	);
 
 	const onChangeText = e => {
 		setText(e.target.value);
@@ -105,6 +101,7 @@ export default function CueEditor({ cue, onChange, onDelete }) {
 					label="Caption text"
 					value={text}
 					onChange={onChangeText}
+					onBlur={debouncedOnChangeText.flush}
 					placeholder="Enter your caption here..."
 				/>
 			</Grid>
