@@ -15,6 +15,7 @@ const useStyles = makeStyles({
 Video.propTypes = {
 	width: PropTypes.number,
 	height: PropTypes.number,
+	captionSrc: PropTypes.string,
 	onFileSelected: PropTypes.func.isRequired,
 };
 
@@ -24,9 +25,8 @@ Video.defaultProps = {
 };
 
 export default function Video(props) {
-	const { width, height } = props;
+	const { width, height, captionSrc } = props;
 	const [src, setSrc] = React.useState();
-	const [captionSrc, setCaptionSrc] = React.useState();
 	const classes = useStyles();
 
 	const onFileSelected = file => {

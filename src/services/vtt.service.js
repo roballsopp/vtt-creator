@@ -12,17 +12,15 @@ export const CuePropType = PropTypes.shape({
 // 	text: string // the text of the cue
 // }>;
 export function getVTTFromCues(cueList, title = 'Some title') {
-	return cueList
-		.reduce(
-			(file, nextCue) => {
-				const start = formatSeconds(nextCue.startTime);
-				const end = formatSeconds(nextCue.endTime);
-				file.push(`${start} --> ${end}`, nextCue.text + '\n');
-				return file;
-			},
-			[`WEBVTT - ${title}\n`]
-		)
-		.join('\n');
+	const vttParts = cueList.map(nextCue => {
+		const start = formatSeconds(nextCue.startTime);
+		const end = formatSeconds(nextCue.endTime);
+		return `${start} --> ${end}\n${nextCue.text}\n\n`;
+	});
+
+	vttParts.unshift(`WEBVTT - ${title}\n\n`);
+
+	return new Blob(vttParts, { type: 'text/vtt' });
 }
 
 // decSeconds is a float version of the time in seconds (e.g. 13.456)

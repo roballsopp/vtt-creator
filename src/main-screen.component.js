@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
 import Video from './video.component';
 import VTTEditor from './vtt-editor';
+import { getVTTFromCues } from './services/vtt.service';
 import { getAudioBlobFromVideo } from './services/av.service';
 import { getUploadUrl, initSpeechToTextOp, pollSpeechToTextOp, uploadFile } from './services/rest-api.service';
 
@@ -26,6 +27,15 @@ const useStyles = makeStyles({
 export default function MainScreen() {
 	const classes = useStyles();
 	const [cues, setCues] = React.useState([]);
+	const [captionSrc, setCaptionSrc] = React.useState();
+
+	const onCuesChange = newCues => {
+		setCues(newCues);
+		const vttBlob = getVTTFromCues(newCues);
+		const vttBlobUrl = URL.createObjectURL(vttBlob);
+		if (captionSrc) URL.revokeObjectURL(captionSrc);
+		setCaptionSrc(vttBlobUrl);
+	};
 
 	const onVideoFileSelected = async file => {
 		// const audioBlob = await getAudioBlobFromVideo(file);
@@ -49,10 +59,10 @@ export default function MainScreen() {
 			</AppBar>
 			<Grid container spacing={16}>
 				<Grid item zeroMinWidth>
-					<Video onFileSelected={onVideoFileSelected} />
+					<Video onFileSelected={onVideoFileSelected} captionSrc={captionSrc} />
 				</Grid>
 				<Grid item>
-					<VTTEditor cues={cues} onChange={setCues} />
+					<VTTEditor cues={cues} onChange={onCuesChange} />
 				</Grid>
 			</Grid>
 		</React.Fragment>
