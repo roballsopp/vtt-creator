@@ -5,11 +5,16 @@ export default createMuiTheme({
 		useNextVariants: true,
 	},
 	palette: {
-		type: 'dark',
+		// type: 'dark',
 	},
 	overrides: {
 		MuiSnackbarContent: {
 			root: {
+				color: 'white',
+			},
+		},
+		MuiAppBar: {
+			colorPrimary: {
 				color: 'white',
 			},
 		},
