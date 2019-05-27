@@ -31,7 +31,7 @@ export function formatSeconds(decSeconds) {
 	const min = Math.floor(decSeconds / 60);
 	const sec = Math.floor(decSeconds % 60);
 	const mill = Math.round((decSeconds - Math.floor(decSeconds)) * 1000);
-	return `${formatTimeUnit(min, 2)}:${formatTimeUnit(sec, 2)}:${formatTimeUnit(mill, 3)}`;
+	return `${formatTimeUnit(min, 2)}:${formatTimeUnit(sec, 2)}.${formatTimeUnit(mill, 3)}`;
 }
 
 function formatTimeUnit(unit, width) {

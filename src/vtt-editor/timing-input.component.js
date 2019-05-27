@@ -25,7 +25,7 @@ export default function TimingInput({ value, onChange, ...props }) {
 				onChange(e);
 			}}
 			InputProps={{ inputComponent: CustomMaskedInput }}
-			placeholder="00:00:000"
+			placeholder="00:00.000"
 		/>
 	);
 }
@@ -41,7 +41,7 @@ function CustomMaskedInput({ inputRef, ...props }) {
 			ref={ref => {
 				inputRef(ref ? ref.inputElement : null);
 			}}
-			mask={[/\d/, /\d/, ':', /[0-5]/, /\d/, ':', /\d/, /\d/, /\d/]}
+			mask={[/\d/, /\d/, ':', /[0-5]/, /\d/, '.', /\d/, /\d/, /\d/]}
 			placeholderChar={'\u2000'}
 			keepCharPositions
 		/>
