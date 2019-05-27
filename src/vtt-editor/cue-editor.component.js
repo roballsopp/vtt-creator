@@ -6,6 +6,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/styles';
 import { CuePropType } from './prop-types';
+import TimingInput from './timing-input.component';
 
 const useStyles = makeStyles({
 	header: {
@@ -48,25 +49,31 @@ export default function CueEditor({ cue, onChange, onDelete }) {
 		<Grid container>
 			<Grid container item xs={12} alignItems="center" spacing={8} wrap="nowrap">
 				<Grid item>
-					<TextField
-						type="number"
+					<TimingInput
 						margin="normal"
+						variant="outlined"
 						label="Start Time"
 						value={cue.startTime}
 						onChange={onChangeStartTime}
 					/>
 				</Grid>
 				<Grid item>
-					<TextField
-						type="number"
+					<TimingInput
 						margin="normal"
+						variant="outlined"
 						label="Show For"
 						value={cue.endTime - cue.startTime}
 						onChange={onChangeTimeSpan}
 					/>
 				</Grid>
 				<Grid item>
-					<TextField type="number" margin="normal" label="End Time" value={cue.endTime} onChange={onChangeEndTime} />
+					<TimingInput
+						margin="normal"
+						variant="outlined"
+						label="End Time"
+						value={cue.endTime}
+						onChange={onChangeEndTime}
+					/>
 				</Grid>
 				<Grid item className={classes.headerEnd}>
 					<IconButton aria-label="Delete" onClick={onDelete}>
