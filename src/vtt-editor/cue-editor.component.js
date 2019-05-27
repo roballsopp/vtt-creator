@@ -5,6 +5,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/styles';
+import debounce from 'lodash.debounce';
 import { CuePropType } from '../services/vtt.service';
 import TimingInput from './timing-input.component';
 
@@ -26,9 +27,22 @@ CueEditor.propTypes = {
 
 export default function CueEditor({ cue, onChange, onDelete }) {
 	const classes = useStyles();
+	const [text, setText] = React.useState(cue.text);
+
+	React.useEffect(() => {
+		setText(cue.text);
+	}, [cue.text]);
+
+	const debouncedOnChangeText = React.useCallback(
+		debounce(text => {
+			onChange({ ...cue, text });
+		}, 500),
+		[cue]
+	);
 
 	const onChangeText = e => {
-		onChange({ ...cue, text: e.target.value });
+		setText(e.target.value);
+		debouncedOnChangeText(e.target.value);
 	};
 
 	const onChangeStartTime = e => {
@@ -89,7 +103,7 @@ export default function CueEditor({ cue, onChange, onDelete }) {
 					rows="2"
 					margin="normal"
 					label="Caption text"
-					value={cue.text}
+					value={text}
 					onChange={onChangeText}
 					placeholder="Enter your caption here..."
 				/>
