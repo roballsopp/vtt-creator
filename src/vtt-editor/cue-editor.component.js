@@ -5,7 +5,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/styles';
-import { CuePropType } from './prop-types';
+import { CuePropType } from '../services/vtt.service';
 import TimingInput from './timing-input.component';
 
 const useStyles = makeStyles({
