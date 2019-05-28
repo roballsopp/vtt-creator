@@ -14,8 +14,11 @@ const useStyles = makeStyles({
 		backgroundColor: 'white',
 	},
 	headerEnd: {
-		width: 48,
-		textAlign: 'center',
+	},
+	closeIcon: {
+		padding: 8,
+		marginRight: -8,
+		marginLeft: -4,
 	},
 });
 
@@ -56,20 +59,13 @@ export default function CueEditor({ cue, onChange, onDelete }) {
 	};
 
 	return (
-		<Grid container>
-			<Grid container item xs={12} alignItems="center" spacing={8} wrap="nowrap">
+		<Grid container spacing={8}>
+			<Grid container item alignItems="center" spacing={8} wrap="nowrap" justify="space-between">
 				<Grid item>
-					<TimingInput
-						margin="normal"
-						variant="outlined"
-						label="Start Time"
-						value={cue.startTime}
-						onChange={onChangeStartTime}
-					/>
+					<TimingInput variant="outlined" label="Start Time" value={cue.startTime} onChange={onChangeStartTime} />
 				</Grid>
 				<Grid item>
 					<TimingInput
-						margin="normal"
 						variant="outlined"
 						label="Show For"
 						value={cue.endTime - cue.startTime}
@@ -77,17 +73,11 @@ export default function CueEditor({ cue, onChange, onDelete }) {
 					/>
 				</Grid>
 				<Grid item>
-					<TimingInput
-						margin="normal"
-						variant="outlined"
-						label="End Time"
-						value={cue.endTime}
-						onChange={onChangeEndTime}
-					/>
+					<TimingInput variant="outlined" label="End Time" value={cue.endTime} onChange={onChangeEndTime} />
 				</Grid>
 				<Grid item className={classes.headerEnd}>
-					<IconButton aria-label="Delete" onClick={onDelete}>
-						<CloseIcon />
+					<IconButton aria-label="Delete" onClick={onDelete} className={classes.closeIcon}>
+						<CloseIcon fontSize="small" />
 					</IconButton>
 				</Grid>
 			</Grid>
@@ -97,7 +87,6 @@ export default function CueEditor({ cue, onChange, onDelete }) {
 					fullWidth
 					multiline
 					rows="2"
-					margin="normal"
 					label="Caption text"
 					value={text}
 					onChange={onChangeText}
