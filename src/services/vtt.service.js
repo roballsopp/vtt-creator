@@ -1,4 +1,5 @@
 import * as PropTypes from 'prop-types';
+import { WebVTT } from 'vtt.js';
 
 // http://bbc.github.io/subtitle-guidelines/
 // ideally follow these guidelines:
@@ -106,4 +107,28 @@ function parseTimeUnit(unit) {
 // timeString is a string in the format "10.500s"
 function parseGoogleTime(timeString) {
 	return parseFloat(timeString.slice(0, -1));
+}
+
+export function getCuesFromVTT(file) {
+	return new Promise((resolve, reject) => {
+		const reader = new FileReader();
+
+		reader.addEventListener('error', () => {
+			reader.abort();
+			reject(new Error('An error occurred while reading the file.'));
+		});
+
+		reader.addEventListener('load', async () => {
+			if (!reader.result) return reject(new Error('Empty VTT file'));
+			const cues = [];
+			const parser = new WebVTT.Parser(window, WebVTT.StringDecoder());
+			parser.oncue = c => cues.push(c);
+			parser.onparsingerror = reject;
+			parser.onflush = () => resolve(cues);
+			parser.parse(reader.result);
+			parser.flush();
+		});
+
+		reader.readAsText(file);
+	});
 }

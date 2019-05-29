@@ -15,8 +15,9 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
 import Video from './video.component';
 import VTTEditor from './vtt-editor';
-import { getVTTFromCues, getCuesFromWords } from './services/vtt.service';
+import { getVTTFromCues, getCuesFromWords, getCuesFromVTT } from './services/vtt.service';
 import CueExtractionDialog from './cue-extraction/cue-extraction-dialog.component';
+import useFileSelector from './use-file-selector.hook';
 
 const useStyles = makeStyles({
 	root: {
@@ -46,13 +47,16 @@ export default function MainScreen() {
 	const [cueExtractionDialogOpen, setCueExtractionDialogOpen] = React.useState(false);
 	const [editorOpen, setEditorOpen] = React.useState(true);
 
-	const onCuesChange = newCues => {
-		setCues(newCues);
-		const vttBlob = getVTTFromCues(newCues);
-		const vttBlobUrl = URL.createObjectURL(vttBlob);
-		if (captionSrc) URL.revokeObjectURL(captionSrc);
-		setCaptionSrc(vttBlobUrl);
-	};
+	const onCuesChange = React.useCallback(
+		newCues => {
+			setCues(newCues);
+			const vttBlob = getVTTFromCues(newCues);
+			const vttBlobUrl = URL.createObjectURL(vttBlob);
+			if (captionSrc) URL.revokeObjectURL(captionSrc);
+			setCaptionSrc(vttBlobUrl);
+		},
+		[captionSrc]
+	);
 
 	const onVideoFileSelected = async file => {
 		setVideoFile(file);
@@ -81,6 +85,16 @@ export default function MainScreen() {
 		onCloseOptionsMenu();
 	};
 
+	const onVTTFileSelected = React.useCallback(
+		async e => {
+			const newCues = await getCuesFromVTT(e.target.files[0]);
+			onCuesChange(newCues);
+		},
+		[onCuesChange]
+	);
+
+	const openFileSelector = useFileSelector({ accept: 'text/vtt', onFilesSelected: onVTTFileSelected });
+
 	return (
 		<div className={classes.root}>
 			<Paper square className={classes.drawer}>
@@ -97,7 +111,7 @@ export default function MainScreen() {
 							<MoreIcon />
 						</IconButton>
 						<Menu anchorEl={optionsMenuAnchorEl} open={!!optionsMenuAnchorEl} onClose={onCloseOptionsMenu}>
-							<MenuItem>
+							<MenuItem onClick={openFileSelector}>
 								<CloudUploadIcon className={classes.menuIcon} />
 								Load from VTT file...
 							</MenuItem>
