@@ -46,13 +46,13 @@ export const pollSpeechToTextOp = (operationId, interval = 1000, timeout = 10000
 				}
 			} else {
 				clearInterval(intervalId);
-				throw new Error(resp.statusText);
+				reject(new Error(resp.statusText));
 			}
 		}, interval);
 
 		setTimeout(() => {
 			clearInterval(intervalId);
-			reject();
+			reject(new Error('Poll timeout exceeded.'));
 		}, timeout);
 	});
 };

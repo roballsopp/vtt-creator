@@ -62,7 +62,7 @@ export default function CueExtractionDialog({ open, videoFile, onRequestClose, o
 
 			setUploadState(UPLOAD_STATE_PROCESSING);
 			const { operationId } = await initSpeechToTextOp(filename, { languageCode });
-			const operation = await pollSpeechToTextOp(operationId);
+			const operation = await pollSpeechToTextOp(operationId, 2000, 20000);
 
 			setUploadState(UPLOAD_STATE_COMPLETED);
 			onExtractComplete(operation);
