@@ -15,7 +15,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
 import Video from './video.component';
 import VTTEditor from './vtt-editor';
-import { getVTTFromCues } from './services/vtt.service';
+import { getVTTFromCues, getCuesFromWords } from './services/vtt.service';
 import CueExtractionDialog from './cue-extraction/cue-extraction-dialog.component';
 
 const useStyles = makeStyles({
@@ -71,8 +71,9 @@ export default function MainScreen() {
 		setCueExtractionDialogOpen(false);
 	};
 
-	const onCueExtractComplete = op => {
-		console.log("HI", op);
+	const onCueExtractComplete = results => {
+		const newCues = getCuesFromWords(results.words);
+		onCuesChange(newCues);
 	};
 
 	const onDownloadVTT = () => {
@@ -81,7 +82,6 @@ export default function MainScreen() {
 	};
 
 	return (
-		// overflow: 'hidden' necessary to avoid scroll bars due to negative margins in <Grid />
 		<div className={classes.root}>
 			<Paper square className={classes.drawer}>
 				<AppBar position="static" color="primary">

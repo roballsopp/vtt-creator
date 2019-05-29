@@ -1,5 +1,60 @@
 import * as PropTypes from 'prop-types';
 
+// http://bbc.github.io/subtitle-guidelines/
+// ideally follow these guidelines:
+// - 160-180 words per minute
+// - 37 fixed-width (monospaced) characters per line OR 68% of the width of a 16:9 video and 90% of the width of a 4:3 video
+// - break at natural points: http://bbc.github.io/subtitle-guidelines/#Break-at-natural-points
+
+// type WordsList = Array<{
+// 	startTime: string, // "10.500s"
+// 	endTime: string, // "12.600s"
+// 	word: string // the word itself
+// }>;
+export function getCuesFromWords(wordsList) {
+	let cursor = 0;
+	const numWords = wordsList.length;
+	const cues = [];
+
+	while (cursor < numWords) {
+		const [cue, wordCount] = getCueFromWords(wordsList, cursor);
+		cues.push(cue);
+		cursor += wordCount;
+	}
+
+	return cues;
+}
+
+function getCueFromWords(wordsList, cursor) {
+	let charCount = 0;
+	const endOfList = wordsList.length;
+	const start = cursor;
+	while (charCount < 40 && cursor < endOfList) {
+		const wordData = wordsList[cursor];
+		charCount += wordData.word.length;
+		cursor++;
+	}
+
+	return [
+		{
+			startTime: parseGoogleTime(wordsList[start].startTime),
+			endTime: parseGoogleTime(wordsList[cursor - 1].endTime),
+			text: joinWords(wordsList, start, cursor),
+		},
+		cursor - start,
+	];
+}
+
+function joinWords(wordsList, from, to) {
+	const numWordsToJoin = to - from;
+	// TODO: does using the Array constructor this way actually help with memory allocation?
+	const wordsToJoin = new Array(numWordsToJoin);
+	for (let i = 0; i < numWordsToJoin; i++) {
+		wordsToJoin[i] = wordsList[from + i].word;
+	}
+	return wordsToJoin.join(' ');
+}
+
 export const CuePropType = PropTypes.shape({
 	startTime: PropTypes.number,
 	endTime: PropTypes.number,
@@ -54,4 +109,9 @@ export function parseVTTTime(formattedTime) {
 function parseTimeUnit(unit) {
 	const parsed = parseInt(unit);
 	return isNaN(parsed) ? 0 : parsed;
+}
+
+// timeString is a string in the format "10.500s"
+function parseGoogleTime(timeString) {
+	return parseFloat(timeString.slice(0, -1));
 }
