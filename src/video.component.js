@@ -1,7 +1,8 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
+import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/styles';
-import FileSelector from './file-selector.component';
+import useFileSelector from './use-file-selector.hook';
 
 const useStyles = makeStyles({
 	container: {
@@ -25,19 +26,29 @@ Video.defaultProps = {
 };
 
 export default function Video(props) {
-	const { width, height, captionSrc } = props;
+	const { width, height, captionSrc, onFileSelected } = props;
 	const [src, setSrc] = React.useState();
 	const classes = useStyles();
 
-	const onFileSelected = file => {
-		const localUrl = URL.createObjectURL(file);
-		setSrc(localUrl);
-		props.onFileSelected(file);
-	};
+	const onFilesSelected = React.useCallback(
+		e => {
+			const [file] = e.target.files;
+			const localUrl = URL.createObjectURL(file);
+			setSrc(localUrl);
+			onFileSelected(file);
+		},
+		[onFileSelected]
+	);
+
+	const openFileSelector = useFileSelector({ accept: 'video/*', onFilesSelected });
 
 	return (
 		<div className={classes.container} style={{ width, height }}>
-			{!src && <FileSelector label="Select Video File" accept="video/*" onFileSelected={onFileSelected} />}
+			{!src && (
+				<Button variant="contained" color="primary" onClick={openFileSelector}>
+					Select Video File
+				</Button>
+			)}
 			{src && (
 				<video width={width} height={height} controls>
 					<source src={src} />

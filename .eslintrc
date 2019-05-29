@@ -7,7 +7,8 @@
   ],
   "plugins": [
     "react",
-    "prettier"
+    "prettier",
+    "react-hooks"
   ],
   "globals": {
     "document": false
@@ -41,6 +42,8 @@
     "react/prefer-stateless-function": 2,
     "react/prop-types": [1, { "skipUndeclared": true }],
     "react/display-name": 2,
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
     "prettier/prettier": ["error", {
       "useTabs": true,
       "tabWidth": 2,
