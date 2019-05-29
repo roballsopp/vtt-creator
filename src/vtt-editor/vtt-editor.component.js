@@ -60,9 +60,9 @@ export default function VTTEditor({ cues, onChange }) {
 	const onAddCue = () => {
 		if (cues.length) {
 			const lastCue = cues[cues.length - 1];
-			return onChange(cues.concat({ startTime: lastCue.endTime, endTime: lastCue.endTime + 2, text: '' }));
+			return onChange(cues.concat(new VTTCue(lastCue.endTime, lastCue.endTime + 2, '')));
 		}
-		return onChange([{ startTime: 0, endTime: 2, text: '' }]);
+		return onChange([new VTTCue(0, 2, '')]);
 	};
 
 	const onRemoveCue = i => () => {

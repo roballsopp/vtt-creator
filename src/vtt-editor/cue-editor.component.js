@@ -13,8 +13,7 @@ const useStyles = makeStyles({
 	header: {
 		backgroundColor: 'white',
 	},
-	headerEnd: {
-	},
+	headerEnd: {},
 	closeIcon: {
 		padding: 8,
 		marginLeft: -4,
@@ -31,7 +30,10 @@ export default function CueEditor({ cue, onChange, onDelete }) {
 	const classes = useStyles();
 	const [text, setText] = React.useState(cue.text);
 
-	const debouncedOnChangeText = React.useCallback(debounce(text => onChange({ ...cue, text }), 400), [cue, onChange]);
+	const debouncedOnChangeText = React.useCallback(
+		debounce(text => onChange(new VTTCue(cue.startTime, cue.endTime, text)), 400),
+		[cue, onChange]
+	);
 
 	React.useEffect(() => {
 		setText(cue.text);
@@ -46,15 +48,15 @@ export default function CueEditor({ cue, onChange, onDelete }) {
 	const onChangeStartTime = e => {
 		const startTime = parseFloat(e.target.value);
 		const offset = startTime - cue.startTime;
-		onChange({ ...cue, startTime, endTime: cue.endTime + offset });
+		onChange(new VTTCue(startTime, cue.endTime + offset, cue.text));
 	};
 
 	const onChangeEndTime = e => {
-		onChange({ ...cue, endTime: parseFloat(e.target.value) });
+		onChange(new VTTCue(cue.startTime, parseFloat(e.target.value), cue.text));
 	};
 
 	const onChangeTimeSpan = e => {
-		onChange({ ...cue, endTime: cue.startTime + parseFloat(e.target.value) });
+		onChange(new VTTCue(cue.startTime, cue.startTime + parseFloat(e.target.value), cue.text));
 	};
 
 	return (

@@ -55,17 +55,9 @@ function joinWords(wordsList, from, to) {
 	return wordsToJoin.join(' ');
 }
 
-export const CuePropType = PropTypes.shape({
-	startTime: PropTypes.number,
-	endTime: PropTypes.number,
-	text: PropTypes.string,
-});
+export const CuePropType = PropTypes.instanceOf(VTTCue);
 
-// type CueList = Array<{
-// 	startTime: number, // in seconds (e.g. 10.500)
-// 	endTime: number, // in seconds, greater than startTime (e.g. 12.600)
-// 	text: string // the text of the cue
-// }>;
+// type CueList = Array<VTTCue>;
 export function getVTTFromCues(cueList, title = 'Some title') {
 	const vttParts = cueList.map(nextCue => {
 		const start = formatSeconds(nextCue.startTime);
