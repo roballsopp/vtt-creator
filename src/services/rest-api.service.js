@@ -20,8 +20,14 @@ export const uploadFile = async (file, url, onProgress) => {
 	});
 };
 
-export const initSpeechToTextOp = async filename => {
-	const resp = await fetch(`${ApiURL}/speech-to-text/${filename}`, { method: 'POST' });
+export const initSpeechToTextOp = async (filename, options = {}) => {
+	const resp = await fetch(`${ApiURL}/speech-to-text/${filename}`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(options),
+	});
 
 	if (resp.ok) return await resp.json();
 	throw new Error(resp.statusText);
