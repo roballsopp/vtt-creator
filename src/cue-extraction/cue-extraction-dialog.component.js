@@ -22,6 +22,7 @@ import UploadProgress, {
 } from './upload-progress.component';
 import { getAudioBlobFromVideo } from '../services/av.service';
 import { getUploadUrl, initSpeechToTextOp, pollSpeechToTextOp, uploadFile } from '../services/rest-api.service';
+import { useToast } from '../toast-context';
 
 const Title = styled(DialogTitle)({
 	display: 'flex',
@@ -43,6 +44,8 @@ export default function CueExtractionDialog({ open, videoFile, onRequestClose, o
 	const [uploadState, setUploadState] = React.useState();
 	const [languageCode, setLanguageCode] = React.useState('en-GB');
 
+	const toast = useToast();
+
 	const extractCuesFromVideo = async e => {
 		setExtracting(true);
 
@@ -63,9 +66,11 @@ export default function CueExtractionDialog({ open, videoFile, onRequestClose, o
 
 			setUploadState(UPLOAD_STATE_COMPLETED);
 			onExtractComplete(operation);
+			toast.success('Upload successful!');
 			onRequestClose(e);
 		} catch (err) {
 			console.error(err);
+			toast.error('Oh no! Something went wrong!');
 		}
 
 		setExtracting(false);

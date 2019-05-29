@@ -34,9 +34,6 @@ const useStyles = makeStyles(theme => ({
 	closeIcon: {
 		fontSize: 20,
 	},
-	close: {
-		margin: -12,
-	},
 	message: {
 		display: 'flex',
 		alignItems: 'center',
@@ -65,7 +62,7 @@ function SnackbarContent(props) {
 				</span>
 			}
 			action={[
-				<IconButton key="close" aria-label="Close" color="inherit" className={classes.close} onClick={onClose}>
+				<IconButton key="close" size="small" edge="end" aria-label="Close" color="inherit" onClick={onClose}>
 					<CloseIcon className={classes.closeIcon} />
 				</IconButton>,
 			]}
