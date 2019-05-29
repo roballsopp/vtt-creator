@@ -14,6 +14,12 @@ import Select from '@material-ui/core/Select';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import { styled } from '@material-ui/styles';
+import UploadProgress, {
+	UPLOAD_STATE_COMPLETED,
+	UPLOAD_STATE_EXTRACTING,
+	UPLOAD_STATE_PROCESSING,
+	UPLOAD_STATE_UPLOADING,
+} from './upload-progress.component';
 import { getAudioBlobFromVideo } from '../services/av.service';
 import { getUploadUrl, initSpeechToTextOp, pollSpeechToTextOp, uploadFile } from '../services/rest-api.service';
 
@@ -32,17 +38,30 @@ CueExtractionDialog.propTypes = {
 
 export default function CueExtractionDialog({ open, videoFile, onRequestClose, onExtractComplete }) {
 	const [extracting, setExtracting] = React.useState(false);
+	const [progressBytes, setProgressBytes] = React.useState(0);
+	const [totalBytes, setTotalBytes] = React.useState(0);
+	const [uploadState, setUploadState] = React.useState();
 	const [languageCode, setLanguageCode] = React.useState('en-GB');
 
 	const extractCuesFromVideo = async e => {
 		setExtracting(true);
 
 		try {
+			setUploadState(UPLOAD_STATE_EXTRACTING);
 			const audioBlob = await getAudioBlobFromVideo(videoFile);
+
+			setUploadState(UPLOAD_STATE_UPLOADING);
 			const { url, filename } = await getUploadUrl();
-			await uploadFile(audioBlob, url);
+			await uploadFile(audioBlob, url, e => {
+				setProgressBytes(e.loaded);
+				setTotalBytes(e.total);
+			});
+
+			setUploadState(UPLOAD_STATE_PROCESSING);
 			const { operationId } = await initSpeechToTextOp(filename, { languageCode });
 			const operation = await pollSpeechToTextOp(operationId);
+
+			setUploadState(UPLOAD_STATE_COMPLETED);
 			onExtractComplete(operation);
 			onRequestClose(e);
 		} catch (err) {
@@ -68,20 +87,25 @@ export default function CueExtractionDialog({ open, videoFile, onRequestClose, o
 				</IconButton>
 			</Title>
 			<DialogContent>
-				<FormControl>
-					<InputLabel htmlFor="select-language">Language</InputLabel>
-					<Select
-						value={languageCode}
-						onChange={e => setLanguageCode(e.target.value)}
-						inputProps={{
-							name: 'select-language',
-							id: 'select-language',
-						}}>
-						<MenuItem value="en-US">English (American)</MenuItem>
-						<MenuItem value="en-GB">English (British)</MenuItem>
-					</Select>
-					<FormHelperText>In what language is the video content spoken?</FormHelperText>
-				</FormControl>
+				{extracting && (
+					<UploadProgress progressBytes={progressBytes} totalBytes={totalBytes} uploadState={uploadState} />
+				)}
+				{!extracting && (
+					<FormControl>
+						<InputLabel htmlFor="select-language">Language</InputLabel>
+						<Select
+							value={languageCode}
+							onChange={e => setLanguageCode(e.target.value)}
+							inputProps={{
+								name: 'select-language',
+								id: 'select-language',
+							}}>
+							<MenuItem value="en-US">English (American)</MenuItem>
+							<MenuItem value="en-GB">English (British)</MenuItem>
+						</Select>
+						<FormHelperText>In what language is the video content spoken?</FormHelperText>
+					</FormControl>
+				)}
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={onRequestClose} color="primary" disabled={extracting}>
