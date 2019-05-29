@@ -1,8 +1,6 @@
 import * as React from 'react';
 import download from 'downloadjs';
 import AppBar from '@material-ui/core/AppBar';
-import Drawer from '@material-ui/core/Drawer';
-import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -18,8 +16,7 @@ import { makeStyles } from '@material-ui/styles';
 import Video from './video.component';
 import VTTEditor from './vtt-editor';
 import { getVTTFromCues } from './services/vtt.service';
-import { getAudioBlobFromVideo } from './services/av.service';
-import { getUploadUrl, initSpeechToTextOp, pollSpeechToTextOp, uploadFile } from './services/rest-api.service';
+import CueExtractionDialog from './cue-extraction/cue-extraction-dialog.component';
 
 const useStyles = makeStyles({
 	root: {
@@ -45,6 +42,8 @@ export default function MainScreen() {
 	const [cues, setCues] = React.useState([]);
 	const [captionSrc, setCaptionSrc] = React.useState();
 	const [optionsMenuAnchorEl, setOptionsMenuAnchorEl] = React.useState(null);
+	const [videoFile, setVideoFile] = React.useState();
+	const [cueExtractionDialogOpen, setCueExtractionDialogOpen] = React.useState(false);
 	const [editorOpen, setEditorOpen] = React.useState(true);
 
 	const onCuesChange = newCues => {
@@ -56,15 +55,24 @@ export default function MainScreen() {
 	};
 
 	const onVideoFileSelected = async file => {
-		// const audioBlob = await getAudioBlobFromVideo(file);
-		// const { url, filename } = await getUploadUrl();
-		// await uploadFile(audioBlob, url);
-		// const { operationId } = await initSpeechToTextOp(filename);
-		// const operation = await pollSpeechToTextOp(operationId);
+		setVideoFile(file);
 	};
 
 	const onCloseOptionsMenu = () => {
 		setOptionsMenuAnchorEl(null);
+	};
+
+	const onOpenCueExtractionDialog = () => {
+		setCueExtractionDialogOpen(true);
+		onCloseOptionsMenu();
+	};
+
+	const onCloseCueExtractionDialog = () => {
+		setCueExtractionDialogOpen(false);
+	};
+
+	const onCueExtractComplete = op => {
+		console.log("HI", op);
 	};
 
 	const onDownloadVTT = () => {
@@ -93,7 +101,7 @@ export default function MainScreen() {
 								<CloudUploadIcon className={classes.menuIcon} />
 								Load from VTT file...
 							</MenuItem>
-							<MenuItem>
+							<MenuItem disabled={!videoFile} onClick={onOpenCueExtractionDialog}>
 								<VoiceChatIcon className={classes.menuIcon} />
 								Extract from video...
 							</MenuItem>
@@ -109,6 +117,12 @@ export default function MainScreen() {
 			<div className={classes.main}>
 				<Video onFileSelected={onVideoFileSelected} captionSrc={captionSrc} />
 			</div>
+			<CueExtractionDialog
+				open={cueExtractionDialogOpen}
+				videoFile={videoFile}
+				onRequestClose={onCloseCueExtractionDialog}
+				onExtractComplete={onCueExtractComplete}
+			/>
 		</div>
 	);
 }
