@@ -75,7 +75,7 @@ export default function VTTEditor({ cues, onChange }) {
 		<MuiThemeProvider theme={theme}>
 			<div className={classes.fabContainer}>
 				<div className={classes.root}>
-					<Grid container spacing={8}>
+					<Grid container spacing={1}>
 						{cues.map((cue, i) => {
 							return (
 								<Grid key={i} item xs={12} className={classes.cueEditor}>

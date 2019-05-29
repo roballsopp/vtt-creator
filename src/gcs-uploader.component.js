@@ -52,7 +52,7 @@ export default function GcsUploader(props) {
 
 	return (
 		<div style={{ maxWidth: 500 }}>
-			<Grid container alignItems="center" spacing={8}>
+			<Grid container alignItems="center" spacing={1}>
 				<Grid item>
 					<FileSelector
 						label={uploadState === 'uploading' ? 'Uploading...' : 'Select File'}
@@ -64,7 +64,7 @@ export default function GcsUploader(props) {
 				</Grid>
 				{uploadState && (
 					<Grid item xs>
-						<Grid container spacing={8}>
+						<Grid container spacing={1}>
 							<Grid item xs zeroMinWidth>
 								<Typography noWrap>{fileName}</Typography>
 							</Grid>

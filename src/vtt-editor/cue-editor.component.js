@@ -17,7 +17,6 @@ const useStyles = makeStyles({
 	},
 	closeIcon: {
 		padding: 8,
-		marginRight: -8,
 		marginLeft: -4,
 	},
 });
@@ -59,8 +58,8 @@ export default function CueEditor({ cue, onChange, onDelete }) {
 	};
 
 	return (
-		<Grid container spacing={8}>
-			<Grid container item alignItems="center" spacing={8} wrap="nowrap" justify="space-between">
+		<Grid container spacing={1}>
+			<Grid container item alignItems="center" spacing={1} wrap="nowrap" justify="space-between">
 				<Grid item>
 					<TimingInput variant="outlined" label="Start Time" value={cue.startTime} onChange={onChangeStartTime} />
 				</Grid>
@@ -76,7 +75,7 @@ export default function CueEditor({ cue, onChange, onDelete }) {
 					<TimingInput variant="outlined" label="End Time" value={cue.endTime} onChange={onChangeEndTime} />
 				</Grid>
 				<Grid item className={classes.headerEnd}>
-					<IconButton aria-label="Delete" onClick={onDelete} className={classes.closeIcon}>
+					<IconButton aria-label="Delete" onClick={onDelete} className={classes.closeIcon} edge="end">
 						<CloseIcon fontSize="small" />
 					</IconButton>
 				</Grid>
