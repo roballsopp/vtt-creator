@@ -4,6 +4,7 @@ import Divider from '@material-ui/core/Divider';
 import FabButton from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import { makeStyles } from '@material-ui/styles';
+import { List } from '../common';
 import { CuePropType } from '../services/vtt.service';
 import CueEditor from './cue-editor.component';
 
@@ -61,19 +62,18 @@ export default function VTTEditor({ cues, onChange }) {
 
 	return (
 		<div className={classes.fabContainer}>
-			<div className={classes.root}>
-				{cues.map((cue, i) => {
-					const isLast = cues.length - 1 === i;
-					return (
-						<React.Fragment key={i}>
-							<div className={classes.cueEditor}>
-								<CueEditor cue={cue} cueNumber={i + 1} onChange={onChangeCue(i)} onDelete={onRemoveCue(i)} />
-							</div>
-							{!isLast && <Divider />}
-						</React.Fragment>
-					);
-				})}
-			</div>
+			<List
+				className={classes.root}
+				data={cues}
+				renderItem={(cue, i, isLast) => (
+					<React.Fragment>
+						<div className={classes.cueEditor}>
+							<CueEditor cue={cue} cueNumber={i + 1} onChange={onChangeCue(i)} onDelete={onRemoveCue(i)} />
+						</div>
+						{!isLast && <Divider />}
+					</React.Fragment>
+				)}
+			/>
 			<FabButton className={classes.fab} color="primary" aria-label="Add Cue" onClick={onAddCue}>
 				<AddIcon />
 			</FabButton>
