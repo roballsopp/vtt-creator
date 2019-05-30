@@ -2,7 +2,6 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import Divider from '@material-ui/core/Divider';
 import FabButton from '@material-ui/core/Fab';
-import Grid from '@material-ui/core/Grid';
 import AddIcon from '@material-ui/icons/Add';
 import { makeStyles } from '@material-ui/styles';
 import { CuePropType } from '../services/vtt.service';
@@ -11,13 +10,13 @@ import CueEditor from './cue-editor.component';
 const useStyles = makeStyles({
 	root: {
 		width: 400,
-		paddingTop: 20,
+		paddingTop: 4,
 		paddingBottom: 90,
 		height: '100%',
 		overflowY: 'scroll',
 	},
 	cueEditor: {
-		padding: '0 16px',
+		padding: 16,
 	},
 	fab: {
 		position: 'absolute',
@@ -63,25 +62,17 @@ export default function VTTEditor({ cues, onChange }) {
 	return (
 		<div className={classes.fabContainer}>
 			<div className={classes.root}>
-				<Grid container spacing={2}>
-					{cues.map((cue, i) => {
-						const isLast = cues.length - 1 === i;
-						return (
-							<React.Fragment key={i}>
-								<Grid item xs={12}>
-									<div className={classes.cueEditor}>
-										<CueEditor cue={cue} cueNumber={i + 1} onChange={onChangeCue(i)} onDelete={onRemoveCue(i)} />
-									</div>
-								</Grid>
-								{!isLast && (
-									<Grid item xs={12}>
-										<Divider />
-									</Grid>
-								)}
-							</React.Fragment>
-						);
-					})}
-				</Grid>
+				{cues.map((cue, i) => {
+					const isLast = cues.length - 1 === i;
+					return (
+						<React.Fragment key={i}>
+							<div className={classes.cueEditor}>
+								<CueEditor cue={cue} cueNumber={i + 1} onChange={onChangeCue(i)} onDelete={onRemoveCue(i)} />
+							</div>
+							{!isLast && <Divider />}
+						</React.Fragment>
+					);
+				})}
 			</div>
 			<FabButton className={classes.fab} color="primary" aria-label="Add Cue" onClick={onAddCue}>
 				<AddIcon />
