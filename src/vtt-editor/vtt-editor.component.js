@@ -4,7 +4,7 @@ import Divider from '@material-ui/core/Divider';
 import FabButton from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import { makeStyles } from '@material-ui/styles';
-import { List } from '../common';
+import { List, Loader } from '../common';
 import { CuePropType } from '../services/vtt.service';
 import CueEditor from './cue-editor.component';
 
@@ -35,9 +35,10 @@ const useStyles = makeStyles({
 VTTEditor.propTypes = {
 	cues: PropTypes.arrayOf(CuePropType).isRequired,
 	onChange: PropTypes.func.isRequired,
+	loading: PropTypes.bool,
 };
 
-export default function VTTEditor({ cues, onChange }) {
+export default function VTTEditor({ cues, onChange, loading }) {
 	const classes = useStyles();
 
 	const onChangeCue = i => cue => {
@@ -62,18 +63,22 @@ export default function VTTEditor({ cues, onChange }) {
 
 	return (
 		<div className={classes.fabContainer}>
-			<List
-				className={classes.listRoot}
-				data={cues}
-				renderItem={(cue, i, isLast) => (
-					<React.Fragment>
-						<div className={classes.cueEditor}>
-							<CueEditor cue={cue} cueNumber={i + 1} onChange={onChangeCue(i)} onDelete={onRemoveCue(i)} />
-						</div>
-						{!isLast && <Divider />}
-					</React.Fragment>
+			<div className={classes.listRoot}>
+				{!loading && (
+					<List
+						data={cues}
+						renderItem={(cue, i, isLast) => (
+							<React.Fragment>
+								<div className={classes.cueEditor}>
+									<CueEditor cue={cue} cueNumber={i + 1} onChange={onChangeCue(i)} onDelete={onRemoveCue(i)} />
+								</div>
+								{!isLast && <Divider />}
+							</React.Fragment>
+						)}
+					/>
 				)}
-			/>
+				{loading && <Loader />}
+			</div>
 			<FabButton className={classes.fab} color="primary" aria-label="Add Cue" onClick={onAddCue}>
 				<AddIcon />
 			</FabButton>

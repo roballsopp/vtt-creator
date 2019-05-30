@@ -13,7 +13,7 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import VoiceChatIcon from '@material-ui/icons/VoiceChat';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
-import { Video, useFileSelector } from './common';
+import { Video, useFileSelector, useToast } from './common';
 import VTTEditor from './vtt-editor';
 import { getVTTFromCues, getCuesFromWords, getCuesFromVTT } from './services/vtt.service';
 import CueExtractionDialog from './cue-extraction/cue-extraction-dialog.component';
@@ -43,8 +43,10 @@ export default function MainScreen() {
 	const [captionSrc, setCaptionSrc] = React.useState();
 	const [optionsMenuAnchorEl, setOptionsMenuAnchorEl] = React.useState(null);
 	const [videoFile, setVideoFile] = React.useState();
+	const [loadingCues, setLoadingCues] = React.useState(false);
 	const [cueExtractionDialogOpen, setCueExtractionDialogOpen] = React.useState(false);
 	const [editorOpen, setEditorOpen] = React.useState(true);
+	const toast = useToast();
 
 	const onCuesChange = React.useCallback(
 		newCues => {
@@ -75,8 +77,10 @@ export default function MainScreen() {
 	};
 
 	const onCueExtractComplete = results => {
+		setLoadingCues(true);
 		const newCues = getCuesFromWords(results.words);
 		onCuesChange(newCues);
+		setLoadingCues(false);
 	};
 
 	const onDownloadVTT = () => {
@@ -86,10 +90,18 @@ export default function MainScreen() {
 
 	const onVTTFileSelected = React.useCallback(
 		async e => {
-			const newCues = await getCuesFromVTT(e.target.files[0]);
-			onCuesChange(newCues);
+			onCloseOptionsMenu();
+			setLoadingCues(true);
+			try {
+				const newCues = await getCuesFromVTT(e.target.files[0]);
+				onCuesChange(newCues);
+			} catch (e) {
+				console.error(e);
+				toast.error('Oh no! An error occurred loading the cues.');
+			}
+			setLoadingCues(false);
 		},
-		[onCuesChange]
+		[onCuesChange, toast]
 	);
 
 	const openFileSelector = useFileSelector({ accept: 'text/vtt', onFilesSelected: onVTTFileSelected });
@@ -125,7 +137,7 @@ export default function MainScreen() {
 						</Menu>
 					</Toolbar>
 				</AppBar>
-				<VTTEditor cues={cues} onChange={onCuesChange} />
+				<VTTEditor cues={cues} onChange={onCuesChange} loading={loadingCues} />
 			</Paper>
 			<div className={classes.main}>
 				<Video onFileSelected={onVideoFileSelected} captionSrc={captionSrc} />

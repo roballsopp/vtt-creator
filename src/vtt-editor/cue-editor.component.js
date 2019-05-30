@@ -38,7 +38,7 @@ export default function CueEditor({ cue, onChange, onDelete }) {
 	React.useEffect(() => {
 		setText(cue.text);
 		return debouncedOnChangeText.flush;
-	}, [cue.text]);
+	}, [debouncedOnChangeText, cue.text]);
 
 	const onChangeText = e => {
 		setText(e.target.value);
