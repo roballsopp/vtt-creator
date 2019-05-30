@@ -9,7 +9,7 @@ import { CuePropType } from '../services/vtt.service';
 import CueEditor from './cue-editor.component';
 
 const useStyles = makeStyles({
-	root: {
+	listRoot: {
 		width: 400,
 		paddingTop: 4,
 		paddingBottom: 90,
@@ -63,7 +63,7 @@ export default function VTTEditor({ cues, onChange }) {
 	return (
 		<div className={classes.fabContainer}>
 			<List
-				className={classes.root}
+				className={classes.listRoot}
 				data={cues}
 				renderItem={(cue, i, isLast) => (
 					<React.Fragment>

@@ -22,7 +22,7 @@ import UploadProgress, {
 } from './upload-progress.component';
 import { getAudioBlobFromVideo } from '../services/av.service';
 import { getUploadUrl, initSpeechToTextOp, pollSpeechToTextOp, uploadFile } from '../services/rest-api.service';
-import { useToast } from '../toast-context';
+import { useToast } from '../common';
 
 const Title = styled(DialogTitle)({
 	display: 'flex',

@@ -4,7 +4,7 @@ import MuiThemeProvider from '@material-ui/styles/ThemeProvider';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import theme from './mui-theme';
 import MainScreen from './main-screen.component';
-import { ToastProvider } from './toast-context';
+import { ToastProvider } from './common';
 
 function AppWrapper() {
 	return (

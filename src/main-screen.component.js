@@ -13,11 +13,10 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import VoiceChatIcon from '@material-ui/icons/VoiceChat';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
-import Video from './video.component';
+import { Video, useFileSelector } from './common';
 import VTTEditor from './vtt-editor';
 import { getVTTFromCues, getCuesFromWords, getCuesFromVTT } from './services/vtt.service';
 import CueExtractionDialog from './cue-extraction/cue-extraction-dialog.component';
-import useFileSelector from './use-file-selector.hook';
 
 const useStyles = makeStyles({
 	root: {
