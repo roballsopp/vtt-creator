@@ -60,7 +60,7 @@ export default function CueEditor({ cue, onChange, onDelete }) {
 	};
 
 	return (
-		<Grid container spacing={1}>
+		<Grid container spacing={2}>
 			<Grid container item alignItems="center" spacing={1} wrap="nowrap" justify="space-between">
 				<Grid item>
 					<TimingInput variant="outlined" label="Start Time" value={cue.startTime} onChange={onChangeStartTime} />

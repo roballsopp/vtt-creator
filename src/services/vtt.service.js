@@ -123,7 +123,7 @@ export function getCuesFromVTT(file) {
 			const cues = [];
 			const parser = new WebVTT.Parser(window, WebVTT.StringDecoder());
 			parser.oncue = c => cues.push(c);
-			parser.onparsingerror = reject;
+			parser.onparsingerror = e => reject(new Error(e.message));
 			parser.onflush = () => resolve(cues);
 			parser.parse(reader.result);
 			parser.flush();

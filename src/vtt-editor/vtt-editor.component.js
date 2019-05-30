@@ -1,34 +1,23 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import AppBar from '@material-ui/core/AppBar';
-import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import FabButton from '@material-ui/core/Fab';
 import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import Paper from '@material-ui/core/Paper';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import AddIcon from '@material-ui/icons/Add';
 import { makeStyles } from '@material-ui/styles';
-import MuiThemeProvider from '@material-ui/styles/ThemeProvider';
-import download from 'downloadjs';
-import { CuePropType, getVTTFromCues } from '../services/vtt.service';
+import { CuePropType } from '../services/vtt.service';
 import CueEditor from './cue-editor.component';
-import theme from './mui-theme';
 
 const useStyles = makeStyles({
 	root: {
 		width: 400,
-		padding: 16,
+		paddingTop: 20,
 		paddingBottom: 90,
 		height: '100%',
 		overflowY: 'scroll',
 	},
 	cueEditor: {
-		marginBottom: 12,
+		padding: '0 16px',
 	},
 	fab: {
 		position: 'absolute',
@@ -72,23 +61,31 @@ export default function VTTEditor({ cues, onChange }) {
 	};
 
 	return (
-		<MuiThemeProvider theme={theme}>
-			<div className={classes.fabContainer}>
-				<div className={classes.root}>
-					<Grid container spacing={1}>
-						{cues.map((cue, i) => {
-							return (
-								<Grid key={i} item xs={12} className={classes.cueEditor}>
-									<CueEditor cue={cue} cueNumber={i + 1} onChange={onChangeCue(i)} onDelete={onRemoveCue(i)} />
+		<div className={classes.fabContainer}>
+			<div className={classes.root}>
+				<Grid container spacing={2}>
+					{cues.map((cue, i) => {
+						const isLast = cues.length - 1 === i;
+						return (
+							<React.Fragment key={i}>
+								<Grid item xs={12}>
+									<div className={classes.cueEditor}>
+										<CueEditor cue={cue} cueNumber={i + 1} onChange={onChangeCue(i)} onDelete={onRemoveCue(i)} />
+									</div>
 								</Grid>
-							);
-						})}
-					</Grid>
-				</div>
-				<FabButton className={classes.fab} color="primary" aria-label="Add Cue" onClick={onAddCue}>
-					<AddIcon />
-				</FabButton>
+								{!isLast && (
+									<Grid item xs={12}>
+										<Divider />
+									</Grid>
+								)}
+							</React.Fragment>
+						);
+					})}
+				</Grid>
 			</div>
-		</MuiThemeProvider>
+			<FabButton className={classes.fab} color="primary" aria-label="Add Cue" onClick={onAddCue}>
+				<AddIcon />
+			</FabButton>
+		</div>
 	);
 }
