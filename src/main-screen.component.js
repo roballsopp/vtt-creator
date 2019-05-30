@@ -1,5 +1,6 @@
 import * as React from 'react';
 import download from 'downloadjs';
+import sortBy from 'lodash.sortby';
 import AppBar from '@material-ui/core/AppBar';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
@@ -49,9 +50,10 @@ export default function MainScreen() {
 	const toast = useToast();
 
 	const onCuesChange = React.useCallback(
-		newCues => {
-			setCues(newCues);
-			const vttBlob = getVTTFromCues(newCues);
+		(newCues, reorder) => {
+			const orderedCues = reorder ? sortBy(newCues, ['startTime']) : newCues;
+			setCues(orderedCues);
+			const vttBlob = getVTTFromCues(orderedCues);
 			const vttBlobUrl = URL.createObjectURL(vttBlob);
 			if (captionSrc) URL.revokeObjectURL(captionSrc);
 			setCaptionSrc(vttBlobUrl);
@@ -94,7 +96,7 @@ export default function MainScreen() {
 			setLoadingCues(true);
 			try {
 				const newCues = await getCuesFromVTT(e.target.files[0]);
-				onCuesChange(newCues);
+				onCuesChange(newCues, true); // check if VTT files require ordering
 			} catch (e) {
 				console.error(e);
 				toast.error('Oh no! An error occurred loading the cues.');

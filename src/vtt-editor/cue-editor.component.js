@@ -22,6 +22,7 @@ const useStyles = makeStyles({
 
 CueEditor.propTypes = {
 	cue: CuePropType.isRequired,
+	// onChange takes two args, new cue, and a boolean to indicate whether startTime was changed
 	onChange: PropTypes.func.isRequired,
 	onDelete: PropTypes.func.isRequired,
 };
@@ -48,7 +49,7 @@ export default function CueEditor({ cue, onChange, onDelete }) {
 	const onChangeStartTime = e => {
 		const startTime = parseFloat(e.target.value);
 		const offset = startTime - cue.startTime;
-		onChange(new VTTCue(startTime, cue.endTime + offset, cue.text));
+		onChange(new VTTCue(startTime, cue.endTime + offset, cue.text), true);
 	};
 
 	const onChangeEndTime = e => {

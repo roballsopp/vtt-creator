@@ -34,6 +34,7 @@ const useStyles = makeStyles({
 
 VTTEditor.propTypes = {
 	cues: PropTypes.arrayOf(CuePropType).isRequired,
+	// onChange takes two args, new cue, and a boolean to indicate whether startTime was changed
 	onChange: PropTypes.func.isRequired,
 	loading: PropTypes.bool,
 };
@@ -41,10 +42,10 @@ VTTEditor.propTypes = {
 export default function VTTEditor({ cues, onChange, loading }) {
 	const classes = useStyles();
 
-	const onChangeCue = i => cue => {
+	const onChangeCue = i => (cue, reorder) => {
 		const newCues = cues.slice();
 		newCues[i] = cue;
-		onChange(newCues);
+		onChange(newCues, reorder);
 	};
 
 	const onAddCue = () => {
