@@ -18,5 +18,10 @@ export default createMuiTheme({
 				color: 'white',
 			},
 		},
+		MuiLinearProgress: {
+			bar1Determinate: {
+				transition: 'initial',
+			},
+		},
 	},
 });
