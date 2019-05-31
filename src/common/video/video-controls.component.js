@@ -89,18 +89,20 @@ export default function VideoControls({ className }) {
 							onToggleMute={onToggleMute}
 						/>
 					</div>
-					<div className={classes.controlRight}>
-						{!fullscreen && (
-							<IconButton aria-label="Fullscreen" size="small" color="inherit" onClick={onToggleFullscreen}>
-								<FullscreenIcon />
-							</IconButton>
-						)}
-						{fullscreen && (
-							<IconButton aria-label="Exit Fullscreen" size="small" color="inherit" onClick={onToggleFullscreen}>
-								<FullscreenExitIcon />
-							</IconButton>
-						)}
-					</div>
+					{isFullScreenEnabled() && (
+						<div className={classes.controlRight}>
+							{!fullscreen && (
+								<IconButton aria-label="Fullscreen" size="small" color="inherit" onClick={onToggleFullscreen}>
+									<FullscreenIcon />
+								</IconButton>
+							)}
+							{fullscreen && (
+								<IconButton aria-label="Exit Fullscreen" size="small" color="inherit" onClick={onToggleFullscreen}>
+									<FullscreenExitIcon />
+								</IconButton>
+							)}
+						</div>
+					)}
 				</div>
 			</div>
 			<LinearProgress variant="determinate" value={progress} />
