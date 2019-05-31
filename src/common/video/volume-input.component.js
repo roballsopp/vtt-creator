@@ -17,6 +17,18 @@ const useStyles = makeStyles({
 	},
 });
 
+const useSliderStyles = makeStyles({
+	trackBefore: {
+		backgroundColor: 'white',
+	},
+	thumb: {
+		backgroundColor: 'white',
+	},
+	trackAfter: {
+		backgroundColor: 'white',
+	},
+});
+
 VolumeInput.propTypes = {
 	value: PropType.number,
 	onChange: PropType.func.isRequired,
@@ -28,7 +40,7 @@ export default function VolumeInput({ value, muted, onChange, onToggleMute }) {
 	const classes = useStyles();
 	return (
 		<div className={classes.container}>
-			<Slider value={value} onChange={onChange} max={1} />
+			<Slider value={value} onChange={onChange} max={1} classes={useSliderStyles()} />
 			<div className={classes.muteButton}>
 				{value && !muted && (
 					<IconButton aria-label="Mute" size="small" edge="start" color="inherit" onClick={onToggleMute}>
