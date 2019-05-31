@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import IconButton from '@material-ui/core/IconButton';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
@@ -9,6 +8,7 @@ import PauseIcon from '@material-ui/icons/Pause';
 import PlayIcon from '@material-ui/icons/PlayArrow';
 import { makeStyles } from '@material-ui/styles';
 import { useVideoEvents } from './video-controls.context';
+import IconToggle from './icon-toggle.component';
 import VolumeInput from './volume-input.component';
 import { isFullScreenEnabled } from './use-fullscreen.hook';
 
@@ -63,16 +63,16 @@ export default function VideoControls({ className }) {
 			<div className={classes.controlBar}>
 				<div className={classes.controlGroupLeft}>
 					<div className={classes.controlLeft}>
-						{paused && (
-							<IconButton aria-label="Play" size="small" color="inherit" edge="start" onClick={onPlayPause}>
-								<PlayIcon />
-							</IconButton>
-						)}
-						{!paused && (
-							<IconButton aria-label="Pause" size="small" color="inherit" edge="start" onClick={onPlayPause}>
-								<PauseIcon />
-							</IconButton>
-						)}
+						<IconToggle
+							on={paused}
+							onIcon={<PlayIcon />}
+							offIcon={<PauseIcon />}
+							aria-label="Play/Pause"
+							size="small"
+							color="inherit"
+							edge="start"
+							onToggle={onPlayPause}
+						/>
 					</div>
 					<div className={classes.controlLeft}>
 						<Typography variant="subtitle2">
@@ -91,16 +91,15 @@ export default function VideoControls({ className }) {
 					</div>
 					{isFullScreenEnabled() && (
 						<div className={classes.controlRight}>
-							{!fullscreen && (
-								<IconButton aria-label="Fullscreen" size="small" color="inherit" onClick={onToggleFullscreen}>
-									<FullscreenIcon />
-								</IconButton>
-							)}
-							{fullscreen && (
-								<IconButton aria-label="Exit Fullscreen" size="small" color="inherit" onClick={onToggleFullscreen}>
-									<FullscreenExitIcon />
-								</IconButton>
-							)}
+							<IconToggle
+								on={fullscreen}
+								onIcon={<FullscreenExitIcon />}
+								offIcon={<FullscreenIcon />}
+								aria-label="Toggle fullscreen"
+								size="small"
+								color="inherit"
+								onToggle={onToggleFullscreen}
+							/>
 						</div>
 					)}
 				</div>

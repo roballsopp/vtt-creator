@@ -1,10 +1,10 @@
 import * as React from 'react';
 import * as PropType from 'prop-types';
-import IconButton from '@material-ui/core/IconButton';
 import Slider from '@material-ui/lab/Slider';
 import VolumeIcon from '@material-ui/icons/VolumeUp';
 import VolumeOffIcon from '@material-ui/icons/VolumeOff';
 import { makeStyles } from '@material-ui/styles';
+import IconToggle from './icon-toggle.component';
 
 const useStyles = makeStyles({
 	container: {
@@ -42,16 +42,15 @@ export default function VolumeInput({ value, muted, onChange, onToggleMute }) {
 		<div className={classes.container}>
 			<Slider value={value} onChange={onChange} max={1} classes={useSliderStyles()} />
 			<div className={classes.muteButton}>
-				{value && !muted && (
-					<IconButton aria-label="Mute" size="small" edge="start" color="inherit" onClick={onToggleMute}>
-						<VolumeIcon />
-					</IconButton>
-				)}
-				{(!value || muted) && (
-					<IconButton aria-label="Unmute" size="small" edge="start" color="inherit" onClick={onToggleMute}>
-						<VolumeOffIcon />
-					</IconButton>
-				)}
+				<IconToggle
+					on={value && !muted}
+					onIcon={<VolumeIcon />}
+					offIcon={<VolumeOffIcon />}
+					aria-label="Toggle mute"
+					size="small"
+					color="inherit"
+					onToggle={onToggleMute}
+				/>
 			</div>
 		</div>
 	);
