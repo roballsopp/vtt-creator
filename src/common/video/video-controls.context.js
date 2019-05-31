@@ -39,6 +39,7 @@ export function VideoControlsProvider({ videoRef, videoContainerRef, children })
 			if (videoRef) {
 				videoRef.removeEventListener('loadedmetadata', onLoadedMeta);
 				videoRef.removeEventListener('timeupdate', onTimeUpdate);
+				videoRef.removeEventListener('play', onPlay);
 				videoRef.removeEventListener('pause', onPaused);
 			}
 		};
@@ -75,6 +76,7 @@ export function VideoControlsProvider({ videoRef, videoContainerRef, children })
 				onToggleFullscreen,
 				onVolumeChange,
 				onToggleMute,
+				videoRef,
 			}}>
 			{children}
 		</VideoControlsContext.Provider>

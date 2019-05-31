@@ -31,12 +31,12 @@ export default function VolumeInput({ value, muted, onChange, onToggleMute }) {
 			<Slider value={value} onChange={onChange} max={1} />
 			<div className={classes.muteButton}>
 				{value && !muted && (
-					<IconButton aria-label="Mute" size="small" edge="start" onClick={onToggleMute}>
+					<IconButton aria-label="Mute" size="small" edge="start" color="inherit" onClick={onToggleMute}>
 						<VolumeIcon />
 					</IconButton>
 				)}
 				{(!value || muted) && (
-					<IconButton aria-label="Unmute" size="small" edge="start" onClick={onToggleMute}>
+					<IconButton aria-label="Unmute" size="small" edge="start" color="inherit" onClick={onToggleMute}>
 						<VolumeOffIcon />
 					</IconButton>
 				)}

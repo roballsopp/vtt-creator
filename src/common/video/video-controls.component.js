@@ -14,6 +14,7 @@ import { isFullScreenEnabled } from './use-fullscreen.hook';
 
 const useStyles = makeStyles({
 	controlBar: {
+		color: 'white',
 		display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'spaceBetween',
@@ -63,12 +64,12 @@ export default function VideoControls({ className }) {
 				<div className={classes.controlGroupLeft}>
 					<div className={classes.controlLeft}>
 						{paused && (
-							<IconButton aria-label="Play" size="small" edge="start" onClick={onPlayPause}>
+							<IconButton aria-label="Play" size="small" color="inherit" edge="start" onClick={onPlayPause}>
 								<PlayIcon />
 							</IconButton>
 						)}
 						{!paused && (
-							<IconButton aria-label="Pause" size="small" edge="start" onClick={onPlayPause}>
+							<IconButton aria-label="Pause" size="small" color="inherit" edge="start" onClick={onPlayPause}>
 								<PauseIcon />
 							</IconButton>
 						)}
@@ -90,12 +91,12 @@ export default function VideoControls({ className }) {
 					</div>
 					<div className={classes.controlRight}>
 						{!fullscreen && (
-							<IconButton aria-label="Fullscreen" size="small" onClick={onToggleFullscreen}>
+							<IconButton aria-label="Fullscreen" size="small" color="inherit" onClick={onToggleFullscreen}>
 								<FullscreenIcon />
 							</IconButton>
 						)}
 						{fullscreen && (
-							<IconButton aria-label="Exit Fullscreen" size="small" onClick={onToggleFullscreen}>
+							<IconButton aria-label="Exit Fullscreen" size="small" color="inherit" onClick={onToggleFullscreen}>
 								<FullscreenExitIcon />
 							</IconButton>
 						)}

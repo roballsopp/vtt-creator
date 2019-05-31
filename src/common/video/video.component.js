@@ -3,7 +3,7 @@ import * as PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/styles';
 import useFileSelector from '../use-file-selector.hook';
-import VideoControls from './video-controls.component';
+import VideoOverlay from './video-overlay.component';
 import { VideoControlsProvider } from './video-controls.context';
 
 const useStyles = makeStyles({
@@ -17,8 +17,9 @@ const useStyles = makeStyles({
 		height: '100%',
 		width: '100%',
 	},
-	controls: {
+	overlay: {
 		position: 'absolute',
+		top: 0,
 		bottom: 0,
 		right: 0,
 		left: 0,
@@ -57,25 +58,23 @@ export default function Video(props) {
 	const openFileSelector = useFileSelector({ accept: 'video/*', onFilesSelected });
 
 	return (
-		<React.Fragment>
-			<VideoControlsProvider videoRef={videoRef.current} videoContainerRef={videoContainerRef.current}>
-				<div ref={videoContainerRef} className={classes.container}>
-					{!src && (
-						<Button variant="contained" color="primary" onClick={openFileSelector}>
-							Select Video File
-						</Button>
-					)}
-					{src && (
-						<React.Fragment>
-							<video ref={videoRef} className={classes.video}>
-								<source src={src} />
-								<track src={captionSrc} kind="subtitles" srcLang="en" label="English" />
-							</video>
-							<VideoControls className={classes.controls} />
-						</React.Fragment>
-					)}
-				</div>
-			</VideoControlsProvider>
-		</React.Fragment>
+		<VideoControlsProvider videoRef={videoRef.current} videoContainerRef={videoContainerRef.current}>
+			<div ref={videoContainerRef} className={classes.container}>
+				{!src && (
+					<Button variant="contained" color="primary" onClick={openFileSelector}>
+						Select Video File
+					</Button>
+				)}
+				{src && (
+					<React.Fragment>
+						<video ref={videoRef} className={classes.video}>
+							<source src={src} />
+							<track src={captionSrc} kind="subtitles" srcLang="en" label="English" />
+						</video>
+						<VideoOverlay className={classes.overlay} />
+					</React.Fragment>
+				)}
+			</div>
+		</VideoControlsProvider>
 	);
 }
