@@ -57,7 +57,7 @@ export default function VideoControls({ className }) {
 		onToggleMute,
 	} = useVideoEvents();
 	const classes = useStyles();
-	const progress = duration ? (currentTime / duration) * 100 : 0;
+	const progress = duration && currentTime ? (currentTime / duration) * 100 : 0;
 	return (
 		<div className={className}>
 			<div className={classes.controlBar}>
