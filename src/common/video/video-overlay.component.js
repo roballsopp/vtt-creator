@@ -2,7 +2,6 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import VideoControls from './video-controls.component';
-import { useVideoEvents } from './video-controls.context';
 
 const useStyles = makeStyles({
 	root: {
@@ -20,17 +19,16 @@ const useStyles = makeStyles({
 
 VideoOverlay.propTypes = {
 	className: PropTypes.string,
+	videoContainerRef: PropTypes.instanceOf(HTMLElement),
 };
 
-export default function VideoOverlay({ className }) {
+export default function VideoOverlay({ className, videoContainerRef }) {
 	const [showOverlay, setShowOverlay] = React.useState(true);
 	const classes = useStyles();
-	const { videoRef } = useVideoEvents();
-	const overlayRef = React.useRef();
 
 	React.useEffect(() => {
 		let timeoutId;
-		const onMouseEnter = () => {
+		const onMouseMove = () => {
 			setShowOverlay(true);
 			if (timeoutId) clearTimeout(timeoutId);
 			timeoutId = setTimeout(() => {
@@ -38,32 +36,23 @@ export default function VideoOverlay({ className }) {
 			}, 4000);
 		};
 
-		if (videoRef) {
-			videoRef.addEventListener('mouseover', onMouseEnter);
-		}
-
-		const overlayEl = overlayRef.current;
-
-		if (overlayEl) {
-			overlayEl.addEventListener('mouseover', onMouseEnter);
+		if (videoContainerRef) {
+			videoContainerRef.addEventListener('mousemove', onMouseMove); // TODO: throttle
 		}
 
 		return () => {
 			if (timeoutId) clearTimeout(timeoutId);
-			if (videoRef) {
-				videoRef.removeEventListener('mouseover', onMouseEnter);
-			}
-			if (overlayEl) {
-				overlayEl.removeEventListener('mouseover', onMouseEnter);
+			if (videoContainerRef) {
+				videoContainerRef.removeEventListener('mousemove', onMouseMove);
 			}
 		};
-	}, [videoRef]);
+	}, [videoContainerRef]);
 
 	if (!showOverlay) return null;
 
 	return (
 		<div className={className}>
-			<div ref={overlayRef} className={classes.root}>
+			<div className={classes.root}>
 				<div />
 				<VideoControls className={classes.controls} />
 			</div>

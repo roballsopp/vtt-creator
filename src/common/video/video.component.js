@@ -71,7 +71,7 @@ export default function Video(props) {
 							<source src={src} />
 							<track src={captionSrc} kind="subtitles" srcLang="en" label="English" />
 						</video>
-						<VideoOverlay className={classes.overlay} />
+						<VideoOverlay className={classes.overlay} videoContainerRef={videoContainerRef.current} />
 					</React.Fragment>
 				)}
 			</div>

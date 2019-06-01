@@ -76,7 +76,6 @@ export function VideoControlsProvider({ videoRef, videoContainerRef, children })
 				onToggleFullscreen,
 				onVolumeChange,
 				onToggleMute,
-				videoRef,
 			}}>
 			{children}
 		</VideoControlsContext.Provider>
