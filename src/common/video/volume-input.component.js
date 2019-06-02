@@ -43,7 +43,7 @@ export default function VolumeInput({ value, muted, onChange, onToggleMute }) {
 			<Slider value={value} onChange={onChange} max={1} classes={useSliderStyles()} />
 			<div className={classes.muteButton}>
 				<IconToggle
-					on={value && !muted}
+					on={!!value && !muted}
 					onIcon={<VolumeIcon />}
 					offIcon={<VolumeOffIcon />}
 					aria-label="Toggle mute"

@@ -16,6 +16,7 @@ export function VideoControlsProvider({ videoRef, videoContainerRef, children })
 	const [volume, setVolume] = React.useState(1);
 	const [muted, setMuted] = React.useState(false);
 	const [paused, setPaused] = React.useState(true);
+	const [captions, setCaptions] = React.useState(true);
 
 	const [fullscreen, onToggleFullscreen] = useFullscreen(videoContainerRef);
 
@@ -27,12 +28,14 @@ export function VideoControlsProvider({ videoRef, videoContainerRef, children })
 		};
 		const onPlay = () => setPaused(false);
 		const onPaused = () => setPaused(true);
+		const onVolumeChange = () => setVolume(videoRef.volume);
 
 		if (videoRef) {
 			videoRef.addEventListener('loadedmetadata', onLoadedMeta);
 			videoRef.addEventListener('timeupdate', onTimeUpdate);
 			videoRef.addEventListener('play', onPlay);
 			videoRef.addEventListener('pause', onPaused);
+			videoRef.addEventListener('volumechange', onVolumeChange);
 		}
 
 		return () => {
@@ -41,6 +44,7 @@ export function VideoControlsProvider({ videoRef, videoContainerRef, children })
 				videoRef.removeEventListener('timeupdate', onTimeUpdate);
 				videoRef.removeEventListener('play', onPlay);
 				videoRef.removeEventListener('pause', onPaused);
+				videoRef.removeEventListener('volumechange', onVolumeChange);
 			}
 		};
 	}, [videoRef, duration]);
@@ -52,15 +56,26 @@ export function VideoControlsProvider({ videoRef, videoContainerRef, children })
 
 	const onVolumeChange = React.useCallback(
 		volume => {
-			setVolume(volume);
-			if (videoRef) videoRef.volume = volume;
+			if (videoRef) {
+				videoRef.volume = volume;
+			}
 		},
 		[videoRef]
 	);
 
 	const onToggleMute = React.useCallback(() => {
-		setMuted(!videoRef.muted);
-		if (videoRef) videoRef.muted = !videoRef.muted;
+		if (videoRef) {
+			videoRef.muted = !videoRef.muted;
+			setMuted(videoRef.muted);
+		}
+	}, [videoRef]);
+
+	const onToggleCaptions = React.useCallback(() => {
+		if (videoRef) {
+			const showing = videoRef.textTracks[0].mode === 'showing';
+			videoRef.textTracks[0].mode = showing ? 'hidden' : 'showing';
+			setCaptions(!showing);
+		}
 	}, [videoRef]);
 
 	return (
@@ -72,10 +87,12 @@ export function VideoControlsProvider({ videoRef, videoContainerRef, children })
 				fullscreen,
 				volume,
 				muted,
+				captions,
 				onPlayPause,
 				onToggleFullscreen,
 				onVolumeChange,
 				onToggleMute,
+				onToggleCaptions,
 			}}>
 			{children}
 		</VideoControlsContext.Provider>

@@ -42,8 +42,8 @@ export default function Video(props) {
 	const { captionSrc, onFileSelected } = props;
 	const [src, setSrc] = React.useState();
 	const classes = useStyles(props);
-	const videoRef = React.useRef();
-	const videoContainerRef = React.useRef();
+	const [videoRef, setVideoRef] = React.useState();
+	const [videoContainerRef, setVideoContainerRef] = React.useState();
 
 	const onFilesSelected = React.useCallback(
 		e => {
@@ -58,8 +58,8 @@ export default function Video(props) {
 	const openFileSelector = useFileSelector({ accept: 'video/*', onFilesSelected });
 
 	return (
-		<VideoControlsProvider videoRef={videoRef.current} videoContainerRef={videoContainerRef.current}>
-			<div ref={videoContainerRef} className={classes.container}>
+		<VideoControlsProvider videoRef={videoRef} videoContainerRef={videoContainerRef}>
+			<div ref={setVideoContainerRef} className={classes.container}>
 				{!src && (
 					<Button variant="contained" color="primary" onClick={openFileSelector}>
 						Select Video File
@@ -67,11 +67,11 @@ export default function Video(props) {
 				)}
 				{src && (
 					<React.Fragment>
-						<video ref={videoRef} className={classes.video}>
+						<video ref={setVideoRef} className={classes.video}>
 							<source src={src} />
-							<track src={captionSrc} kind="subtitles" srcLang="en" label="English" />
+							<track src={captionSrc} default kind="subtitles" srcLang="en" label="English" />
 						</video>
-						<VideoOverlay className={classes.overlay} videoContainerRef={videoContainerRef.current} />
+						<VideoOverlay className={classes.overlay} videoContainerRef={videoContainerRef} />
 					</React.Fragment>
 				)}
 			</div>

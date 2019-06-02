@@ -10,7 +10,7 @@ const useStyles = makeStyles({
 		display: 'flex',
 		justifyContent: 'space-between',
 		flexDirection: 'column',
-		backgroundImage: 'linear-gradient(rgba(0,0,0,0) 70%, rgba(0,0,0,1))',
+		backgroundImage: 'linear-gradient(1turn, rgba(0,0,0,1) 0px, rgba(0,0,0,0) 100px)',
 	},
 	controls: {
 		padding: 12,

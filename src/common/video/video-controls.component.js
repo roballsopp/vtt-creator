@@ -6,6 +6,7 @@ import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayIcon from '@material-ui/icons/PlayArrow';
+import CaptionsIcon from '@material-ui/icons/ClosedCaption';
 import { makeStyles } from '@material-ui/styles';
 import { useVideoEvents } from './video-controls.context';
 import IconToggle from './icon-toggle.component';
@@ -55,6 +56,7 @@ export default function VideoControls({ className }) {
 		onToggleFullscreen,
 		onVolumeChange,
 		onToggleMute,
+		onToggleCaptions,
 	} = useVideoEvents();
 	const classes = useStyles();
 	const progress = duration && currentTime ? (currentTime / duration) * 100 : 0;
@@ -102,6 +104,16 @@ export default function VideoControls({ className }) {
 							/>
 						</div>
 					)}
+					<div className={classes.controlRight}>
+						<IconToggle
+							on
+							onIcon={<CaptionsIcon />}
+							aria-label="Toggle captions"
+							size="small"
+							color="inherit"
+							onToggle={onToggleCaptions}
+						/>
+					</div>
 				</div>
 			</div>
 			<LinearProgress variant="determinate" value={progress} />
