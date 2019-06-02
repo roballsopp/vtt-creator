@@ -11,29 +11,27 @@ export function OverlayProvider({ children }) {
 	const [showOverlay, setShowOverlay] = React.useState(true);
 	const [overlayTimeout, setOverlayTimeout] = React.useState();
 
-	const onClearOverlayTimeout = React.useCallback(() => {
-		if (overlayTimeout) {
-			clearTimeout(overlayTimeout);
-			setOverlayTimeout(null);
-		}
-	}, [overlayTimeout]);
-
-	React.useEffect(() => onClearOverlayTimeout, [onClearOverlayTimeout]);
+	React.useEffect(() => () => clearTimeout(overlayTimeout), [overlayTimeout]);
 
 	const onStartOverlayTimeout = React.useCallback(() => {
 		setShowOverlay(true);
-		onClearOverlayTimeout();
+		if (overlayTimeout) {
+			clearTimeout(overlayTimeout);
+		}
 		setOverlayTimeout(
 			setTimeout(() => {
 				setShowOverlay(false);
 			}, 3000)
 		);
-	}, [onClearOverlayTimeout]);
+	}, [overlayTimeout]);
 
 	const onShowOverlay = React.useCallback(() => {
-		onClearOverlayTimeout();
+		if (overlayTimeout) {
+			clearTimeout(overlayTimeout);
+			setOverlayTimeout(null);
+		}
 		setShowOverlay(true);
-	}, [onClearOverlayTimeout]);
+	}, [overlayTimeout]);
 
 	return (
 		<OverlayContext.Provider
