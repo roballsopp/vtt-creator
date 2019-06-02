@@ -21,6 +21,10 @@ export function VideoControlsProvider({ videoRef, videoContainerRef, children })
 	const [fullscreen, onToggleFullscreen] = useFullscreen(videoContainerRef);
 
 	React.useEffect(() => {
+		const onLoadStart = () => {
+			setCurrentTime(0);
+			onVolumeChange(volume); // TODO: check that this works
+		};
 		const onLoadedMeta = () => setDuration(videoRef.duration);
 		const onTimeUpdate = () => {
 			if (!duration) setDuration(videoRef.duration); // sometimes needed (https://developer.mozilla.org/en-US/docs/Web/Guide/Audio_and_video_delivery/cross_browser_video_player#Progress)
@@ -31,6 +35,7 @@ export function VideoControlsProvider({ videoRef, videoContainerRef, children })
 		const onVolumeChange = () => setVolume(videoRef.volume);
 
 		if (videoRef) {
+			videoRef.addEventListener('loadstart', onLoadStart);
 			videoRef.addEventListener('loadedmetadata', onLoadedMeta);
 			videoRef.addEventListener('timeupdate', onTimeUpdate);
 			videoRef.addEventListener('play', onPlay);
@@ -40,6 +45,7 @@ export function VideoControlsProvider({ videoRef, videoContainerRef, children })
 
 		return () => {
 			if (videoRef) {
+				videoRef.removeEventListener('loadstart', onLoadStart);
 				videoRef.removeEventListener('loadedmetadata', onLoadedMeta);
 				videoRef.removeEventListener('timeupdate', onTimeUpdate);
 				videoRef.removeEventListener('play', onPlay);
@@ -47,7 +53,7 @@ export function VideoControlsProvider({ videoRef, videoContainerRef, children })
 				videoRef.removeEventListener('volumechange', onVolumeChange);
 			}
 		};
-	}, [videoRef, duration]);
+	}, [videoRef, duration, volume]);
 
 	const onPlayPause = React.useCallback(() => {
 		if (videoRef.paused || videoRef.ended) videoRef.play();
