@@ -14,6 +14,10 @@ const useStyles = makeStyles({
 		flexDirection: 'column',
 		backgroundImage: 'linear-gradient(1turn, rgba(0,0,0,1) 0px, rgba(0,0,0,0) 100px)',
 	},
+	topElement: {
+		display: 'flex',
+		justifyContent: 'flex-end',
+	},
 });
 
 VideoOverlay.propTypes = {
@@ -54,7 +58,7 @@ export default function VideoOverlay({ className, topElement, videoContainerRef 
 	return (
 		<div className={className}>
 			<div className={classes.root} onClick={onPlayPause}>
-				<div onClick={e => e.stopPropagation()}>{topElement}</div>
+				<div onClick={e => e.stopPropagation()} className={classes.topElement}>{topElement}</div>
 				<VideoControls onClick={e => e.stopPropagation()} />
 			</div>
 		</div>

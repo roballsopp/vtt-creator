@@ -100,7 +100,6 @@ export default function Video(props) {
 					topElement={
 						<React.Fragment>
 							<IconButton
-								edge="end"
 								color="inherit"
 								aria-label="Video Options"
 								onClick={e => setOptionsMenuAnchorEl(e.currentTarget)}>
