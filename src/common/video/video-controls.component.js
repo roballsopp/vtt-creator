@@ -20,6 +20,7 @@ const useStyles = makeStyles({
 		alignItems: 'center',
 		justifyContent: 'spaceBetween',
 		marginBottom: 4,
+		padding: '0 12px',
 	},
 	controlGroupLeft: {
 		flex: 1,
@@ -60,7 +61,7 @@ export default function VideoControls({ className }) {
 		onToggleCaptions,
 	} = useVideoEvents();
 	const classes = useStyles();
-	const progress = duration && currentTime ? (currentTime / duration) * 100 : 0;
+	const progress = duration && currentTime ? currentTime / duration : 0;
 	return (
 		<div className={className}>
 			<div className={classes.controlBar}>

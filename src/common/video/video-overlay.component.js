@@ -12,9 +12,6 @@ const useStyles = makeStyles({
 		flexDirection: 'column',
 		backgroundImage: 'linear-gradient(1turn, rgba(0,0,0,1) 0px, rgba(0,0,0,0) 100px)',
 	},
-	controls: {
-		padding: 12,
-	},
 });
 
 VideoOverlay.propTypes = {
@@ -54,7 +51,7 @@ export default function VideoOverlay({ className, videoContainerRef }) {
 		<div className={className}>
 			<div className={classes.root}>
 				<div />
-				<VideoControls className={classes.controls} />
+				<VideoControls />
 			</div>
 		</div>
 	);
