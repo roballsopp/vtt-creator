@@ -7,8 +7,16 @@ import VideoOverlay from './video-overlay.component';
 import { VideoControlsProvider } from './video-controls.context';
 
 const useStyles = makeStyles({
-	container: {
+	videoRoot: {
 		position: 'relative',
+		backgroundColor: 'black',
+		width: p => p.width,
+		height: p => p.height,
+	},
+	loaderRoot: {
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
 		backgroundColor: 'black',
 		width: p => p.width,
 		height: p => p.height,
@@ -57,23 +65,24 @@ export default function Video(props) {
 
 	const openFileSelector = useFileSelector({ accept: 'video/*', onFilesSelected });
 
+	if (!src) {
+		return (
+			<div className={classes.loaderRoot}>
+				<Button variant="contained" color="primary" onClick={openFileSelector}>
+					Select Video File
+				</Button>
+			</div>
+		);
+	}
+
 	return (
 		<VideoControlsProvider videoRef={videoRef} videoContainerRef={videoContainerRef}>
-			<div ref={setVideoContainerRef} className={classes.container}>
-				{!src && (
-					<Button variant="contained" color="primary" onClick={openFileSelector}>
-						Select Video File
-					</Button>
-				)}
-				{src && (
-					<React.Fragment>
-						<video ref={setVideoRef} className={classes.video}>
-							<source src={src} />
-							<track src={captionSrc} default kind="subtitles" srcLang="en" label="English" />
-						</video>
-						<VideoOverlay className={classes.overlay} videoContainerRef={videoContainerRef} />
-					</React.Fragment>
-				)}
+			<div ref={setVideoContainerRef} className={classes.videoRoot}>
+				<video ref={setVideoRef} className={classes.video}>
+					<source src={src} />
+					<track src={captionSrc} default kind="subtitles" srcLang="en" label="English" />
+				</video>
+				<VideoOverlay className={classes.overlay} videoContainerRef={videoContainerRef} />
 			</div>
 		</VideoControlsProvider>
 	);
