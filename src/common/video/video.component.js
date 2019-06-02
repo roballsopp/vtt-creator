@@ -1,14 +1,12 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import MoreIcon from '@material-ui/icons/MoreVert';
 import { makeStyles } from '@material-ui/styles';
 import useFileSelector from '../use-file-selector.hook';
-import VideoOverlay from './video-overlay.component';
+import { OverlayProvider } from './overlay.context';
 import { VideoControlsProvider } from './video-controls.context';
+import VideoOptionsMenu from './video-options-menu.component';
+import VideoOverlay from './video-overlay.component';
 
 const useStyles = makeStyles({
 	videoRoot: {
@@ -53,14 +51,12 @@ Video.defaultProps = {
 export default function Video(props) {
 	const { captionSrc, onFileSelected } = props;
 	const [src, setSrc] = React.useState();
-	const [optionsMenuAnchorEl, setOptionsMenuAnchorEl] = React.useState(null);
 	const classes = useStyles(props);
 	const [videoRef, setVideoRef] = React.useState();
 	const [videoContainerRef, setVideoContainerRef] = React.useState();
 
 	const onFilesSelected = React.useCallback(
 		e => {
-			onCloseOptionsMenu();
 			const [file] = e.target.files;
 			if (src) URL.revokeObjectURL(src);
 			const localUrl = URL.createObjectURL(file);
@@ -69,10 +65,6 @@ export default function Video(props) {
 		},
 		[src, onFileSelected]
 	);
-
-	const onCloseOptionsMenu = () => {
-		setOptionsMenuAnchorEl(null);
-	};
 
 	const openFileSelector = useFileSelector({ accept: 'video/*', onFilesSelected });
 
@@ -88,30 +80,20 @@ export default function Video(props) {
 
 	return (
 		<VideoControlsProvider videoRef={videoRef} videoContainerRef={videoContainerRef}>
-			<div ref={setVideoContainerRef} className={classes.videoRoot}>
-				{/* key is necessary here to tell react to reload the video if src is different: https://stackoverflow.com/a/47382850/2382483 */}
-				<video key={src} ref={setVideoRef} className={classes.video}>
-					<source src={src} />
-					<track src={captionSrc} default kind="subtitles" srcLang="en" label="English" />
-				</video>
-				<VideoOverlay
-					className={classes.overlay}
-					videoContainerRef={videoContainerRef}
-					topElement={
-						<React.Fragment>
-							<IconButton
-								color="inherit"
-								aria-label="Video Options"
-								onClick={e => setOptionsMenuAnchorEl(e.currentTarget)}>
-								<MoreIcon />
-							</IconButton>
-							<Menu anchorEl={optionsMenuAnchorEl} open={!!optionsMenuAnchorEl} onClose={onCloseOptionsMenu}>
-								<MenuItem onClick={openFileSelector}>Select New Video File...</MenuItem>
-							</Menu>
-						</React.Fragment>
-					}
-				/>
-			</div>
+			<OverlayProvider>
+				<div ref={setVideoContainerRef} className={classes.videoRoot}>
+					{/* key is necessary here to tell react to reload the video if src is different: https://stackoverflow.com/a/47382850/2382483 */}
+					<video key={src} ref={setVideoRef} className={classes.video}>
+						<source src={src} />
+						<track src={captionSrc} default kind="subtitles" srcLang="en" label="English" />
+					</video>
+					<VideoOverlay
+						className={classes.overlay}
+						videoContainerRef={videoContainerRef}
+						topElement={<VideoOptionsMenu onFilesSelected={onFilesSelected} />}
+					/>
+				</div>
+			</OverlayProvider>
 		</VideoControlsProvider>
 	);
 }
