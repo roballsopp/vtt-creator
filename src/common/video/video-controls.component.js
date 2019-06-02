@@ -15,7 +15,6 @@ import { isFullScreenEnabled } from './use-fullscreen.hook';
 
 const useStyles = makeStyles({
 	controlBar: {
-		color: 'white',
 		display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'spaceBetween',

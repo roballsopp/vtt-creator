@@ -6,6 +6,7 @@ import { useVideoEvents } from './video-controls.context';
 
 const useStyles = makeStyles({
 	root: {
+		color: 'white',
 		height: '100%',
 		width: '100%',
 		display: 'flex',
@@ -17,10 +18,11 @@ const useStyles = makeStyles({
 
 VideoOverlay.propTypes = {
 	className: PropTypes.string,
+	topElement: PropTypes.node,
 	videoContainerRef: PropTypes.instanceOf(HTMLElement),
 };
 
-export default function VideoOverlay({ className, videoContainerRef }) {
+export default function VideoOverlay({ className, topElement, videoContainerRef }) {
 	const [showOverlay, setShowOverlay] = React.useState(true);
 	const classes = useStyles();
 	const { onPlayPause } = useVideoEvents();
@@ -52,7 +54,7 @@ export default function VideoOverlay({ className, videoContainerRef }) {
 	return (
 		<div className={className}>
 			<div className={classes.root} onClick={onPlayPause}>
-				<div />
+				<div onClick={e => e.stopPropagation()}>{topElement}</div>
 				<VideoControls onClick={e => e.stopPropagation()} />
 			</div>
 		</div>
