@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
@@ -11,6 +10,7 @@ import { makeStyles } from '@material-ui/styles';
 import { useVideoEvents } from './video-controls.context';
 import IconToggle from './icon-toggle.component';
 import VolumeInput from './volume-input.component';
+import PlayProgress from './play-progress.component';
 import { isFullScreenEnabled } from './use-fullscreen.hook';
 
 const useStyles = makeStyles({
@@ -53,6 +53,7 @@ export default function VideoControls({ className }) {
 		volume,
 		muted,
 		onPlayPause,
+		onSeek,
 		onToggleFullscreen,
 		onVolumeChange,
 		onToggleMute,
@@ -116,7 +117,7 @@ export default function VideoControls({ className }) {
 					</div>
 				</div>
 			</div>
-			<LinearProgress variant="determinate" value={progress} />
+			<PlayProgress value={progress} onSeek={onSeek} />
 		</div>
 	);
 }

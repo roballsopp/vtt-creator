@@ -54,11 +54,16 @@ export function VideoControlsProvider({ videoRef, videoContainerRef, children })
 		else videoRef.pause();
 	}, [videoRef]);
 
+	const onSeek = React.useCallback(
+		pos => {
+			if (videoRef) videoRef.currentTime = pos * videoRef.duration;
+		},
+		[videoRef]
+	);
+
 	const onVolumeChange = React.useCallback(
 		volume => {
-			if (videoRef) {
-				videoRef.volume = volume;
-			}
+			if (videoRef) videoRef.volume = volume;
 		},
 		[videoRef]
 	);
@@ -72,9 +77,8 @@ export function VideoControlsProvider({ videoRef, videoContainerRef, children })
 
 	const onToggleCaptions = React.useCallback(() => {
 		if (videoRef) {
-			const showing = videoRef.textTracks[0].mode === 'showing';
-			videoRef.textTracks[0].mode = showing ? 'hidden' : 'showing';
-			setCaptions(!showing);
+			videoRef.textTracks[0].mode = videoRef.textTracks[0].mode === 'showing' ? 'hidden' : 'showing';
+			setCaptions(videoRef.textTracks[0].mode === 'showing');
 		}
 	}, [videoRef]);
 
@@ -89,6 +93,7 @@ export function VideoControlsProvider({ videoRef, videoContainerRef, children })
 				muted,
 				captions,
 				onPlayPause,
+				onSeek,
 				onToggleFullscreen,
 				onVolumeChange,
 				onToggleMute,
