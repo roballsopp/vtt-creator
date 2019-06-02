@@ -41,11 +41,7 @@ const useStyles = makeStyles({
 	},
 });
 
-VideoControls.propTypes = {
-	className: PropTypes.string,
-};
-
-export default function VideoControls({ className }) {
+export default function VideoControls(props) {
 	const {
 		duration,
 		currentTime,
@@ -63,7 +59,7 @@ export default function VideoControls({ className }) {
 	const classes = useStyles();
 	const progress = duration && currentTime ? currentTime / duration : 0;
 	return (
-		<div className={className}>
+		<div {...props}>
 			<div className={classes.controlBar}>
 				<div className={classes.controlGroupLeft}>
 					<div className={classes.controlLeft}>

@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import VideoControls from './video-controls.component';
+import { useVideoEvents } from './video-controls.context';
 
 const useStyles = makeStyles({
 	root: {
@@ -22,6 +23,7 @@ VideoOverlay.propTypes = {
 export default function VideoOverlay({ className, videoContainerRef }) {
 	const [showOverlay, setShowOverlay] = React.useState(true);
 	const classes = useStyles();
+	const { onPlayPause } = useVideoEvents();
 
 	React.useEffect(() => {
 		let timeoutId;
@@ -30,11 +32,11 @@ export default function VideoOverlay({ className, videoContainerRef }) {
 			if (timeoutId) clearTimeout(timeoutId);
 			timeoutId = setTimeout(() => {
 				setShowOverlay(false);
-			}, 4000);
+			}, 3000);
 		};
 
 		if (videoContainerRef) {
-			videoContainerRef.addEventListener('mousemove', onMouseMove); // TODO: throttle
+			videoContainerRef.addEventListener('mousemove', onMouseMove);
 		}
 
 		return () => {
@@ -49,9 +51,9 @@ export default function VideoOverlay({ className, videoContainerRef }) {
 
 	return (
 		<div className={className}>
-			<div className={classes.root}>
+			<div className={classes.root} onClick={onPlayPause}>
 				<div />
-				<VideoControls />
+				<VideoControls onClick={e => e.stopPropagation()} />
 			</div>
 		</div>
 	);
