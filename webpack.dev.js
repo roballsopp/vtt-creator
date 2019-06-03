@@ -19,12 +19,13 @@ module.exports = {
 		path: path.resolve(__dirname, 'dist'),
 		publicPath: '/dist/',
 	},
+	devtool: 'inline-source-map',
 	module: {
 		rules: [
 			{
+				loader: 'babel-loader',
 				test: /\.(js)$/,
 				exclude: /(node_modules)/,
-				loader: 'babel-loader',
 			},
 		],
 	},
