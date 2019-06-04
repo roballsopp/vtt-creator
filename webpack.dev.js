@@ -12,19 +12,28 @@ const getEnvVar = (name, { optional } = { optional: false }) => {
 };
 
 module.exports = {
-	entry: './src/index.js',
+	entry: {
+		main: './src/index.js',
+		test: './test/webpack-test-entry.js',
+	},
 	mode: 'development',
 	output: {
-		filename: 'main.js',
+		filename: '[name].js',
 		path: path.resolve(__dirname, 'dist'),
 		publicPath: '/dist/',
 	},
+	// map webpack's output back to source files when debugging in chrome https://webpack.js.org/guides/development#using-source-maps
 	devtool: 'inline-source-map',
 	module: {
 		rules: [
 			{
 				loader: 'babel-loader',
 				test: /\.(js)$/,
+				exclude: /(node_modules)/,
+			},
+			{
+				loader: 'mocha-loader',
+				test: /(spec)\.(js)$/,
 				exclude: /(node_modules)/,
 			},
 		],
