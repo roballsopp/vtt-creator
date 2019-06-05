@@ -73,8 +73,12 @@ describe('vtt.service', function() {
 			const vttBlob = getVTTFromCues(cues);
 			const reader = new FileReader();
 			reader.addEventListener('load', () => {
-				chai.assert.equal(reader.result.trim(), VTTFile);
-				done();
+				try {
+					chai.assert.strictEqual(reader.result.trim(), VTTFile);
+					done();
+				} catch (e) {
+					done(e);
+				}
 			});
 			reader.readAsText(vttBlob);
 		});

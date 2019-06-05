@@ -31,7 +31,10 @@ module.exports = config => {
 				new DefinePlugin(envConfig),
 			],
 		},
-		reporters: ['progress'],
+		reporters: ['mocha'],
+		mochaReporter: {
+			showDiff: true,
+		},
 		port: 9876, // karma web server port
 		colors: true,
 		logLevel: config.LOG_INFO,
