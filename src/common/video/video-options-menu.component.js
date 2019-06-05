@@ -15,26 +15,20 @@ export default function VideoOptionsMenu({ onFilesSelected: outerOnFilesSelected
 	const [optionsMenuAnchorEl, setOptionsMenuAnchorEl] = React.useState(null);
 	const { onShowOverlay, onStartOverlayTimeout } = useOverlay();
 
-	const onOpenOptionsMenu = React.useCallback(
-		e => {
-			setOptionsMenuAnchorEl(e.currentTarget);
-			onShowOverlay();
-		},
-		[onShowOverlay]
-	);
+	const onOpenOptionsMenu = e => {
+		setOptionsMenuAnchorEl(e.currentTarget);
+		onShowOverlay();
+	};
 
-	const onCloseOptionsMenu = React.useCallback(() => {
+	const onCloseOptionsMenu = () => {
 		setOptionsMenuAnchorEl(null);
 		onStartOverlayTimeout();
-	}, [onStartOverlayTimeout]);
+	};
 
-	const onFilesSelected = React.useCallback(
-		e => {
-			onCloseOptionsMenu();
-			outerOnFilesSelected(e);
-		},
-		[outerOnFilesSelected, onCloseOptionsMenu]
-	);
+	const onFilesSelected = e => {
+		onCloseOptionsMenu();
+		outerOnFilesSelected(e);
+	};
 
 	const onOpenFileSelector = useFileSelector({ accept: 'video/*', onFilesSelected });
 
