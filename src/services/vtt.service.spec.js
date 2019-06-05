@@ -1,5 +1,5 @@
 import chai from 'chai';
-import { getCuesFromWords } from './vtt.service';
+import { getCuesFromWords, getVTTFromCues } from './vtt.service';
 
 const words = [
 	{ startTime: '0s', endTime: '0.700s', word: 'The' },
@@ -39,7 +39,21 @@ const words = [
 	{ startTime: '11.900s', endTime: '12.500s', word: 'it?' },
 ];
 
-const expectedCues = [
+const VTTFile = `WEBVTT - Some title
+
+00:00.000 --> 00:03.700
+The Volvo group code of conduct is an important tool
+
+00:03.700 --> 00:07.800
+for anyone who works on Volvo's behalf. So, how do
+
+00:07.800 --> 00:10.900
+you use it first read through the whole document
+
+00:10.900 --> 00:12.500
+to make sure you understand it?`;
+
+const cues = [
 	{ startTime: 0, endTime: 3.7, text: 'The Volvo group code of conduct is an important tool' },
 	{ startTime: 3.7, endTime: 7.8, text: "for anyone who works on Volvo's behalf. So, how do" },
 	{ startTime: 7.8, endTime: 10.9, text: 'you use it first read through the whole document' },
@@ -48,10 +62,21 @@ const expectedCues = [
 
 describe('vtt.service', function() {
 	describe('getCuesFromWords', function() {
-		it('should output the correct vtt file string', function(done) {
+		it('should output the correct cues', function() {
 			const result = getCuesFromWords(words);
-			chai.assert.deepEqual(result, expectedCues);
-			done();
+			chai.assert.deepEqual(result, cues);
+		});
+	});
+
+	describe('getVTTFromCues', function() {
+		it('should output the correct vtt file string', function(done) {
+			const vttBlob = getVTTFromCues(cues);
+			const reader = new FileReader();
+			reader.addEventListener('load', () => {
+				chai.assert.equal(reader.result.trim(), VTTFile);
+				done();
+			});
+			reader.readAsText(vttBlob);
 		});
 	});
 });
