@@ -23,7 +23,6 @@ export function VideoControlsProvider({ videoRef, videoContainerRef, children })
 	React.useEffect(() => {
 		const onLoadStart = () => {
 			setCurrentTime(0);
-			onVolumeChange(volume); // TODO: check that this works
 		};
 		const onLoadedMeta = () => setDuration(videoRef.duration);
 		const onTimeUpdate = () => {
@@ -32,7 +31,6 @@ export function VideoControlsProvider({ videoRef, videoContainerRef, children })
 		};
 		const onPlay = () => setPaused(false);
 		const onPaused = () => setPaused(true);
-		const onVolumeChange = () => setVolume(videoRef.volume);
 
 		if (videoRef) {
 			videoRef.addEventListener('loadstart', onLoadStart);
@@ -40,7 +38,6 @@ export function VideoControlsProvider({ videoRef, videoContainerRef, children })
 			videoRef.addEventListener('timeupdate', onTimeUpdate);
 			videoRef.addEventListener('play', onPlay);
 			videoRef.addEventListener('pause', onPaused);
-			videoRef.addEventListener('volumechange', onVolumeChange);
 		}
 
 		return () => {
@@ -50,10 +47,29 @@ export function VideoControlsProvider({ videoRef, videoContainerRef, children })
 				videoRef.removeEventListener('timeupdate', onTimeUpdate);
 				videoRef.removeEventListener('play', onPlay);
 				videoRef.removeEventListener('pause', onPaused);
+			}
+		};
+	}, [videoRef, duration]);
+	
+	// Isolate anything bound to `volume` since it may change kind of a lot (especially un-throttled)
+	React.useEffect(() => {
+		const onLoadStart = () => {
+			onVolumeChange(volume); // TODO: check that this works
+		};
+		const onVolumeChange = () => setVolume(videoRef.volume);
+
+		if (videoRef) {
+			videoRef.addEventListener('loadstart', onLoadStart);
+			videoRef.addEventListener('volumechange', onVolumeChange);
+		}
+
+		return () => {
+			if (videoRef) {
+				videoRef.removeEventListener('loadstart', onLoadStart);
 				videoRef.removeEventListener('volumechange', onVolumeChange);
 			}
 		};
-	}, [videoRef, duration, volume]);
+	}, [videoRef, volume]);
 
 	const onPlayPause = React.useCallback(() => {
 		if (videoRef.paused || videoRef.ended) videoRef.play();
