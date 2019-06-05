@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
@@ -84,7 +83,7 @@ export default function VideoControls(props) {
 						<VolumeInput
 							value={volume}
 							muted={muted}
-							onChange={(e, v) => onVolumeChange(parseFloat(v))}
+							onChange={React.useCallback((e, v) => onVolumeChange(v), [onVolumeChange])}
 							onToggleMute={onToggleMute}
 						/>
 					</div>

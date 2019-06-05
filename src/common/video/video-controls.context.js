@@ -50,7 +50,7 @@ export function VideoControlsProvider({ videoRef, videoContainerRef, children })
 			}
 		};
 	}, [videoRef, duration]);
-	
+
 	// Isolate anything bound to `volume` since it may change kind of a lot (especially un-throttled)
 	React.useEffect(() => {
 		const onLoadStart = () => {

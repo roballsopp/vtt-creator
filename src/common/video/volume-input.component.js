@@ -1,4 +1,5 @@
 import * as React from 'react';
+import throttle from 'lodash.throttle';
 import * as PropType from 'prop-types';
 import Slider from '@material-ui/lab/Slider';
 import VolumeIcon from '@material-ui/icons/VolumeUp';
@@ -38,9 +39,24 @@ VolumeInput.propTypes = {
 
 export default function VolumeInput({ value, muted, onChange, onToggleMute }) {
 	const classes = useStyles();
+	const [sliderPos, setSliderPos] = React.useState(value);
+	const throttledOnChange = React.useCallback(throttle(onChange, 300), [onChange]);
+
+	React.useEffect(() => () => throttledOnChange.cancel(), [throttledOnChange]);
+	React.useEffect(() => setSliderPos(value), [value]);
+
 	return (
 		<div className={classes.container}>
-			<Slider value={value} onChange={onChange} max={1} classes={useSliderStyles()} />
+			<Slider
+				value={sliderPos}
+				onChange={(e, v) => {
+					const volume = parseFloat(v);
+					setSliderPos(volume);
+					throttledOnChange(e, volume);
+				}}
+				max={1}
+				classes={useSliderStyles()}
+			/>
 			<div className={classes.muteButton}>
 				<IconToggle
 					on={!!value && !muted}
