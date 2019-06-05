@@ -37,11 +37,11 @@ function getCueFromWords(wordsList, cursor) {
 	}
 
 	return [
-		{
-			startTime: parseGoogleTime(wordsList[start].startTime),
-			endTime: parseGoogleTime(wordsList[cursor - 1].endTime),
-			text: joinWords(wordsList, start, cursor),
-		},
+		new VTTCue(
+			parseGoogleTime(wordsList[start].startTime),
+			parseGoogleTime(wordsList[cursor - 1].endTime),
+			joinWords(wordsList, start, cursor)
+		),
 		cursor - start,
 	];
 }

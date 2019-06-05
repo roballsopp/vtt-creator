@@ -1,5 +1,5 @@
 import chai from 'chai';
-import { getCuesFromWords, getVTTFromCues } from './vtt.service';
+import { getCuesFromWords, getVTTFromCues, getCuesFromVTT } from './vtt.service';
 
 const words = [
 	{ startTime: '0s', endTime: '0.700s', word: 'The' },
@@ -54,33 +54,57 @@ you use it first read through the whole document
 to make sure you understand it?`;
 
 const cues = [
-	{ startTime: 0, endTime: 3.7, text: 'The Volvo group code of conduct is an important tool' },
-	{ startTime: 3.7, endTime: 7.8, text: "for anyone who works on Volvo's behalf. So, how do" },
-	{ startTime: 7.8, endTime: 10.9, text: 'you use it first read through the whole document' },
-	{ startTime: 10.9, endTime: 12.5, text: 'to make sure you understand it?' },
+	new VTTCue(0, 3.7, 'The Volvo group code of conduct is an important tool'),
+	new VTTCue(3.7, 7.8, "for anyone who works on Volvo's behalf. So, how do"),
+	new VTTCue(7.8, 10.9, 'you use it first read through the whole document'),
+	new VTTCue(10.9, 12.5, 'to make sure you understand it?'),
 ];
 
 describe('vtt.service', function() {
 	describe('getCuesFromWords', function() {
 		it('should output the correct cues', function() {
 			const result = getCuesFromWords(words);
-			chai.assert.deepEqual(result, cues);
+			cues.map((expectedCue, i) => {
+				const actualCue = result[i];
+				chai.assert.equal(actualCue.startTime, expectedCue.startTime, `startTimes for cue ${i} are not equal`);
+				chai.assert.equal(actualCue.endTime, expectedCue.endTime, `endTimes for cue ${i} are not equal`);
+				chai.assert.equal(actualCue.text, expectedCue.text, `text for cue ${i} is not equal`);
+			});
 		});
 	});
 
 	describe('getVTTFromCues', function() {
-		it('should output the correct vtt file string', function(done) {
+		it('should output the correct vtt file string', async () => {
 			const vttBlob = getVTTFromCues(cues);
-			const reader = new FileReader();
-			reader.addEventListener('load', () => {
-				try {
-					chai.assert.strictEqual(reader.result.trim(), VTTFile);
-					done();
-				} catch (e) {
-					done(e);
-				}
+			const result = await readTextFile(vttBlob);
+			chai.assert.strictEqual(result.trim(), VTTFile);
+		});
+	});
+
+	describe('getCuesFromVTT', function() {
+		it('should output the correct cues', async () => {
+			const vttBlob = new Blob([VTTFile], { type: 'text/vtt' });
+			const result = await getCuesFromVTT(vttBlob);
+			cues.map((expectedCue, i) => {
+				const actualCue = result[i];
+				chai.assert.equal(actualCue.startTime, expectedCue.startTime, `startTimes for cue ${i} are not equal`);
+				chai.assert.equal(actualCue.endTime, expectedCue.endTime, `endTimes for cue ${i} are not equal`);
+				chai.assert.equal(actualCue.text, expectedCue.text, `text for cue ${i} is not equal`);
 			});
-			reader.readAsText(vttBlob);
 		});
 	});
 });
+
+function readTextFile(file) {
+	return new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.addEventListener('error', () => {
+			reader.abort();
+			reject(new Error('An error occurred while reading the file.'));
+		});
+		reader.addEventListener('load', () => {
+			resolve(reader.result);
+		});
+		reader.readAsText(file);
+	});
+}
