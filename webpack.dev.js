@@ -1,23 +1,14 @@
 const path = require('path');
 const { DefinePlugin } = require('webpack');
-require('dotenv').config();
-
-const getEnvVar = (name, { optional } = { optional: false }) => {
-	const envVar = process.env[name];
-	if (!optional && !envVar) {
-		throw new Error(`Missing env var ${name} . Did you forget to add it to a .env file?`);
-	}
-
-	return JSON.stringify(envVar);
-};
+const envConfig = require('./env-config');
 
 module.exports = {
 	entry: {
 		main: './src/index.js',
-		test: './test/webpack-test-entry.js',
 	},
 	mode: 'development',
 	output: {
+		// [name] will just be replaced with the corresponding key from the entry object above ([name].js becomes main.js)
 		filename: '[name].js',
 		path: path.resolve(__dirname, 'dist'),
 		publicPath: '/dist/',
@@ -31,11 +22,6 @@ module.exports = {
 				test: /\.(js)$/,
 				exclude: /(node_modules)/,
 			},
-			{
-				loader: 'mocha-loader',
-				test: /(spec)\.(js)$/,
-				exclude: /(node_modules)/,
-			},
 		],
 	},
 	plugins: [
@@ -43,9 +29,7 @@ module.exports = {
 		// in the app via global.API_URL, process.env.API_URL, or any way other than plain 'ol API_URL.
 		// If you define something here like 'process.env.API_URL', it will only work if you access it in app
 		// by explicitly writing out 'process.env.API_URL'. It won't work if you do const { API_URL } = process.env;
-		new DefinePlugin({
-			API_URL: getEnvVar('API_URL'),
-		}),
+		new DefinePlugin(envConfig),
 	],
 	devServer: {
 		contentBase: path.join(__dirname, 'public/'),
