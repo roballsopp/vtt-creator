@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/styles';
-import useFileSelector from '../use-file-selector.hook';
+import useFileSelector from '../common/use-file-selector.hook';
 import { OverlayProvider } from './overlay.context';
 import { VideoControlsProvider } from './video-controls.context';
 import VideoOptionsMenu from './video-options-menu.component';
@@ -36,19 +36,19 @@ const useStyles = makeStyles({
 	},
 });
 
-Video.propTypes = {
+Player.propTypes = {
 	width: PropTypes.number,
 	height: PropTypes.number,
 	captionSrc: PropTypes.string,
 	onFileSelected: PropTypes.func.isRequired,
 };
 
-Video.defaultProps = {
+Player.defaultProps = {
 	width: 400,
 	height: 300,
 };
 
-export default function Video(props) {
+export default function Player(props) {
 	const { captionSrc, onFileSelected } = props;
 	const [src, setSrc] = React.useState();
 	const classes = useStyles(props);

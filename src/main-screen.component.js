@@ -14,7 +14,8 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import VoiceChatIcon from '@material-ui/icons/VoiceChat';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
-import { Video, useFileSelector, useToast } from './common';
+import { useFileSelector, useToast } from './common';
+import Player from './player';
 import VTTEditor from './vtt-editor';
 import { getVTTFromCues, getCuesFromWords, getCuesFromVTT } from './services/vtt.service';
 import CueExtractionDialog from './cue-extraction/cue-extraction-dialog.component';
@@ -32,6 +33,7 @@ const useStyles = makeStyles({
 	},
 	main: {
 		padding: 8,
+		flex: 1,
 	},
 	menuIcon: {
 		marginRight: 16,
@@ -142,7 +144,7 @@ export default function MainScreen() {
 				<VTTEditor cues={cues} onChange={onCuesChange} loading={loadingCues} />
 			</Paper>
 			<div className={classes.main}>
-				<Video onFileSelected={onVideoFileSelected} captionSrc={captionSrc} />
+				<Player cues={cues} onFileSelected={onVideoFileSelected} captionSrc={captionSrc} />
 			</div>
 			<CueExtractionDialog
 				open={cueExtractionDialogOpen}
