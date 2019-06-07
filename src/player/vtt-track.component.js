@@ -21,9 +21,11 @@ export default function VttTrack({ srcLang, label }) {
 	React.useEffect(() => {
 		const vttBlob = getVTTFromCues(cues);
 		const vttBlobUrl = URL.createObjectURL(vttBlob);
-		setCaptionSrc(vttBlobUrl);
-		if (captionSrc) URL.revokeObjectURL(captionSrc);
-	}, [captionSrc, cues]);
+		setCaptionSrc(oldUrl => {
+			if (oldUrl) URL.revokeObjectURL(oldUrl);
+			return vttBlobUrl;
+		});
+	}, [cues]);
 
 	return <track src={captionSrc} default kind="subtitles" srcLang={srcLang} label={label} />;
 }
