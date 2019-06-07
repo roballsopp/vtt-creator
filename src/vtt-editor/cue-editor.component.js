@@ -32,13 +32,17 @@ export default function CueEditor({ cue, onChange, onDelete }) {
 	const [text, setText] = React.useState(cue.text);
 
 	const debouncedOnChangeText = React.useCallback(
-		debounce(text => onChange(new VTTCue(cue.startTime, cue.endTime, text)), 400),
-		[cue, onChange]
+		debounce(text => {
+			onChange(new VTTCue(cue.startTime, cue.endTime, text));
+		}, 400),
+		[cue.startTime, cue.endTime, onChange]
 	);
 
 	React.useEffect(() => {
 		setText(cue.text);
-		return debouncedOnChangeText.flush;
+		return () => {
+			debouncedOnChangeText.flush();
+		};
 	}, [debouncedOnChangeText, cue.text]);
 
 	const onChangeText = e => {

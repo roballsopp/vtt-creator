@@ -83,24 +83,27 @@ export function ToastProvider(props) {
 	const [show, setShow] = React.useState(false);
 	const [snackBarConfig, setSnackBarConfig] = React.useState({ variant: 'success' });
 
-	const openSuccessToast = (message, options = {}) => {
+	const openSuccessToast = React.useCallback((message, options = {}) => {
 		setOptions(options);
 		setSnackBarConfig({ message, variant: 'success' });
 		setShow(true);
-	};
+	}, []);
 
-	const openErrorToast = (message, options = {}) => {
+	const openErrorToast = React.useCallback((message, options = {}) => {
 		setOptions(options);
 		setSnackBarConfig({ message, variant: 'error' });
 		setShow(true);
-	};
+	}, []);
 
 	return (
 		<ToastContext.Provider
-			value={{
-				error: openErrorToast,
-				success: openSuccessToast,
-			}}>
+			value={React.useMemo(
+				() => ({
+					error: openErrorToast,
+					success: openSuccessToast,
+				}),
+				[openErrorToast, openSuccessToast]
+			)}>
 			{props.children}
 			<Snackbar
 				anchorOrigin={{

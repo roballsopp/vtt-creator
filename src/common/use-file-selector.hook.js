@@ -65,7 +65,7 @@ export default function useFileSelector(inputOptions = {}) {
 		};
 	}, [fileSelector, onFileSizeExceeded, onFilesSelected, sizeLimitMb]);
 
-	return function open() {
+	return React.useCallback(() => {
 		fileSelector.click();
-	};
+	}, [fileSelector]);
 }
