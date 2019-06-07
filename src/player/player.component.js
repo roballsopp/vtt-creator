@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/styles';
-import { useFileSelector } from '../common';
+import { useFileSelector, useVideoFile } from '../common';
 import { OverlayProvider } from './overlay.context';
 import { VideoControlsProvider } from './video-controls.context';
 import VideoOptionsMenu from './video-options-menu.component';
@@ -40,7 +40,6 @@ const useStyles = makeStyles({
 Player.propTypes = {
 	width: PropTypes.number,
 	height: PropTypes.number,
-	onFileSelected: PropTypes.func.isRequired,
 };
 
 Player.defaultProps = {
@@ -49,21 +48,21 @@ Player.defaultProps = {
 };
 
 export default function Player(props) {
-	const { onFileSelected } = props;
 	const [src, setSrc] = React.useState();
 	const classes = useStyles(props);
 	const [videoRef, setVideoRef] = React.useState();
 	const [videoContainerRef, setVideoContainerRef] = React.useState();
+	const { onVideoFile } = useVideoFile();
 
 	const onFilesSelected = React.useCallback(
 		e => {
 			const [file] = e.target.files;
+			onVideoFile(file);
 			if (src) URL.revokeObjectURL(src);
 			const localUrl = URL.createObjectURL(file);
 			setSrc(localUrl);
-			onFileSelected(file);
 		},
-		[src, onFileSelected]
+		[src, onVideoFile]
 	);
 
 	const openFileSelector = useFileSelector({ accept: 'video/*', onFilesSelected });

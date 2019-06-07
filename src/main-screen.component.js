@@ -4,7 +4,7 @@ import Paper from '@material-ui/core/Paper';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
-import { CuesProvider } from './common';
+import { CuesProvider, VideoFileProvider } from './common';
 import VttMenu from './vtt-menu.component';
 import Player from './player';
 import VTTEditor from './vtt-editor';
@@ -31,30 +31,27 @@ const useStyles = makeStyles({
 
 export default function MainScreen() {
 	const classes = useStyles();
-	const [videoFile, setVideoFile] = React.useState();
-
-	const onVideoFileSelected = async file => {
-		setVideoFile(file);
-	};
 
 	return (
-		<CuesProvider>
-			<div className={classes.root}>
-				<Paper square className={classes.drawer}>
-					<AppBar position="static" color="primary">
-						<Toolbar>
-							<Typography variant="h6" color="inherit" style={{ flexGrow: 1 }}>
-								Caption List
-							</Typography>
-							<VttMenu videoFile={videoFile} />
-						</Toolbar>
-					</AppBar>
-					<VTTEditor />
-				</Paper>
-				<div className={classes.main}>
-					<Player onFileSelected={onVideoFileSelected} />
+		<VideoFileProvider>
+			<CuesProvider>
+				<div className={classes.root}>
+					<Paper square className={classes.drawer}>
+						<AppBar position="static" color="primary">
+							<Toolbar>
+								<Typography variant="h6" color="inherit" style={{ flexGrow: 1 }}>
+									Caption List
+								</Typography>
+								<VttMenu />
+							</Toolbar>
+						</AppBar>
+						<VTTEditor />
+					</Paper>
+					<div className={classes.main}>
+						<Player />
+					</div>
 				</div>
-			</div>
-		</CuesProvider>
+			</CuesProvider>
+		</VideoFileProvider>
 	);
 }
