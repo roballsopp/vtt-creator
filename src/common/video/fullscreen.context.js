@@ -1,6 +1,16 @@
 import * as React from 'react';
+import * as PropTypes from 'prop-types';
+import { useVideoDom } from './video-dom.context';
 
-export default function useFullscreen(fullscreenContainer) {
+const FullscreenContext = React.createContext({});
+
+FullscreenProvider.propTypes = {
+	children: PropTypes.node.isRequired,
+};
+
+export function FullscreenProvider({ children }) {
+	const { videoContainerRef } = useVideoDom();
+
 	const [fullscreen, setFullscreen] = React.useState(false);
 
 	React.useEffect(() => {
@@ -22,23 +32,34 @@ export default function useFullscreen(fullscreenContainer) {
 		};
 	}, []);
 
-	return [
-		fullscreen,
-		React.useCallback(() => {
-			if (isFullScreen()) {
-				if (document.exitFullscreen) document.exitFullscreen();
-				else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
-				else if (document.webkitCancelFullScreen) document.webkitCancelFullScreen();
-				else if (document.msExitFullscreen) document.msExitFullscreen();
-			} else {
-				if (!fullscreenContainer) return;
-				if (fullscreenContainer.requestFullscreen) fullscreenContainer.requestFullscreen();
-				else if (fullscreenContainer.mozRequestFullScreen) fullscreenContainer.mozRequestFullScreen();
-				else if (fullscreenContainer.webkitRequestFullScreen) fullscreenContainer.webkitRequestFullScreen();
-				else if (fullscreenContainer.msRequestFullscreen) fullscreenContainer.msRequestFullscreen();
-			}
-		}, [fullscreenContainer]),
-	];
+	const onToggleFullscreen = React.useCallback(() => {
+		if (isFullScreen()) {
+			if (document.exitFullscreen) document.exitFullscreen();
+			else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+			else if (document.webkitCancelFullScreen) document.webkitCancelFullScreen();
+			else if (document.msExitFullscreen) document.msExitFullscreen();
+		} else {
+			if (!videoContainerRef) return;
+			if (videoContainerRef.requestFullscreen) videoContainerRef.requestFullscreen();
+			else if (videoContainerRef.mozRequestFullScreen) videoContainerRef.mozRequestFullScreen();
+			else if (videoContainerRef.webkitRequestFullScreen) videoContainerRef.webkitRequestFullScreen();
+			else if (videoContainerRef.msRequestFullscreen) videoContainerRef.msRequestFullscreen();
+		}
+	}, [videoContainerRef]);
+
+	return (
+		<FullscreenContext.Provider
+			value={{
+				fullscreen,
+				onToggleFullscreen,
+			}}>
+			{children}
+		</FullscreenContext.Provider>
+	);
+}
+
+export function useFullscreen() {
+	return React.useContext(FullscreenContext);
 }
 
 function isFullScreen() {

@@ -4,7 +4,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import { useOverlay } from './overlay.context';
+import { useOverlay } from '../common/video';
 import useFileSelector from '../common/use-file-selector.hook';
 
 VideoOptionsMenu.propTypes = {

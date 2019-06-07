@@ -1,8 +1,9 @@
 import * as React from 'react';
 import throttle from 'lodash.throttle';
-import * as PropType from 'prop-types';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { makeStyles } from '@material-ui/styles';
+import { usePlayProgress } from './play-progress.context';
+import { useDuration } from './duration.context';
 
 const PLAYHEAD_RADIUS = 6;
 
@@ -33,12 +34,10 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
-PlayProgress.propTypes = {
-	value: PropType.number,
-	onSeek: PropType.func.isRequired,
-};
-
-export default function PlayProgress({ value, onSeek }) {
+export default function PlayProgress() {
+	const { currentTime, onSeek } = usePlayProgress();
+	const { duration } = useDuration();
+	const progress = duration && currentTime ? currentTime / duration : 0;
 	const progressElRef = React.useRef();
 	const [dragging, setDragging] = React.useState(false);
 	const [playpos, setPlaypos] = React.useState(0);
@@ -67,8 +66,8 @@ export default function PlayProgress({ value, onSeek }) {
 	}, []);
 
 	React.useEffect(() => {
-		if (!dragging) setPlaypos(value);
-	}, [dragging, value]);
+		if (!dragging) setPlaypos(progress);
+	}, [dragging, progress]);
 
 	React.useEffect(() => {
 		const onMouseUp = () => {

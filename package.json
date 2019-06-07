@@ -18,6 +18,7 @@
     "@material-ui/lab": "^4.0.0-alpha.14",
     "@material-ui/styles": "^4.0.1",
     "audiobuffer-to-wav": "^1.0.0",
+    "clsx": "^1.0.4",
     "downloadjs": "^1.4.7",
     "lodash.debounce": "^4.0.8",
     "lodash.sortby": "^4.7.0",

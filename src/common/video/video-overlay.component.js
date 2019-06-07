@@ -2,7 +2,8 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import VideoControls from './video-controls.component';
-import { useVideoEvents } from './video-controls.context';
+import { usePlay } from './play.context';
+import { useVideoDom } from './video-dom.context';
 import { useOverlay } from './overlay.context';
 
 const useStyles = makeStyles({
@@ -24,13 +25,13 @@ const useStyles = makeStyles({
 VideoOverlay.propTypes = {
 	className: PropTypes.string,
 	topElement: PropTypes.node,
-	videoContainerRef: PropTypes.instanceOf(HTMLElement),
 };
 
-export default function VideoOverlay({ className, topElement, videoContainerRef }) {
+export default function VideoOverlay({ className, topElement }) {
 	const { showOverlay, onStartOverlayTimeout } = useOverlay();
+	const { onPlayPause } = usePlay();
+	const { videoContainerRef } = useVideoDom();
 	const classes = useStyles();
-	const { onPlayPause } = useVideoEvents();
 
 	React.useEffect(() => {
 		if (videoContainerRef) {
