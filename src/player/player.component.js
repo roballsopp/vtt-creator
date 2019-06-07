@@ -2,11 +2,12 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/styles';
-import useFileSelector from '../common/use-file-selector.hook';
+import { useFileSelector } from '../common';
 import { OverlayProvider } from './overlay.context';
 import { VideoControlsProvider } from './video-controls.context';
 import VideoOptionsMenu from './video-options-menu.component';
 import VideoOverlay from './video-overlay.component';
+import VttTrack from './vtt-track.component';
 
 const useStyles = makeStyles({
 	videoRoot: {
@@ -39,7 +40,6 @@ const useStyles = makeStyles({
 Player.propTypes = {
 	width: PropTypes.number,
 	height: PropTypes.number,
-	captionSrc: PropTypes.string,
 	onFileSelected: PropTypes.func.isRequired,
 };
 
@@ -49,7 +49,7 @@ Player.defaultProps = {
 };
 
 export default function Player(props) {
-	const { captionSrc, onFileSelected } = props;
+	const { onFileSelected } = props;
 	const [src, setSrc] = React.useState();
 	const classes = useStyles(props);
 	const [videoRef, setVideoRef] = React.useState();
@@ -85,7 +85,7 @@ export default function Player(props) {
 					{/* key is necessary here to tell react to reload the video if src is different: https://stackoverflow.com/a/47382850/2382483 */}
 					<video key={src} ref={setVideoRef} className={classes.video}>
 						<source src={src} />
-						<track src={captionSrc} default kind="subtitles" srcLang="en" label="English" />
+						<VttTrack />
 					</video>
 					<VideoOverlay
 						className={classes.overlay}

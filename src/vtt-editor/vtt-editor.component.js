@@ -4,8 +4,7 @@ import Divider from '@material-ui/core/Divider';
 import FabButton from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import { makeStyles } from '@material-ui/styles';
-import { List, Loader } from '../common';
-import { CuePropType } from '../services/vtt.service';
+import { List, Loader, useCues } from '../common';
 import CueEditor from './cue-editor.component';
 
 const useStyles = makeStyles({
@@ -32,35 +31,11 @@ const useStyles = makeStyles({
 	},
 });
 
-VTTEditor.propTypes = {
-	cues: PropTypes.arrayOf(CuePropType).isRequired,
-	// onChange takes two args, new cue, and a boolean to indicate whether startTime was changed
-	onChange: PropTypes.func.isRequired,
-	loading: PropTypes.bool,
-};
+VTTEditor.propTypes = {};
 
-export default function VTTEditor({ cues, onChange, loading }) {
+export default function VTTEditor() {
 	const classes = useStyles();
-
-	const onChangeCue = i => (cue, reorder) => {
-		const newCues = cues.slice();
-		newCues[i] = cue;
-		onChange(newCues, reorder);
-	};
-
-	const onAddCue = () => {
-		if (cues.length) {
-			const lastCue = cues[cues.length - 1];
-			return onChange(cues.concat(new VTTCue(lastCue.endTime, lastCue.endTime + 2, '')));
-		}
-		return onChange([new VTTCue(0, 2, '')]);
-	};
-
-	const onRemoveCue = i => () => {
-		const newCues = cues.slice();
-		newCues.splice(i, 1);
-		return onChange(newCues);
-	};
+	const { cues, loading, onChangeCue, onAddCue, onRemoveCue } = useCues();
 
 	return (
 		<div className={classes.fabContainer}>
@@ -71,7 +46,7 @@ export default function VTTEditor({ cues, onChange, loading }) {
 						renderItem={(cue, i, isLast) => (
 							<React.Fragment>
 								<div className={classes.cueEditor}>
-									<CueEditor cue={cue} cueNumber={i + 1} onChange={onChangeCue(i)} onDelete={onRemoveCue(i)} />
+									<CueEditor cue={cue} onChange={(c, r) => onChangeCue(c, i, r)} onDelete={() => onRemoveCue(i)} />
 								</div>
 								{!isLast && <Divider />}
 							</React.Fragment>
