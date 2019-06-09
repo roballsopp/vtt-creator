@@ -27,7 +27,8 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-text-mask": "^5.4.3",
-    "vtt.js": "^0.13.0"
+    "vtt.js": "^0.13.0",
+    "wavesurfer.js": "^2.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",
