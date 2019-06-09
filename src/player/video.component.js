@@ -8,12 +8,11 @@ import VttTrack from './vtt-track.component';
 
 const useStyles = makeStyles({
 	video: {
-		width: 400,
-		height: 300,
+		height: '100%',
 	},
 	loaderRoot: {
-		width: 400,
-		height: 300,
+		width: '100%',
+		height: '100%',
 		display: 'flex',
 		justifyContent: 'center',
 		alignItems: 'center',
