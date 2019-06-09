@@ -13,10 +13,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@material-ui/core": "^4.0.1",
+    "@material-ui/core": "^4.0.2",
     "@material-ui/icons": "^4.0.1",
-    "@material-ui/lab": "^4.0.0-alpha.14",
-    "@material-ui/styles": "^4.0.1",
+    "@material-ui/lab": "^4.0.0-alpha.15",
+    "@material-ui/styles": "^4.0.2",
     "audiobuffer-to-wav": "^1.0.0",
     "clsx": "^1.0.4",
     "downloadjs": "^1.4.7",
