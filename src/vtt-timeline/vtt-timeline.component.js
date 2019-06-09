@@ -1,11 +1,14 @@
 import * as React from 'react';
 import { makeStyles } from '@material-ui/styles';
 import AudioTrack from './audio-track.component';
+import ZoomContainer from './zoom-container.component';
 
 const useStyles = makeStyles({
 	root: {
 		position: 'relative',
 		height: '100%',
+		width: '100%',
+		backgroundColor: 'gray',
 	},
 	cueTrack: {
 		position: 'absolute',
@@ -22,8 +25,10 @@ export default function VttTimeline() {
 	const classes = useStyles();
 
 	return (
-		<div className={classes.root}>
-			<AudioTrack />
-		</div>
+		<ZoomContainer>
+			<div className={classes.root}>
+				<AudioTrack />
+			</div>
+		</ZoomContainer>
 	);
 }
