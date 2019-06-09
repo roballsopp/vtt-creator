@@ -11,6 +11,15 @@ const useStyles = makeStyles({
 		width: 20,
 		top: 0,
 		bottom: 0,
+		'&:hover div': {
+			backgroundColor: 'orange',
+		},
+	},
+	borderLine: {
+		height: '100%',
+		width: 4,
+		margin: 'auto',
+		backgroundColor: 'white',
 	},
 });
 
@@ -28,5 +37,9 @@ export default function CueHandleBorder({ onDragStart, onDragEnd, onDragging, cl
 
 	useDragging(handleRef, { onDragging, onDragStart, onDragEnd });
 
-	return <div ref={setHandleRef} className={clsx(classes.root, className)} />;
+	return (
+		<div ref={setHandleRef} className={clsx(classes.root, className)}>
+			<div className={classes.borderLine} />
+		</div>
+	);
 }

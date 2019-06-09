@@ -8,15 +8,16 @@ import { useZoom } from './zoom-container.component';
 
 const useStyles = makeStyles({
 	cue: {
-		backgroundColor: 'rgba(1, 1, 1, 0.2)',
-		border: '1px solid white',
-		borderRadius: 5,
+		backgroundColor: 'rgba(0, 0, 0, 0.3)',
 		position: 'absolute',
 		top: 0,
 		bottom: 0,
 	},
 	borderHandleContainer: {
 		position: 'relative',
+		height: '100%',
+	},
+	content: {
 		height: '100%',
 	},
 	leftBorder: {
@@ -31,9 +32,10 @@ CueHandle.propTypes = {
 	cue: CuePropType.isRequired,
 	cueIndex: PropTypes.number,
 	onChange: PropTypes.func.isRequired,
+	children: PropTypes.node,
 };
 
-export default function CueHandle({ cue, cueIndex, onChange }) {
+export default function CueHandle({ cue, cueIndex, onChange, children }) {
 	const [left, setLeft] = React.useState(0);
 	const [right, setRight] = React.useState(0);
 	const { duration } = useDuration();
@@ -89,6 +91,7 @@ export default function CueHandle({ cue, cueIndex, onChange }) {
 			<div className={classes.borderHandleContainer}>
 				<CueHandleBorder className={classes.leftBorder} onDragging={onDraggingLeft} onDragEnd={onDragEndLeft} />
 				<CueHandleBorder className={classes.rightBorder} onDragging={onDraggingRight} onDragEnd={onDragEndRight} />
+				<div className={classes.content}>{children}</div>
 			</div>
 		</div>
 	);
