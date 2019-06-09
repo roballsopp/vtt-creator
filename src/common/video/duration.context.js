@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import { useVideoDom } from './video-dom.context';
 
-const DurationContext = React.createContext({ duration: 0 });
+const DurationContext = React.createContext({});
 
 DurationProvider.propTypes = {
 	children: PropTypes.node.isRequired,
