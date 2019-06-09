@@ -79,18 +79,14 @@ export default function MainScreen() {
 			}
 			onLoadingCues(false);
 		},
-		[onChangeCues, toast]
+		[onChangeCues, onLoadingCues, toast]
 	);
 
 	const openFileSelector = useFileSelector({ accept: 'text/vtt', onFilesSelected: onVTTFileSelected });
 
 	return (
 		<React.Fragment>
-			<IconButton
-				edge="end"
-				color="inherit"
-				aria-label="Menu"
-				onClick={e => setOptionsMenuAnchorEl(e.currentTarget)}>
+			<IconButton edge="end" color="inherit" aria-label="Menu" onClick={e => setOptionsMenuAnchorEl(e.currentTarget)}>
 				<MoreIcon />
 			</IconButton>
 			<Menu anchorEl={optionsMenuAnchorEl} open={!!optionsMenuAnchorEl} onClose={onCloseOptionsMenu}>

@@ -1,10 +1,10 @@
 const path = require('path');
-const { DefinePlugin } = require('webpack');
+const { DefinePlugin, ProvidePlugin } = require('webpack');
 const envConfig = require('./env-config');
 
 module.exports = {
 	entry: {
-		main: './src/index.js',
+		main: ['@babel/polyfill', './src/index.js'],
 	},
 	mode: 'development',
 	output: {
@@ -30,6 +30,9 @@ module.exports = {
 		// If you define something here like 'process.env.API_URL', it will only work if you access it in app
 		// by explicitly writing out 'process.env.API_URL'. It won't work if you do const { API_URL } = process.env;
 		new DefinePlugin(envConfig),
+		new ProvidePlugin({
+			VTTCue: ['vtt.js', 'VTTCue'],
+		}),
 	],
 	devServer: {
 		contentBase: path.join(__dirname, 'public/'),
