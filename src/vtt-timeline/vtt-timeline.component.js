@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { makeStyles } from '@material-ui/styles';
+import CueTrack from './cue-track.component';
 import AudioTrack from './audio-track.component';
 import ZoomContainer from './zoom-container.component';
 
@@ -28,6 +29,9 @@ export default function VttTimeline() {
 		<ZoomContainer>
 			<div className={classes.root}>
 				<AudioTrack />
+				<div className={classes.cueTrack}>
+					<CueTrack />
+				</div>
 			</div>
 		</ZoomContainer>
 	);

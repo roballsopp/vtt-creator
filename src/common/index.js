@@ -5,6 +5,7 @@ import { ToastProvider, useToast } from './toast-context';
 import { CuesProvider, useCues } from './cue-context';
 import { VideoFileProvider, useVideoFile } from './video-file-context';
 import useFileSelector from './use-file-selector.hook';
+import useDragging from './use-dragging.hook';
 
 export {
 	FixedAspectRatio,
@@ -17,4 +18,5 @@ export {
 	VideoFileProvider,
 	useVideoFile,
 	useFileSelector,
+	useDragging,
 };
