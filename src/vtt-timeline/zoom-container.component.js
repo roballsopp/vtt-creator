@@ -36,7 +36,6 @@ export default function ZoomContainer({ children }) {
 	const width = Number.isFinite(duration) ? Math.round(zoom * duration) : '100%';
 
 	const [zoomContainerRef, setZoomContainerRef] = React.useState();
-	// TODO: update this on screen resize and zoom
 	const [zoomContainerRect, setZoomContainerRect] = React.useState({});
 
 	React.useLayoutEffect(() => {
@@ -45,10 +44,15 @@ export default function ZoomContainer({ children }) {
 		}
 	}, [zoomContainerRef, width]);
 
-	// TODO: beware of adding more renders here. Extract ZoomProvider if you do
+	// make sure we recalculate the rect after scrolling
+	const onMouseUp = () => {
+		setZoomContainerRect(zoomContainerRef.getBoundingClientRect());
+	};
+
+	// beware of adding renders that don't have to do with the recalculation of zoom or zoomContainerRect.
 	return (
 		<div className={classes.root}>
-			<div className={classes.scrollContainer}>
+			<div className={classes.scrollContainer} onMouseUp={onMouseUp}>
 				<div ref={setZoomContainerRef} className={classes.content} style={{ width }}>
 					<ZoomContext.Provider value={{ zoom, zoomContainerRect }}>{children}</ZoomContext.Provider>
 				</div>
