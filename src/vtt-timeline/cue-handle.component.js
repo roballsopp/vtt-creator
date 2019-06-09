@@ -8,7 +8,6 @@ import { useZoom } from './zoom-container.component';
 
 const useStyles = makeStyles({
 	cue: {
-		backgroundColor: 'rgba(0, 0, 0, 0.3)',
 		position: 'absolute',
 		top: 0,
 		bottom: 0,
@@ -89,9 +88,9 @@ export default function CueHandle({ cue, cueIndex, onChange, children }) {
 	return (
 		<div className={classes.cue} style={{ left, right }}>
 			<div className={classes.borderHandleContainer}>
+				<div className={classes.content}>{children}</div>
 				<CueHandleBorder className={classes.leftBorder} onDragging={onDraggingLeft} onDragEnd={onDragEndLeft} />
 				<CueHandleBorder className={classes.rightBorder} onDragging={onDraggingRight} onDragEnd={onDragEndRight} />
-				<div className={classes.content}>{children}</div>
 			</div>
 		</div>
 	);

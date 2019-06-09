@@ -4,12 +4,12 @@ import CueTrack from './cue-track.component';
 import AudioTrack from './audio-track.component';
 import ZoomContainer from './zoom-container.component';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
 	root: {
 		position: 'relative',
 		height: '100%',
 		width: '100%',
-		backgroundColor: 'gray',
+		backgroundColor: theme.palette.grey['700'],
 	},
 	cueTrack: {
 		position: 'absolute',
@@ -18,7 +18,7 @@ const useStyles = makeStyles({
 		left: 0,
 		right: 0,
 	},
-});
+}));
 
 VttTimeline.propTypes = {};
 

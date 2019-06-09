@@ -12,11 +12,12 @@ const useStyles = makeStyles({
 		color: 'white',
 	},
 	cueContent: {
+		backgroundColor: 'rgba(0, 0, 0, 0.4)',
 		display: 'flex',
 		justifyContent: 'center',
 		alignItems: 'center',
 		height: '100%',
-		padding: 20,
+		padding: 30,
 		userSelect: 'none',
 	},
 });
