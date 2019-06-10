@@ -37,7 +37,7 @@ export default function CueTrack() {
 				<CueHandle cue={cue} cueIndex={i} onChange={onChangeCue}>
 					<div className={classes.cueContent}>
 						<Typography color="inherit" variant="h5" noWrap>
-							&quot;{cue.text}&quot;
+							{cue.text}
 						</Typography>
 					</div>
 				</CueHandle>
