@@ -49,12 +49,14 @@ export default function ZoomContainer({ children }) {
 		setZoomContainerRect(zoomContainerRef.getBoundingClientRect());
 	};
 
+	const zoomContext = React.useMemo(() => ({ zoom, zoomContainerRect }), [zoom, zoomContainerRect]);
+
 	// beware of adding renders that don't have to do with the recalculation of zoom or zoomContainerRect.
 	return (
 		<div className={classes.root}>
 			<div className={classes.scrollContainer} onMouseUp={onMouseUp}>
 				<div ref={setZoomContainerRef} className={classes.content} style={{ width }}>
-					<ZoomContext.Provider value={{ zoom, zoomContainerRect }}>{children}</ZoomContext.Provider>
+					<ZoomContext.Provider value={zoomContext}>{children}</ZoomContext.Provider>
 				</div>
 			</div>
 		</div>

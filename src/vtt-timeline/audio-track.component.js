@@ -26,6 +26,7 @@ export default function AudioTrack() {
 					container: waveformRef,
 					waveColor: 'violet',
 					progressColor: 'purple',
+					interact: false,
 				})
 			);
 		}

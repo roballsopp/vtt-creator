@@ -82,7 +82,7 @@ export default function MainScreen() {
 		[onChangeCues, onLoadingCues, toast]
 	);
 
-	const openFileSelector = useFileSelector({ accept: 'text/vtt', onFilesSelected: onVTTFileSelected });
+	const openFileSelector = useFileSelector({ accept: '.vtt', onFilesSelected: onVTTFileSelected });
 
 	return (
 		<React.Fragment>
