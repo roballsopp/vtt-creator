@@ -3,7 +3,7 @@ import * as PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { CuePropType } from '../services/vtt.service';
 import CueHandleBorder from './cue-handle-border.component';
-import { useDuration } from '../common/video';
+import { usePlayerDuration } from '../player/player-duration.context';
 import { useZoom } from './zoom-container.component';
 
 const useStyles = makeStyles({
@@ -37,7 +37,7 @@ CueHandle.propTypes = {
 export default function CueHandle({ cue, cueIndex, onChange, children }) {
 	const [left, setLeft] = React.useState(0);
 	const [right, setRight] = React.useState(0);
-	const { duration } = useDuration();
+	const { duration } = usePlayerDuration();
 	const { zoomContainerRect } = useZoom();
 	const classes = useStyles();
 	const containerWidth = zoomContainerRect ? zoomContainerRect.width : 0;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
-import { useDuration } from '../common/video';
+import { usePlayerDuration } from '../player/player-duration.context';
 
 const useStyles = makeStyles({
 	root: {
@@ -31,7 +31,7 @@ ZoomContainer.propTypes = {
 export default function ZoomContainer({ children }) {
 	// in pixels per second
 	const [zoom] = React.useState(200);
-	const { duration } = useDuration();
+	const { duration } = usePlayerDuration();
 	const classes = useStyles();
 	const width = Number.isFinite(duration) ? Math.round(zoom * duration) : '100%';
 

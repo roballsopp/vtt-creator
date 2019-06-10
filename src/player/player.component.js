@@ -12,6 +12,7 @@ import {
 	VideoDomProvider,
 	VolumeProvider,
 } from '../common/video';
+import { PlayerDurationProvider } from './player-duration.context';
 import Video from './video.component';
 
 const useStyles = makeStyles({
@@ -39,26 +40,28 @@ export default function Player() {
 		<VideoDomProvider>
 			<CaptionsProvider>
 				<DurationProvider>
-					<FullscreenProvider>
-						<OverlayProvider>
-							<PlayProvider>
-								<PlayProgressProvider>
-									<VolumeProvider>
-										<div className={classes.root}>
-											<div className={classes.video}>
-												<FixedAspectRatio ratio="16:9">
-													<Video />
-												</FixedAspectRatio>
+					<PlayerDurationProvider>
+						<FullscreenProvider>
+							<OverlayProvider>
+								<PlayProvider>
+									<PlayProgressProvider>
+										<VolumeProvider>
+											<div className={classes.root}>
+												<div className={classes.video}>
+													<FixedAspectRatio ratio="16:9">
+														<Video />
+													</FixedAspectRatio>
+												</div>
+												<div className={classes.vttTimeline}>
+													<VttTimeline />
+												</div>
 											</div>
-											<div className={classes.vttTimeline}>
-												<VttTimeline />
-											</div>
-										</div>
-									</VolumeProvider>
-								</PlayProgressProvider>
-							</PlayProvider>
-						</OverlayProvider>
-					</FullscreenProvider>
+										</VolumeProvider>
+									</PlayProgressProvider>
+								</PlayProvider>
+							</OverlayProvider>
+						</FullscreenProvider>
+					</PlayerDurationProvider>
 				</DurationProvider>
 			</CaptionsProvider>
 		</VideoDomProvider>
