@@ -13,15 +13,20 @@ const useStyles = makeStyles(theme => ({
 		backgroundColor: theme.palette.grey['700'],
 	},
 	ticks: {
+		zIndex: 3,
 		height: 20,
 		boxShadow: '0 1px 5px rgba(0, 0, 0, 0.3)',
-		zIndex: 10,
 	},
 	trackRoot: {
 		position: 'relative',
 		flex: 1,
 	},
+	audioTrack: {
+		zIndex: 1,
+		height: '100%',
+	},
 	cueTrack: {
+		zIndex: 2,
 		position: 'absolute',
 		top: 0,
 		bottom: 0,
@@ -47,7 +52,9 @@ export default function VttTimeline() {
 					<TimeTicks />
 				</div>
 				<div className={classes.trackRoot}>
-					<AudioTrack />
+					<div className={classes.audioTrack}>
+						<AudioTrack />
+					</div>
 					<div className={classes.cueTrack}>
 						<CueTrack />
 					</div>

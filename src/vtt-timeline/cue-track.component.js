@@ -8,7 +8,6 @@ const useStyles = makeStyles({
 	cueContainer: {
 		position: 'relative',
 		height: '100%',
-		zIndex: 5,
 		color: 'white',
 	},
 	cueContent: {
