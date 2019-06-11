@@ -4,7 +4,15 @@ import muiGreys from '@material-ui/core/colors/grey';
 import { useZoom } from './zoom-container.component';
 import { formatSeconds } from '../services/vtt.service';
 
-export default function TimeTicks() {
+TimeTicks.propTypes = {
+	height: PropTypes.number,
+};
+
+TimeTicks.defaultProps = {
+	height: 20,
+};
+
+export default function TimeTicks({ height }) {
 	// zoom is pixels/second
 	const { zoom, zoomContainerRect } = useZoom();
 
@@ -13,8 +21,9 @@ export default function TimeTicks() {
 
 	const ticks = [];
 
-	for (let i = 0; i < numTicks; i++) {
-		ticks.push(<Tick key={i} x={i * zoom} text={formatSeconds(i)} />);
+	// skip first tick
+	for (let i = 1; i < numTicks; i++) {
+		ticks.push(<Tick key={i} x={i * zoom} height={height} text={formatSeconds(i)} />);
 	}
 
 	return (
@@ -22,8 +31,9 @@ export default function TimeTicks() {
 			version="1.1"
 			baseProfile="full"
 			width={zoomContainerRect.width}
-			height="20"
+			height={height}
 			xmlns="http://www.w3.org/2000/svg">
+			<rect width="100%" height="100%" fill={muiGreys[600]} />
 			{ticks}
 		</svg>
 	);
@@ -42,7 +52,7 @@ Tick.defaultProps = {
 };
 
 function Tick({ x, height, text, fontSize }) {
-	const textY = height / 2 + fontSize / 2;
+	const textY = (height + fontSize) / 2;
 	return (
 		<React.Fragment>
 			<line x1={x} x2={x} y1="0" y2={height} stroke={muiGreys[300]} strokeWidth="2" />

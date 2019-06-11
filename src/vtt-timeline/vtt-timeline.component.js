@@ -7,10 +7,18 @@ import TimeTicks from './time-ticks.component';
 
 const useStyles = makeStyles(theme => ({
 	root: {
-		position: 'relative',
+		display: 'flex',
+		flexDirection: 'column',
 		height: '100%',
-		width: '100%',
 		backgroundColor: theme.palette.grey['700'],
+	},
+	ticks: {
+		height: 20,
+		boxShadow: '0 1px 5px rgba(0, 0, 0, 0.3)',
+	},
+	trackRoot: {
+		position: 'relative',
+		flex: 1,
 	},
 	cueTrack: {
 		position: 'absolute',
@@ -34,12 +42,14 @@ export default function VttTimeline() {
 	return (
 		<ZoomContainer>
 			<div className={classes.root}>
-				<AudioTrack />
-				<div className={classes.cueTrack}>
-					<CueTrack />
-				</div>
-				<div className={classes.timeTicks}>
+				<div className={classes.ticks}>
 					<TimeTicks />
+				</div>
+				<div className={classes.trackRoot}>
+					<AudioTrack />
+					<div className={classes.cueTrack}>
+						<CueTrack />
+					</div>
 				</div>
 			</div>
 		</ZoomContainer>
