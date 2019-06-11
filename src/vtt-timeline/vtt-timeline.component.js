@@ -15,6 +15,7 @@ const useStyles = makeStyles(theme => ({
 	ticks: {
 		height: 20,
 		boxShadow: '0 1px 5px rgba(0, 0, 0, 0.3)',
+		zIndex: 10,
 	},
 	trackRoot: {
 		position: 'relative',
