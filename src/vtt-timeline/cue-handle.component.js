@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { useCue } from '../common';
+import { usePlayerDuration } from '../player/player-duration.context';
 import CueHandleBorder from './cue-handle-border.component';
 import { useZoom } from './zoom-container.component';
 
@@ -35,6 +36,7 @@ function CueHandle({ children }) {
 	const [left, setLeft] = React.useState(0);
 	const [right, setRight] = React.useState(0);
 	const { pixelsPerSec, zoomContainerRect } = useZoom();
+	const { duration } = usePlayerDuration();
 	const classes = useStyles();
 	const containerWidth = zoomContainerRect ? zoomContainerRect.width : 0;
 	const containerLeft = zoomContainerRect ? zoomContainerRect.left : 0;
@@ -53,30 +55,34 @@ function CueHandle({ children }) {
 
 	const onDraggingLeft = React.useCallback(
 		e => {
-			setLeft(e.clientX - containerLeft);
+			const newLeft = e.clientX - containerLeft;
+			setLeft(newLeft < 0 ? 0 : newLeft);
 		},
 		[containerLeft]
 	);
 
 	const onDraggingRight = React.useCallback(
 		e => {
-			setRight(containerWidth - (e.clientX - containerLeft));
+			const newRight = containerWidth - (e.clientX - containerLeft);
+			setRight(newRight < 0 ? 0 : newRight);
 		},
 		[containerLeft, containerWidth]
 	);
 
 	const onDragEndLeft = React.useCallback(
 		e => {
-			onChangeCueStart((e.clientX - containerLeft) / pixelsPerSec);
+			const seconds = (e.clientX - containerLeft) / pixelsPerSec;
+			onChangeCueStart(seconds < 0 ? 0 : seconds);
 		},
 		[containerLeft, pixelsPerSec, onChangeCueStart]
 	);
 
 	const onDragEndRight = React.useCallback(
 		e => {
-			onChangeCueEnd((e.clientX - containerLeft) / pixelsPerSec);
+			const seconds = (e.clientX - containerLeft) / pixelsPerSec;
+			onChangeCueEnd(seconds > duration ? duration : seconds);
 		},
-		[containerLeft, pixelsPerSec, onChangeCueEnd]
+		[containerLeft, pixelsPerSec, onChangeCueEnd, duration]
 	);
 
 	return (
