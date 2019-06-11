@@ -2,7 +2,7 @@ import * as React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
 import { List, useCues, CueProvider } from '../common';
-import CueHandle from './cue-handle.component';
+import CueHandle from './cue-handle';
 
 const useStyles = makeStyles({
 	cueContainer: {
