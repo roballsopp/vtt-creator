@@ -19,6 +19,7 @@ const useStyles = makeStyles({
 	},
 	content: {
 		height: '100%',
+		minWidth: '100%',
 	},
 });
 
@@ -29,11 +30,10 @@ ZoomContainer.propTypes = {
 };
 
 export default function ZoomContainer({ children }) {
-	// in pixels per second
-	const [zoom] = React.useState(200);
+	const [pixelsPerSec] = React.useState(200);
 	const { duration } = usePlayerDuration();
 	const classes = useStyles();
-	const width = Number.isFinite(duration) ? Math.round(zoom * duration) : '100%';
+	const width = Number.isFinite(duration) ? Math.round(pixelsPerSec * duration) : '100%';
 
 	const [zoomContainerRef, setZoomContainerRef] = React.useState();
 	const [zoomContainerRect, setZoomContainerRect] = React.useState({});
@@ -49,9 +49,8 @@ export default function ZoomContainer({ children }) {
 		setZoomContainerRect(zoomContainerRef.getBoundingClientRect());
 	};
 
-	const zoomContext = React.useMemo(() => ({ zoom, zoomContainerRect }), [zoom, zoomContainerRect]);
+	const zoomContext = React.useMemo(() => ({ pixelsPerSec, zoomContainerRect }), [pixelsPerSec, zoomContainerRect]);
 
-	// beware of adding renders that don't have to do with the recalculation of zoom or zoomContainerRect.
 	return (
 		<div className={classes.root}>
 			<div className={classes.scrollContainer} onMouseUp={onMouseUp}>

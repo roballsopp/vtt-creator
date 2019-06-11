@@ -7,7 +7,7 @@ import { useDragging } from '../common';
 const useStyles = makeStyles({
 	root: {
 		position: 'absolute',
-		cursor: 'e-resize',
+		cursor: 'ew-resize',
 		width: 20,
 		top: 0,
 		bottom: 0,

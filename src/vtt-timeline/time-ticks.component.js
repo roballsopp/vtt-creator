@@ -23,18 +23,17 @@ TimeTicks.defaultProps = {
 
 export default function TimeTicks({ height, svgSize }) {
 	const classes = useStyles();
-	// zoom is pixels/second
-	const { zoom, zoomContainerRect } = useZoom();
+	const { pixelsPerSec, zoomContainerRect } = useZoom();
 
 	// keep svgs to a reasonable size
 	const numSvgs = Math.floor(zoomContainerRect.width / svgSize);
-	const numTicks = Math.ceil(svgSize / zoom);
+	const numTicks = Math.ceil(svgSize / pixelsPerSec);
 
 	const svgs = [];
 	let elapsedPixels = 0;
 
 	for (let i = 0; i < numSvgs; i++) {
-		const tickOffset = -(elapsedPixels % zoom);
+		const tickOffset = -(elapsedPixels % pixelsPerSec);
 		const startTickValue = numTicks * i;
 		svgs.push(
 			<SvgSegment
@@ -43,7 +42,7 @@ export default function TimeTicks({ height, svgSize }) {
 				height={height}
 				startTickValue={startTickValue}
 				tickOffset={tickOffset}
-				pixelsPerTick={zoom}
+				pixelsPerTick={pixelsPerSec}
 			/>
 		);
 		elapsedPixels += svgSize;
@@ -52,7 +51,7 @@ export default function TimeTicks({ height, svgSize }) {
 	const lastSvgSize = zoomContainerRect.width % svgSize;
 
 	if (lastSvgSize) {
-		const tickOffset = -(elapsedPixels % zoom);
+		const tickOffset = -(elapsedPixels % pixelsPerSec);
 		const startTickValue = numTicks * numSvgs;
 		svgs.push(
 			<SvgSegment
@@ -61,7 +60,7 @@ export default function TimeTicks({ height, svgSize }) {
 				height={height}
 				startTickValue={startTickValue}
 				tickOffset={tickOffset}
-				pixelsPerTick={zoom}
+				pixelsPerTick={pixelsPerSec}
 			/>
 		);
 	}

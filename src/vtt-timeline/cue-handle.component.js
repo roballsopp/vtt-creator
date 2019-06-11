@@ -3,7 +3,6 @@ import * as PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { CuePropType } from '../services/vtt.service';
 import CueHandleBorder from './cue-handle-border.component';
-import { usePlayerDuration } from '../player/player-duration.context';
 import { useZoom } from './zoom-container.component';
 
 const useStyles = makeStyles({
@@ -37,23 +36,22 @@ CueHandle.propTypes = {
 export default function CueHandle({ cue, cueIndex, onChange, children }) {
 	const [left, setLeft] = React.useState(0);
 	const [right, setRight] = React.useState(0);
-	const { duration } = usePlayerDuration();
-	const { zoomContainerRect } = useZoom();
+	const { pixelsPerSec, zoomContainerRect } = useZoom();
 	const classes = useStyles();
 	const containerWidth = zoomContainerRect ? zoomContainerRect.width : 0;
 	const containerLeft = zoomContainerRect ? zoomContainerRect.left : 0;
 
 	React.useEffect(() => {
-		if (duration) {
-			setLeft(Math.round((cue.startTime / duration) * containerWidth));
+		if (pixelsPerSec) {
+			setLeft(Math.round(cue.startTime * pixelsPerSec));
 		}
-	}, [duration, cue.startTime, containerWidth]);
+	}, [pixelsPerSec, cue.startTime]);
 
 	React.useEffect(() => {
-		if (duration) {
-			setRight(Math.round((1 - cue.endTime / duration) * containerWidth));
+		if (pixelsPerSec) {
+			setRight(Math.round(containerWidth - cue.endTime * pixelsPerSec));
 		}
-	}, [duration, cue.endTime, containerWidth]);
+	}, [pixelsPerSec, cue.endTime, containerWidth]);
 
 	const onDraggingLeft = React.useCallback(
 		e => {
@@ -71,18 +69,18 @@ export default function CueHandle({ cue, cueIndex, onChange, children }) {
 
 	const onDragEndLeft = React.useCallback(
 		e => {
-			const newStartTime = ((e.clientX - containerLeft) / containerWidth) * duration;
+			const newStartTime = (e.clientX - containerLeft) / pixelsPerSec;
 			onChange(new VTTCue(newStartTime, cue.endTime, cue.text), cueIndex, true);
 		},
-		[containerWidth, containerLeft, cue.endTime, cue.text, duration, cueIndex, onChange]
+		[containerLeft, pixelsPerSec, cue.endTime, cue.text, cueIndex, onChange]
 	);
 
 	const onDragEndRight = React.useCallback(
 		e => {
-			const newEndTime = ((e.clientX - containerLeft) / containerWidth) * duration;
+			const newEndTime = (e.clientX - containerLeft) / pixelsPerSec;
 			onChange(new VTTCue(cue.startTime, newEndTime, cue.text), cueIndex);
 		},
-		[containerWidth, containerLeft, duration, onChange, cue.startTime, cue.text, cueIndex]
+		[containerLeft, pixelsPerSec, onChange, cue.startTime, cue.text, cueIndex]
 	);
 
 	return (
