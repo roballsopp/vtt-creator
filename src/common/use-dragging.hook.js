@@ -35,8 +35,8 @@ export default function useDragging(elementRef, { onDragging, onDragStart, onDra
 	React.useEffect(() => {
 		if (dragging) {
 			const onMouseUp = e => {
-				onDragEnd && onDragEnd(e);
 				setDragging(false);
+				onDragEnd && onDragEnd(e);
 			};
 			window.addEventListener('mouseup', onMouseUp);
 			return () => {
