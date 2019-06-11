@@ -1,12 +1,11 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/styles';
 import debounce from 'lodash.debounce';
-import { CuePropType } from '../services/vtt.service';
+import { useCue } from '../common';
 import TimingInput from './timing-input.component';
 
 const useStyles = makeStyles({
@@ -20,23 +19,14 @@ const useStyles = makeStyles({
 	},
 });
 
-CueEditor.propTypes = {
-	cue: CuePropType.isRequired,
-	// onChange takes two args, new cue, and a boolean to indicate whether startTime was changed
-	onChange: PropTypes.func.isRequired,
-	onDelete: PropTypes.func.isRequired,
-};
+CueEditor.propTypes = {};
 
-export default function CueEditor({ cue, onChange, onDelete }) {
+export default function CueEditor() {
 	const classes = useStyles();
+	const { cue, onChangeCueStart, onChangeCueEnd, onChangeCueText, onRemoveCue } = useCue();
 	const [text, setText] = React.useState(cue.text);
 
-	const debouncedOnChangeText = React.useCallback(
-		debounce(text => {
-			onChange(new VTTCue(cue.startTime, cue.endTime, text));
-		}, 400),
-		[cue.startTime, cue.endTime, onChange]
-	);
+	const debouncedOnChangeText = React.useCallback(debounce(onChangeCueText, 400), [onChangeCueText]);
 
 	React.useEffect(() => {
 		setText(cue.text);
@@ -51,17 +41,15 @@ export default function CueEditor({ cue, onChange, onDelete }) {
 	};
 
 	const onChangeStartTime = e => {
-		const startTime = parseFloat(e.target.value);
-		const offset = startTime - cue.startTime;
-		onChange(new VTTCue(startTime, cue.endTime + offset, cue.text), true);
+		onChangeCueStart(parseFloat(e.target.value));
 	};
 
 	const onChangeEndTime = e => {
-		onChange(new VTTCue(cue.startTime, parseFloat(e.target.value), cue.text));
+		onChangeCueEnd(parseFloat(e.target.value));
 	};
 
 	const onChangeTimeSpan = e => {
-		onChange(new VTTCue(cue.startTime, cue.startTime + parseFloat(e.target.value), cue.text));
+		onChangeCueEnd(cue.startTime + parseFloat(e.target.value));
 	};
 
 	return (
@@ -82,7 +70,7 @@ export default function CueEditor({ cue, onChange, onDelete }) {
 					<TimingInput variant="outlined" label="End Time" value={cue.endTime} onChange={onChangeEndTime} />
 				</Grid>
 				<Grid item className={classes.headerEnd}>
-					<IconButton aria-label="Delete" onClick={onDelete} className={classes.closeIcon} edge="end">
+					<IconButton aria-label="Delete" onClick={onRemoveCue} className={classes.closeIcon} edge="end">
 						<CloseIcon fontSize="small" />
 					</IconButton>
 				</Grid>

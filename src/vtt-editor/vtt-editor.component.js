@@ -1,10 +1,9 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import Divider from '@material-ui/core/Divider';
 import FabButton from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import { makeStyles } from '@material-ui/styles';
-import { List, Loader, useCues } from '../common';
+import { List, Loader, useCues, CueProvider } from '../common';
 import CueEditor from './cue-editor.component';
 
 const useStyles = makeStyles({
@@ -35,7 +34,7 @@ VTTEditor.propTypes = {};
 
 export default function VTTEditor() {
 	const classes = useStyles();
-	const { cues, loading, onChangeCue, onAddCue, onRemoveCue } = useCues();
+	const { cues, loading, onAddCue } = useCues();
 
 	return (
 		<div className={classes.fabContainer}>
@@ -43,13 +42,15 @@ export default function VTTEditor() {
 				{!loading && (
 					<List
 						data={cues}
+						// TODO: its unlikely but possible for two cues to have the exact same start time
+						getKey={cue => cue.startTime}
 						renderItem={(cue, i, isLast) => (
-							<React.Fragment>
+							<CueProvider cue={cue} cueIndex={i}>
 								<div className={classes.cueEditor}>
-									<CueEditor cue={cue} onChange={(c, r) => onChangeCue(c, i, r)} onDelete={() => onRemoveCue(i)} />
+									<CueEditor />
 								</div>
 								{!isLast && <Divider />}
-							</React.Fragment>
+							</CueProvider>
 						)}
 					/>
 				)}

@@ -1,4 +1,3 @@
-import * as PropTypes from 'prop-types';
 import { WebVTT } from 'vtt.js';
 
 // http://bbc.github.io/subtitle-guidelines/
@@ -55,8 +54,6 @@ function joinWords(wordsList, from, to) {
 	}
 	return wordsToJoin.join(' ');
 }
-
-export const CuePropType = PropTypes.instanceOf(VTTCue);
 
 // type CueList = Array<VTTCue>;
 export function getVTTFromCues(cueList, title = 'Some title') {

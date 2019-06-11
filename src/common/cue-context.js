@@ -1,8 +1,9 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import sortBy from 'lodash.sortby';
+import { CuePropType } from './prop-types';
 
-const CueContext = React.createContext({
+const CuesContext = React.createContext({
 	cues: [],
 	onAddCue: () => {},
 	onRemoveCue: () => {},
@@ -52,7 +53,7 @@ export function CuesProvider(props) {
 	);
 
 	return (
-		<CueContext.Provider
+		<CuesContext.Provider
 			value={{
 				cues,
 				loading,
@@ -65,10 +66,62 @@ export function CuesProvider(props) {
 				onLoadingCues,
 			}}>
 			{props.children}
-		</CueContext.Provider>
+		</CuesContext.Provider>
 	);
 }
 
 export function useCues() {
+	return React.useContext(CuesContext);
+}
+
+/* Context for a SINGLE cue.
+
+   Wrap up an individual cue's index in the list, and
+   some of the logic associated with changing a cue
+*/
+const CueContext = React.createContext({
+	cue: {},
+	onChangeCueStart: () => {},
+	onChangeCueEnd: () => {},
+	onChangeCueText: () => {},
+	onRemoveCue: () => {},
+});
+
+CueProvider.propTypes = {
+	cue: CuePropType,
+	cueIndex: PropTypes.number,
+	children: PropTypes.node.isRequired,
+};
+
+export function CueProvider({ cue, cueIndex, children }) {
+	const { onChangeCue, onRemoveCue } = useCues();
+
+	return (
+		<CueContext.Provider
+			value={React.useMemo(
+				() => ({
+					cue,
+					onChangeCueStart: newStartTime => {
+						const newCue = new VTTCue(newStartTime, cue.endTime, cue.text);
+						onChangeCue(newCue, cueIndex, true);
+					},
+					onChangeCueEnd: newEndTime => {
+						const newCue = new VTTCue(cue.startTime, newEndTime, cue.text);
+						onChangeCue(newCue, cueIndex);
+					},
+					onChangeCueText: newText => {
+						const newCue = new VTTCue(cue.startTime, cue.endTime, newText);
+						onChangeCue(newCue, cueIndex);
+					},
+					onRemoveCue: () => onRemoveCue(cueIndex),
+				}),
+				[cue, cueIndex, onChangeCue, onRemoveCue]
+			)}>
+			{children}
+		</CueContext.Provider>
+	);
+}
+
+export function useCue() {
 	return React.useContext(CueContext);
 }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
-import { CuePropType } from '../services/vtt.service';
+import { useCue } from '../common';
 import CueHandleBorder from './cue-handle-border.component';
 import { useZoom } from './zoom-container.component';
 
@@ -27,13 +27,11 @@ const useStyles = makeStyles({
 });
 
 CueHandle.propTypes = {
-	cue: CuePropType.isRequired,
-	cueIndex: PropTypes.number,
-	onChange: PropTypes.func.isRequired,
 	children: PropTypes.node,
 };
 
-export default function CueHandle({ cue, cueIndex, onChange, children }) {
+function CueHandle({ children }) {
+	const { cue, onChangeCueStart, onChangeCueEnd } = useCue();
 	const [left, setLeft] = React.useState(0);
 	const [right, setRight] = React.useState(0);
 	const { pixelsPerSec, zoomContainerRect } = useZoom();
@@ -69,18 +67,16 @@ export default function CueHandle({ cue, cueIndex, onChange, children }) {
 
 	const onDragEndLeft = React.useCallback(
 		e => {
-			const newStartTime = (e.clientX - containerLeft) / pixelsPerSec;
-			onChange(new VTTCue(newStartTime, cue.endTime, cue.text), cueIndex, true);
+			onChangeCueStart((e.clientX - containerLeft) / pixelsPerSec);
 		},
-		[containerLeft, pixelsPerSec, cue.endTime, cue.text, cueIndex, onChange]
+		[containerLeft, pixelsPerSec, onChangeCueStart]
 	);
 
 	const onDragEndRight = React.useCallback(
 		e => {
-			const newEndTime = (e.clientX - containerLeft) / pixelsPerSec;
-			onChange(new VTTCue(cue.startTime, newEndTime, cue.text), cueIndex);
+			onChangeCueEnd((e.clientX - containerLeft) / pixelsPerSec);
 		},
-		[containerLeft, pixelsPerSec, onChange, cue.startTime, cue.text, cueIndex]
+		[containerLeft, pixelsPerSec, onChangeCueEnd]
 	);
 
 	return (
@@ -93,3 +89,5 @@ export default function CueHandle({ cue, cueIndex, onChange, children }) {
 		</div>
 	);
 }
+
+export default React.memo(CueHandle);
