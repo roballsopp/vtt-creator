@@ -30,7 +30,7 @@ CueHandleBorder.propTypes = {
 	className: PropTypes.string,
 };
 
-export default function CueHandleBorder({ onDragStart, onDragEnd, onDragging, className }) {
+function CueHandleBorder({ onDragStart, onDragEnd, onDragging, className }) {
 	const classes = useStyles();
 
 	const [handleRef, setHandleRef] = React.useState();
@@ -43,3 +43,5 @@ export default function CueHandleBorder({ onDragStart, onDragEnd, onDragging, cl
 		</div>
 	);
 }
+
+export default React.memo(CueHandleBorder);

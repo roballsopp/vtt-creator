@@ -31,7 +31,7 @@ CueHandle.propTypes = {
 	children: PropTypes.node,
 };
 
-function CueHandle({ children }) {
+export default function CueHandle({ children }) {
 	const { cue, onChangeCueStart, onChangeCueEnd } = useCue();
 	const [left, setLeft] = React.useState(0);
 	const [right, setRight] = React.useState(0);
@@ -95,5 +95,3 @@ function CueHandle({ children }) {
 		</div>
 	);
 }
-
-export default React.memo(CueHandle);
