@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as WaveSurfer from 'wavesurfer.js';
+import muiPinks from '@material-ui/core/colors/pink';
 import { makeStyles } from '@material-ui/styles';
 import { getAudioBlobFromVideo } from '../services/av.service';
 import { useVideoFile } from '../common';
@@ -24,8 +25,7 @@ export default function AudioTrack() {
 			setWavesurfer(
 				WaveSurfer.create({
 					container: waveformRef,
-					waveColor: 'violet',
-					progressColor: 'purple',
+					waveColor: muiPinks[400],
 					interact: false,
 				})
 			);

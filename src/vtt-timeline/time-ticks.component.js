@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import muiGreys from '@material-ui/core/colors/grey';
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles, useTheme } from '@material-ui/styles';
 import { useZoom } from './zoom-container.component';
 import { formatSeconds } from '../services/vtt.service';
 
@@ -70,6 +70,7 @@ export default function TimeTicks({ height, svgSize }) {
 }
 
 function SvgSegment({ width, height, startTickValue, tickOffset, pixelsPerTick, ...props }) {
+	const theme = useTheme();
 	// one tick per second, and add one so it overlaps with the starting tick of the next svg
 	const numTicks = Math.ceil(width / pixelsPerTick) + 1;
 	const ticks = [];
@@ -81,7 +82,7 @@ function SvgSegment({ width, height, startTickValue, tickOffset, pixelsPerTick, 
 
 	return (
 		<svg {...props} width={width} height={height} xmlns="http://www.w3.org/2000/svg">
-			<rect width="100%" height="100%" fill={muiGreys[600]} />
+			<rect width="100%" height="100%" fill={theme.palette.primary.main} />
 			{ticks}
 		</svg>
 	);
