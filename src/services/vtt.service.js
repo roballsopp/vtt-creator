@@ -73,7 +73,7 @@ export function getVTTFromCues(cueList, title = 'Some title') {
 
 // decSeconds is a float version of the time in seconds (e.g. 13.456)
 export function formatSeconds(decSeconds) {
-	if (isNaN(decSeconds)) return '00:00:000';
+	if (isNaN(decSeconds)) return '00:00.000';
 	const min = Math.floor(decSeconds / 60);
 	const sec = Math.floor(decSeconds % 60);
 	const mill = Math.round((decSeconds - Math.floor(decSeconds)) * 1000);
