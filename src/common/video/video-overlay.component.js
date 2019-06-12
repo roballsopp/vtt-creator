@@ -11,14 +11,30 @@ const useStyles = makeStyles({
 		color: 'white',
 		height: '100%',
 		width: '100%',
-		display: 'flex',
-		justifyContent: 'space-between',
-		flexDirection: 'column',
-		backgroundImage: 'linear-gradient(1turn, rgba(0,0,0,1) 0px, rgba(0,0,0,0) 100px)',
+		position: 'relative',
+		backgroundImage: 'linear-gradient(to top, rgba(0,0,0,1) 0px, rgba(0,0,0,0) 100px)',
+	},
+	topGradient: {
+		position: 'absolute',
+		top: 0,
+		left: 0,
+		right: 0,
+		height: 100,
+		backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0px, rgba(0,0,0,0) 100px)',
 	},
 	topElement: {
 		display: 'flex',
 		justifyContent: 'flex-end',
+		position: 'absolute',
+		top: 0,
+		left: 0,
+		right: 0,
+	},
+	bottomElement: {
+		position: 'absolute',
+		bottom: 0,
+		left: 0,
+		right: 0,
 	},
 });
 
@@ -50,10 +66,13 @@ export default function VideoOverlay({ className, topElement }) {
 	return (
 		<div className={className}>
 			<div className={classes.root} onClick={onPlayPause}>
+				<div className={classes.topGradient} />
 				<div onClick={e => e.stopPropagation()} className={classes.topElement}>
 					{topElement}
 				</div>
-				<VideoControls onClick={e => e.stopPropagation()} />
+				<div className={classes.bottomElement}>
+					<VideoControls onClick={e => e.stopPropagation()} />
+				</div>
 			</div>
 		</div>
 	);
