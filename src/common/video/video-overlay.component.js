@@ -12,6 +12,7 @@ const useStyles = makeStyles({
 		height: '100%',
 		width: '100%',
 		position: 'relative',
+		cursor: 'pointer',
 		backgroundImage: 'linear-gradient(to top, rgba(0,0,0,1) 0px, rgba(0,0,0,0) 100px)',
 	},
 	topGradient: {
@@ -44,22 +45,9 @@ VideoOverlay.propTypes = {
 };
 
 export default function VideoOverlay({ className, topElement }) {
-	const { showOverlay, onStartOverlayTimeout } = useOverlay();
+	const { showOverlay } = useOverlay();
 	const { onPlayPause } = usePlay();
-	const { videoContainerRef } = useVideoDom();
 	const classes = useStyles();
-
-	React.useEffect(() => {
-		if (videoContainerRef) {
-			videoContainerRef.addEventListener('mousemove', onStartOverlayTimeout);
-		}
-
-		return () => {
-			if (videoContainerRef) {
-				videoContainerRef.removeEventListener('mousemove', onStartOverlayTimeout);
-			}
-		};
-	}, [onStartOverlayTimeout, videoContainerRef]);
 
 	if (!showOverlay) return null;
 

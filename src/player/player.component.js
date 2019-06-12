@@ -29,8 +29,8 @@ export default function Player() {
 	return (
 		<CaptionsProvider>
 			<FullscreenProvider>
-				<OverlayProvider>
-					<PlayProvider>
+				<PlayProvider>
+					<OverlayProvider>
 						<VolumeProvider>
 							<div className={classes.root}>
 								<div className={classes.video}>
@@ -43,8 +43,8 @@ export default function Player() {
 								</div>
 							</div>
 						</VolumeProvider>
-					</PlayProvider>
-				</OverlayProvider>
+					</OverlayProvider>
+				</PlayProvider>
 			</FullscreenProvider>
 		</CaptionsProvider>
 	);
