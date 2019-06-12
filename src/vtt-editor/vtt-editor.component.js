@@ -5,6 +5,8 @@ import AddIcon from '@material-ui/icons/Add';
 import { makeStyles } from '@material-ui/styles';
 import { List, Loader, useCues, CueProvider } from '../common';
 import CueEditor from './cue-editor.component';
+import { AutoScrollProvider } from './auto-scroll.context';
+import AutoScrollItem from './auto-scroll-item.component';
 
 const useStyles = makeStyles({
 	listRoot: {
@@ -38,7 +40,7 @@ export default function VTTEditor() {
 
 	return (
 		<div className={classes.fabContainer}>
-			<div className={classes.listRoot}>
+			<AutoScrollProvider className={classes.listRoot}>
 				{!loading && (
 					<List
 						data={cues}
@@ -46,16 +48,16 @@ export default function VTTEditor() {
 						getKey={cue => cue.startTime}
 						renderItem={(cue, i, isLast) => (
 							<CueProvider cue={cue} cueIndex={i}>
-								<div className={classes.cueEditor}>
+								<AutoScrollItem cueTime={cue.startTime} className={classes.cueEditor}>
 									<CueEditor />
-								</div>
+								</AutoScrollItem>
 								{!isLast && <Divider />}
 							</CueProvider>
 						)}
 					/>
 				)}
 				{loading && <Loader />}
-			</div>
+			</AutoScrollProvider>
 			<FabButton className={classes.fab} color="primary" aria-label="Add Cue" onClick={onAddCue}>
 				<AddIcon />
 			</FabButton>

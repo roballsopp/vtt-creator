@@ -6,17 +6,21 @@ import { usePlayProgress } from '../common/video';
 
 const useStyles = makeStyles({
 	root: {
+		overflowY: 'scroll',
+	},
+	horizontalRoot: {
 		overflowX: 'scroll',
 	},
 });
 
 AutoScrollContainer.propTypes = {
 	pixelsPerSec: PropTypes.number.isRequired,
+	horizontal: PropTypes.bool,
 	children: PropTypes.node.isRequired,
 	className: PropTypes.string,
 };
 
-export default function AutoScrollContainer({ pixelsPerSec, children, className, ...props }) {
+export default function AutoScrollContainer({ pixelsPerSec, horizontal, children, className, ...props }) {
 	const classes = useStyles();
 	const { currentTime } = usePlayProgress();
 	const scrollPixels = currentTime && pixelsPerSec ? pixelsPerSec * currentTime : 0;
@@ -25,12 +29,22 @@ export default function AutoScrollContainer({ pixelsPerSec, children, className,
 
 	React.useEffect(() => {
 		if (scrollContainerRef) {
-			scrollContainerRef.scrollTo({ left: scrollPixels, behavior: 'smooth' });
+			if (horizontal) scrollContainerRef.scrollLeft = scrollPixels;
+			else scrollContainerRef.scrollTop = scrollPixels;
 		}
-	}, [scrollContainerRef, scrollPixels]);
+	}, [scrollContainerRef, horizontal, scrollPixels]);
 
 	return (
-		<div {...props} ref={setScrollContainerRef} className={clsx(classes.root, className)}>
+		<div
+			{...props}
+			ref={setScrollContainerRef}
+			className={clsx(
+				{
+					[classes.root]: !horizontal,
+					[classes.horizontalRoot]: horizontal,
+				},
+				className
+			)}>
 			{children}
 		</div>
 	);
