@@ -15,16 +15,19 @@ export function PlayProvider({ children }) {
 	React.useEffect(() => {
 		const onPlay = () => setPaused(false);
 		const onPaused = () => setPaused(true);
+		const onLoadStart = () => setPaused(true);
 
 		if (videoRef) {
 			videoRef.addEventListener('play', onPlay);
 			videoRef.addEventListener('pause', onPaused);
+			videoRef.addEventListener('loadstart', onLoadStart);
 		}
 
 		return () => {
 			if (videoRef) {
 				videoRef.removeEventListener('play', onPlay);
 				videoRef.removeEventListener('pause', onPaused);
+				videoRef.removeEventListener('loadstart', onLoadStart);
 			}
 		};
 	}, [videoRef]);
