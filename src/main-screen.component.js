@@ -8,7 +8,7 @@ import { CuesProvider, VideoFileProvider } from './common';
 import VttMenu from './vtt-menu.component';
 import Player from './player';
 import VTTEditor from './vtt-editor';
-import { DurationProvider, PlayProgressProvider, VideoDomProvider } from './common/video';
+import { DurationProvider, VideoDomProvider } from './common/video';
 import { PlayerDurationProvider } from './player/player-duration.context';
 
 const useStyles = makeStyles({
@@ -40,24 +40,22 @@ export default function MainScreen() {
 				<VideoDomProvider>
 					<DurationProvider>
 						<PlayerDurationProvider>
-							<PlayProgressProvider>
-								<div className={classes.root}>
-									<Paper square className={classes.drawer}>
-										<AppBar position="static" color="primary">
-											<Toolbar>
-												<Typography variant="h6" color="inherit" style={{ flexGrow: 1 }}>
-													Caption List
-												</Typography>
-												<VttMenu />
-											</Toolbar>
-										</AppBar>
-										<VTTEditor />
-									</Paper>
-									<div className={classes.main}>
-										<Player />
-									</div>
+							<div className={classes.root}>
+								<Paper square className={classes.drawer}>
+									<AppBar position="static" color="primary">
+										<Toolbar>
+											<Typography variant="h6" color="inherit" style={{ flexGrow: 1 }}>
+												Caption List
+											</Typography>
+											<VttMenu />
+										</Toolbar>
+									</AppBar>
+									<VTTEditor />
+								</Paper>
+								<div className={classes.main}>
+									<Player />
 								</div>
-							</PlayProgressProvider>
+							</div>
 						</PlayerDurationProvider>
 					</DurationProvider>
 				</VideoDomProvider>

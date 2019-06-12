@@ -10,20 +10,21 @@ AutoScrollItem.propTypes = {
 };
 
 export default function AutoScrollItem({ cueTime, children, className, ...props }) {
-	const { currentTime } = usePlayProgress();
 	const { scrollToChild } = useAutoScroll();
 
 	const prevTimeRef = React.useRef(0);
 	const [itemContainerRef, setItemContainerRef] = React.useState();
 
-	React.useEffect(() => {
+	const onTimeUpdate = currentTime => {
 		const cueWasJustPassedForward = currentTime >= cueTime && prevTimeRef.current < cueTime;
 		const cueWasJustPassedBackward = currentTime < cueTime && prevTimeRef.current >= cueTime;
 		if (itemContainerRef && (cueWasJustPassedForward || cueWasJustPassedBackward)) {
 			scrollToChild(itemContainerRef);
 		}
 		prevTimeRef.current = currentTime;
-	}, [currentTime, itemContainerRef, cueTime, scrollToChild]);
+	};
+
+	usePlayProgress({ onTimeUpdate });
 
 	return (
 		<div {...props} ref={setItemContainerRef} className={className}>

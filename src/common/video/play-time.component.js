@@ -1,10 +1,11 @@
 import * as React from 'react';
 import Typography from '@material-ui/core/Typography';
-import { usePlayProgress } from './play-progress.context';
+import usePlayProgress from './play-progress.hook';
 import { useDuration } from './duration.context';
 
 export default function PlayTime() {
-	const { currentTime } = usePlayProgress();
+	const [currentTime, onTimeUpdate] = React.useState(0);
+	usePlayProgress({ onTimeUpdate });
 	const { duration } = useDuration();
 	return (
 		<Typography variant="subtitle2">
