@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { usePlayerDuration } from '../player/player-duration.context';
+import AutoScrollContainer from '../player/auto-scroll-container.component';
 
 const useStyles = makeStyles({
 	root: {
@@ -15,7 +16,6 @@ const useStyles = makeStyles({
 		left: 0,
 		right: 0,
 		bottom: 0,
-		overflowX: 'scroll',
 	},
 	content: {
 		height: '100%',
@@ -53,11 +53,11 @@ export default function ZoomContainer({ children }) {
 
 	return (
 		<div className={classes.root}>
-			<div className={classes.scrollContainer} onMouseUp={onMouseUp}>
+			<AutoScrollContainer pixelsPerSec={pixelsPerSec} onMouseUp={onMouseUp} className={classes.scrollContainer}>
 				<div ref={setZoomContainerRef} className={classes.content} style={{ width }}>
 					<ZoomContext.Provider value={zoomContext}>{children}</ZoomContext.Provider>
 				</div>
-			</div>
+			</AutoScrollContainer>
 		</div>
 	);
 }
