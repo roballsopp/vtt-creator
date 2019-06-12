@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import muiGreys from '@material-ui/core/colors/grey';
 import { makeStyles, useTheme } from '@material-ui/styles';
 import { useZoom } from './zoom-container.component';
 import { formatSeconds } from '../services/vtt.service';
@@ -103,7 +102,7 @@ function Tick({ x, height, text, fontSize }) {
 	const textY = (height + fontSize) / 2;
 	return (
 		<React.Fragment>
-			<line x1={x} x2={x} y1="0" y2={height} stroke={muiGreys[300]} strokeWidth="2" />
+			<line x1={x} x2={x} y1="0" y2={height} stroke="white" strokeWidth="2" />
 			<text x={x + 4} y={textY} fontSize={fontSize} textAnchor="start" fill="white">
 				{text}
 			</text>
