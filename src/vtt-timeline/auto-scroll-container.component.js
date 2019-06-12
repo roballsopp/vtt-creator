@@ -7,9 +7,11 @@ import { usePlayProgress } from '../common/video';
 const useStyles = makeStyles({
 	root: {
 		overflowY: 'scroll',
+		scrollBehavior: 'smooth',
 	},
 	horizontalRoot: {
 		overflowX: 'scroll',
+		scrollBehavior: 'smooth',
 	},
 });
 

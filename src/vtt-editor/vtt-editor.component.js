@@ -13,8 +13,6 @@ const useStyles = makeStyles({
 		width: 400,
 		paddingTop: 4,
 		paddingBottom: 90,
-		height: '100%',
-		overflowY: 'scroll',
 	},
 	cueEditor: {
 		padding: 16,
