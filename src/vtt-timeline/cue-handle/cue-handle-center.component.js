@@ -7,31 +7,25 @@ import { useZoom } from '../zoom-container.component';
 
 const useStyles = makeStyles({
 	root: {
-		'&:hover div': {
-			backgroundColor: 'orange',
+		opacity: 0,
+		'&:hover': {
+			opacity: 0.05,
 		},
-	},
-	borderLine: {
-		height: '100%',
-		width: 4,
-		margin: 'auto',
-		backgroundColor: 'white',
 	},
 });
 
-CueHandleLeft.propTypes = {
+CueHandleCenter.propTypes = {
 	onChange: PropTypes.func.isRequired,
 	className: PropTypes.string,
 };
 
-function CueHandleLeft({ onChange, className }) {
+function CueHandleCenter({ onChange, className }) {
 	const classes = useStyles();
 	const { onDeltaCue } = useCue();
 	const [handleRef, setHandleRef] = React.useState();
-	const { pixelsPerSec } = useZoom();
-
 	const startPosRef = React.useRef(0);
 	const prevPosRef = React.useRef(0);
+	const { pixelsPerSec } = useZoom();
 
 	const onDragStart = React.useCallback(e => {
 		startPosRef.current = e.clientX;
@@ -48,19 +42,15 @@ function CueHandleLeft({ onChange, className }) {
 
 	const onDragEnd = React.useCallback(
 		e => {
-			const startDelta = (e.clientX - startPosRef.current) / pixelsPerSec;
-			onDeltaCue({ startDelta });
+			const d = (e.clientX - startPosRef.current) / pixelsPerSec;
+			onDeltaCue({ startDelta: d, endDelta: d });
 		},
 		[pixelsPerSec, onDeltaCue]
 	);
 
 	useDragging(handleRef, { onDragStart, onDragging, onDragEnd });
 
-	return (
-		<div ref={setHandleRef} className={clsx(classes.root, className)}>
-			<div className={classes.borderLine} />
-		</div>
-	);
+	return <div ref={setHandleRef} className={clsx(classes.root, className)} />;
 }
 
-export default React.memo(CueHandleLeft);
+export default React.memo(CueHandleCenter);

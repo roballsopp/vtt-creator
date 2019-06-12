@@ -83,6 +83,7 @@ const CueContext = React.createContext({
 	cue: {},
 	onChangeCueStart: () => {},
 	onChangeCueEnd: () => {},
+	onDeltaCue: () => {},
 	onChangeCueText: () => {},
 	onRemoveCue: () => {},
 });
@@ -107,6 +108,20 @@ export function CueProvider({ cue, cueIndex, children }) {
 					},
 					onChangeCueEnd: newEndTime => {
 						const newCue = new VTTCue(cue.startTime, newEndTime, cue.text);
+						onChangeCue(newCue, cueIndex);
+					},
+					onDeltaCue: ({ startDelta = 0, endDelta = 0 }) => {
+						let newStartTime = cue.startTime + startDelta;
+						let newEndTime = cue.endTime + endDelta;
+
+						if (newStartTime < 0 && endDelta) {
+							newStartTime = 0;
+							newEndTime = cue.endTime - cue.startTime;
+						} else if (newStartTime < 0) {
+							newStartTime = 0;
+						}
+
+						const newCue = new VTTCue(newStartTime, newEndTime, cue.text);
 						onChangeCue(newCue, cueIndex);
 					},
 					onChangeCueText: newText => {

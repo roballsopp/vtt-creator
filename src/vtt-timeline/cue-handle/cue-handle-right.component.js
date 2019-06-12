@@ -3,7 +3,6 @@ import clsx from 'clsx';
 import * as PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { useDragging, useCue } from '../../common';
-import { usePlayerDuration } from '../../player/player-duration.context';
 import { useZoom } from '../zoom-container.component';
 
 const useStyles = makeStyles({
@@ -21,36 +20,41 @@ const useStyles = makeStyles({
 });
 
 CueHandleRight.propTypes = {
-	onChangeRight: PropTypes.func.isRequired,
+	onChange: PropTypes.func.isRequired,
 	className: PropTypes.string,
 };
 
-function CueHandleRight({ onChangeRight, className }) {
+function CueHandleRight({ onChange, className }) {
 	const classes = useStyles();
-	const { onChangeCueEnd } = useCue();
+	const { onDeltaCue } = useCue();
 	const [handleRef, setHandleRef] = React.useState();
-	const { pixelsPerSec, zoomContainerRect } = useZoom();
-	const { duration } = usePlayerDuration();
-	const containerWidth = zoomContainerRect ? zoomContainerRect.width : 0;
-	const containerLeft = zoomContainerRect ? zoomContainerRect.left : 0;
+	const { pixelsPerSec } = useZoom();
+
+	const startPosRef = React.useRef(0);
+	const prevPosRef = React.useRef(0);
+
+	const onDragStart = React.useCallback(e => {
+		startPosRef.current = e.clientX;
+		prevPosRef.current = e.clientX;
+	}, []);
 
 	const onDragging = React.useCallback(
 		e => {
-			const newRight = containerWidth - (e.clientX - containerLeft);
-			onChangeRight(newRight < 0 ? 0 : newRight);
+			onChange(e.clientX - prevPosRef.current);
+			prevPosRef.current = e.clientX;
 		},
-		[containerLeft, containerWidth, onChangeRight]
+		[onChange]
 	);
 
 	const onDragEnd = React.useCallback(
 		e => {
-			const seconds = (e.clientX - containerLeft) / pixelsPerSec;
-			onChangeCueEnd(seconds > duration ? duration : seconds);
+			const endDelta = (e.clientX - startPosRef.current) / pixelsPerSec;
+			onDeltaCue({ endDelta });
 		},
-		[containerLeft, pixelsPerSec, onChangeCueEnd, duration]
+		[pixelsPerSec, onDeltaCue]
 	);
 
-	useDragging(handleRef, { onDragging, onDragEnd });
+	useDragging(handleRef, { onDragStart, onDragging, onDragEnd });
 
 	return (
 		<div ref={setHandleRef} className={clsx(classes.root, className)}>
