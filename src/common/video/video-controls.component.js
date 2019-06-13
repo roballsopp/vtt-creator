@@ -5,9 +5,9 @@ import PauseIcon from '@material-ui/icons/Pause';
 import PlayIcon from '@material-ui/icons/PlayArrow';
 import CaptionsIcon from '@material-ui/icons/ClosedCaption';
 import { makeStyles } from '@material-ui/styles';
-import { isFullScreenEnabled, useFullscreen } from './fullscreen.context';
-import { usePlay } from './play.context';
-import { useCaptions } from './captions.context';
+import useFullscreen, { isFullScreenEnabled } from './use-fullscreen.hook';
+import usePlay from './use-play.hook';
+import useCaptions from './use-captions.hook';
 import IconToggle from './icon-toggle.component';
 import VolumeInput from './volume-input.component';
 import PlayProgress from './play-progress.component';
@@ -41,8 +41,10 @@ const useStyles = makeStyles({
 });
 
 export default function VideoControls(props) {
-	const { paused, onPlayPause } = usePlay();
-	const { fullscreen, onToggleFullscreen } = useFullscreen();
+	const [paused, onPlayPause] = React.useState(true);
+	const [fullscreen, onFullscreenChange] = React.useState(false);
+	const { onTogglePlay } = usePlay({ onPlayPause });
+	const { onToggleFullscreen } = useFullscreen({ onFullscreenChange });
 	const { onToggleCaptions } = useCaptions();
 
 	const classes = useStyles();
@@ -59,7 +61,7 @@ export default function VideoControls(props) {
 							size="small"
 							color="inherit"
 							edge="start"
-							onToggle={onPlayPause}
+							onToggle={onTogglePlay}
 						/>
 					</div>
 					<div className={classes.controlLeft}>

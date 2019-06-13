@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import { usePlay } from './play.context';
+import usePlay from './use-play.hook';
 import { useVideoDom } from './video-dom.context';
 
 const OverlayContext = React.createContext({});
@@ -10,10 +10,10 @@ OverlayProvider.propTypes = {
 };
 
 export function OverlayProvider({ children }) {
-	const { paused } = usePlay();
 	const { videoContainerRef } = useVideoDom();
 	const [showOverlay, setShowOverlay] = React.useState(true);
 	const [suspendMouseMove, setSuspendMouseMove] = React.useState(false);
+	const [paused, onPlayPause] = React.useState(true);
 	const overlayTimeout = React.useRef();
 
 	const onStartOverlayTimeout = React.useCallback((timeout = 3000) => {
@@ -26,19 +26,22 @@ export function OverlayProvider({ children }) {
 		}, timeout);
 	}, []);
 
-	React.useEffect(() => {
-		if (paused) {
-			setShowOverlay(true);
-			clearTimeout(overlayTimeout.current);
-		} else {
-			// if playing, hide overlay faster than normal because the user probably doesn't want to see it anymore
-			setSuspendMouseMove(true);
-			overlayTimeout.current = setTimeout(() => {
-				setShowOverlay(false);
-				setSuspendMouseMove(false);
-			}, 500);
-		}
-	}, [paused]);
+	usePlay({
+		onPlayPause: React.useCallback(paused => {
+			onPlayPause(paused);
+			if (paused) {
+				setShowOverlay(true);
+				clearTimeout(overlayTimeout.current);
+			} else {
+				// if playing, hide overlay faster than normal because the user probably doesn't want to see it anymore
+				setSuspendMouseMove(true);
+				overlayTimeout.current = setTimeout(() => {
+					setShowOverlay(false);
+					setSuspendMouseMove(false);
+				}, 500);
+			}
+		}, []),
+	});
 
 	React.useEffect(() => {
 		if (paused || suspendMouseMove) return;

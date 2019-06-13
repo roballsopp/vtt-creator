@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
-import { usePlayerDuration } from '../player/player-duration.context';
+import usePlayerDuration from '../player/use-player-duration.hook';
 import AutoScrollContainer from './auto-scroll-container.component';
 
 const useStyles = makeStyles({
@@ -31,12 +31,20 @@ ZoomContainer.propTypes = {
 
 export default function ZoomContainer({ children }) {
 	const [pixelsPerSec] = React.useState(200);
-	const { duration } = usePlayerDuration();
+	const [width, setWidth] = React.useState('100%');
 	const classes = useStyles();
-	const width = Number.isFinite(duration) ? Math.round(pixelsPerSec * duration) : '100%';
 
 	const [zoomContainerRef, setZoomContainerRef] = React.useState();
 	const [zoomContainerRect, setZoomContainerRect] = React.useState({});
+
+	usePlayerDuration({
+		onDurationChange: React.useCallback(
+			duration => {
+				setWidth(Number.isFinite(duration) ? Math.round(pixelsPerSec * duration) : '100%');
+			},
+			[pixelsPerSec]
+		),
+	});
 
 	React.useLayoutEffect(() => {
 		if (zoomContainerRef) {

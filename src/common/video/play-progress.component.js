@@ -2,8 +2,8 @@ import * as React from 'react';
 import throttle from 'lodash.throttle';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { makeStyles } from '@material-ui/styles';
-import usePlayProgress from './play-progress.hook';
-import { useDuration } from './duration.context';
+import usePlayProgress from './use-play-progress.hook';
+import useDuration from './use-duration.hook';
 
 const PLAYHEAD_RADIUS = 6;
 
@@ -35,14 +35,23 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function PlayProgress() {
-	const [currentTime, onTimeUpdate] = React.useState(0);
-	const { onSeek } = usePlayProgress({ onTimeUpdate });
-	const { duration } = useDuration();
-	const progress = duration && currentTime ? currentTime / duration : 0;
 	const progressElRef = React.useRef();
 	const [dragging, setDragging] = React.useState(false);
 	const [playpos, setPlaypos] = React.useState(0);
 	const classes = useStyles({ playpos, progressElRef });
+
+	const [duration, onDurationChange] = React.useState(0);
+	useDuration({ onDurationChange });
+
+	const { onSeek } = usePlayProgress({
+		onTimeUpdate: React.useCallback(
+			currentTime => {
+				const progress = duration && currentTime ? currentTime / duration : 0;
+				if (!dragging) setPlaypos(progress);
+			},
+			[dragging, duration]
+		),
+	});
 
 	const throttledSeek = React.useCallback(throttle(onSeek, 200), [onSeek]);
 
@@ -65,10 +74,6 @@ export default function PlayProgress() {
 		e.stopPropagation();
 		setDragging(true);
 	}, []);
-
-	React.useEffect(() => {
-		if (!dragging) setPlaypos(progress);
-	}, [dragging, progress]);
 
 	React.useEffect(() => {
 		const onMouseUp = () => {

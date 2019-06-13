@@ -27,15 +27,18 @@ export default function AutoScrollContainer({ pixelsPerSec, horizontal, children
 
 	const [scrollContainerRef, setScrollContainerRef] = React.useState();
 
-	const onTimeUpdate = currentTime => {
-		const scrollPixels = currentTime && pixelsPerSec ? pixelsPerSec * currentTime : 0;
-		if (scrollContainerRef) {
-			if (horizontal) scrollContainerRef.scrollLeft = scrollPixels;
-			else scrollContainerRef.scrollTop = scrollPixels;
-		}
-	};
-
-	usePlayProgress({ onTimeUpdate });
+	usePlayProgress({
+		onTimeUpdate: React.useCallback(
+			currentTime => {
+				const scrollPixels = currentTime && pixelsPerSec ? pixelsPerSec * currentTime : 0;
+				if (scrollContainerRef) {
+					if (horizontal) scrollContainerRef.scrollLeft = scrollPixels;
+					else scrollContainerRef.scrollTop = scrollPixels;
+				}
+			},
+			[horizontal, pixelsPerSec, scrollContainerRef]
+		),
+	});
 
 	return (
 		<div

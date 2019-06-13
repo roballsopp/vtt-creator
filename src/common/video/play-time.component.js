@@ -1,12 +1,13 @@
 import * as React from 'react';
 import Typography from '@material-ui/core/Typography';
-import usePlayProgress from './play-progress.hook';
-import { useDuration } from './duration.context';
+import usePlayProgress from './use-play-progress.hook';
+import useDuration from './use-duration.hook';
 
 export default function PlayTime() {
 	const [currentTime, onTimeUpdate] = React.useState(0);
+	const [duration, onDurationChange] = React.useState(0);
 	usePlayProgress({ onTimeUpdate });
-	const { duration } = useDuration();
+	useDuration({ onDurationChange });
 	return (
 		<Typography variant="subtitle2">
 			{formatSeconds(currentTime)} / {formatSeconds(duration)}

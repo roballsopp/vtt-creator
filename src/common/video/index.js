@@ -1,21 +1,16 @@
-import { CaptionsProvider, useCaptions } from './captions.context';
-import { DurationProvider, useDuration } from './duration.context';
-import { FullscreenProvider, useFullscreen, isFullScreenEnabled } from './fullscreen.context';
 import { OverlayProvider, useOverlay } from './overlay.context';
-import { PlayProvider, usePlay } from './play.context';
-import usePlayProgress from './play-progress.hook';
+import useCaptions from './use-captions.hook';
+import useDuration from './use-duration.hook';
+import useFullscreen, { isFullScreenEnabled } from './use-fullscreen.hook';
+import usePlay from './use-play.hook';
+import usePlayProgress from './use-play-progress.hook';
+import useVolume from './use-volume.hook';
 import { VideoDomProvider, useVideoDom } from './video-dom.context';
-import { VolumeProvider, useVolume } from './volume.context';
 import Video from './video.component';
 
 export {
-	CaptionsProvider,
-	DurationProvider,
-	FullscreenProvider,
+	isFullScreenEnabled,
 	OverlayProvider,
-	PlayProvider,
-	VideoDomProvider,
-	VolumeProvider,
 	useCaptions,
 	useDuration,
 	useFullscreen,
@@ -24,6 +19,6 @@ export {
 	usePlayProgress,
 	useVideoDom,
 	useVolume,
-	isFullScreenEnabled,
+	VideoDomProvider,
 	Video,
 };

@@ -2,8 +2,7 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import VideoControls from './video-controls.component';
-import { usePlay } from './play.context';
-import { useVideoDom } from './video-dom.context';
+import usePlay from './use-play.hook';
 import { useOverlay } from './overlay.context';
 
 const useStyles = makeStyles({
@@ -46,14 +45,14 @@ VideoOverlay.propTypes = {
 
 export default function VideoOverlay({ className, topElement }) {
 	const { showOverlay } = useOverlay();
-	const { onPlayPause } = usePlay();
+	const { onTogglePlay } = usePlay();
 	const classes = useStyles();
 
 	if (!showOverlay) return null;
 
 	return (
 		<div className={className}>
-			<div className={classes.root} onClick={onPlayPause}>
+			<div className={classes.root} onClick={onTogglePlay}>
 				<div className={classes.topGradient} />
 				<div onClick={e => e.stopPropagation()} className={classes.topElement}>
 					{topElement}

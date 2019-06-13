@@ -5,7 +5,7 @@ import VolumeIcon from '@material-ui/icons/VolumeUp';
 import VolumeOffIcon from '@material-ui/icons/VolumeOff';
 import { makeStyles } from '@material-ui/styles';
 import IconToggle from './icon-toggle.component';
-import { useVolume } from './volume.context';
+import useVolume from './use-volume.hook';
 
 const useStyles = makeStyles({
 	container: {
@@ -31,21 +31,28 @@ const useSliderStyles = makeStyles({
 });
 
 export default function VolumeInput() {
-	const { volume, muted, onVolumeChange, onToggleMute } = useVolume();
 	const classes = useStyles();
-	const [sliderPos, setSliderPos] = React.useState(volume);
+	const [volume, setVolume] = React.useState(1);
+	const [muted, setMuted] = React.useState(1);
+
+	const { onVolumeChange, onToggleMute } = useVolume({
+		onVolumeChange: React.useCallback((volume, muted) => {
+			setVolume(volume);
+			setMuted(muted);
+		}, []),
+	});
+
 	const throttledOnChange = React.useCallback(throttle(onVolumeChange, 300), [onVolumeChange]);
 
 	React.useEffect(() => () => throttledOnChange.cancel(), [throttledOnChange]);
-	React.useEffect(() => setSliderPos(volume), [volume]);
 
 	return (
 		<div className={classes.container}>
 			<Slider
-				value={sliderPos}
+				value={volume}
 				onChange={(e, v) => {
 					const volume = parseFloat(v);
-					setSliderPos(volume);
+					setVolume(volume);
 					throttledOnChange(volume);
 				}}
 				max={1}

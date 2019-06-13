@@ -1,10 +1,12 @@
 import * as React from 'react';
 import { useVideoDom } from './video-dom.context';
 
-export default function usePlayProgress({ onTimeUpdate }) {
+export default function usePlayProgress({ onTimeUpdate } = {}) {
 	const { videoRef } = useVideoDom();
 
 	React.useEffect(() => {
+		if (!onTimeUpdate || !videoRef) return;
+
 		const onLoadStart = () => {
 			onTimeUpdate(0);
 		};
@@ -12,16 +14,14 @@ export default function usePlayProgress({ onTimeUpdate }) {
 			onTimeUpdate(videoRef.currentTime);
 		};
 
-		if (videoRef) {
-			videoRef.addEventListener('loadstart', onLoadStart);
-			videoRef.addEventListener('timeupdate', onTimeUpdateInner);
-		}
+		// if a component using this hook unmounts, we want to fire current time again when it remounts
+		onTimeUpdate(videoRef.currentTime);
+		videoRef.addEventListener('loadstart', onLoadStart);
+		videoRef.addEventListener('timeupdate', onTimeUpdateInner);
 
 		return () => {
-			if (videoRef) {
-				videoRef.removeEventListener('loadstart', onLoadStart);
-				videoRef.removeEventListener('timeupdate', onTimeUpdateInner);
-			}
+			videoRef.removeEventListener('loadstart', onLoadStart);
+			videoRef.removeEventListener('timeupdate', onTimeUpdateInner);
 		};
 	}, [videoRef, onTimeUpdate]);
 
