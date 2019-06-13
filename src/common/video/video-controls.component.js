@@ -42,9 +42,8 @@ const useStyles = makeStyles({
 
 export default function VideoControls(props) {
 	const [paused, onPlayPause] = React.useState(true);
-	const [fullscreen, onFullscreenChange] = React.useState(false);
 	const { onTogglePlay } = usePlay({ onPlayPause });
-	const { onToggleFullscreen } = useFullscreen({ onFullscreenChange });
+	const { fullscreen, onToggleFullscreen } = useFullscreen();
 	const { onToggleCaptions } = useCaptions();
 
 	const classes = useStyles();

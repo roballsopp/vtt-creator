@@ -1,38 +1,41 @@
 import * as React from 'react';
 import { useVideoDom } from './video-dom.context';
 
-export default function useVolume({ onVolumeChange }) {
+export default function useVolume() {
 	const [volume, setVolume] = React.useState(1);
 	const [muted, setMuted] = React.useState(false);
 	const { videoRef } = useVideoDom();
 
 	React.useEffect(() => {
-		if (!onVolumeChange || !videoRef) return;
+		if (!videoRef) return;
 
-		onVolumeChange(videoRef.volume, videoRef.muted);
+		setVolume(videoRef.volume);
+		setMuted(videoRef.muted);
 
 		// when a new video loads, set its volume and mute status to whatever the old video was set to
 		const onLoadStart = () => {
-			onVolumeChange(volume, muted); // TODO: check that this works
+			videoRef.volume = volume; // TODO: check that this works
+			videoRef.muted = muted;
 		};
 
-		const onVolumeChangeInner = () => {
+		const onVolumeChange = () => {
 			setVolume(videoRef.volume);
 			setMuted(videoRef.muted);
-			onVolumeChange(videoRef.volume, videoRef.muted);
 		};
 
 		videoRef.addEventListener('loadstart', onLoadStart);
-		videoRef.addEventListener('volumechange', onVolumeChangeInner);
+		videoRef.addEventListener('volumechange', onVolumeChange);
 
 		return () => {
 			videoRef.removeEventListener('loadstart', onLoadStart);
-			videoRef.removeEventListener('volumechange', onVolumeChangeInner);
+			videoRef.removeEventListener('volumechange', onVolumeChange);
 		};
-	}, [muted, volume, onVolumeChange, videoRef]);
+	}, [muted, volume, videoRef]);
 
 	return React.useMemo(
 		() => ({
+			volume,
+			muted,
 			onVolumeChange: volume => {
 				if (videoRef) videoRef.volume = volume;
 			},
@@ -40,6 +43,6 @@ export default function useVolume({ onVolumeChange }) {
 				if (videoRef) videoRef.muted = !videoRef.muted;
 			},
 		}),
-		[videoRef]
+		[volume, muted, videoRef]
 	);
 }

@@ -32,15 +32,7 @@ const useSliderStyles = makeStyles({
 
 export default function VolumeInput() {
 	const classes = useStyles();
-	const [volume, setVolume] = React.useState(1);
-	const [muted, setMuted] = React.useState(1);
-
-	const { onVolumeChange, onToggleMute } = useVolume({
-		onVolumeChange: React.useCallback((volume, muted) => {
-			setVolume(volume);
-			setMuted(muted);
-		}, []),
-	});
+	const { volume, muted, onVolumeChange, onToggleMute } = useVolume();
 
 	const throttledOnChange = React.useCallback(throttle(onVolumeChange, 300), [onVolumeChange]);
 
@@ -52,7 +44,7 @@ export default function VolumeInput() {
 				value={volume}
 				onChange={(e, v) => {
 					const volume = parseFloat(v);
-					setVolume(volume);
+					onVolumeChange(volume);
 					throttledOnChange(volume);
 				}}
 				max={1}

@@ -1,16 +1,16 @@
 import * as React from 'react';
 import { useVideoDom } from './video-dom.context';
 
-export default function useFullscreen({ onFullscreenChange } = {}) {
+export default function useFullscreen() {
+	const [fullscreen, setFullscreen] = React.useState(false);
+
 	const { videoContainerRef } = useVideoDom();
 
 	React.useEffect(() => {
-		if (!onFullscreenChange) return;
-
-		const onFullscreenChangeInner = () => onFullscreenChange(!!(document.fullScreen || document.fullscreenElement));
-		const onWebkitFullscreenChangeInner = () => onFullscreenChange(!!document.webkitIsFullScreen);
-		const onMozFullscreenChangeInner = () => onFullscreenChange(!!document.mozFullScreen);
-		const onMsFullscreenChangeInner = () => onFullscreenChange(!!document.msFullscreenElement);
+		const onFullscreenChangeInner = () => setFullscreen(!!(document.fullScreen || document.fullscreenElement));
+		const onWebkitFullscreenChangeInner = () => setFullscreen(!!document.webkitIsFullScreen);
+		const onMozFullscreenChangeInner = () => setFullscreen(!!document.mozFullScreen);
+		const onMsFullscreenChangeInner = () => setFullscreen(!!document.msFullscreenElement);
 
 		document.addEventListener('fullscreenchange', onFullscreenChangeInner);
 		document.addEventListener('webkitfullscreenchange', onWebkitFullscreenChangeInner);
@@ -23,10 +23,11 @@ export default function useFullscreen({ onFullscreenChange } = {}) {
 			document.removeEventListener('mozfullscreenchange', onMozFullscreenChangeInner);
 			document.removeEventListener('msfullscreenchange', onMsFullscreenChangeInner);
 		};
-	}, [onFullscreenChange]);
+	}, []);
 
 	return React.useMemo(
 		() => ({
+			fullscreen,
 			onToggleFullscreen: () => {
 				if (isFullScreen()) {
 					if (document.exitFullscreen) document.exitFullscreen();
@@ -42,7 +43,7 @@ export default function useFullscreen({ onFullscreenChange } = {}) {
 				}
 			},
 		}),
-		[videoContainerRef]
+		[fullscreen, videoContainerRef]
 	);
 }
 
