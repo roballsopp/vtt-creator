@@ -5,9 +5,8 @@ import useDuration from './use-duration.hook';
 
 export default function PlayTime() {
 	const [currentTime, onTimeUpdate] = React.useState(0);
-	const [duration, onDurationChange] = React.useState(0);
 	usePlayProgress({ onTimeUpdate });
-	useDuration({ onDurationChange });
+	const { duration } = useDuration();
 	return (
 		<Typography variant="subtitle2">
 			{formatSeconds(currentTime)} / {formatSeconds(duration)}

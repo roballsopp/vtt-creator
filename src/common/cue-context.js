@@ -17,7 +17,7 @@ CuesProvider.propTypes = {
 	children: PropTypes.node.isRequired,
 };
 
-export function CuesProvider(props) {
+export function CuesProvider({ children }) {
 	const [cues, setCues] = React.useState([]);
 	const [loading, onLoadingCues] = React.useState(false);
 
@@ -26,46 +26,37 @@ export function CuesProvider(props) {
 		setCues(orderedCues);
 	}, []);
 
-	const onChangeCue = React.useCallback(
-		(cue, i, reorder) => {
-			const newCues = cues.slice();
-			newCues[i] = cue;
-			onChangeCues(newCues, reorder);
-		},
-		[cues, onChangeCues]
-	);
-
-	const onAddCue = React.useCallback(() => {
-		if (cues.length) {
-			const lastCue = cues[cues.length - 1];
-			return onChangeCues(cues.concat(new VTTCue(lastCue.endTime, lastCue.endTime + 2, '')));
-		}
-		return onChangeCues([new VTTCue(0, 2, '')]);
-	}, [cues, onChangeCues]);
-
-	const onRemoveCue = React.useCallback(
-		i => {
-			const newCues = cues.slice();
-			newCues.splice(i, 1);
-			return onChangeCues(newCues);
-		},
-		[cues, onChangeCues]
-	);
-
 	return (
 		<CuesContext.Provider
-			value={{
-				cues,
-				loading,
-				onAddCue,
-				onRemoveCue,
-				// onChangeCue args (cue, i, reorder)
-				onChangeCue,
-				// onChangeCues args (cue, reorder)
-				onChangeCues,
-				onLoadingCues,
-			}}>
-			{props.children}
+			value={React.useMemo(
+				() => ({
+					cues,
+					loading,
+					onAddCue: () => {
+						if (cues.length) {
+							const lastCue = cues[cues.length - 1];
+							return onChangeCues(cues.concat(new VTTCue(lastCue.endTime, lastCue.endTime + 2, '')));
+						}
+						return onChangeCues([new VTTCue(0, 2, '')]);
+					},
+					onRemoveCue: i => {
+						const newCues = cues.slice();
+						newCues.splice(i, 1);
+						return onChangeCues(newCues);
+					},
+					// onChangeCue args (cue, i, reorder)
+					onChangeCue: (cue, i, reorder) => {
+						const newCues = cues.slice();
+						newCues[i] = cue;
+						onChangeCues(newCues, reorder);
+					},
+					// onChangeCues args (cue, reorder)
+					onChangeCues,
+					onLoadingCues,
+				}),
+				[cues, loading, onChangeCues]
+			)}>
+			{children}
 		</CuesContext.Provider>
 	);
 }

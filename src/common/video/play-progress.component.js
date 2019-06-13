@@ -42,8 +42,7 @@ export default function PlayProgress() {
 	const [playheadRef, setPlayheadRef] = React.useState();
 	const classes = useStyles({ playpos, progressElRef });
 
-	const [duration, onDurationChange] = React.useState(0);
-	useDuration({ onDurationChange });
+	const { duration } = useDuration();
 
 	const { onSeek } = usePlayProgress({
 		onTimeUpdate: React.useCallback(

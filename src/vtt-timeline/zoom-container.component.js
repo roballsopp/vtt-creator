@@ -30,21 +30,13 @@ ZoomContainer.propTypes = {
 };
 
 export default function ZoomContainer({ children }) {
-	const [pixelsPerSec] = React.useState(200);
-	const [width, setWidth] = React.useState('100%');
 	const classes = useStyles();
-
+	const [pixelsPerSec] = React.useState(200);
 	const [zoomContainerRef, setZoomContainerRef] = React.useState();
 	const [zoomContainerRect, setZoomContainerRect] = React.useState({});
+	const { duration } = usePlayerDuration();
 
-	usePlayerDuration({
-		onDurationChange: React.useCallback(
-			duration => {
-				setWidth(Number.isFinite(duration) ? Math.round(pixelsPerSec * duration) : '100%');
-			},
-			[pixelsPerSec]
-		),
-	});
+	const width = Number.isFinite(duration) ? Math.round(pixelsPerSec * duration) : '100%';
 
 	React.useLayoutEffect(() => {
 		if (zoomContainerRef) {

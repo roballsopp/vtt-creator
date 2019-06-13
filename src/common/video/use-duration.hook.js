@@ -1,24 +1,26 @@
 import * as React from 'react';
 import { useVideoDom } from './video-dom.context';
 
-export default function useDuration({ onDurationChange }) {
+export default function useDuration() {
 	const { videoRef } = useVideoDom();
+	const [duration, setDuration] = React.useState(0);
 
 	React.useEffect(() => {
-		const onDurationChangeInner = () => {
-			onDurationChange(videoRef.duration);
+		if (!videoRef) return;
+
+		// TODO: figure out why this is necessary. components unmounting and resetting state above to 0?
+		setDuration(videoRef.duration);
+
+		const onDurationChange = () => {
+			setDuration(videoRef.duration);
 		};
 
-		if (videoRef) {
-			// if a component using this hook unmounts, we want to fire duration again when it remounts
-			onDurationChange(videoRef.duration);
-			videoRef.addEventListener('durationchange', onDurationChangeInner);
-		}
+		videoRef.addEventListener('durationchange', onDurationChange);
 
 		return () => {
-			if (videoRef) {
-				videoRef.removeEventListener('durationchange', onDurationChangeInner);
-			}
+			videoRef.removeEventListener('durationchange', onDurationChange);
 		};
-	}, [videoRef, onDurationChange]);
+	}, [videoRef]);
+
+	return React.useMemo(() => ({ duration }), [duration]);
 }
