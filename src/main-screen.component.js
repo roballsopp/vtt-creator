@@ -42,7 +42,7 @@ export default function MainScreen() {
 							<AppBar position="static" color="primary">
 								<Toolbar>
 									<Typography variant="h6" color="inherit" style={{ flexGrow: 1 }}>
-										Caption List
+										VTT Creator
 									</Typography>
 									<VttMenu />
 								</Toolbar>
