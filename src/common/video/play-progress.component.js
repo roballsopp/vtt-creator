@@ -4,6 +4,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import { makeStyles } from '@material-ui/styles';
 import usePlayProgress from './use-play-progress.hook';
 import useDuration from './use-duration.hook';
+import useDragging from '../use-dragging.hook';
 
 const PLAYHEAD_RADIUS = 6;
 
@@ -38,6 +39,7 @@ export default function PlayProgress() {
 	const progressElRef = React.useRef();
 	const [dragging, setDragging] = React.useState(false);
 	const [playpos, setPlaypos] = React.useState(0);
+	const [playheadRef, setPlayheadRef] = React.useState();
 	const classes = useStyles({ playpos, progressElRef });
 
 	const [duration, onDurationChange] = React.useState(0);
@@ -70,36 +72,27 @@ export default function PlayProgress() {
 		getPlayposFromMouseEvent,
 	]);
 
-	const onDownPlayhead = React.useCallback(e => {
-		e.stopPropagation();
-		setDragging(true);
-	}, []);
-
-	React.useEffect(() => {
-		const onMouseUp = () => {
-			setDragging(false);
-			throttledSeek.flush();
-		};
-		const onMovePlayhead = e => {
-			if (dragging) {
+	useDragging(playheadRef, {
+		onDragStart: React.useCallback(() => setDragging(true), []),
+		onDragging: React.useCallback(
+			e => {
 				const playpos = getPlayposFromMouseEvent(e);
 				setPlaypos(playpos);
 				throttledSeek(playpos);
-			}
-		};
-		window.addEventListener('mouseup', onMouseUp);
-		window.addEventListener('mousemove', onMovePlayhead);
-		return () => {
-			window.removeEventListener('mouseup', onMouseUp);
-			window.removeEventListener('mousemove', onMovePlayhead);
-		};
-	}, [dragging, throttledSeek, getPlayposFromMouseEvent]);
+			},
+			[getPlayposFromMouseEvent, throttledSeek]
+		),
+		onDragEnd: React.useCallback(() => {
+			throttledSeek.flush();
+			setDragging(false);
+		}, [throttledSeek]),
+	});
 
 	return (
 		<div className={classes.root} onClick={onClickProgressBar}>
 			<div className={classes.playheadContainer}>
 				<LinearProgress ref={progressElRef} variant="determinate" value={playpos * 100} />
-				<div className={classes.playhead} onMouseDown={onDownPlayhead} />
+				<div ref={setPlayheadRef} className={classes.playhead} onMouseDown={e => e.stopPropagation()} />
 			</div>
 		</div>
 	);
