@@ -1,20 +1,19 @@
 const path = require('path');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const { DefinePlugin } = require('webpack');
-const envConfig = require('./env-config')('.env.dev');
+const envConfig = require('./env-config')('.env.demo');
 
 module.exports = {
 	entry: {
 		main: ['./src/polyfills', './src/index.js'],
 	},
-	mode: 'development',
+	mode: 'production',
 	output: {
 		// [name] will just be replaced with the corresponding key from the entry object above ([name].js becomes main.js)
 		filename: '[name].js',
-		path: path.resolve(__dirname, 'dist'),
-		publicPath: '/dist/',
+		path: path.resolve(__dirname, 'docs'),
+		publicPath: '/docs/',
 	},
-	// map webpack's output back to source files when debugging in chrome https://webpack.js.org/guides/development#using-source-maps
-	devtool: 'inline-source-map',
 	module: {
 		rules: [
 			{
@@ -31,10 +30,7 @@ module.exports = {
 		// by explicitly writing out 'process.env.API_URL'. It won't work if you do const { API_URL } = process.env;
 		new DefinePlugin(envConfig),
 	],
-	devServer: {
-		contentBase: path.join(__dirname, 'public/'),
-		port: process.env.PORT,
-		publicPath: 'http://localhost:3000/dist/',
-		hotOnly: true,
+	optimization: {
+		minimizer: [new UglifyJsPlugin()],
 	},
 };

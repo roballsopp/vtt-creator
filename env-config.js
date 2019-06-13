@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const getEnvVar = (name, { optional } = { optional: false }) => {
 	const envVar = process.env[name];
 	if (!optional && !envVar) {
@@ -9,7 +7,10 @@ const getEnvVar = (name, { optional } = { optional: false }) => {
 	return JSON.stringify(envVar);
 };
 
-module.exports = {
-	API_URL: getEnvVar('API_URL'),
-	DISABLE_API: getEnvVar('DISABLE_API', { optional: true }),
+module.exports = envFile => {
+	require('dotenv').config({ path: envFile });
+
+	return {
+		API_URL: getEnvVar('API_URL', { optional: true }),
+	};
 };
