@@ -11,4 +11,5 @@ const getEnvVar = (name, { optional } = { optional: false }) => {
 
 module.exports = {
 	API_URL: getEnvVar('API_URL'),
+	DISABLE_API: getEnvVar('DISABLE_API', { optional: true }),
 };
