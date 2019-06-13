@@ -33,6 +33,12 @@ export const initSpeechToTextOp = async (filename, options = {}) => {
 	throw new Error(resp.statusText);
 };
 
+export const getSpeechToTextLanguages = async () => {
+	const resp = await fetch(`${ApiURL}/speech-to-text/languages`);
+	if (resp.ok) return await resp.json();
+	throw new Error(resp.statusText);
+};
+
 export const pollSpeechToTextOp = (operationId, interval = 1000, timeout = 10000) => {
 	return new Promise((resolve, reject) => {
 		const intervalId = setInterval(async () => {

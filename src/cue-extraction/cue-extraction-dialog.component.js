@@ -21,7 +21,13 @@ import UploadProgress, {
 	UPLOAD_STATE_UPLOADING,
 } from './upload-progress.component';
 import { getAudioBlobFromVideo } from '../services/av.service';
-import { getUploadUrl, initSpeechToTextOp, pollSpeechToTextOp, uploadFile } from '../services/rest-api.service';
+import {
+	getUploadUrl,
+	initSpeechToTextOp,
+	pollSpeechToTextOp,
+	uploadFile,
+	getSpeechToTextLanguages,
+} from '../services/rest-api.service';
 import { useToast } from '../common';
 
 const Title = styled(DialogTitle)({
@@ -42,9 +48,18 @@ export default function CueExtractionDialog({ open, videoFile, onRequestClose, o
 	const [progressBytes, setProgressBytes] = React.useState(0);
 	const [totalBytes, setTotalBytes] = React.useState(0);
 	const [uploadState, setUploadState] = React.useState();
-	const [languageCode, setLanguageCode] = React.useState('en-GB');
+	const [languageCode, setLanguageCode] = React.useState('en-US');
+	const [languages, setLanguages] = React.useState([]);
 
 	const toast = useToast();
+
+	React.useEffect(() => {
+		const getLanguages = async () => {
+			const { languages } = await getSpeechToTextLanguages();
+			setLanguages(languages);
+		};
+		getLanguages();
+	}, []);
 
 	const extractCuesFromVideo = async e => {
 		setExtracting(true);
@@ -105,8 +120,9 @@ export default function CueExtractionDialog({ open, videoFile, onRequestClose, o
 								name: 'select-language',
 								id: 'select-language',
 							}}>
-							<MenuItem value="en-US">English (American)</MenuItem>
-							<MenuItem value="en-GB">English (British)</MenuItem>
+							{languages.map(lang => (
+								<MenuItem key={lang.value} value={lang.value}>{lang.display}</MenuItem>
+							))}
 						</Select>
 						<FormHelperText>In what language is the video content spoken?</FormHelperText>
 					</FormControl>
