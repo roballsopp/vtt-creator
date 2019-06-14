@@ -7,6 +7,7 @@ import { List, Loader, useCues, CueProvider } from '../common';
 import CueEditor from './cue-editor.component';
 import { AutoScrollProvider } from './auto-scroll.context';
 import AutoScrollItem from './auto-scroll-item.component';
+import CueLoader from './cue-loader.component';
 
 const useStyles = makeStyles({
 	root: {
@@ -36,8 +37,9 @@ export default function VTTEditor() {
 
 	return (
 		<div className={classes.root}>
-			<AutoScrollProvider>
-				{!loading && (
+			{!loading && !cues.length && <CueLoader />}
+			{!loading && (
+				<AutoScrollProvider>
 					<List
 						className={classes.list}
 						data={cues}
@@ -52,9 +54,9 @@ export default function VTTEditor() {
 							</CueProvider>
 						)}
 					/>
-				)}
-				{loading && <Loader />}
-			</AutoScrollProvider>
+				</AutoScrollProvider>
+			)}
+			{loading && <Loader />}
 			<FabButton className={classes.fab} color="primary" aria-label="Add Cue" onClick={onAddCue}>
 				<AddIcon />
 			</FabButton>
