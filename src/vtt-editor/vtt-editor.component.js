@@ -9,10 +9,14 @@ import { AutoScrollProvider } from './auto-scroll.context';
 import AutoScrollItem from './auto-scroll-item.component';
 
 const useStyles = makeStyles({
-	listRoot: {
+	root: {
+		position: 'relative',
+		height: '100%',
 		width: 400,
-		paddingTop: 4,
-		paddingBottom: 90,
+	},
+	list: {
+		marginTop: 4,
+		marginBottom: 90,
 	},
 	cueEditor: {
 		padding: 16,
@@ -21,12 +25,6 @@ const useStyles = makeStyles({
 		position: 'absolute',
 		bottom: 16,
 		right: 16,
-	},
-	fabContainer: {
-		height: '100%',
-		display: 'flex',
-		flexDirection: 'column',
-		position: 'relative',
 	},
 });
 
@@ -37,10 +35,11 @@ export default function VTTEditor() {
 	const { cues, loading, onAddCue } = useCues();
 
 	return (
-		<div className={classes.fabContainer}>
-			<AutoScrollProvider className={classes.listRoot}>
+		<div className={classes.root}>
+			<AutoScrollProvider>
 				{!loading && (
 					<List
+						className={classes.list}
 						data={cues}
 						// TODO: its unlikely but possible for two cues to have the exact same start time
 						getKey={cue => cue.startTime}

@@ -7,7 +7,16 @@ const AutoScrollContext = React.createContext({});
 
 const useStyles = makeStyles({
 	root: {
+		position: 'relative',
 		height: '100%',
+		width: '100%',
+	},
+	inner: {
+		position: 'absolute',
+		top: 0,
+		right: 0,
+		bottom: 0,
+		left: 0,
 		overflowY: 'scroll',
 		scrollBehavior: 'smooth',
 	},
@@ -32,8 +41,10 @@ export function AutoScrollProvider({ children, className }) {
 				}),
 				[scrollContainerRef]
 			)}>
-			<div className={clsx(classes.root, className)} ref={setScrollContainerRef}>
-				{children}
+			<div className={clsx(className, classes.root)}>
+				<div className={classes.inner} ref={setScrollContainerRef}>
+					{children}
+				</div>
 			</div>
 		</AutoScrollContext.Provider>
 	);
