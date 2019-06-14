@@ -1,3 +1,4 @@
+import ErrorBoundary from './error-boundary.component';
 import FixedAspectRatio from './fixed-aspect-ratio.component';
 import List from './list.component';
 import Loader from './loader.component';
@@ -8,6 +9,7 @@ import useFileSelector from './use-file-selector.hook';
 import useDragging from './use-dragging.hook';
 
 export {
+	ErrorBoundary,
 	FixedAspectRatio,
 	List,
 	Loader,
