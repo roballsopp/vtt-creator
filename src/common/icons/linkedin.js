@@ -4,9 +4,11 @@ import SvgIcon from '@material-ui/core/SvgIcon';
 
 const path = linkedinIcon.svg.match(/d="([^"]+)"/)[1];
 
-export default function Linkedin() {
+Linkedin.propTypes = SvgIcon.propTypes;
+
+export default function Linkedin(props) {
 	return (
-		<SvgIcon>
+		<SvgIcon {...props}>
 			<path d={path} />
 		</SvgIcon>
 	);

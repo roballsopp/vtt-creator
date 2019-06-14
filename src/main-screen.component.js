@@ -11,7 +11,6 @@ import VttMenu from './vtt-menu.component';
 import Player from './player';
 import VTTEditor from './vtt-editor';
 import { VideoDomProvider } from './common/video';
-import MoreIcon from '@material-ui/core/SvgIcon/SvgIcon';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -77,7 +76,9 @@ export default function MainScreen() {
 							</div>
 						</main>
 						<Paper square className={classes.footer} elevation={8}>
-							<Typography variant="body2" color="inherit">Created by Robert Allsopp</Typography>
+							<Typography variant="body2" color="inherit">
+								Created by Robert Allsopp
+							</Typography>
 							<div className={classes.footerDivider} />
 							<IconButton
 								edge="start"
@@ -87,7 +88,7 @@ export default function MainScreen() {
 								aria-label="Robert's LinkedIn Profile"
 								href="https://www.linkedin.com/in/robertallsopp"
 								style={{ marginRight: 12 }}>
-								<LinkedIn />
+								<LinkedIn fontSize="small" />
 							</IconButton>
 							<IconButton
 								size="small"
@@ -95,7 +96,7 @@ export default function MainScreen() {
 								color="inherit"
 								aria-label="Robert's Github Profile"
 								href="https://github.com/roballsopp">
-								<Github />
+								<Github fontSize="small" />
 							</IconButton>
 						</Paper>
 					</div>
