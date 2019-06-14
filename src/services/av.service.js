@@ -26,3 +26,23 @@ export const getAudioBlobFromVideo = async file => {
 		reader.readAsArrayBuffer(file);
 	});
 };
+
+export const getSupportedVideoFileExtensions = () => {
+	const video = document.createElement('video');
+
+	const canPlay = {
+		mp4: video.canPlayType('video/mp4'),
+		ogg: video.canPlayType('video/ogg'),
+		webm: video.canPlayType('video/webm'),
+		mov: video.canPlayType('video/mov'),
+		avi: video.canPlayType('video/avi'),
+	};
+
+	const extensionList = [];
+
+	for (let ext in canPlay) {
+		if (canPlay[ext]) extensionList.push(`.${ext}`);
+	}
+
+	return extensionList;
+};

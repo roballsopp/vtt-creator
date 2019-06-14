@@ -5,6 +5,9 @@ import { useFileSelector, useVideoFile } from '../common';
 import { Video as BaseVideo } from '../common/video';
 import VideoOptionsMenu from './video-options-menu.component';
 import VttTrack from './vtt-track.component';
+import { getSupportedVideoFileExtensions } from '../services/av.service';
+
+const ACCEPT = getSupportedVideoFileExtensions().join(',');
 
 const useStyles = makeStyles({
 	video: {
@@ -36,7 +39,7 @@ export default function Video() {
 		[src, onVideoFile]
 	);
 
-	const openFileSelector = useFileSelector({ accept: 'video/*', onFilesSelected });
+	const openFileSelector = useFileSelector({ accept: ACCEPT, onFilesSelected });
 
 	if (!src) {
 		return (
