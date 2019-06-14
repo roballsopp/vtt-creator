@@ -9,7 +9,6 @@ import * as React from 'react';
 // };
 const defaultOptions = {
 	accept: '*',
-	sizeLimitMb: 50,
 };
 export default function useFileSelector(inputOptions = {}) {
 	const options = {

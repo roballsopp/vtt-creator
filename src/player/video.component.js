@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/styles';
-import { useFileSelector, useVideoFile } from '../common';
+import { useFileSelector, useToast, useVideoFile } from '../common';
 import { Video as BaseVideo } from '../common/video';
 import VideoOptionsMenu from './video-options-menu.component';
 import VttTrack from './vtt-track.component';
@@ -26,6 +26,7 @@ const useStyles = makeStyles({
 export default function Video() {
 	const [src, setSrc] = React.useState();
 	const classes = useStyles();
+	const toast = useToast();
 	const { onVideoFile } = useVideoFile();
 
 	const onFilesSelected = React.useCallback(
@@ -39,7 +40,11 @@ export default function Video() {
 		[src, onVideoFile]
 	);
 
-	const openFileSelector = useFileSelector({ accept: ACCEPT, onFilesSelected });
+	const onFileSizeExceeded = React.useCallback(() => {
+		toast.error('The file you have selected is too large.');
+	}, [toast]);
+
+	const openFileSelector = useFileSelector({ accept: ACCEPT, onFilesSelected, onFileSizeExceeded });
 
 	if (!src) {
 		return (
