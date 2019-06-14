@@ -121,7 +121,9 @@ export default function CueExtractionDialog({ open, videoFile, onRequestClose, o
 								id: 'select-language',
 							}}>
 							{languages.map(lang => (
-								<MenuItem key={lang.value} value={lang.value}>{lang.display}</MenuItem>
+								<MenuItem key={lang.value} value={lang.value}>
+									{lang.display}
+								</MenuItem>
 							))}
 						</Select>
 						<FormHelperText>In what language is the video content spoken?</FormHelperText>

@@ -1,2 +1,3 @@
-dist/**/*
+dist/*
+docs/*
 node_modules/*
