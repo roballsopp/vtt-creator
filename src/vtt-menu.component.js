@@ -11,7 +11,7 @@ import { makeStyles } from '@material-ui/styles';
 import { useFileSelector, useToast, useCues, useVideoFile } from './common';
 import { getVTTFromCues, getCuesFromWords, getCuesFromVTT } from './services/vtt.service';
 import CueExtractionDialog from './cue-extraction/cue-extraction-dialog.component';
-import { DisableApi } from './config';
+import { apiDisabled } from './config';
 
 const useStyles = makeStyles({
 	root: {
@@ -95,7 +95,7 @@ export default function MainScreen() {
 					<CloudUploadIcon className={classes.menuIcon} />
 					Load from VTT file...
 				</MenuItem>
-				<MenuItem disabled={DisableApi || !videoFile} onClick={onOpenCueExtractionDialog}>
+				<MenuItem disabled={apiDisabled || !videoFile} onClick={onOpenCueExtractionDialog}>
 					<VoiceChatIcon className={classes.menuIcon} />
 					Extract from video...
 				</MenuItem>
@@ -104,12 +104,14 @@ export default function MainScreen() {
 					Save to VTT file...
 				</MenuItem>
 			</Menu>
-			<CueExtractionDialog
-				open={cueExtractionDialogOpen}
-				videoFile={videoFile}
-				onRequestClose={onCloseCueExtractionDialog}
-				onExtractComplete={onCueExtractComplete}
-			/>
+			{!apiDisabled && (
+				<CueExtractionDialog
+					open={cueExtractionDialogOpen}
+					videoFile={videoFile}
+					onRequestClose={onCloseCueExtractionDialog}
+					onExtractComplete={onCueExtractComplete}
+				/>
+			)}
 		</React.Fragment>
 	);
 }
