@@ -27,16 +27,16 @@ const useStyles = makeStyles(theme => ({
 		display: 'flex',
 		justifyContent: 'center',
 		alignItems: 'center',
-		height: 64,
+		height: 48,
 		backgroundColor: theme.palette.primary.main,
 		color: 'white',
 		zIndex: 1,
 	},
 	footerDivider: {
 		borderLeft: '2px solid white',
-		marginLeft: 28,
-		width: 28,
-		height: 36,
+		marginLeft: 18,
+		width: 20,
+		height: 28,
 	},
 	footerButton: {
 		marginRight: 20,
@@ -77,18 +77,20 @@ export default function MainScreen() {
 							</div>
 						</main>
 						<Paper square className={classes.footer} elevation={8}>
-							<Typography color="inherit">Created by Robert Allsopp</Typography>
+							<Typography variant="body2" color="inherit">Created by Robert Allsopp</Typography>
 							<div className={classes.footerDivider} />
 							<IconButton
 								edge="start"
+								size="small"
 								component="a"
 								color="inherit"
 								aria-label="Robert's LinkedIn Profile"
 								href="https://www.linkedin.com/in/robertallsopp"
-								style={{ marginRight: 4 }}>
+								style={{ marginRight: 12 }}>
 								<LinkedIn />
 							</IconButton>
 							<IconButton
+								size="small"
 								component="a"
 								color="inherit"
 								aria-label="Robert's Github Profile"
