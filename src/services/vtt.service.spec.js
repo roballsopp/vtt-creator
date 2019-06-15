@@ -47,7 +47,7 @@ The Volvo group code of conduct is an important tool
 00:03.700 --> 00:07.800
 for anyone who works on Volvo's behalf. So, how do
 
-00:07.800 --> 00:10.900
+00:07.800 --> 00:10:900
 you use it first read through the whole document
 
 00:10.900 --> 00:12.500
