@@ -10,18 +10,23 @@ export const getAudioBlobFromVideo = async file => {
 
 		reader.addEventListener('load', () => {
 			const decodeCtx = new AudioContext({ sampleRate: SAMPLE_RATE });
+			// using callback style for safari compatibility
 			decodeCtx.decodeAudioData(
 				reader.result,
 				decodedBuffer => {
 					// TODO: all this garbage just to convert to mono...i think...improvements?
 					const offlineCtx = new OfflineAudioContext(1, decodedBuffer.length, SAMPLE_RATE);
 					const soundSource = offlineCtx.createBufferSource();
+
 					soundSource.buffer = decodedBuffer;
 					soundSource.connect(offlineCtx.destination);
 					soundSource.start();
+
+					// using event style for safari compatibility
 					offlineCtx.addEventListener('complete', e => {
 						resolve(encodeWAV(e.renderedBuffer));
 					});
+
 					offlineCtx.startRendering();
 				},
 				resp => reject(resp.err)
