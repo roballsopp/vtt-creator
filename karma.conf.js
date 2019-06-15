@@ -33,7 +33,6 @@ module.exports = config => {
 		colors: true,
 		logLevel: config.LOG_INFO,
 		browsers: ['ChromeHeadless'],
-		autoWatch: true,
 		concurrency: Infinity,
 	});
 };
