@@ -1,4 +1,3 @@
-const path = require('path');
 const { DefinePlugin } = require('webpack');
 const envConfig = require('./env-config');
 
@@ -10,13 +9,8 @@ module.exports = config => {
 			'./test/webpack-test-entry.js': ['webpack'],
 		},
 		webpack: {
-			mode: 'development',
-			output: {
-				filename: 'test.js',
-				path: path.resolve(__dirname, 'dist'),
-				publicPath: '/dist/',
-			},
-			devtool: 'inline-source-map',
+			mode: 'production',
+			// output not necessary, webpack does it all in-memory
 			module: {
 				rules: [
 					{

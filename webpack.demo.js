@@ -9,10 +9,8 @@ module.exports = {
 	},
 	mode: 'production',
 	output: {
-		// [name] will just be replaced with the corresponding key from the entry object above ([name].js becomes main.js)
-		filename: '[name].js',
+		// the filename will just be the corresponding key from the entry object above (entry.main becomes docs/main.js)
 		path: path.resolve(__dirname, 'docs'),
-		publicPath: '/docs/',
 	},
 	module: {
 		rules: [

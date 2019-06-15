@@ -7,12 +7,7 @@ module.exports = {
 		main: ['./src/polyfills', './src/index.js'],
 	},
 	mode: 'development',
-	output: {
-		// [name] will just be replaced with the corresponding key from the entry object above ([name].js becomes main.js)
-		filename: '[name].js',
-		path: path.resolve(__dirname, 'dist'),
-		publicPath: '/dist/',
-	},
+	// no `output` necessary, devServer builds and serves files in memory. files are named according to `entry` key
 	// map webpack's output back to source files when debugging in chrome https://webpack.js.org/guides/development#using-source-maps
 	devtool: 'inline-source-map',
 	module: {
@@ -32,9 +27,11 @@ module.exports = {
 		new DefinePlugin(envConfig),
 	],
 	devServer: {
-		contentBase: path.join(__dirname, 'public/'),
+		// where to get static files (index.html)
+		contentBase: path.join(__dirname, 'public'),
 		port: process.env.PORT,
-		publicPath: 'http://localhost:3000/dist/',
+		// where to serve bundles from (main.js will be available at http://localhost:<port>/<publicPath>)
+		publicPath: '/',
 		hotOnly: true,
 	},
 };
