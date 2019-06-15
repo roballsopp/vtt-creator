@@ -5,6 +5,10 @@ addons:
   chrome: stable
 install:
   - yarn
-script:
-  - yarn lint
-  - yarn test
+jobs:
+  include:
+    - stage: test
+      name: "Lint"
+      script: yarn lint
+    - script: yarn test-ci
+      name: "Test"
