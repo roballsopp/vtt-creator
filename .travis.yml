@@ -11,4 +11,4 @@ jobs:
       name: "Lint"
       script: yarn lint
     - script: yarn test-ci
-    - name: "Test"
+      name: "Test"
