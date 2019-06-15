@@ -32,5 +32,6 @@ module.exports = {
 		port: process.env.PORT,
 		// where to serve bundles from (main.js will be available at http://localhost:<port>/<publicPath>)
 		publicPath: '/',
+		overlay: true,
 	},
 };
