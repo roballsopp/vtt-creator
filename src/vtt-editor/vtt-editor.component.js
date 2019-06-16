@@ -38,7 +38,7 @@ export default function VTTEditor() {
 	return (
 		<div className={classes.root}>
 			{!loading && !cues.length && <CueLoader />}
-			{!loading && (
+			{!loading && cues.length && (
 				<AutoScrollProvider>
 					<List
 						className={classes.list}

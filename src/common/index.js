@@ -1,3 +1,4 @@
+import DonateButton from './donate-button.component';
 import ErrorBoundary from './error-boundary.component';
 import FixedAspectRatio from './fixed-aspect-ratio.component';
 import List from './list.component';
@@ -9,6 +10,7 @@ import useFileSelector from './use-file-selector.hook';
 import useDragging from './use-dragging.hook';
 
 export {
+	DonateButton,
 	ErrorBoundary,
 	FixedAspectRatio,
 	List,
