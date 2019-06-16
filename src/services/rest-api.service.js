@@ -62,3 +62,16 @@ export const pollSpeechToTextOp = (operationId, interval = 1000, timeout = 10000
 		}, timeout);
 	});
 };
+
+export const createStripeSession = async item => {
+	const resp = await fetch(`${ApiURL}/stripe/session`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ item, returnUrl: 'http://localhost:3000' }),
+	});
+
+	if (resp.ok) return await resp.json();
+	throw new Error(resp.statusText);
+};

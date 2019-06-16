@@ -12,5 +12,6 @@ module.exports = envFile => {
 
 	return {
 		API_URL: getEnvVar('API_URL', { optional: true }),
+		STRIPE_KEY: getEnvVar('STRIPE_KEY', { optional: true }),
 	};
 };

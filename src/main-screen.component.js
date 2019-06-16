@@ -5,7 +5,7 @@ import Paper from '@material-ui/core/Paper';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
-import { CuesProvider, VideoFileProvider } from './common';
+import { CuesProvider, VideoFileProvider, DonateButton } from './common';
 import { LinkedIn, Github } from './common/icons';
 import VttMenu from './vtt-menu.component';
 import Player from './player';
@@ -98,6 +98,8 @@ export default function MainScreen() {
 								href="https://github.com/roballsopp">
 								<Github fontSize="small" />
 							</IconButton>
+							<div className={classes.footerDivider} />
+							<DonateButton />
 						</Paper>
 					</div>
 				</VideoDomProvider>

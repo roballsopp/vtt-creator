@@ -11,7 +11,8 @@
     "react-hooks"
   ],
   "globals": {
-    "document": false
+    "document": false,
+    "Stripe": "readonly"
   },
   "parserOptions": {
     "ecmaVersion": 9,
