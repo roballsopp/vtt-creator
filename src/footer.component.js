@@ -61,7 +61,7 @@ export default function MainScreen() {
 			</div>
 			{!donationDisabled && (
 				<div className={classes.footerSection}>
-					<Typography variant="body2" color="inherit" style={{ marginRight: 20 }}>
+					<Typography variant="body2" color="inherit" style={{ marginRight: 16 }}>
 						Like this tool? Help me keep it running!
 					</Typography>
 					<DonateButton />

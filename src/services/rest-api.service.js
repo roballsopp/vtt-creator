@@ -69,7 +69,7 @@ export const createStripeSession = async ({ name, description, amount }) => {
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({ name, description, amount, returnUrl: 'http://localhost:3000' }),
+		body: JSON.stringify({ name, description, amount, returnUrl: location.href }),
 	});
 
 	if (resp.ok) return await resp.json();
