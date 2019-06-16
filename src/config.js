@@ -3,3 +3,4 @@
 export const ApiURL = API_URL;
 export const apiDisabled = !API_URL;
 export const StripeKey = STRIPE_KEY;
+export const donationDisabled = !STRIPE_KEY;
