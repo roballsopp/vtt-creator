@@ -138,6 +138,8 @@ export function storeCues(cues) {
 }
 
 export function getCuesFromStorage() {
-	const parsed = JSON.parse(localStorage.getItem(CUE_STORAGE_KEY));
+	const cueStr = localStorage.getItem(CUE_STORAGE_KEY);
+	if (!cueStr) return null;
+	const parsed = JSON.parse(cueStr);
 	return parsed.map(c => new VTTCue(c.startTime, c.endTime, c.text));
 }
