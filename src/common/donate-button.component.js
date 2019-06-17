@@ -36,7 +36,11 @@ export default function DonateButton() {
 
 	const onDonate = async () => {
 		try {
-			const { session } = await createStripeSession({ name: 'Donation', amount: Math.round(donationAmount * 100) });
+			const { session } = await createStripeSession({
+				name: 'Donation',
+				description: 'Thanks for your support!',
+				amount: Math.round(donationAmount * 100),
+			});
 
 			const stripe = Stripe(StripeKey);
 			const result = await stripe.redirectToCheckout({ sessionId: session.id });

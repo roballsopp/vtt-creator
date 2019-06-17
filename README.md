@@ -27,4 +27,4 @@ One of the features of this app is the ability to automatically extract the text
 
 If you are running the backend, you'll need to make sure the `API_URL` environment variable in the `.env.dev` file is set to point at your running api instance. This variable points at `http://localhost:3001` by default.
 
-If you are not running the backend, make sure the `API_URL` env var is empty or not present: `APIURL=`. This will disable any features in this application that require api access.
+If you are not running the backend, make sure the `API_URL` env var is empty or not present: `API_URL=`. This will disable any features in this application that require api access.
