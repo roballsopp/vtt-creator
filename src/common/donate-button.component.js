@@ -1,6 +1,5 @@
 import * as React from 'react';
 import MaskedInput from 'react-text-mask';
-import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Dialog from '@material-ui/core/Dialog';
@@ -10,8 +9,9 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import { makeStyles, styled } from '@material-ui/styles';
-import { useToast } from '../common';
+import { Button, useToast } from '../common';
 import { createStripeSession } from '../services/rest-api.service';
 import { StripeKey } from '../config';
 
@@ -33,15 +33,22 @@ export default function DonateButton() {
 
 	const [donationAmount, setDonationAmount] = React.useState();
 	const [dialogOpen, setDialogOpen] = React.useState(false);
+	const [loading, setLoading] = React.useState(false);
 
 	const onDonate = async () => {
+		setLoading(true);
 		try {
-			const { session } = await createStripeSession({ name: 'Donation', amount: Math.round(donationAmount * 100) });
+			const { session } = await createStripeSession({
+				name: 'Donation',
+				description: 'Thanks for your support!',
+				amount: Math.round(donationAmount * 100),
+			});
 
 			const stripe = Stripe(StripeKey);
 			const result = await stripe.redirectToCheckout({ sessionId: session.id });
 			if (result.error) throw result.error;
 		} catch (e) {
+			setLoading(false);
 			console.error(e);
 			toast.error('Something went wrong!');
 		}
@@ -95,6 +102,8 @@ export default function DonateButton() {
 						Cancel
 					</Button>
 					<Button
+						loading={loading}
+						icon={<ShoppingCartIcon />}
 						onClick={onDonate}
 						color="primary"
 						variant="contained"

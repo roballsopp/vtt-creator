@@ -1,5 +1,7 @@
 import { WebVTT } from 'vtt.js';
 
+const CUE_STORAGE_KEY = 'vtt_creator_cues';
+
 // http://bbc.github.io/subtitle-guidelines/
 // ideally follow these guidelines:
 // - 160-180 words per minute
@@ -128,4 +130,16 @@ export function getCuesFromVTT(file) {
 
 		reader.readAsText(file);
 	});
+}
+
+export function storeCues(cues) {
+	const reducedCues = cues.map(c => ({ startTime: c.startTime, endTime: c.endTime, text: c.text }));
+	localStorage.setItem(CUE_STORAGE_KEY, JSON.stringify(reducedCues));
+}
+
+export function getCuesFromStorage() {
+	const cueStr = localStorage.getItem(CUE_STORAGE_KEY);
+	if (!cueStr) return null;
+	const parsed = JSON.parse(cueStr);
+	return parsed.map(c => new VTTCue(c.startTime, c.endTime, c.text));
 }
