@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import sortBy from 'lodash.sortby';
 import { CuePropType } from './prop-types';
+import { useToast } from './toast-context';
 import { getCuesFromStorage, storeCues } from '../services/vtt.service';
 
 const CuesContext = React.createContext({
@@ -21,6 +22,7 @@ CuesProvider.propTypes = {
 export function CuesProvider({ children }) {
 	const [cues, setCues] = React.useState([]);
 	const [loading, onLoadingCues] = React.useState(true);
+	const toast = useToast();
 
 	const onChangeCues = React.useCallback((newCues, reorder) => {
 		const orderedCues = reorder ? sortBy(newCues, ['startTime']) : newCues;
@@ -29,11 +31,22 @@ export function CuesProvider({ children }) {
 
 	React.useEffect(() => {
 		const loadCuesFromStorage = () => {
-			const loadedCues = getCuesFromStorage();
+			try {
+				const loadedCues = getCuesFromStorage();
+				if (loadedCues) setCues(loadedCues);
+			} catch (e) {
+				console.error(e);
+				toast.error('There was a problem loading the cues from your last session.');
+			}
 			onLoadingCues(false);
-			if (loadedCues) setCues(loadedCues);
 		};
-		const saveCuesToStorage = () => storeCues(cues);
+		const saveCuesToStorage = () => {
+			try {
+				storeCues(cues);
+			} catch (e) {
+				console.error(e);
+			}
+		};
 
 		window.addEventListener('load', loadCuesFromStorage);
 		window.addEventListener('beforeunload', saveCuesToStorage);
