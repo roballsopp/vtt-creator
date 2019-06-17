@@ -24,12 +24,7 @@ export default function Button(props) {
 	if (loading) {
 		return (
 			<MuiButton {...buttonProps} disabled>
-				<CircularProgress
-					size={20}
-					variant="indeterminate" // $FlowFixMe the flow type is incorrect for circular progress color prop
-					color="inherit"
-					className={classes.loaderRoot}
-				/>
+				<CircularProgress size={20} variant="indeterminate" color="inherit" className={classes.loaderRoot} />
 				{children}
 			</MuiButton>
 		);
