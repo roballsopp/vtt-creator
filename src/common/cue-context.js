@@ -55,7 +55,7 @@ export function CuesProvider({ children }) {
 			window.removeEventListener('load', loadCuesFromStorage);
 			window.removeEventListener('beforeunload', saveCuesToStorage);
 		};
-	}, [cues]);
+	}, [cues, toast]);
 
 	return (
 		<CuesContext.Provider
