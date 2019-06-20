@@ -5,7 +5,7 @@ const envConfig = require('./env-config')('.env');
 
 module.exports = {
 	entry: {
-		main: ['./src/polyfills', './src/index.js'],
+		main: ['./src/full-story', './src/polyfills', './src/index.js'],
 	},
 	mode: 'production',
 	output: {
