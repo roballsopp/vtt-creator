@@ -13,5 +13,6 @@ module.exports = envFile => {
 	return {
 		API_URL: getEnvVar('API_URL', { optional: true }),
 		STRIPE_KEY: getEnvVar('STRIPE_KEY', { optional: true }),
+		SPEECH_TO_TEXT_JOB_TIMEOUT: getEnvVar('SPEECH_TO_TEXT_JOB_TIMEOUT', { optional: true }),
 	};
 };
