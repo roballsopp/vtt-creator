@@ -1,4 +1,4 @@
-import { ApiURL } from '../config';
+import { ApiURL, SpeechToTextJobTimeout } from '../config';
 
 export const getUploadUrl = async () => {
 	const resp = await fetch(`${ApiURL}/upload`);
@@ -39,7 +39,7 @@ export const getSpeechToTextLanguages = async () => {
 	throw new Error(resp.statusText);
 };
 
-export const pollSpeechToTextOp = (operationId, interval = 1000, timeout = 10000) => {
+export const pollSpeechToTextOp = (operationId, interval = 1000, timeout = SpeechToTextJobTimeout) => {
 	return new Promise((resolve, reject) => {
 		const intervalId = setInterval(async () => {
 			const resp = await fetch(`${ApiURL}/speech-to-text/${operationId}`);

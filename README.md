@@ -13,7 +13,7 @@ To run the app, run:
 ```bash
 yarn start
 ```
-By default, the app will be available at [http://localhost:3000](http://localhost:3000). To change the port, open up the `.env.dev` file located in the project root and change the `PORT` entry to your desired port.
+By default, the app will be available at [http://localhost:3000](http://localhost:3000). To change the port, open up the `webpack.dev.js` file located in the project root and change the `devServer.port` entry to your desired port.
 
 To run tests, simply type:
 ```bash

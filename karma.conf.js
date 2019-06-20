@@ -1,5 +1,5 @@
 const { DefinePlugin } = require('webpack');
-const envConfig = require('./env-config');
+const envConfig = require('./env-config')('.env.test');
 
 module.exports = config => {
 	config.set({

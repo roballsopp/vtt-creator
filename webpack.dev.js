@@ -29,7 +29,7 @@ module.exports = {
 	devServer: {
 		// where to get static files (index.html)
 		contentBase: path.join(__dirname, 'public'),
-		port: process.env.PORT,
+		port: 3000,
 		// where to serve bundles from (main.js will be available at http://localhost:<port>/<publicPath>)
 		publicPath: '/',
 		overlay: true,
