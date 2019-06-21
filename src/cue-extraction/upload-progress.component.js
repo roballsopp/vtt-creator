@@ -8,14 +8,18 @@ export const UPLOAD_STATE_EXTRACTING = 'extracting';
 export const UPLOAD_STATE_UPLOADING = 'uploading';
 export const UPLOAD_STATE_PROCESSING = 'processing';
 export const UPLOAD_STATE_COMPLETED = 'completed';
+export const UPLOAD_STATE_FAILED = 'failed';
+
+const UploadStatePropType = PropTypes.oneOf([
+	UPLOAD_STATE_EXTRACTING,
+	UPLOAD_STATE_UPLOADING,
+	UPLOAD_STATE_PROCESSING,
+	UPLOAD_STATE_COMPLETED,
+	UPLOAD_STATE_FAILED,
+]);
 
 UploadProgress.propTypes = {
-	uploadState: PropTypes.oneOf([
-		UPLOAD_STATE_EXTRACTING,
-		UPLOAD_STATE_UPLOADING,
-		UPLOAD_STATE_PROCESSING,
-		UPLOAD_STATE_COMPLETED,
-	]),
+	uploadState: UploadStatePropType,
 	progressBytes: PropTypes.number,
 	totalBytes: PropTypes.number,
 };
@@ -41,12 +45,7 @@ export default function UploadProgress({ uploadState, progressBytes, totalBytes 
 }
 
 UploadProgress.propTypes = {
-	uploadState: PropTypes.oneOf([
-		UPLOAD_STATE_EXTRACTING,
-		UPLOAD_STATE_UPLOADING,
-		UPLOAD_STATE_PROCESSING,
-		UPLOAD_STATE_COMPLETED,
-	]),
+	uploadState: UploadStatePropType,
 	progressPercent: PropTypes.number,
 };
 
@@ -57,6 +56,8 @@ function ProgressBar({ uploadState, progressPercent }) {
 			return <LinearProgress color="secondary" />;
 		case UPLOAD_STATE_UPLOADING:
 			return <LinearProgress variant="determinate" value={progressPercent} />;
+		case UPLOAD_STATE_FAILED:
+			return <LinearProgress color="secondary" variant="determinate" value={100} />;
 		default:
 			return null;
 	}
@@ -70,6 +71,8 @@ function getMessageFromUploadState(uploadState) {
 			return 'Uploading audio...';
 		case UPLOAD_STATE_PROCESSING:
 			return 'Processing audio...';
+		case UPLOAD_STATE_FAILED:
+			return 'Upload failed.';
 		case UPLOAD_STATE_COMPLETED:
 			return 'Done!';
 		default:
