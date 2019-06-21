@@ -19,10 +19,12 @@ import UploadProgress, {
 	UPLOAD_STATE_EXTRACTING,
 	UPLOAD_STATE_PROCESSING,
 	UPLOAD_STATE_UPLOADING,
+	UPLOAD_STATE_FAILED,
 } from './upload-progress.component';
 import { getAudioBlobFromVideo } from '../services/av.service';
 import {
 	getUploadUrl,
+	deleteFile,
 	initSpeechToTextOp,
 	pollSpeechToTextOp,
 	uploadFile,
@@ -63,14 +65,16 @@ export default function CueExtractionDialog({ open, videoFile, onRequestClose, o
 
 	const extractCuesFromVideo = async e => {
 		setExtracting(true);
+		let filename;
 
 		try {
 			setUploadState(UPLOAD_STATE_EXTRACTING);
 			const audioBlob = await getAudioBlobFromVideo(videoFile);
 
 			setUploadState(UPLOAD_STATE_UPLOADING);
-			const { url, filename } = await getUploadUrl();
-			await uploadFile(audioBlob, url, e => {
+			const uploadUrlResp = await getUploadUrl();
+			filename = uploadUrlResp.filename;
+			await uploadFile(audioBlob, uploadUrlResp.url, e => {
 				setProgressBytes(e.loaded);
 				setTotalBytes(e.total);
 			});
@@ -84,11 +88,21 @@ export default function CueExtractionDialog({ open, videoFile, onRequestClose, o
 			toast.success('Upload successful!');
 			onRequestClose(e);
 		} catch (err) {
+			setUploadState(UPLOAD_STATE_FAILED);
 			console.error(err);
 			toast.error('Oh no! Something went wrong!');
 		}
 
 		setExtracting(false);
+
+		if (filename) {
+			try {
+				await deleteFile(filename);
+			} catch (e) {
+				// TODO: log this
+				console.error(e);
+			}
+		}
 	};
 
 	return (

@@ -20,6 +20,17 @@ export const uploadFile = async (file, url, onProgress) => {
 	});
 };
 
+export const deleteFile = async filename => {
+	const resp = await fetch(`${ApiURL}/files/${filename}`, {
+		method: 'DELETE',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+	});
+
+	if (!resp.ok) throw new Error(resp.statusText);
+};
+
 export const initSpeechToTextOp = async (filename, options = {}) => {
 	const resp = await fetch(`${ApiURL}/speech-to-text/${filename}`, {
 		method: 'POST',
