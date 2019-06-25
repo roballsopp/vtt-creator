@@ -12,7 +12,7 @@ import CueLoader from './cue-loader.component';
 const useStyles = makeStyles({
 	root: {
 		position: 'relative',
-		height: '100%',
+		flex: 1,
 		width: 400,
 	},
 	list: {
