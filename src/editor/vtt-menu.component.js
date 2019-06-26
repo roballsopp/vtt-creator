@@ -8,10 +8,10 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import VoiceChatIcon from '@material-ui/icons/VoiceChat';
 import { makeStyles } from '@material-ui/styles';
-import { useFileSelector, useToast, useCues, useVideoFile } from './common';
-import { getVTTFromCues, getCuesFromWords, getCuesFromVTT } from './services/vtt.service';
-import CueExtractionDialog from './cue-extraction/cue-extraction-dialog.component';
-import { apiDisabled } from './config';
+import { useFileSelector, useToast, useCues, useVideoFile } from '../common';
+import { getVTTFromCues, getCuesFromWords, getCuesFromVTT } from '../services/vtt.service';
+import CueExtractionDialog from '../cue-extraction/cue-extraction-dialog.component';
+import { apiDisabled } from '../config';
 
 const useStyles = makeStyles({
 	root: {

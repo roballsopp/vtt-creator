@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
-export default function MainScreen() {
+export default function Footer() {
 	const classes = useStyles();
 
 	return (

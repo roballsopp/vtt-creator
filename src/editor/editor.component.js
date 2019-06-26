@@ -4,22 +4,16 @@ import Paper from '@material-ui/core/Paper';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
-import { CuesProvider, VideoFileProvider } from './common';
-import { VideoDomProvider } from './common/video';
+import { CuesProvider, VideoFileProvider } from '../common';
+import { VideoDomProvider } from '../common/video';
+import Player from '../player';
+import VTTEditor from '../vtt-editor';
 import VttMenu from './vtt-menu.component';
-import Player from './player';
-import VTTEditor from './vtt-editor';
-import Footer from './footer.component';
 
 const useStyles = makeStyles({
 	root: {
 		display: 'flex',
-		flexDirection: 'column',
-		height: '100%',
-	},
-	main: {
 		flex: 1,
-		display: 'flex',
 	},
 	drawer: {
 		display: 'flex',
@@ -40,23 +34,20 @@ export default function MainScreen() {
 			<CuesProvider>
 				<VideoDomProvider>
 					<div className={classes.root}>
-						<main className={classes.main}>
-							<Paper square className={classes.drawer}>
-								<AppBar position="static" color="primary">
-									<Toolbar>
-										<Typography variant="h6" color="inherit" style={{ flexGrow: 1 }}>
-											VTT Creator
-										</Typography>
-										<VttMenu />
-									</Toolbar>
-								</AppBar>
-								<VTTEditor />
-							</Paper>
-							<div className={classes.player}>
-								<Player />
-							</div>
-						</main>
-						<Footer />
+						<Paper square className={classes.drawer}>
+							<AppBar position="static" color="primary">
+								<Toolbar>
+									<Typography variant="h6" color="inherit" style={{ flexGrow: 1 }}>
+										VTT Creator
+									</Typography>
+									<VttMenu />
+								</Toolbar>
+							</AppBar>
+							<VTTEditor />
+						</Paper>
+						<div className={classes.player}>
+							<Player />
+						</div>
 					</div>
 				</VideoDomProvider>
 			</CuesProvider>
