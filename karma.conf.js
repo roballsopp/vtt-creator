@@ -20,10 +20,7 @@ module.exports = config => {
 					},
 				],
 			},
-			plugins: [
-				// see webpack.dev.js for notes on this
-				new DefinePlugin(envConfig),
-			],
+			plugins: [new DefinePlugin(envConfig)],
 		},
 		reporters: ['mocha'],
 		mochaReporter: {

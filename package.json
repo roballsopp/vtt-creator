@@ -18,6 +18,7 @@
     "@material-ui/icons": "^4.0.1",
     "@material-ui/lab": "^4.0.0-alpha.15",
     "@material-ui/styles": "^4.0.2",
+    "@sentry/browser": "^5.4.3",
     "audiobuffer-to-wav": "^1.0.0",
     "clsx": "^1.0.4",
     "downloadjs": "^1.4.7",

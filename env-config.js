@@ -1,18 +1,11 @@
-const getEnvVar = (name, { optional } = { optional: false }) => {
-	const envVar = process.env[name];
-	if (!optional && !envVar) {
-		throw new Error(`Missing env var ${name} . Did you forget to add it to a .env file?`);
-	}
-
-	return JSON.stringify(envVar);
-};
-
 module.exports = envFile => {
 	require('dotenv').config({ path: envFile });
 
 	return {
-		API_URL: getEnvVar('API_URL', { optional: true }),
-		STRIPE_KEY: getEnvVar('STRIPE_KEY', { optional: true }),
-		SPEECH_TO_TEXT_JOB_TIMEOUT: getEnvVar('SPEECH_TO_TEXT_JOB_TIMEOUT', { optional: true }),
+		API_URL: JSON.stringify(process.env.API_URL),
+		STRIPE_KEY: JSON.stringify(process.env.STRIPE_KEY),
+		// only stringify strings, SPEECH_TO_TEXT_JOB_TIMEOUT should be a number, see note here: https://webpack.js.org/plugins/define-plugin/#usage
+		SPEECH_TO_TEXT_JOB_TIMEOUT: process.env.SPEECH_TO_TEXT_JOB_TIMEOUT,
+		SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN),
 	};
 };
