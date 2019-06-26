@@ -5,8 +5,8 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
 import muiBlueGreys from '@material-ui/core/colors/blueGrey';
 import ClosedCaptionIcon from '@material-ui/icons/ClosedCaption';
-import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
-import MemoryIcon from '@material-ui/icons/Memory';
+import CloudDownloadIcon from '@material-ui/icons/CloudDownloadOutlined';
+import MemoryIcon from '@material-ui/icons/MemorySharp';
 import SubtitlesIcon from '@material-ui/icons/Subtitles';
 import { Button } from '../common';
 
