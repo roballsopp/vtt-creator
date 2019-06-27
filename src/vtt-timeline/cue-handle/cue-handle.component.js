@@ -57,7 +57,7 @@ export default function CueHandle({ children }) {
 	const containerWidth = zoomContainerRect ? zoomContainerRect.width : 0;
 
 	React.useEffect(() => {
-		if (pixelsPerSec) {
+		if (Number.isFinite(pixelsPerSec) && Number.isFinite(containerWidth)) {
 			setPos({
 				left: Math.round(cue.startTime * pixelsPerSec),
 				right: Math.round(containerWidth - cue.endTime * pixelsPerSec),
