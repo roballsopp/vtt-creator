@@ -2,7 +2,7 @@
 
 A tool for creating and editing [Web Video Text Track (WebVTT)](https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API) files in your browser.
 
-Check out the demo [here](https://roballsopp.github.io/vtt-creator/).
+Check it out at [vtt-creator.com](https://vtt-creator.com).
 
 ## Development
 To get started, open a terminal window and navigate to the project root. Install dependencies with:
