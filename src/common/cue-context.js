@@ -29,33 +29,36 @@ export function CuesProvider({ children }) {
 		setCues(orderedCues);
 	}, []);
 
+	const saveCuesToStorage = React.useCallback(() => {
+		try {
+			storeCues(cues);
+		} catch (e) {
+			console.error(e);
+		}
+	}, [cues]);
+
+	// load cues on mount
 	React.useEffect(() => {
-		const loadCuesFromStorage = () => {
-			try {
-				const loadedCues = getCuesFromStorage();
-				if (loadedCues) setCues(loadedCues);
-			} catch (e) {
-				console.error(e);
-				toast.error('There was a problem loading the cues from your last session.');
-			}
-			onLoadingCues(false);
-		};
-		const saveCuesToStorage = () => {
-			try {
-				storeCues(cues);
-			} catch (e) {
-				console.error(e);
-			}
-		};
+		try {
+			const loadedCues = getCuesFromStorage();
+			if (loadedCues) setCues(loadedCues);
+		} catch (e) {
+			console.error(e);
+			toast.error('There was a problem loading the cues from your last session.');
+		}
+		onLoadingCues(false);
+	}, []);
 
-		window.addEventListener('load', loadCuesFromStorage);
+	// save cues if we leave the site
+	React.useEffect(() => {
 		window.addEventListener('beforeunload', saveCuesToStorage);
-
 		return () => {
-			window.removeEventListener('load', loadCuesFromStorage);
 			window.removeEventListener('beforeunload', saveCuesToStorage);
 		};
-	}, [cues, toast]);
+	}, [saveCuesToStorage]);
+
+	// save cues on unmount
+	React.useEffect(() => () => saveCuesToStorage(), [saveCuesToStorage]);
 
 	return (
 		<CuesContext.Provider
