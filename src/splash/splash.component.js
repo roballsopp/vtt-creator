@@ -1,14 +1,14 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
 import muiBlueGreys from '@material-ui/core/colors/blueGrey';
-import ClosedCaptionIcon from '@material-ui/icons/ClosedCaption';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownloadOutlined';
 import MemoryIcon from '@material-ui/icons/MemorySharp';
 import SubtitlesIcon from '@material-ui/icons/Subtitles';
 import { Button } from '../common';
+import { VC as VCIcon } from '../common/icons';
+import BannerBgImg from '../../assets/banner_bg.jpg';
 
 const useStyles = makeStyles({
 	root: {
@@ -30,22 +30,26 @@ const useStyles = makeStyles({
 		display: 'flex',
 		flexDirection: 'row',
 		alignItems: 'center',
+		marginBottom: 20,
+	},
+	titleIcon: {
+		marginRight: 16,
+		fontSize: 68,
+	},
+	tag: {
+		marginBottom: 36,
 	},
 	banner: {
 		display: 'flex',
-		flexDirection: 'row',
+		flexDirection: 'column',
 		justifyContent: 'center',
 		alignItems: 'center',
-		height: 300,
 		width: '100%',
 		backgroundPosition: 'center top',
+		backgroundImage: `url(${BannerBgImg})`,
 		backgroundColor: muiBlueGreys[900],
-	},
-	bannerInfo: {
-		display: 'flex',
-		justifyContent: 'space-between',
-		width: 1024,
 		color: 'white',
+		padding: 60,
 	},
 	bannerButtonContainer: {
 		display: 'flex',
@@ -85,34 +89,20 @@ export default function Splash({ history }) {
 
 	return (
 		<div className={classes.root}>
-			<AppBar position="static" color="primary">
-				<div className={classes.toolbar}>
-					<div className={classes.title}>
-						<ClosedCaptionIcon fontSize="large" style={{ marginRight: 8 }} />
-						<Typography variant="h6" color="inherit">
-							VTT Creator
-						</Typography>
-					</div>
-				</div>
-			</AppBar>
 			<div className={classes.banner}>
-				<div className={classes.bannerInfo}>
-					<div>
-						<Typography variant="h4">Caption your videos online.</Typography>
-						<Typography variant="h6">
-							VTT Creator is an online editor and visualizer for the WebVTT file format.
-						</Typography>
-					</div>
-					<div className={classes.bannerButtonContainer}>
-						<Button
-							size="large"
-							variant="contained"
-							color="secondary"
-							onClick={() => history.push('/editor')}
-							className={classes.bannerButton}>
-							Create Captions
-						</Button>
-					</div>
+				<div className={classes.title}>
+					<VCIcon className={classes.titleIcon} />
+					<Typography variant="h2" color="inherit">
+						VTT Creator
+					</Typography>
+				</div>
+				<Typography variant="h6" className={classes.tag}>
+					An online editor and visualizer for HTML5 video captions and subtitles.
+				</Typography>
+				<div className={classes.bannerButtonContainer}>
+					<Button size="large" variant="contained" color="secondary" onClick={() => history.push('/editor')}>
+						Create Captions
+					</Button>
 				</div>
 			</div>
 			<div className={classes.content}>

@@ -4,8 +4,8 @@ import Paper from '@material-ui/core/Paper';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
-import ClosedCaptionIcon from '@material-ui/icons/ClosedCaption';
 import { CuesProvider, VideoFileProvider } from '../common';
+import { VC as VCIcon } from '../common/icons';
 import { VideoDomProvider } from '../common/video';
 import Player from '../player';
 import VTTEditor from '../vtt-editor';
@@ -38,7 +38,7 @@ export default function MainScreen() {
 						<Paper square className={classes.drawer}>
 							<AppBar position="static" color="primary">
 								<Toolbar>
-									<ClosedCaptionIcon fontSize="large" edge="start" style={{ marginRight: 8 }} />
+									<VCIcon fontSize="large" edge="start" style={{ marginRight: 8 }} />
 									<Typography variant="h6" color="inherit" style={{ flexGrow: 1 }}>
 										VTT Creator
 									</Typography>
