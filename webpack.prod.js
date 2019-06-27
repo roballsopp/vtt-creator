@@ -19,6 +19,10 @@ module.exports = {
 				test: /\.(js)$/,
 				exclude: /(node_modules)/,
 			},
+			{
+				test: /\.(png|svg|jpg|gif)$/,
+				loader: 'file-loader',
+			},
 		],
 	},
 	plugins: [new DefinePlugin(envConfig)],
