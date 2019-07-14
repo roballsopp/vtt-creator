@@ -7,5 +7,6 @@ module.exports = envFile => {
 		// only stringify strings, SPEECH_TO_TEXT_JOB_TIMEOUT should be a number, see note here: https://webpack.js.org/plugins/define-plugin/#usage
 		SPEECH_TO_TEXT_JOB_TIMEOUT: process.env.SPEECH_TO_TEXT_JOB_TIMEOUT,
 		SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN),
+		DEBUG: process.env.DEBUG,
 	};
 };

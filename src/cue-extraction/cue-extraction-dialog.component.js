@@ -22,6 +22,7 @@ import UploadProgress, {
 	UPLOAD_STATE_FAILED,
 } from './upload-progress.component';
 import { getAudioBlobFromVideo } from '../services/av.service';
+import { handleError } from '../services/error-handler.service';
 import {
 	getUploadUrl,
 	deleteFile,
@@ -89,7 +90,7 @@ export default function CueExtractionDialog({ open, videoFile, onRequestClose, o
 			onRequestClose(e);
 		} catch (err) {
 			setUploadState(UPLOAD_STATE_FAILED);
-			console.error(err);
+			handleError(err);
 			toast.error('Oh no! Something went wrong!');
 		}
 
@@ -99,8 +100,7 @@ export default function CueExtractionDialog({ open, videoFile, onRequestClose, o
 			try {
 				await deleteFile(filename);
 			} catch (e) {
-				// TODO: log this
-				console.error(e);
+				handleError(e);
 			}
 		}
 	};

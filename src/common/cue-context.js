@@ -4,6 +4,7 @@ import sortBy from 'lodash.sortby';
 import { CuePropType } from './prop-types';
 import { useToast } from './toast-context';
 import { getCuesFromStorage, storeCues } from '../services/vtt.service';
+import { handleError } from '../services/error-handler.service';
 
 const CuesContext = React.createContext({
 	cues: [],
@@ -33,7 +34,7 @@ export function CuesProvider({ children }) {
 		try {
 			storeCues(cues);
 		} catch (e) {
-			console.error(e);
+			handleError(e);
 		}
 	}, [cues]);
 
@@ -43,11 +44,11 @@ export function CuesProvider({ children }) {
 			const loadedCues = getCuesFromStorage();
 			if (loadedCues) setCues(loadedCues);
 		} catch (e) {
-			console.error(e);
+			handleError(e);
 			toast.error('There was a problem loading the cues from your last session.');
 		}
 		onLoadingCues(false);
-	}, []);
+	}, [toast]);
 
 	// save cues if we leave the site
 	React.useEffect(() => {

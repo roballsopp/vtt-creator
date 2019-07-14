@@ -13,6 +13,7 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import { makeStyles, styled } from '@material-ui/styles';
 import { Button, useToast } from '../common';
 import { createStripeSession } from '../services/rest-api.service';
+import { handleError } from '../services/error-handler.service';
 import { StripeKey } from '../config';
 
 const Title = styled(DialogTitle)({
@@ -49,7 +50,7 @@ export default function DonateButton() {
 			if (result.error) throw result.error;
 		} catch (e) {
 			setLoading(false);
-			console.error(e);
+			handleError(e);
 			toast.error('Something went wrong!');
 		}
 	};

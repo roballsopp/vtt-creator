@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { makeStyles } from '@material-ui/styles';
+import Button from '@material-ui/core/Button';
 import { useCues, useFileSelector, useToast } from '../common';
 import { getCuesFromVTT } from '../services/vtt.service';
-import Button from '@material-ui/core/Button';
+import { handleError } from '../services/error-handler.service';
 
 const useStyles = makeStyles({
 	root: {
@@ -28,7 +29,7 @@ export default function CueLoader() {
 				const newCues = await getCuesFromVTT(e.target.files[0]);
 				onChangeCues(newCues, true); // check if VTT files require ordering
 			} catch (e) {
-				console.error(e);
+				handleError(e);
 				toast.error('Oh no! An error occurred loading the cues.');
 			}
 			onLoadingCues(false);
