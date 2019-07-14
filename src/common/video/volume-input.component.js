@@ -1,6 +1,6 @@
 import * as React from 'react';
 import throttle from 'lodash.throttle';
-import Slider from '@material-ui/lab/Slider';
+import Slider from '@material-ui/core/Slider';
 import VolumeIcon from '@material-ui/icons/VolumeUp';
 import VolumeOffIcon from '@material-ui/icons/VolumeOff';
 import { makeStyles } from '@material-ui/styles';
@@ -19,13 +19,13 @@ const useStyles = makeStyles({
 });
 
 const useSliderStyles = makeStyles({
-	trackBefore: {
+	track: {
 		backgroundColor: 'white',
 	},
 	thumb: {
 		backgroundColor: 'white',
 	},
-	trackAfter: {
+	rail: {
 		backgroundColor: 'white',
 	},
 });
@@ -42,6 +42,7 @@ export default function VolumeInput() {
 		<div className={classes.container}>
 			<Slider
 				value={volume}
+				step={0.05}
 				onChange={(e, v) => {
 					const volume = parseFloat(v);
 					onVolumeChange(volume);
