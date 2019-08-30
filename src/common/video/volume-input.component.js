@@ -20,7 +20,7 @@ const useStyles = makeStyles({
 
 const useSliderStyles = makeStyles({
 	track: {
-		backgroundColor: 'white',
+		backgroundColor: 'white'
 	},
 	thumb: {
 		backgroundColor: 'white',
