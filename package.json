@@ -21,6 +21,7 @@
     "@sentry/browser": "^5.5.0",
     "audiobuffer-to-wav": "^1.0.0",
     "clsx": "^1.0.4",
+    "core-js": "^3.4.7",
     "downloadjs": "^1.4.7",
     "lodash.debounce": "^4.0.8",
     "lodash.sortby": "^4.7.0",
@@ -30,13 +31,13 @@
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.0.1",
     "react-text-mask": "^5.4.3",
+    "regenerator-runtime": "^0.13.3",
     "simple-icons": "^1.11.0",
     "vtt.js": "^0.13.0",
     "wavesurfer.js": "^3.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.5.4",
-    "@babel/polyfill": "^7.4.4",
     "@babel/preset-env": "^7.5.4",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.6",
