@@ -1,5 +1,6 @@
 const path = require('path');
 const { DefinePlugin } = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const envConfig = require('./env-config')('.env.dev');
 
 module.exports = {
@@ -29,6 +30,12 @@ module.exports = {
 		// If you define something here like 'process.env.API_URL', it will only work if you access it in app
 		// by explicitly writing out 'process.env.API_URL'. It won't work if you do const { API_URL } = process.env;
 		new DefinePlugin(envConfig),
+		new HtmlWebpackPlugin({
+			hash: true,
+			template: './src/index.html',
+			filename: path.resolve(__dirname, 'public', 'index.html'),
+			chunks: ['main'],
+		}),
 	],
 	devServer: {
 		// where to get static files (index.html)
@@ -36,7 +43,9 @@ module.exports = {
 		port: 3000,
 		// where to serve bundles from (main.js will be available at http://localhost:<port>/<publicPath>)
 		publicPath: '/',
-		historyApiFallback: true,
+		historyApiFallback: {
+			rewrites: [{ from: /^\/$/, to: '/index.html' }],
+		},
 		overlay: true,
 	},
 };

@@ -1,6 +1,7 @@
 const path = require('path');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const { DefinePlugin } = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const envConfig = require('./env-config')('.env');
 
 module.exports = {
@@ -25,7 +26,15 @@ module.exports = {
 			},
 		],
 	},
-	plugins: [new DefinePlugin(envConfig)],
+	plugins: [
+		new DefinePlugin(envConfig),
+		new HtmlWebpackPlugin({
+			hash: true,
+			template: './src/index.html',
+			filename: path.join(__dirname, 'public', 'index.html'),
+			chunks: ['main'],
+		}),
+	],
 	optimization: {
 		minimizer: [new UglifyJsPlugin()],
 	},
