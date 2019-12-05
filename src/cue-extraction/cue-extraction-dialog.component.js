@@ -85,9 +85,14 @@ export default function CueExtractionDialog({ open, videoFile, onRequestClose, o
 			const operation = await pollSpeechToTextOp(operationId, 2000);
 
 			setUploadState(UPLOAD_STATE_COMPLETED);
-			onExtractComplete(operation[0].alternatives[0]);
-			toast.success('Upload successful!');
-			onRequestClose(e);
+
+			if (operation[0] && operation[0].alternatives[0]) {
+				onExtractComplete(operation[0].alternatives[0]);
+				toast.success('Upload successful!');
+				onRequestClose(e);
+			} else {
+				toast.error('Unable to extract any audio!');
+			}
 		} catch (err) {
 			setUploadState(UPLOAD_STATE_FAILED);
 			handleError(err);
