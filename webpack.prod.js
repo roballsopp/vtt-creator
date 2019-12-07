@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
 	entry: {
-		main: ['./src/full-story', './src/polyfills', './src/index.js'],
+		main: ['./src/full-story', './src/polyfills', './src/doorbell', './src/index.js'],
 	},
 	mode: 'production',
 	output: {
