@@ -66,6 +66,7 @@ export default function VTTMenu() {
 
 	const onCueExtractComplete = segments => {
 		onLoadingCues(true);
+		// for how this concatenation stuff works: https://cloud.google.com/speech-to-text/docs/basics#transcriptions
 		const words = segments.reduce((arr, { alternatives }) => {
 			return arr.concat(alternatives[0].words);
 		}, []);
