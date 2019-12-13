@@ -51,7 +51,14 @@ module.exports = config => {
 		port: 9876, // karma web server port
 		colors: true,
 		logLevel: config.LOG_INFO,
-		browsers: ['ChromeHeadless'],
+		browsers: ['ChromeHeadlessNoSandbox'],
+		customLaunchers: {
+			ChromeHeadlessNoSandbox: {
+				base: 'ChromeHeadless',
+				flags: ['--no-sandbox'],
+			},
+		},
+		plugins: ['karma-chrome-launcher', 'karma-webpack', 'karma-mocha', 'karma-mocha-reporter', 'karma-chai'],
 		concurrency: Infinity,
 	});
 };
