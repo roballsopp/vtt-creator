@@ -63,9 +63,12 @@ export default function VTTMenu() {
 		setCueExtractionDialogOpen(false);
 	};
 
-	const onCueExtractComplete = results => {
+	const onCueExtractComplete = segments => {
 		onLoadingCues(true);
-		const newCues = getCuesFromWords(results.words);
+		const words = segments.reduce((arr, { alternatives }) => {
+			return arr.concat(alternatives[0].words);
+		}, []);
+		const newCues = getCuesFromWords(words);
 		onChangeCues(newCues);
 		onLoadingCues(false);
 	};
