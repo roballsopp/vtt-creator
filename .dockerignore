@@ -1,0 +1,5 @@
+.idea*
+docs*
+node_modules*
+public*
+!public/_redirects
