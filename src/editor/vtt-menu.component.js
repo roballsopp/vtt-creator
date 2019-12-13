@@ -16,6 +16,7 @@ import VoiceChatIcon from '@material-ui/icons/VoiceChat';
 import { makeStyles } from '@material-ui/styles';
 import { useFileSelector, useToast, useCues, useVideoFile } from '../common';
 import { getVTTFromCues, getCuesFromWords, getCuesFromVTT } from '../services/vtt.service';
+import { getSRTFromCues } from '../services/srt.service';
 import { handleError } from '../services/error-handler.service';
 import CueExtractionDialog from '../cue-extraction/cue-extraction-dialog.component';
 import { apiDisabled } from '../config';
@@ -78,6 +79,11 @@ export default function VTTMenu() {
 		onCloseOptionsMenu();
 	};
 
+	const onDownloadSRT = () => {
+		download(getSRTFromCues(cues), 'my_captions.srt', 'text/srt');
+		onCloseOptionsMenu();
+	};
+
 	const onOpenClearCuesDialog = () => {
 		setClearCuesDialogOpen(true);
 		onCloseOptionsMenu();
@@ -127,6 +133,10 @@ export default function VTTMenu() {
 				<MenuItem onClick={onDownloadVTT}>
 					<CloudDownloadIcon className={classes.menuIcon} />
 					Save to VTT file...
+				</MenuItem>
+				<MenuItem onClick={onDownloadSRT}>
+					<CloudDownloadIcon className={classes.menuIcon} />
+					Save to SRT file...
 				</MenuItem>
 				<MenuItem disabled={!cues.length} onClick={onOpenClearCuesDialog}>
 					<DeleteIcon className={classes.menuIcon} />
