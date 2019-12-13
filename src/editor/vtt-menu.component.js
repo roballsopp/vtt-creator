@@ -1,10 +1,16 @@
 import * as React from 'react';
 import download from 'downloadjs';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import DeleteIcon from '@material-ui/icons/Delete';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import VoiceChatIcon from '@material-ui/icons/VoiceChat';
 import { makeStyles } from '@material-ui/styles';
@@ -34,13 +40,14 @@ const useStyles = makeStyles({
 	},
 });
 
-export default function MainScreen() {
+export default function VTTMenu() {
 	const classes = useStyles();
 	const toast = useToast();
 	const { cues, onChangeCues, onLoadingCues } = useCues();
 	const { videoFile } = useVideoFile();
 
 	const [optionsMenuAnchorEl, setOptionsMenuAnchorEl] = React.useState(null);
+	const [clearCuesDialogOpen, setClearCuesDialogOpen] = React.useState(false);
 	const [cueExtractionDialogOpen, setCueExtractionDialogOpen] = React.useState(false);
 
 	const onCloseOptionsMenu = () => {
@@ -66,6 +73,20 @@ export default function MainScreen() {
 	const onDownloadVTT = () => {
 		download(getVTTFromCues(cues), 'my_captions.vtt', 'text/vtt');
 		onCloseOptionsMenu();
+	};
+
+	const onOpenClearCuesDialog = () => {
+		setClearCuesDialogOpen(true);
+		onCloseOptionsMenu();
+	};
+
+	const onCloseClearCuesDialog = () => {
+		setClearCuesDialogOpen(false);
+	};
+
+	const onClearCues = () => {
+		onChangeCues([]);
+		setClearCuesDialogOpen(false);
 	};
 
 	const onVTTFileSelected = React.useCallback(
@@ -104,6 +125,10 @@ export default function MainScreen() {
 					<CloudDownloadIcon className={classes.menuIcon} />
 					Save to VTT file...
 				</MenuItem>
+				<MenuItem disabled={!cues.length} onClick={onOpenClearCuesDialog}>
+					<DeleteIcon className={classes.menuIcon} />
+					Clear Cues
+				</MenuItem>
 			</Menu>
 			{!apiDisabled && (
 				<CueExtractionDialog
@@ -113,6 +138,26 @@ export default function MainScreen() {
 					onExtractComplete={onCueExtractComplete}
 				/>
 			)}
+			<Dialog
+				maxWidth="sm"
+				fullWidth
+				open={clearCuesDialogOpen}
+				onClose={onCloseClearCuesDialog}
+				aria-labelledby="extract-dialog-title">
+				<DialogTitle id="extract-dialog-title">Are you sure you want to delete your cues?</DialogTitle>
+				<DialogContent>
+					This will delete all the cues you have created or extracted, and you&apos;ll have to start over. Are you sure
+					you want to proceed?
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={onCloseClearCuesDialog} color="primary">
+						Cancel
+					</Button>
+					<Button onClick={onClearCues} color="primary" variant="contained">
+						Yes, Delete Cues
+					</Button>
+				</DialogActions>
+			</Dialog>
 		</React.Fragment>
 	);
 }
