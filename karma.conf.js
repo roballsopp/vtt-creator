@@ -1,7 +1,10 @@
 const path = require('path');
+const process = require('process');
 const { DefinePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const chromium = require('chromium');
 
+process.env.CHROME_BIN = chromium.path;
 const STATIC_FILES_DIR = path.resolve(__dirname, 'public');
 
 module.exports = config => {
