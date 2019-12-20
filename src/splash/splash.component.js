@@ -120,7 +120,7 @@ export default function Splash({ history }) {
 					<div className={classes.feature}>
 						<CloudDownloadIcon className={classes.featureIcon} />
 						<Typography variant="h6">
-							Export your work to a .vtt file for use anywhere on the web, or a .srt for use offline.
+							Export your work to a .vtt file for use anywhere on the web, or a .srt file for use offline.
 						</Typography>
 					</div>
 				</div>
