@@ -97,7 +97,7 @@ export default function Splash({ history }) {
 					</Typography>
 				</div>
 				<Typography variant="h6" className={classes.tag}>
-					An online editor and visualizer for HTML5 video captions and subtitles.
+					A free online editor and visualizer for video captions and subtitles.
 				</Typography>
 				<div className={classes.bannerButtonContainer}>
 					<Button size="large" variant="contained" color="secondary" onClick={() => history.push('/editor')}>
@@ -119,7 +119,9 @@ export default function Splash({ history }) {
 					</div>
 					<div className={classes.feature}>
 						<CloudDownloadIcon className={classes.featureIcon} />
-						<Typography variant="h6">Export your work to a .vtt or .srt file for use anywhere on the web.</Typography>
+						<Typography variant="h6">
+							Export your work to a .vtt file for use anywhere on the web, or a .srt for use offline.
+						</Typography>
 					</div>
 				</div>
 			</div>
