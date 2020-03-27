@@ -9,11 +9,13 @@ const useStyles = makeStyles({
 	root: {
 		display: 'flex',
 		flexDirection: 'column',
-		minHeight: '100%',
+		height: '100%',
 	},
 	content: {
 		flex: 1,
 		display: 'flex',
+		minHeight: 0,
+		minWidth: 0,
 	},
 });
 

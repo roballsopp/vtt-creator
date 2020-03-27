@@ -1,7 +1,6 @@
 import Button from './button.component';
 import DonateButton from './donate-button.component';
 import ErrorBoundary from './error-boundary.component';
-import FixedAspectRatio from './fixed-aspect-ratio.component';
 import List from './list.component';
 import Loader from './loader.component';
 import { ToastProvider, useToast } from './toast-context';
@@ -14,7 +13,6 @@ export {
 	Button,
 	DonateButton,
 	ErrorBoundary,
-	FixedAspectRatio,
 	List,
 	Loader,
 	ToastProvider,

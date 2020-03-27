@@ -15,6 +15,8 @@ const useStyles = makeStyles({
 	root: {
 		display: 'flex',
 		flex: 1,
+		minHeight: 0,
+		minWidth: 0,
 	},
 	drawer: {
 		display: 'flex',
@@ -24,6 +26,8 @@ const useStyles = makeStyles({
 	player: {
 		padding: 8,
 		flex: 1,
+		minHeight: 0,
+		minWidth: 0,
 	},
 });
 

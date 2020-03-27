@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { makeStyles } from '@material-ui/styles';
 import VttTimeline from '../vtt-timeline';
-import { FixedAspectRatio } from '../common';
 import { OverlayProvider } from '../common/video';
 import Video from './video.component';
 
@@ -16,6 +15,8 @@ const useStyles = makeStyles({
 		justifyContent: 'center',
 		flex: 1,
 		backgroundColor: 'black',
+		minHeight: 0,
+		minWidth: 0,
 	},
 	vttTimeline: {
 		flex: 1,
@@ -30,9 +31,7 @@ export default function Player() {
 		<OverlayProvider>
 			<div className={classes.root}>
 				<div className={classes.video}>
-					<FixedAspectRatio ratio="16:9">
-						<Video />
-					</FixedAspectRatio>
+					<Video />
 				</div>
 				<div className={classes.vttTimeline}>
 					<VttTimeline />
