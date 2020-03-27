@@ -69,15 +69,20 @@ export default function DonateDialog({ open, onClose }) {
 				</IconButton>
 			</Title>
 			<DialogContent>
+				<Typography paragraph>Hi there, I&apos;m glad you&apos;re enjoying this app!</Typography>
 				<Typography paragraph>
-					Hi there, I&apos;m glad you&apos;ve been enjoying this app! It&apos;s not free to keep this app up and
-					running, and extracting text captions right from the audio embedded in your video as you are about to do is
-					particularly expensive to provide everyone access to. I&apos;m hoping you&apos;ll help me continue to provide
-					users of this site, including you, access to this great feature by offering a small donation.
+					It&apos;s not free to keep this app up and running, and using machine learning to transcribe audio is
+					particularly expensive. I&apos;m hoping you&apos;ll help me continue to provide this feature for users like
+					you by offering a small donation.
 				</Typography>
 				<Typography paragraph>
 					Based on the length of your video, a donation of ${suggestedDonation.toFixed(2)} would cover the cost of
 					transcribing this audio. Will you donate this amount to help me cover this cost? Pretty please? :)
+				</Typography>
+				<Typography paragraph>
+					Thanks!
+					<br />
+					Rob
 				</Typography>
 				<DonationInput value={donationAmount} onChange={e => setDonationAmount(parseFloat(e.target.value))} />
 			</DialogContent>
