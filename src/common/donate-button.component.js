@@ -1,16 +1,14 @@
 import * as React from 'react';
-import MaskedInput from 'react-text-mask';
 import IconButton from '@material-ui/core/IconButton';
-import InputAdornment from '@material-ui/core/InputAdornment';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import { makeStyles, styled } from '@material-ui/styles';
+import { styled } from '@material-ui/styles';
+import DonationInput from './donation-input.component';
 import { Button, useToast } from '../common';
 import { createStripeSession } from '../services/rest-api.service';
 import { handleError } from '../services/error-handler.service';
@@ -22,15 +20,8 @@ const Title = styled(DialogTitle)({
 	alignItems: 'center',
 });
 
-const useStyles = makeStyles({
-	donationInput: {
-		fontSize: 20,
-	},
-});
-
 export default function DonateButton() {
 	const toast = useToast();
-	const classes = useStyles();
 
 	const [donationAmount, setDonationAmount] = React.useState();
 	const [dialogOpen, setDialogOpen] = React.useState(false);
@@ -84,19 +75,7 @@ export default function DonateButton() {
 				</Title>
 				<DialogContent>
 					<Typography paragraph>Thanks for supporting this project! How much would you like to give?</Typography>
-					<TextField
-						variant="outlined"
-						label="Amount"
-						helperText="Donation amount must be $1.00 minimum"
-						value={donationAmount}
-						onChange={e => setDonationAmount(parseFloat(e.target.value))}
-						InputProps={{
-							startAdornment: <InputAdornment position="start">$</InputAdornment>,
-							inputComponent: CustomMaskedInput,
-							className: classes.donationInput,
-						}}
-						placeholder={'5.00'}
-					/>
+					<DonationInput value={donationAmount} onChange={e => setDonationAmount(parseFloat(e.target.value))} />
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={onCloseDialog} color="primary">
@@ -114,45 +93,5 @@ export default function DonateButton() {
 				</DialogActions>
 			</Dialog>
 		</React.Fragment>
-	);
-}
-
-const dollarsMask = input => {
-	const [dollars, cents] = input.split('.');
-	const mask = ['.'];
-	if (dollars) {
-		if (dollars.length === 1) {
-			mask.unshift(/\d/);
-		} else if (dollars.length === 2) {
-			mask.unshift(/\d/, /\d/);
-		} else {
-			mask.unshift(/\d/, /\d/, /\d/);
-		}
-	} else {
-		mask.unshift('0');
-	}
-
-	if (cents) {
-		if (cents.length === 1) {
-			mask.push(/\d/, '0');
-		} else {
-			mask.push(/\d/, /\d/);
-		}
-	} else {
-		mask.push('0', '0');
-	}
-
-	return mask;
-};
-
-function CustomMaskedInput({ inputRef, ...props }) {
-	return (
-		<MaskedInput
-			{...props}
-			ref={ref => {
-				inputRef(ref ? ref.inputElement : null);
-			}}
-			mask={dollarsMask}
-		/>
 	);
 }
