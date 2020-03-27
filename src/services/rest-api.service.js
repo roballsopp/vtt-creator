@@ -31,7 +31,11 @@ export const deleteFile = async filename => {
 	if (!resp.ok) throw new Error(resp.statusText);
 };
 
+export const S2T_REQUEST_COUNT = 'speech_to_text_request_count';
+
 export const initSpeechToTextOp = async (filename, options = {}) => {
+	const count = localStorage.getItem(S2T_REQUEST_COUNT) || 0;
+	localStorage.setItem(S2T_REQUEST_COUNT, count + 1);
 	const resp = await fetch(`${ApiURL}/speech-to-text/${filename}`, {
 		method: 'POST',
 		headers: {

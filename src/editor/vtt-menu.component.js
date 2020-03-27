@@ -14,8 +14,10 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import VoiceChatIcon from '@material-ui/icons/VoiceChat';
 import { makeStyles } from '@material-ui/styles';
+import DonateDialog from './donate-dialog.component';
 import { useFileSelector, useToast, useCues, useVideoFile } from '../common';
 import { getVTTFromCues, getCuesFromWords, getCuesFromVTT } from '../services/vtt.service';
+import { S2T_REQUEST_COUNT } from '../services/rest-api.service';
 import { getSRTFromCues } from '../services/srt.service';
 import { handleError } from '../services/error-handler.service';
 import CueExtractionDialog from '../cue-extraction/cue-extraction-dialog.component';
@@ -50,18 +52,36 @@ export default function VTTMenu() {
 	const [optionsMenuAnchorEl, setOptionsMenuAnchorEl] = React.useState(null);
 	const [clearCuesDialogOpen, setClearCuesDialogOpen] = React.useState(false);
 	const [cueExtractionDialogOpen, setCueExtractionDialogOpen] = React.useState(false);
+	const [donateDialogOpen, setDonateDialogOpen] = React.useState(false);
 
 	const onCloseOptionsMenu = () => {
 		setOptionsMenuAnchorEl(null);
 	};
 
 	const onOpenCueExtractionDialog = () => {
-		setCueExtractionDialogOpen(true);
-		onCloseOptionsMenu();
+		const count = localStorage.getItem(S2T_REQUEST_COUNT) || 0;
+
+		// ask for donation every other use of the api
+		if (count > 0 && count % 2) {
+			setCueExtractionDialogOpen(true);
+			onCloseOptionsMenu();
+		} else {
+			onOpenDonateDialog();
+		}
 	};
 
 	const onCloseCueExtractionDialog = () => {
 		setCueExtractionDialogOpen(false);
+	};
+
+	const onOpenDonateDialog = () => {
+		setDonateDialogOpen(true);
+		onCloseOptionsMenu();
+	};
+
+	const onCloseDonateDialog = () => {
+		setDonateDialogOpen(false);
+		setCueExtractionDialogOpen(true);
 	};
 
 	const onCueExtractComplete = segments => {
@@ -152,6 +172,7 @@ export default function VTTMenu() {
 					onExtractComplete={onCueExtractComplete}
 				/>
 			)}
+			<DonateDialog open={donateDialogOpen} onClose={onCloseDonateDialog} />
 			<Dialog
 				maxWidth="sm"
 				fullWidth
