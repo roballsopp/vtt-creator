@@ -59,7 +59,7 @@ export default function VTTMenu() {
 	};
 
 	const onOpenCueExtractionDialog = () => {
-		const count = localStorage.getItem(S2T_REQUEST_COUNT) || 0;
+		const count = parseInt(localStorage.getItem(S2T_REQUEST_COUNT) || 0);
 
 		// ask for donation every other use of the api
 		if (count > 0 && count % 2) {

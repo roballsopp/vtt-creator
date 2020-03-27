@@ -1,4 +1,5 @@
 import { ApiURL, SpeechToTextJobTimeout } from '../config';
+import { handleError } from './error-handler.service';
 
 export const getUploadUrl = async () => {
 	const resp = await fetch(`${ApiURL}/upload`);
@@ -33,9 +34,17 @@ export const deleteFile = async filename => {
 
 export const S2T_REQUEST_COUNT = 'speech_to_text_request_count';
 
+function incrementS2TRequestCount() {
+	try {
+		const count = localStorage.getItem(S2T_REQUEST_COUNT) || 0;
+		localStorage.setItem(S2T_REQUEST_COUNT, parseInt(count) + 1);
+	} catch (e) {
+		handleError(e);
+	}
+}
+
 export const initSpeechToTextOp = async (filename, options = {}) => {
-	const count = localStorage.getItem(S2T_REQUEST_COUNT) || 0;
-	localStorage.setItem(S2T_REQUEST_COUNT, count + 1);
+	incrementS2TRequestCount();
 	const resp = await fetch(`${ApiURL}/speech-to-text/${filename}`, {
 		method: 'POST',
 		headers: {
