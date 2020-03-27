@@ -6,6 +6,9 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { useOverlay } from '../common/video';
 import useFileSelector from '../common/use-file-selector.hook';
+import { getSupportedVideoFileExtensions } from '../services/av.service';
+
+const ACCEPT = getSupportedVideoFileExtensions().join(',');
 
 VideoOptionsMenu.propTypes = {
 	onFilesSelected: PropTypes.func.isRequired,
@@ -30,7 +33,7 @@ export default function VideoOptionsMenu({ onFilesSelected: outerOnFilesSelected
 		outerOnFilesSelected(e);
 	};
 
-	const onOpenFileSelector = useFileSelector({ accept: 'video/*', onFilesSelected });
+	const onOpenFileSelector = useFileSelector({ accept: ACCEPT, onFilesSelected });
 
 	return (
 		<React.Fragment>
