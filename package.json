@@ -1,5 +1,5 @@
 {
-  "name": "vtt",
+  "name": "vtt-creator",
   "version": "1.0.0",
   "description": "",
   "scripts": {
@@ -11,7 +11,7 @@
     "test": "karma start karma.conf.js --auto-watch",
     "test-ci": "karma start karma.conf.js --single-run"
   },
-  "author": "",
+  "author": "rallsopp06@gmail.com",
   "license": "ISC",
   "dependencies": {
     "@material-ui/core": "^4.2.0",
@@ -27,14 +27,14 @@
     "lodash.sortby": "^4.7.0",
     "lodash.throttle": "^4.1.1",
     "prop-types": "^15.7.2",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "react-router-dom": "^5.0.1",
     "react-text-mask": "^5.4.3",
     "regenerator-runtime": "^0.13.3",
     "simple-icons": "^1.11.0",
     "vtt.js": "^0.13.0",
-    "wavesurfer.js": "^3.0.0"
+    "wavesurfer.js": "^3.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.5.4",
