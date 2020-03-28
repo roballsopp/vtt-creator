@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/styles';
 import { useFileSelector, useToast, useVideoFile } from '../common';
@@ -10,9 +11,6 @@ import { getSupportedVideoFileExtensions } from '../services/av.service';
 const ACCEPT = getSupportedVideoFileExtensions().join(',');
 
 const useStyles = makeStyles({
-	video: {
-		height: '100%',
-	},
 	loaderRoot: {
 		width: '100%',
 		height: '100%',
@@ -23,7 +21,11 @@ const useStyles = makeStyles({
 	},
 });
 
-export default function Video() {
+Video.propTypes = {
+	className: PropTypes.any,
+};
+
+export default function Video({ className }) {
 	const [src, setSrc] = React.useState();
 	const classes = useStyles();
 	const toast = useToast();
@@ -57,7 +59,7 @@ export default function Video() {
 	}
 
 	return (
-		<BaseVideo src={src} className={classes.video} topElement={<VideoOptionsMenu onFilesSelected={onFilesSelected} />}>
+		<BaseVideo src={src} className={className} topElement={<VideoOptionsMenu onFilesSelected={onFilesSelected} />}>
 			<VttTrack />
 		</BaseVideo>
 	);

@@ -10,13 +10,17 @@ const useStyles = makeStyles({
 		flexDirection: 'column',
 		height: '100%',
 	},
-	video: {
+	videoContainer: {
 		display: 'flex',
 		justifyContent: 'center',
 		flex: 1,
 		backgroundColor: 'black',
 		minHeight: 0,
 		minWidth: 0,
+	},
+	video: {
+		height: '100%',
+		maxWidth: 1000,
 	},
 	vttTimeline: {
 		flex: 1,
@@ -31,8 +35,8 @@ export default function Player() {
 	return (
 		<OverlayProvider>
 			<div className={classes.root}>
-				<div className={classes.video}>
-					<Video />
+				<div className={classes.videoContainer}>
+					<Video className={classes.video} />
 				</div>
 				<div className={classes.vttTimeline}>
 					<VttTimeline />
