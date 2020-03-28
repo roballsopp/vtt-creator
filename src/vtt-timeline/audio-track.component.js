@@ -19,7 +19,6 @@ export default function AudioTrack() {
 	const [waveformRef, setWaveformRef] = React.useState();
 	const [wavesurfer, setWavesurfer] = React.useState();
 	const { videoFile } = useVideoFile();
-	const { pixelsPerSec } = useZoom();
 	const classes = useStyles();
 
 	React.useEffect(() => {
@@ -29,14 +28,15 @@ export default function AudioTrack() {
 					container: waveformRef,
 					waveColor: muiPinks[400],
 					interact: false,
-					minPxPerSec: pixelsPerSec,
+					cursorWidth: 0,
 				})
 			);
 		}
-	}, [waveformRef, pixelsPerSec]);
+	}, [waveformRef]);
 
 	React.useEffect(() => {
 		const loadAudio = async () => {
+			// TODO: handle decode failure here
 			const audioBlob = await getAudioBlobFromVideo(videoFile);
 			wavesurfer.loadBlob(new Blob([audioBlob]));
 		};
