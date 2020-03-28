@@ -4,11 +4,12 @@ import { makeStyles } from '@material-ui/styles';
 import usePlayerDuration from '../player/use-player-duration.hook';
 import AutoScrollContainer from './auto-scroll-container.component';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
 	root: {
 		position: 'relative',
 		width: '100%',
 		height: '100%',
+		backgroundColor: theme.palette.grey['700'],
 	},
 	scrollContainer: {
 		position: 'absolute',
@@ -19,9 +20,8 @@ const useStyles = makeStyles({
 	},
 	content: {
 		height: '100%',
-		minWidth: '100%',
 	},
-});
+}));
 
 const ZoomContext = React.createContext({ zoomContainerRect: {} });
 

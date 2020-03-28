@@ -5,12 +5,11 @@ import AudioTrack from './audio-track.component';
 import ZoomContainer from './zoom-container.component';
 import TimeTicks from './time-ticks.component';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles({
 	root: {
 		display: 'flex',
 		flexDirection: 'column',
 		height: '100%',
-		backgroundColor: theme.palette.grey['700'],
 	},
 	ticks: {
 		zIndex: 3,
@@ -41,7 +40,7 @@ const useStyles = makeStyles(theme => ({
 		top: 0,
 		left: 0,
 	},
-}));
+});
 
 VttTimeline.propTypes = {};
 

@@ -21,6 +21,7 @@ const useStyles = makeStyles({
 	vttTimeline: {
 		flex: 1,
 		maxHeight: 300,
+		minHeight: 100,
 	},
 });
 

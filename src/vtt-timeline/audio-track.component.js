@@ -4,6 +4,7 @@ import muiPinks from '@material-ui/core/colors/pink';
 import { makeStyles } from '@material-ui/styles';
 import { getAudioBlobFromVideo } from '../services/av.service';
 import { useVideoFile } from '../common';
+import { useZoom } from './zoom-container.component';
 
 const useStyles = makeStyles({
 	root: {
@@ -18,6 +19,7 @@ export default function AudioTrack() {
 	const [waveformRef, setWaveformRef] = React.useState();
 	const [wavesurfer, setWavesurfer] = React.useState();
 	const { videoFile } = useVideoFile();
+	const { pixelsPerSec } = useZoom();
 	const classes = useStyles();
 
 	React.useEffect(() => {
@@ -27,10 +29,11 @@ export default function AudioTrack() {
 					container: waveformRef,
 					waveColor: muiPinks[400],
 					interact: false,
+					minPxPerSec: pixelsPerSec,
 				})
 			);
 		}
-	}, [waveformRef]);
+	}, [waveformRef, pixelsPerSec]);
 
 	React.useEffect(() => {
 		const loadAudio = async () => {
