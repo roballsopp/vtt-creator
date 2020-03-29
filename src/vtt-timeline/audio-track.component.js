@@ -2,9 +2,7 @@ import * as React from 'react';
 import * as WaveSurfer from 'wavesurfer.js';
 import muiPinks from '@material-ui/core/colors/pink';
 import { makeStyles } from '@material-ui/styles';
-import { getAudioBlobFromVideo } from '../services/av.service';
 import { useVideoFile } from '../common';
-import { useZoom } from './zoom-container.component';
 
 const useStyles = makeStyles({
 	root: {
@@ -22,26 +20,24 @@ export default function AudioTrack() {
 	const classes = useStyles();
 
 	React.useEffect(() => {
-		if (waveformRef) {
-			setWavesurfer(
-				WaveSurfer.create({
-					container: waveformRef,
-					waveColor: muiPinks[400],
-					interact: false,
-					cursorWidth: 0,
-				})
-			);
-		}
+		if (!waveformRef) return;
+
+		const surfer = WaveSurfer.create({
+			container: waveformRef,
+			waveColor: muiPinks[400],
+			interact: false,
+			cursorWidth: 0,
+		});
+
+		setWavesurfer(surfer);
+
+		return () => {
+			surfer.destroy();
+		};
 	}, [waveformRef]);
 
 	React.useEffect(() => {
-		const loadAudio = async () => {
-			// TODO: handle decode failure here
-			const audioBlob = await getAudioBlobFromVideo(videoFile);
-			wavesurfer.loadBlob(new Blob([audioBlob]));
-		};
-
-		if (videoFile && wavesurfer) loadAudio();
+		if (videoFile && wavesurfer) wavesurfer.loadBlob(videoFile);
 	}, [videoFile, wavesurfer]);
 
 	return <div ref={setWaveformRef} className={classes.root} />;
