@@ -87,10 +87,11 @@ export default function DonateDialog({ open, onClose }) {
 				<DonationInput value={donationAmount} onChange={e => setDonationAmount(parseFloat(e.target.value))} />
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={onClose} color="primary">
+				<Button name="Cue Extract Donate Cancel" onClick={onClose} color="primary">
 					Not Now
 				</Button>
 				<Button
+					name="Cue Extract Donate Checkout"
 					loading={loading}
 					icon={<ShoppingCartIcon />}
 					onClick={onDonate}

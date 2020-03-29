@@ -7,7 +7,7 @@ const STATIC_FILES_DIR = path.resolve(__dirname, 'public');
 module.exports = {
 	// files are named according to `entry` key
 	entry: {
-		main: ['./src/polyfills', './src/doorbell', './src/index.js'],
+		main: ['./src/google-analytics', './src/polyfills', './src/doorbell', './src/index.js'],
 	},
 	mode: 'development',
 	// map webpack's output back to source files when debugging in chrome https://webpack.js.org/guides/development#using-source-maps
@@ -41,6 +41,7 @@ module.exports = {
 			SPEECH_TO_TEXT_JOB_TIMEOUT: process.env.SPEECH_TO_TEXT_JOB_TIMEOUT,
 			SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN),
 			DEBUG: process.env.DEBUG,
+			GA_PRODUCT: JSON.stringify(process.env.GA_PRODUCT),
 		}),
 		new HtmlWebpackPlugin({
 			hash: true,

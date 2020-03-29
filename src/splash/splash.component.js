@@ -100,7 +100,12 @@ export default function Splash({ history }) {
 					A free online editor and visualizer for video captions and subtitles.
 				</Typography>
 				<div className={classes.bannerButtonContainer}>
-					<Button size="large" variant="contained" color="secondary" onClick={() => history.push('/editor')}>
+					<Button
+						name="Create Captions"
+						size="large"
+						variant="contained"
+						color="secondary"
+						onClick={() => history.push('/editor')}>
 						Create Captions
 					</Button>
 				</div>

@@ -1,8 +1,7 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/styles';
-import { useFileSelector, useToast, useVideoFile } from '../common';
+import { useFileSelector, useToast, useVideoFile, Button } from '../common';
 import { Video as BaseVideo } from '../common/video';
 import VideoOptionsMenu from './video-options-menu.component';
 import VttTrack from './vtt-track.component';
@@ -51,7 +50,7 @@ export default function Video({ className }) {
 	if (!src) {
 		return (
 			<div className={classes.loaderRoot}>
-				<Button variant="contained" color="primary" onClick={openFileSelector}>
+				<Button name="Initial Select Video" variant="contained" color="primary" onClick={openFileSelector}>
 					Select Video File
 				</Button>
 			</div>

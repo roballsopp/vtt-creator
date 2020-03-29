@@ -1,9 +1,11 @@
 import * as React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Router, Route } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
 import { makeStyles } from '@material-ui/styles';
 import Footer from './footer.component';
 import { Editor } from './editor';
 import { Splash } from './splash';
+import { GAProduct } from './config';
 
 const useStyles = makeStyles({
 	root: {
@@ -19,13 +21,19 @@ const useStyles = makeStyles({
 	},
 });
 
+const history = createBrowserHistory();
+
+history.listen(location => {
+	window.gtag('config', GAProduct, { page_path: location.pathname + location.search });
+});
+
 export default function AppRouter() {
 	const classes = useStyles();
 
 	return (
 		<div className={classes.root}>
 			<main className={classes.content}>
-				<Router>
+				<Router history={history}>
 					<Route path="/" exact component={Splash} />
 					<Route path="/editor" exact component={Editor} />
 				</Router>

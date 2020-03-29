@@ -15,11 +15,20 @@ Button.propTypes = {
 	...MuiButton.propTypes,
 	loading: PropTypes.bool,
 	icon: PropTypes.node,
+	onClick: PropTypes.func,
+	name: PropTypes.string,
 };
 
 export default function Button(props) {
-	const { children, icon, loading, ...buttonProps } = props;
+	const { children, icon, loading, name, onClick, ...buttonProps } = props;
 	const classes = useStyles();
+
+	const handleClick = (...args) => {
+		onClick(...args);
+		window.gtag('event', name, {
+			event_category: 'button_click',
+		});
+	};
 
 	if (loading) {
 		return (
@@ -32,7 +41,7 @@ export default function Button(props) {
 
 	if (icon) {
 		return (
-			<MuiButton {...buttonProps}>
+			<MuiButton onClick={handleClick} {...buttonProps}>
 				{React.cloneElement(icon, {
 					fontSize: 'small',
 					style: {
@@ -45,5 +54,9 @@ export default function Button(props) {
 		);
 	}
 
-	return <MuiButton {...buttonProps}>{children}</MuiButton>;
+	return (
+		<MuiButton onClick={handleClick} {...buttonProps}>
+			{children}
+		</MuiButton>
+	);
 }

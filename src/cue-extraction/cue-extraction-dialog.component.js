@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -31,7 +30,7 @@ import {
 	uploadFile,
 	getSpeechToTextLanguages,
 } from '../services/rest-api.service';
-import { useToast } from '../common';
+import { useToast, Button } from '../common';
 
 const Title = styled(DialogTitle)({
 	display: 'flex',
@@ -150,10 +149,15 @@ export default function CueExtractionDialog({ open, videoFile, onRequestClose, o
 				)}
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={onRequestClose} color="primary" disabled={extracting}>
+				<Button name="Extract Cues Cancel" onClick={onRequestClose} color="primary" disabled={extracting}>
 					Cancel
 				</Button>
-				<Button onClick={extractCuesFromVideo} color="primary" variant="contained" disabled={extracting}>
+				<Button
+					name="Extract Cues Confirm"
+					onClick={extractCuesFromVideo}
+					color="primary"
+					variant="contained"
+					disabled={extracting}>
 					Extract cues
 				</Button>
 			</DialogActions>

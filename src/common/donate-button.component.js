@@ -56,7 +56,7 @@ export default function DonateButton() {
 
 	return (
 		<React.Fragment>
-			<Button color="secondary" variant="contained" onClick={onOpenDialog}>
+			<Button name="Donate Footer" color="secondary" variant="contained" onClick={onOpenDialog}>
 				Donate
 			</Button>
 			<Dialog
@@ -78,10 +78,11 @@ export default function DonateButton() {
 					<DonationInput value={donationAmount} onChange={e => setDonationAmount(parseFloat(e.target.value))} />
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={onCloseDialog} color="primary">
+					<Button name="Donation Cancel" onClick={onCloseDialog} color="primary">
 						Cancel
 					</Button>
 					<Button
+						name="Donation Checkout"
 						loading={loading}
 						icon={<ShoppingCartIcon />}
 						onClick={onDonate}

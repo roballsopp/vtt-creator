@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { makeStyles } from '@material-ui/styles';
-import Button from '@material-ui/core/Button';
-import { useCues, useFileSelector, useToast } from '../common';
+import { useCues, useFileSelector, useToast, Button } from '../common';
 import { getCuesFromVTT } from '../services/vtt.service';
 import { handleError } from '../services/error-handler.service';
 
@@ -41,7 +40,7 @@ export default function CueLoader() {
 
 	return (
 		<div className={classes.root}>
-			<Button variant="contained" color="primary" onClick={openFileSelector}>
+			<Button name="Select VTT File" variant="contained" color="primary" onClick={openFileSelector}>
 				Select VTT File
 			</Button>
 		</div>

@@ -23,6 +23,7 @@
     "clsx": "^1.0.4",
     "core-js": "^3.4.7",
     "downloadjs": "^1.4.7",
+    "history": "^4.10.1",
     "lodash.debounce": "^4.0.8",
     "lodash.sortby": "^4.7.0",
     "lodash.throttle": "^4.1.1",

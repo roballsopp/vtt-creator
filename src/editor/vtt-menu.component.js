@@ -1,6 +1,5 @@
 import * as React from 'react';
 import download from 'downloadjs';
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -15,7 +14,7 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import VoiceChatIcon from '@material-ui/icons/VoiceChat';
 import { makeStyles } from '@material-ui/styles';
 import DonateDialog from './donate-dialog.component';
-import { useFileSelector, useToast, useCues, useVideoFile } from '../common';
+import { useFileSelector, useToast, useCues, useVideoFile, Button } from '../common';
 import { getVTTFromCues, getCuesFromWords, getCuesFromVTT } from '../services/vtt.service';
 import { S2T_REQUEST_COUNT } from '../services/rest-api.service';
 import { getSRTFromCues } from '../services/srt.service';
@@ -185,10 +184,10 @@ export default function VTTMenu() {
 					you want to proceed?
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={onCloseClearCuesDialog} color="primary">
+					<Button name="Delete Cues Cancel" onClick={onCloseClearCuesDialog} color="primary">
 						Cancel
 					</Button>
-					<Button onClick={onClearCues} color="primary" variant="contained">
+					<Button name="Delete Cues Confirm" onClick={onClearCues} color="primary" variant="contained">
 						Yes, Delete Cues
 					</Button>
 				</DialogActions>
