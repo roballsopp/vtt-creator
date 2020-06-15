@@ -29,10 +29,13 @@ DonateDialog.propTypes = {
 export default function DonateDialog({ open, onClose }) {
 	const toast = useToast();
 	const { duration } = useDuration();
-	const suggestedDonation = roundToMinimum((duration / 3600) * 2); // costs about $2 per hour
-
+	const suggestedDonation = roundToCents(Math.max(1, (duration / 3600) * 2)); // costs about $2 per hour
 	const [donationAmount, setDonationAmount] = React.useState(suggestedDonation);
 	const [loading, setLoading] = React.useState(false);
+
+	React.useEffect(() => {
+		setDonationAmount(suggestedDonation);
+	}, [suggestedDonation]);
 
 	const onDonate = async () => {
 		setLoading(true);
@@ -105,6 +108,6 @@ export default function DonateDialog({ open, onClose }) {
 	);
 }
 
-function roundToMinimum(donation) {
-	return donation < 1 ? 1 : donation;
+function roundToCents(amount) {
+	return Math.round(amount * 100) / 100;
 }
