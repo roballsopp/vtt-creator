@@ -1,5 +1,5 @@
 import * as React from 'react';
-import throttle from 'lodash.throttle';
+import throttle from 'lodash/throttle';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { makeStyles } from '@material-ui/styles';
 import usePlayProgress from './use-play-progress.hook';

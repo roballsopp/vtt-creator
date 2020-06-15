@@ -4,7 +4,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/styles';
-import debounce from 'lodash.debounce';
+import debounce from 'lodash/debounce';
 import { useCue } from '../common';
 import TimingInput from './timing-input.component';
 

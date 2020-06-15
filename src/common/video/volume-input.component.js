@@ -1,5 +1,5 @@
 import * as React from 'react';
-import throttle from 'lodash.throttle';
+import throttle from 'lodash/throttle';
 import Slider from '@material-ui/core/Slider';
 import VolumeIcon from '@material-ui/icons/VolumeUp';
 import VolumeOffIcon from '@material-ui/icons/VolumeOff';
