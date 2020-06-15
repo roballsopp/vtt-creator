@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import sortBy from 'lodash/sortby';
+import sortBy from 'lodash/sortBy';
 import { CuePropType } from './prop-types';
 import { useToast } from './toast-context';
 import { getCuesFromStorage, storeCues } from '../services/vtt.service';
