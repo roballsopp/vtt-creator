@@ -87,13 +87,13 @@ export const pollSpeechToTextOp = (operationId, interval = 1000, timeout = Speec
 	});
 };
 
-export const createStripeSession = async ({ name, description, amount }) => {
+export const createStripeSession = async ({ name, description, amount, returnUrl }) => {
 	const resp = await fetch(`${ApiURL}/stripe/session`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({ name, description, amount, returnUrl: location.href }),
+		body: JSON.stringify({ name, description, amount, returnUrl }),
 	});
 
 	if (resp.ok) return await resp.json();

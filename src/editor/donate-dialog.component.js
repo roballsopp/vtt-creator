@@ -9,11 +9,9 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import { styled } from '@material-ui/styles';
-import { Button, DonationInput, useToast } from '../common';
+import { useHistory } from 'react-router-dom';
+import { Button, DonationInput } from '../common';
 import { useDuration } from '../common/video';
-import { createStripeSession } from '../services/rest-api.service';
-import { handleError } from '../services/error-handler.service';
-import { StripeKey } from '../config';
 
 const Title = styled(DialogTitle)({
 	display: 'flex',
@@ -27,33 +25,17 @@ DonateDialog.propTypes = {
 };
 
 export default function DonateDialog({ open, onClose }) {
-	const toast = useToast();
 	const { duration } = useDuration();
 	const suggestedDonation = roundToCents(Math.max(1, (duration / 3600) * 2)); // costs about $2 per hour
 	const [donationAmount, setDonationAmount] = React.useState(suggestedDonation);
-	const [loading, setLoading] = React.useState(false);
 
 	React.useEffect(() => {
 		setDonationAmount(suggestedDonation);
 	}, [suggestedDonation]);
 
-	const onDonate = async () => {
-		setLoading(true);
-		try {
-			const { session } = await createStripeSession({
-				name: 'Donation',
-				description: 'Thanks for your support!',
-				amount: Math.round(donationAmount * 100),
-			});
-
-			const stripe = Stripe(StripeKey);
-			const result = await stripe.redirectToCheckout({ sessionId: session.id });
-			if (result.error) throw result.error;
-		} catch (e) {
-			setLoading(false);
-			handleError(e);
-			toast.error('Something went wrong!');
-		}
+	const onDonate = async e => {
+		window.open(`${window.location.origin}/checkout?donationAmount=${donationAmount}`, '_blank');
+		onClose(e);
 	};
 
 	return (
@@ -95,7 +77,6 @@ export default function DonateDialog({ open, onClose }) {
 				</Button>
 				<Button
 					name="Cue Extract Donate Checkout"
-					loading={loading}
 					icon={<ShoppingCartIcon />}
 					onClick={onDonate}
 					color="primary"

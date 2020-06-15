@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/styles';
 import Footer from './footer.component';
 import { Editor } from './editor';
 import { Splash } from './splash';
+import Checkout, { CheckoutReturn } from './checkout';
 import { GAProduct } from './config';
 
 const useStyles = makeStyles({
@@ -32,13 +33,15 @@ export default function AppRouter() {
 
 	return (
 		<div className={classes.root}>
-			<main className={classes.content}>
-				<Router history={history}>
+			<Router history={history}>
+				<main className={classes.content}>
 					<Route path="/" exact component={Splash} />
 					<Route path="/editor" exact component={Editor} />
-				</Router>
-			</main>
-			<Footer />
+					<Route path="/checkout" exact component={Checkout} />
+					<Route path="/checkout-return" exact component={CheckoutReturn} />
+				</main>
+				<Footer />
+			</Router>
 		</div>
 	);
 }
