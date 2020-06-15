@@ -52,6 +52,7 @@ export default function CueExtractionDialog({ open, videoFile, onRequestClose, o
 	const [uploadState, setUploadState] = React.useState();
 	const [languageCode, setLanguageCode] = React.useState('en-US');
 	const [languages, setLanguages] = React.useState([]);
+	const fileNameRef = React.useRef('');
 
 	const toast = useToast();
 
@@ -63,18 +64,35 @@ export default function CueExtractionDialog({ open, videoFile, onRequestClose, o
 		getLanguages();
 	}, []);
 
+	const cleanup = async () => {
+		if (fileNameRef.current) {
+			try {
+				await deleteFile(fileNameRef.current);
+				fileNameRef.current = '';
+			} catch (e) {
+				handleError(e);
+			}
+		}
+	};
+
+	const handleRequestClose = e => {
+		if (uploadState === UPLOAD_STATE_PROCESSING) {
+			cleanup();
+		}
+		onRequestClose(e);
+	};
+
 	const extractCuesFromVideo = async e => {
 		setExtracting(true);
-		let filename;
 
 		try {
 			setUploadState(UPLOAD_STATE_EXTRACTING);
 			const audioBlob = await getAudioBlobFromVideo(videoFile);
 
 			setUploadState(UPLOAD_STATE_UPLOADING);
-			const uploadUrlResp = await getUploadUrl();
-			filename = uploadUrlResp.filename;
-			await uploadFile(audioBlob, uploadUrlResp.url, e => {
+			const { filename, url } = await getUploadUrl();
+			fileNameRef.current = filename;
+			await uploadFile(audioBlob, url, e => {
 				setProgressBytes(e.loaded);
 				setTotalBytes(e.total);
 			});
@@ -100,13 +118,7 @@ export default function CueExtractionDialog({ open, videoFile, onRequestClose, o
 
 		setExtracting(false);
 
-		if (filename) {
-			try {
-				await deleteFile(filename);
-			} catch (e) {
-				handleError(e);
-			}
-		}
+		cleanup();
 	};
 
 	return (
@@ -116,11 +128,11 @@ export default function CueExtractionDialog({ open, videoFile, onRequestClose, o
 			maxWidth="sm"
 			fullWidth
 			open={open}
-			onClose={onRequestClose}
+			onClose={handleRequestClose}
 			aria-labelledby="extract-dialog-title">
 			<Title id="extract-dialog-title" disableTypography>
 				<Typography variant="h6">Extract cues from video</Typography>
-				<IconButton aria-label="Close" edge="end" onClick={onRequestClose} disabled={extracting}>
+				<IconButton aria-label="Close" edge="end" onClick={handleRequestClose}>
 					<CloseIcon />
 				</IconButton>
 			</Title>
@@ -149,7 +161,7 @@ export default function CueExtractionDialog({ open, videoFile, onRequestClose, o
 				)}
 			</DialogContent>
 			<DialogActions>
-				<Button name="Extract Cues Cancel" onClick={onRequestClose} color="primary" disabled={extracting}>
+				<Button name="Extract Cues Cancel" onClick={handleRequestClose} color="primary">
 					Cancel
 				</Button>
 				<Button
