@@ -181,8 +181,8 @@ export default function CueExtractionDialog({ open, onRequestClose, onExtractCom
 }
 
 function recordS2TEvent(videoDuration) {
-	const minutes = Math.round((videoDuration || 0) / 60);
-	window.gtag('event', `video_length_${minutes}`, {
+	const minutes = Math.round((videoDuration || 0) / 60) + '';
+	window.gtag('event', `video_length_${minutes.padStart(2, '0')}`, {
 		event_category: 'speech_to_text',
 		value: videoDuration,
 	});
