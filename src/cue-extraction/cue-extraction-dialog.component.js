@@ -106,7 +106,7 @@ export default function CueExtractionDialog({ open, onRequestClose, onExtractCom
 
 			setUploadState(UPLOAD_STATE_COMPLETED);
 
-			if (results.length) {
+			if (results && results.length) {
 				onExtractComplete(results);
 				toast.success('Upload successful!');
 				onRequestClose(e);
