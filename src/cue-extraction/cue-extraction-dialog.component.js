@@ -30,7 +30,8 @@ import {
 	uploadFile,
 	getSpeechToTextLanguages,
 } from '../services/rest-api.service';
-import { useToast, Button } from '../common';
+import { useToast, Button, useVideoFile } from '../common';
+import { useDuration } from '../common/video';
 
 const Title = styled(DialogTitle)({
 	display: 'flex',
@@ -40,12 +41,13 @@ const Title = styled(DialogTitle)({
 
 CueExtractionDialog.propTypes = {
 	open: PropTypes.bool,
-	videoFile: PropTypes.oneOfType([PropTypes.instanceOf(File), PropTypes.instanceOf(Blob)]),
 	onRequestClose: PropTypes.func.isRequired,
 	onExtractComplete: PropTypes.func.isRequired,
 };
 
-export default function CueExtractionDialog({ open, videoFile, onRequestClose, onExtractComplete }) {
+export default function CueExtractionDialog({ open, onRequestClose, onExtractComplete }) {
+	const { videoFile } = useVideoFile();
+	const { duration } = useDuration();
 	const [extracting, setExtracting] = React.useState(false);
 	const [progressBytes, setProgressBytes] = React.useState(0);
 	const [totalBytes, setTotalBytes] = React.useState(0);
@@ -99,6 +101,7 @@ export default function CueExtractionDialog({ open, videoFile, onRequestClose, o
 
 			setUploadState(UPLOAD_STATE_PROCESSING);
 			const { operationId } = await initSpeechToTextOp(filename, { languageCode });
+			recordS2TEvent(duration);
 			const results = await pollSpeechToTextOp(operationId, 2000);
 
 			setUploadState(UPLOAD_STATE_COMPLETED);
@@ -175,4 +178,12 @@ export default function CueExtractionDialog({ open, videoFile, onRequestClose, o
 			</DialogActions>
 		</Dialog>
 	);
+}
+
+function recordS2TEvent(videoDuration) {
+	const minutes = Math.round((videoDuration || 0) / 60);
+	window.gtag('event', `video_length_${minutes}`, {
+		event_category: 'speech_to_text',
+		value: videoDuration,
+	});
 }

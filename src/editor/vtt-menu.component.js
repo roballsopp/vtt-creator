@@ -166,7 +166,6 @@ export default function VTTMenu() {
 			{!apiDisabled && (
 				<CueExtractionDialog
 					open={cueExtractionDialogOpen}
-					videoFile={videoFile}
 					onRequestClose={onCloseCueExtractionDialog}
 					onExtractComplete={onCueExtractComplete}
 				/>
