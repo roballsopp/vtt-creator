@@ -43,7 +43,7 @@ module.exports = {
 			chunks: ['main'],
 		}),
 		new SentryWebpackPlugin({
-			include: './src/',
+			include: '.',
 			ignore: ['node_modules', 'docs', 'webpack.prod.js', 'webpack.dev.js', 'webpack.demo.js'],
 			configFile: 'sentry.properties',
 		}),
