@@ -2,6 +2,7 @@ const path = require('path');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const { DefinePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const SentryWebpackPlugin = require('@sentry/webpack-plugin');
 
 module.exports = {
 	entry: {
@@ -40,6 +41,11 @@ module.exports = {
 			template: './src/index.html',
 			filename: path.join(__dirname, 'public', 'index.html'),
 			chunks: ['main'],
+		}),
+		new SentryWebpackPlugin({
+			include: './src/',
+			ignore: ['node_modules', 'docs', 'webpack.prod.js', 'webpack.dev.js', 'webpack.demo.js'],
+			configFile: 'sentry.properties',
 		}),
 	],
 	optimization: {

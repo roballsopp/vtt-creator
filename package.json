@@ -38,6 +38,7 @@
     "@babel/core": "^7.5.4",
     "@babel/preset-env": "^7.5.4",
     "@babel/preset-react": "^7.0.0",
+    "@sentry/webpack-plugin": "^1.11.1",
     "babel-loader": "^8.0.6",
     "chai": "^4.2.0",
     "chromium": "^2.1.1",
