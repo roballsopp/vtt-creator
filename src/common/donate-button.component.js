@@ -6,10 +6,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import { styled } from '@material-ui/styles';
+import { styled, makeStyles } from '@material-ui/styles';
 import DonationInput from './donation-input.component';
-import { Button } from '../common';
+import { Button, PayPalButton } from '../common';
 
 const Title = styled(DialogTitle)({
 	display: 'flex',
@@ -17,14 +16,16 @@ const Title = styled(DialogTitle)({
 	alignItems: 'center',
 });
 
-export default function DonateButton() {
-	const [donationAmount, setDonationAmount] = React.useState();
-	const [dialogOpen, setDialogOpen] = React.useState(false);
+const useStyles = makeStyles(theme => ({
+	paymentButtonContainer: {
+		marginTop: theme.spacing(3),
+	},
+}));
 
-	const onDonate = async () => {
-		window.open(`${window.location.origin}/checkout?donationAmount=${donationAmount}`, '_blank');
-		onCloseDialog();
-	};
+export default function DonateButton() {
+	const [donationAmount, setDonationAmount] = React.useState('1.00');
+	const [dialogOpen, setDialogOpen] = React.useState(false);
+	const classes = useStyles();
 
 	const onOpenDialog = () => {
 		setDialogOpen(true);
@@ -32,6 +33,10 @@ export default function DonateButton() {
 
 	const onCloseDialog = () => {
 		setDialogOpen(false);
+	};
+
+	const handlePaypalSuccess = () => {
+		onCloseDialog();
 	};
 
 	return (
@@ -55,20 +60,14 @@ export default function DonateButton() {
 				</Title>
 				<DialogContent>
 					<Typography paragraph>Thanks for supporting this project! How much would you like to give?</Typography>
-					<DonationInput value={donationAmount} onChange={e => setDonationAmount(parseFloat(e.target.value))} />
+					<DonationInput value={donationAmount} onChange={setDonationAmount} />
+					<div className={classes.paymentButtonContainer}>
+						<PayPalButton name="PayPal Donate" paymentAmount={donationAmount} onPaymentSuccess={handlePaypalSuccess} />
+					</div>
 				</DialogContent>
 				<DialogActions>
 					<Button name="Donation Cancel" onClick={onCloseDialog} color="primary">
 						Cancel
-					</Button>
-					<Button
-						name="Donation Checkout"
-						icon={<ShoppingCartIcon />}
-						onClick={onDonate}
-						color="primary"
-						variant="contained"
-						disabled={!donationAmount || donationAmount < 1}>
-						Checkout
 					</Button>
 				</DialogActions>
 			</Dialog>

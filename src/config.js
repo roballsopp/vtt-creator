@@ -8,3 +8,4 @@ export const SpeechToTextJobTimeout = SPEECH_TO_TEXT_JOB_TIMEOUT || 20000;
 export const SentryDSN = SENTRY_DSN;
 export const DebugMode = DEBUG;
 export const GAProduct = GA_PRODUCT;
+export const PayPalClientID = PAYPAL_CLIENT_ID;
