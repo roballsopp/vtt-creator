@@ -5,12 +5,11 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
 import { DonateButton } from './common';
 import { LinkedIn, Github } from './common/icons';
-import { donationDisabled } from './config';
 
 const useStyles = makeStyles(theme => ({
 	root: {
 		display: 'flex',
-		justifyContent: donationDisabled ? 'center' : 'space-between',
+		justifyContent: 'space-between',
 		alignItems: 'center',
 		height: 48,
 		backgroundColor: theme.palette.primary.main,
@@ -59,14 +58,12 @@ export default function Footer() {
 					<Github fontSize="small" />
 				</IconButton>
 			</div>
-			{!donationDisabled && (
-				<div className={classes.footerSection}>
-					<Typography variant="body2" color="inherit" style={{ marginRight: 16 }}>
-						Like this tool? Help me keep it running!
-					</Typography>
-					<DonateButton />
-				</div>
-			)}
+			<div className={classes.footerSection}>
+				<Typography variant="body2" color="inherit" style={{ marginRight: 16 }}>
+					Like this tool? Help me keep it running!
+				</Typography>
+				<DonateButton name="Footer Donate Checkout" />
+			</div>
 		</Paper>
 	);
 }

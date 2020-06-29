@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/styles';
 import Footer from './footer.component';
 import { Editor } from './editor';
 import { Splash } from './splash';
+import { CheckoutCancel, CheckoutSuccess } from './checkout';
 import { GAProduct } from './config';
 
 const useStyles = makeStyles({
@@ -36,6 +37,8 @@ export default function AppRouter() {
 				<main className={classes.content}>
 					<Route path="/" exact component={Splash} />
 					<Route path="/editor" exact component={Editor} />
+					<Route path="/checkout-cancel" exact component={CheckoutCancel} />
+					<Route path="/checkout-success" exact component={CheckoutSuccess} />
 				</main>
 				<Footer />
 			</Router>
