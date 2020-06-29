@@ -5,14 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
 	entry: {
-		main: [
-			'./src/full-story',
-			'./src/google-analytics',
-			'./src/paypal',
-			'./src/polyfills',
-			'./src/doorbell',
-			'./src/index.js',
-		],
+		main: ['./src/full-story', './src/google-analytics', './src/polyfills', './src/doorbell', './src/index.js'],
 	},
 	mode: 'production',
 	output: {
@@ -40,7 +33,6 @@ module.exports = {
 			SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN),
 			DEBUG: process.env.DEBUG,
 			GA_PRODUCT: JSON.stringify(process.env.GA_PRODUCT),
-			PAYPAL_CLIENT_ID: JSON.stringify(process.env.PAYPAL_CLIENT_ID),
 		}),
 		new HtmlWebpackPlugin({
 			hash: true,
