@@ -17,11 +17,12 @@ export default function CheckoutCancel() {
 	React.useEffect(() => {
 		window.gtag('event', 'Donate Checkout Cancel', {
 			event_category: 'button_click',
-			// enables the event to fire in the global browser context so its isn't cut short by the window closing
-			transport_type: 'beacon',
+			event_callback: () => window.close(),
 		});
 
-		window.close();
+		setTimeout(() => {
+			window.close();
+		}, 1000);
 	}, []);
 
 	return (
