@@ -9,6 +9,7 @@ import SubtitlesIcon from '@material-ui/icons/Subtitles';
 import { Button } from '../common';
 import { VC as VCIcon } from '../common/icons';
 import BannerBgImg from '../../assets/banner_bg.jpg';
+import Footer from '../footer.component';
 
 const useStyles = makeStyles({
 	root: {
@@ -88,48 +89,51 @@ export default function Splash({ history }) {
 	const classes = useStyles();
 
 	return (
-		<div className={classes.root}>
-			<div className={classes.banner}>
-				<div className={classes.title}>
-					<VCIcon className={classes.titleIcon} />
-					<Typography variant="h2" color="inherit">
-						VTT Creator
+		<React.Fragment>
+			<main className={classes.root}>
+				<div className={classes.banner}>
+					<div className={classes.title}>
+						<VCIcon className={classes.titleIcon} />
+						<Typography variant="h2" color="inherit">
+							VTT Creator
+						</Typography>
+					</div>
+					<Typography variant="h6" className={classes.tag}>
+						A free online editor and visualizer for video captions and subtitles.
 					</Typography>
-				</div>
-				<Typography variant="h6" className={classes.tag}>
-					A free online editor and visualizer for video captions and subtitles.
-				</Typography>
-				<div className={classes.bannerButtonContainer}>
-					<Button
-						name="Create Captions"
-						size="large"
-						variant="contained"
-						color="secondary"
-						onClick={() => history.push('/editor')}>
-						Create Captions
-					</Button>
-				</div>
-			</div>
-			<div className={classes.content}>
-				<div className={classes.features}>
-					<div className={classes.feature}>
-						<SubtitlesIcon className={classes.featureIcon} />
-						<Typography variant="h6">Load a video, and see your captions in action as you edit.</Typography>
-					</div>
-					<div className={classes.feature}>
-						<MemoryIcon className={classes.featureIcon} />
-						<Typography variant="h6">
-							Leverage machine learning to automatically extract captions directly from your video.
-						</Typography>
-					</div>
-					<div className={classes.feature}>
-						<CloudDownloadIcon className={classes.featureIcon} />
-						<Typography variant="h6">
-							Export your work to a .vtt file for use anywhere on the web, or a .srt file for use offline.
-						</Typography>
+					<div className={classes.bannerButtonContainer}>
+						<Button
+							name="Create Captions"
+							size="large"
+							variant="contained"
+							color="secondary"
+							onClick={() => history.push('/editor')}>
+							Create Captions
+						</Button>
 					</div>
 				</div>
-			</div>
-		</div>
+				<div className={classes.content}>
+					<div className={classes.features}>
+						<div className={classes.feature}>
+							<SubtitlesIcon className={classes.featureIcon} />
+							<Typography variant="h6">Load a video, and see your captions in action as you edit.</Typography>
+						</div>
+						<div className={classes.feature}>
+							<MemoryIcon className={classes.featureIcon} />
+							<Typography variant="h6">
+								Leverage machine learning to automatically extract captions directly from your video.
+							</Typography>
+						</div>
+						<div className={classes.feature}>
+							<CloudDownloadIcon className={classes.featureIcon} />
+							<Typography variant="h6">
+								Export your work to a .vtt file for use anywhere on the web, or a .srt file for use offline.
+							</Typography>
+						</div>
+					</div>
+				</div>
+			</main>
+			<Footer />
+		</React.Fragment>
 	);
 }

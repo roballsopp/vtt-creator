@@ -17,7 +17,6 @@ export default function CheckoutSuccess() {
 	React.useEffect(() => {
 		window.gtag('event', 'Donate Checkout Success', {
 			event_category: 'button_click',
-			event_callback: () => window.close(),
 		});
 
 		setTimeout(() => {
@@ -26,8 +25,8 @@ export default function CheckoutSuccess() {
 	}, []);
 
 	return (
-		<div className={classes.root}>
+		<main className={classes.root}>
 			<Loader />
-		</div>
+		</main>
 	);
 }

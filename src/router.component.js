@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Router, Route } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { makeStyles } from '@material-ui/styles';
-import Footer from './footer.component';
 import { Editor } from './editor';
 import { Splash } from './splash';
 import { CheckoutCancel, CheckoutSuccess } from './checkout';
@@ -34,13 +33,10 @@ export default function AppRouter() {
 	return (
 		<div className={classes.root}>
 			<Router history={history}>
-				<main className={classes.content}>
-					<Route path="/" exact component={Splash} />
-					<Route path="/editor" exact component={Editor} />
-					<Route path="/checkout-cancel" exact component={CheckoutCancel} />
-					<Route path="/checkout-success" exact component={CheckoutSuccess} />
-				</main>
-				<Footer />
+				<Route path="/" exact component={Splash} />
+				<Route path="/editor" exact component={Editor} />
+				<Route path="/checkout-cancel" exact component={CheckoutCancel} />
+				<Route path="/checkout-success" exact component={CheckoutSuccess} />
 			</Router>
 		</div>
 	);
