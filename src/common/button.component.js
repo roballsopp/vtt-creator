@@ -24,7 +24,7 @@ export default function Button(props) {
 	const classes = useStyles();
 
 	const handleClick = (...args) => {
-		onClick(...args);
+		if (onClick) onClick(...args);
 		window.gtag('event', name, {
 			event_category: 'button_click',
 		});
