@@ -3,7 +3,6 @@ import DonateButton from './donate-button.component';
 import ErrorBoundary from './error-boundary.component';
 import List from './list.component';
 import Loader from './loader.component';
-import PayPalButton from './paypal-button.component';
 import { ToastProvider, useToast } from './toast-context';
 import { CuesProvider, useCues, CueProvider, useCue } from './cue-context';
 import { VideoFileProvider, useVideoFile } from './video-file-context';
@@ -16,7 +15,6 @@ export {
 	ErrorBoundary,
 	List,
 	Loader,
-	PayPalButton,
 	ToastProvider,
 	useToast,
 	CuesProvider,
