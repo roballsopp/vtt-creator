@@ -44,7 +44,7 @@ module.exports = {
 			chunks: ['main'],
 		}),
 		new SentryCliPlugin({
-			release: JSON.stringify(process.env.SENTRY_RELEASE),
+			release: process.env.SENTRY_RELEASE,
 			include: './src/',
 			ignore: ['node_modules'],
 			configFile: 'sentry.properties',
