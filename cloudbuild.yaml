@@ -17,4 +17,4 @@ steps:
       - 'SPEECH_TO_TEXT_JOB_TIMEOUT=${_SPEECH_TO_TEXT_JOB_TIMEOUT}'
     timeout: 500s
   - name: 'gcr.io/cloud-builders/gsutil'
-    args: ["-m", "rsync", "-r", "-c", "-d", './build', 'gs://${_BUCKET}']
+    args: ["-m", "rsync", "-r", "-c", "-d", './build', 'gs://${_STATIC_ASSET_BUCKET}']
