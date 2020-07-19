@@ -14,7 +14,7 @@ steps:
       - 'SENTRY_DSN=${_SENTRY_DSN}'
       - 'SENTRY_ORG=${_SENTRY_ORG}'
       - 'SENTRY_PROJECT=${_SENTRY_PROJECT}'
-      - 'SENTRY_RELEASE=$PROJECT_ID_$BUILD_ID'
+      - 'SENTRY_RELEASE=$PROJECT_ID-$BUILD_ID'
       - 'SPEECH_TO_TEXT_JOB_TIMEOUT=${_SPEECH_TO_TEXT_JOB_TIMEOUT}'
     timeout: 500s
   - name: 'gcr.io/cloud-builders/gsutil'
