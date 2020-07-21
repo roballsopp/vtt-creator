@@ -2,7 +2,6 @@ const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
 const { DefinePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const SentryCliPlugin = require('@sentry/webpack-plugin');
 
 module.exports = {
 	entry: {
@@ -42,12 +41,6 @@ module.exports = {
 			template: './src/index.html',
 			filename: path.join(__dirname, 'public', 'index.html'),
 			chunks: ['main'],
-		}),
-		new SentryCliPlugin({
-			release: process.env.SENTRY_RELEASE,
-			include: './src/',
-			ignore: ['node_modules'],
-			configFile: 'sentry.properties',
 		}),
 	],
 	optimization: {

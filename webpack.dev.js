@@ -1,7 +1,6 @@
 const path = require('path');
 const { DefinePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const SentryCliPlugin = require('@sentry/webpack-plugin');
 
 const STATIC_FILES_DIR = path.resolve(__dirname, 'public');
 
@@ -48,12 +47,6 @@ module.exports = {
 			template: './src/index.html',
 			filename: path.resolve(STATIC_FILES_DIR, 'index.html'),
 			chunks: ['main'],
-		}),
-		new SentryCliPlugin({
-			include: './src/',
-			ignore: ['node_modules'],
-			configFile: 'sentry.properties',
-			dryRun: true,
 		}),
 	],
 	devServer: {

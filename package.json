@@ -21,7 +21,6 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/styles": "^4.10.0",
     "@sentry/browser": "^5.5.0",
-    "@sentry/webpack-plugin": "^1.12.0",
     "audiobuffer-to-wav": "^1.0.0",
     "babel-loader": "^8.1.0",
     "clsx": "^1.0.4",
