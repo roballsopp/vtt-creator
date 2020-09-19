@@ -13,10 +13,10 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import VoiceChatIcon from '@material-ui/icons/VoiceChat';
 import { makeStyles } from '@material-ui/styles';
-import DonateDialog from './donate-dialog.component';
-import { useFileSelector, useToast, useCues, useVideoFile, Button } from '../common';
+import LoginDialog from './LoginDialog';
+import CreditDialog from './CreditDialog';
+import { useFileSelector, useToast, useCues, useVideoFile, Button, useAuth, useCredit } from '../common';
 import { getVTTFromCues, getCuesFromWords, getCuesFromVTT } from '../services/vtt.service';
-import { S2T_REQUEST_COUNT } from '../services/rest-api.service';
 import { getSRTFromCues } from '../services/srt.service';
 import { handleError } from '../services/error-handler.service';
 import CueExtractionDialog from '../cue-extraction/cue-extraction-dialog.component';
@@ -47,40 +47,51 @@ export default function VTTMenu() {
 	const toast = useToast();
 	const { cues, onChangeCues, onLoadingCues } = useCues();
 	const { videoFile } = useVideoFile();
+	const { isAuthenticated } = useAuth();
+	const { cost, credit } = useCredit();
 
 	const [optionsMenuAnchorEl, setOptionsMenuAnchorEl] = React.useState(null);
 	const [clearCuesDialogOpen, setClearCuesDialogOpen] = React.useState(false);
 	const [cueExtractionDialogOpen, setCueExtractionDialogOpen] = React.useState(false);
-	const [donateDialogOpen, setDonateDialogOpen] = React.useState(false);
+	const [loginDialogOpen, setLoginDialogOpen] = React.useState(false);
+	const [creditDialogOpen, setCreditDialogOpen] = React.useState(false);
 
 	const onCloseOptionsMenu = () => {
 		setOptionsMenuAnchorEl(null);
 	};
 
-	const onOpenCueExtractionDialog = () => {
-		const count = parseInt(localStorage.getItem(S2T_REQUEST_COUNT) || 0);
+	const handleOpenCueExtractionDialog = () => {
+		onCloseOptionsMenu();
 
-		// ask for donation every other use of the api
-		if (count > 0 && count % 2) {
-			setCueExtractionDialogOpen(true);
-			onCloseOptionsMenu();
-		} else {
-			onOpenDonateDialog();
+		if (!isAuthenticated) {
+			return setLoginDialogOpen(true);
 		}
+
+		if (cost > credit) {
+			return setCreditDialogOpen(true);
+		}
+
+		setCueExtractionDialogOpen(true);
 	};
 
 	const onCloseCueExtractionDialog = () => {
 		setCueExtractionDialogOpen(false);
 	};
 
-	const onOpenDonateDialog = () => {
-		setDonateDialogOpen(true);
-		onCloseOptionsMenu();
+	const handleLoginDialogClose = () => {
+		setLoginDialogOpen(false);
 	};
 
-	const onCloseDonateDialog = () => {
-		setDonateDialogOpen(false);
-		setCueExtractionDialogOpen(true);
+	const handleLoginDialogExited = () => {
+		handleOpenCueExtractionDialog();
+	};
+
+	const handleCreditDialogClose = () => {
+		setCreditDialogOpen(false);
+	};
+
+	const handleCreditDialogExited = () => {
+		handleOpenCueExtractionDialog();
 	};
 
 	const onCueExtractComplete = segments => {
@@ -146,7 +157,7 @@ export default function VTTMenu() {
 					<CloudUploadIcon className={classes.menuIcon} />
 					Load from VTT file...
 				</MenuItem>
-				<MenuItem disabled={apiDisabled || !videoFile} onClick={onOpenCueExtractionDialog}>
+				<MenuItem disabled={apiDisabled || !videoFile} onClick={handleOpenCueExtractionDialog}>
 					<VoiceChatIcon className={classes.menuIcon} />
 					Extract from video...
 				</MenuItem>
@@ -170,7 +181,8 @@ export default function VTTMenu() {
 					onExtractComplete={onCueExtractComplete}
 				/>
 			)}
-			<DonateDialog open={donateDialogOpen} onClose={onCloseDonateDialog} />
+			<LoginDialog open={loginDialogOpen} onExited={handleLoginDialogExited} onClose={handleLoginDialogClose} />
+			<CreditDialog open={creditDialogOpen} onExited={handleCreditDialogExited} onClose={handleCreditDialogClose} />
 			<Dialog
 				maxWidth="sm"
 				fullWidth

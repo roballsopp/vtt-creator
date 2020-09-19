@@ -1,6 +1,6 @@
 import Button from './button.component';
-import DonateButton from './donate-button.component';
 import AuthProvider, { useAuth } from './auth-context';
+import { CreditProvider, useCredit } from './credit-context';
 import ErrorBoundary from './error-boundary.component';
 import List from './list.component';
 import Loader from './loader.component';
@@ -15,7 +15,8 @@ export {
 	AuthProvider,
 	useAuth,
 	Button,
-	DonateButton,
+	CreditProvider,
+	useCredit,
 	ErrorBoundary,
 	List,
 	Loader,
