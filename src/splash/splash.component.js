@@ -99,7 +99,7 @@ export default function Splash({ history }) {
 						</Typography>
 					</div>
 					<Typography variant="h6" className={classes.tag}>
-						A free online editor and visualizer for video captions and subtitles.
+						An online editor and visualizer for video captions and subtitles.
 					</Typography>
 					<div className={classes.bannerButtonContainer}>
 						<Button
