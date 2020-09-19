@@ -1,23 +1,29 @@
 import * as React from 'react';
 import ReactDOM from 'react-dom';
+import { ApolloProvider } from '@apollo/client';
+import apolloClient from './ApolloClient';
 import MuiThemeProvider from '@material-ui/styles/ThemeProvider';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import * as Sentry from '@sentry/browser';
 import theme from './mui-theme';
 import Router from './router.component';
-import { ToastProvider, ErrorBoundary } from './common';
+import { ToastProvider, ErrorBoundary, AuthProvider } from './common';
 import { SentryDSN } from './config';
 
 function AppWrapper() {
 	return (
-		<MuiThemeProvider theme={theme}>
-			<CssBaseline />
-			<ErrorBoundary>
-				<ToastProvider>
-					<Router />
-				</ToastProvider>
-			</ErrorBoundary>
-		</MuiThemeProvider>
+		<ApolloProvider client={apolloClient}>
+			<MuiThemeProvider theme={theme}>
+				<CssBaseline />
+				<ErrorBoundary>
+					<AuthProvider>
+						<ToastProvider>
+							<Router />
+						</ToastProvider>
+					</AuthProvider>
+				</ErrorBoundary>
+			</MuiThemeProvider>
+		</ApolloProvider>
 	);
 }
 
