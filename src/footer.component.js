@@ -3,7 +3,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
-import { DonateButton } from './common';
+import { AccountButton } from './account';
 import { LinkedIn, Github } from './common/icons';
 
 const useStyles = makeStyles(theme => ({
@@ -59,10 +59,7 @@ export default function Footer() {
 				</IconButton>
 			</div>
 			<div className={classes.footerSection}>
-				<Typography variant="body2" color="inherit" style={{ marginRight: 16 }}>
-					Like this tool? Help me keep it running!
-				</Typography>
-				<DonateButton name="Footer Donate Checkout" />
+				<AccountButton />
 			</div>
 		</Paper>
 	);
