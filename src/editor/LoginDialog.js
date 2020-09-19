@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import { styled } from '@material-ui/styles';
 import { Button, useAuth } from '../common';
-import { LoginUrl, SignupUrl } from '../config';
+import { LoginUrl, SignupUrl, TranscriptionCost } from '../config';
 
 const Title = styled(DialogTitle)({
 	display: 'flex',
@@ -50,7 +50,8 @@ export default function LoginDialog({ open, onExited, onClose }) {
 				<Typography paragraph>Hi there, I&apos;m glad you&apos;re enjoying this app!</Typography>
 				<Typography paragraph>
 					Unfortunately I can no longer afford to keep the automatic caption extraction feature free. You&apos;ll now
-					have to create an account and buy credits to extract captions from your videos. Please login or sign up below.
+					have to create an account and buy credits to extract captions from your videos. Have no fear though! The cost
+					is only ${TranscriptionCost.toFixed(2)} per minute of video! Please login or sign up for an account below.
 				</Typography>
 				<Typography paragraph>
 					Thanks!

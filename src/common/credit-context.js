@@ -1,6 +1,7 @@
 import React from 'react';
 import { useQuery, gql } from '@apollo/client';
 import PropTypes from 'prop-types';
+import { TranscriptionCost } from '../config';
 import { useDuration } from './video';
 
 const CreditContext = React.createContext({
@@ -23,8 +24,7 @@ CreditProvider.propTypes = {
 
 export function CreditProvider({ children }) {
 	const { duration } = useDuration();
-	// $0.10 per minute
-	const cost = Math.round((duration / 60) * 0.1 * 100) / 100;
+	const cost = Math.round((duration / 60) * TranscriptionCost * 100) / 100;
 	const { loading, error, data } = useQuery(USER_QUERY);
 	const credit = loading || error || !data ? 0 : data.self.credit;
 

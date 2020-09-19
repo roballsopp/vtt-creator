@@ -7,7 +7,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
-import { styled } from '@material-ui/styles';
+import { styled, makeStyles } from '@material-ui/styles';
+import { TranscriptionCost } from '../config';
 import UploadProgress, {
 	UPLOAD_STATE_COMPLETED,
 	UPLOAD_STATE_EXTRACTING,
@@ -29,6 +30,12 @@ const Title = styled(DialogTitle)({
 	alignItems: 'center',
 });
 
+const useStyles = makeStyles(theme => ({
+	priceInfo: {
+		paddingTop: theme.spacing(2),
+	},
+}));
+
 CueExtractionDialog.propTypes = {
 	open: PropTypes.bool,
 	onRequestClose: PropTypes.func.isRequired,
@@ -38,6 +45,7 @@ CueExtractionDialog.propTypes = {
 export default function CueExtractionDialog({ open, onRequestClose, onExtractComplete }) {
 	const { videoFile } = useVideoFile();
 	const { duration } = useDuration();
+	const classes = useStyles();
 	const [extracting, setExtracting] = React.useState(false);
 	const [progressBytes, setProgressBytes] = React.useState(0);
 	const [totalBytes, setTotalBytes] = React.useState(0);
@@ -94,7 +102,7 @@ export default function CueExtractionDialog({ open, onRequestClose, onExtractCom
 
 			if (results && results.length) {
 				onExtractComplete(results);
-				toast.success('Upload successful!');
+				toast.success('Extraction successful!');
 				onRequestClose(e);
 				await finishTranscription(operationId);
 			} else {
@@ -131,6 +139,12 @@ export default function CueExtractionDialog({ open, onRequestClose, onExtractCom
 					<UploadProgress progressBytes={progressBytes} totalBytes={totalBytes} uploadState={uploadState} />
 				)}
 				{!extracting && <LanguageSelector value={languageCode} onChange={setLanguageCode} />}
+				<div className={classes.priceInfo}>
+					<Typography variant="subtitle2">
+						The cost (${((TranscriptionCost * duration) / 60).toFixed(2)}) of this transcription will be deducted from
+						your credit balance only if it completes successfully.
+					</Typography>
+				</div>
 			</DialogContent>
 			<DialogActions>
 				<Button name="Extract Cues Cancel" onClick={handleRequestClose} color="primary">

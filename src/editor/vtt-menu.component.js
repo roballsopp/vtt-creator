@@ -83,7 +83,9 @@ export default function VTTMenu() {
 	};
 
 	const handleLoginDialogExited = () => {
-		handleOpenCueExtractionDialog();
+		if (isAuthenticated) {
+			handleOpenCueExtractionDialog();
+		}
 	};
 
 	const handleCreditDialogClose = () => {

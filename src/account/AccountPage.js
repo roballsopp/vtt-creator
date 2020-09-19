@@ -10,7 +10,7 @@ import { makeStyles } from '@material-ui/styles';
 import PaypalButtons from './PaypalButtons';
 import DollarsInput from './DollarsInput';
 import { VC as VCIcon } from '../common/icons';
-import { LogoutUrl } from '../config';
+import { LogoutUrl, TranscriptionCost } from '../config';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -76,7 +76,14 @@ export default function AccountPage({ user }) {
 						<Typography variant="h6">Account Email: {user.email}</Typography>
 					</Grid>
 					<Grid item xs={12}>
-						<Typography variant="h6">Credit: ${user.credit.toFixed(2)}</Typography>
+						<Typography variant="h6" gutterBottom>
+							Credit: ${user.credit.toFixed(2)} ({(user.credit / TranscriptionCost).toFixed(1)} minutes)
+						</Typography>
+						<Typography>
+							Extracting video captions automatically costs ${TranscriptionCost.toFixed(2)} per minute of video. More
+							credit can be added below. Just enter how much credit you want to add, and click the button for your
+							preferred payment method.
+						</Typography>
 					</Grid>
 					<Grid item xs={12}>
 						<div className={classes.addCreditSection}>
