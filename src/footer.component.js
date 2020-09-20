@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/styles';
 import { AccountButton } from './account';
@@ -31,7 +32,11 @@ export default function Footer() {
 
 	return (
 		<Paper square className={classes.root} elevation={8}>
-			<div className={classes.footerSection} />
+			<div className={classes.footerSection}>
+				<Button color="inherit" href="/privacy">
+					Privacy
+				</Button>
+			</div>
 			<div className={classes.footerSection}>
 				<AccountButton />
 			</div>

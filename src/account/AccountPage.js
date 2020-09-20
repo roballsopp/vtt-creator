@@ -4,6 +4,7 @@ import { gql } from '@apollo/client';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import Link from '@material-ui/core/Link';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
@@ -93,6 +94,11 @@ export default function AccountPage({ user }) {
 					<Grid item xs={12}>
 						<Button color="secondary" size="large" variant="contained" href={LogoutUrl}>
 							Log out
+						</Button>
+					</Grid>
+					<Grid item xs={12}>
+						<Button color="secondary" size="large" variant="contained" href="/privacy">
+							Privacy
 						</Button>
 					</Grid>
 				</Grid>

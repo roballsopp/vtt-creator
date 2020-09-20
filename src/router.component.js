@@ -6,6 +6,7 @@ import { Editor } from './editor';
 import { Splash } from './splash';
 import { CheckoutCancel, CheckoutSuccess } from './checkout';
 import { AccountPage, LoginRedirect, LogoutRedirect } from './account';
+import PrivacyPage from './privacy';
 import { GAProduct } from './config';
 
 const useStyles = makeStyles({
@@ -41,6 +42,7 @@ export default function AppRouter() {
 				<Route path="/checkout-success" exact component={CheckoutSuccess} />
 				<Route path="/login-redirect" exact component={LoginRedirect} />
 				<Route path="/logout-redirect" exact component={LogoutRedirect} />
+				<Route path="/privacy" exact component={PrivacyPage} />
 			</Router>
 		</div>
 	);
