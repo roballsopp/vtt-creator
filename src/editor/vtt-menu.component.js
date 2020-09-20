@@ -55,6 +55,7 @@ export default function VTTMenu() {
 	const [cueExtractionDialogOpen, setCueExtractionDialogOpen] = React.useState(false);
 	const [loginDialogOpen, setLoginDialogOpen] = React.useState(false);
 	const [creditDialogOpen, setCreditDialogOpen] = React.useState(false);
+	const creditDialogPaid = React.useRef(false);
 
 	const onCloseOptionsMenu = () => {
 		setOptionsMenuAnchorEl(null);
@@ -88,12 +89,20 @@ export default function VTTMenu() {
 		}
 	};
 
+	const handleCreditDialogPaid = () => {
+		creditDialogPaid.current = true;
+		setCreditDialogOpen(false);
+	};
+
 	const handleCreditDialogClose = () => {
 		setCreditDialogOpen(false);
 	};
 
 	const handleCreditDialogExited = () => {
-		handleOpenCueExtractionDialog();
+		if (creditDialogPaid.current) {
+			creditDialogPaid.current = false;
+			handleOpenCueExtractionDialog();
+		}
 	};
 
 	const onCueExtractComplete = segments => {
@@ -184,7 +193,12 @@ export default function VTTMenu() {
 				/>
 			)}
 			<LoginDialog open={loginDialogOpen} onExited={handleLoginDialogExited} onClose={handleLoginDialogClose} />
-			<CreditDialog open={creditDialogOpen} onExited={handleCreditDialogExited} onClose={handleCreditDialogClose} />
+			<CreditDialog
+				open={creditDialogOpen}
+				onPaid={handleCreditDialogPaid}
+				onExited={handleCreditDialogExited}
+				onClose={handleCreditDialogClose}
+			/>
 			<Dialog
 				maxWidth="sm"
 				fullWidth

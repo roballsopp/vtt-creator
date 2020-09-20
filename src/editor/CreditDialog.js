@@ -20,11 +20,12 @@ const Title = styled(DialogTitle)({
 
 CreditDialog.propTypes = {
 	open: PropTypes.bool,
+	onPaid: PropTypes.func.isRequired,
 	onClose: PropTypes.func.isRequired,
 	onExited: PropTypes.func.isRequired,
 };
 
-export default function CreditDialog({ open, onClose, onExited }) {
+export default function CreditDialog({ open, onClose, onPaid, onExited }) {
 	const { cost, credit } = useCredit();
 	const [purchaseAmt, setPurchaseAmt] = React.useState('');
 
@@ -53,7 +54,7 @@ export default function CreditDialog({ open, onClose, onExited }) {
 						Amount to add:
 					</Typography>
 					<DollarsInput onChange={setPurchaseAmt} />
-					<PaypalButtons purchaseAmt={purchaseAmt} onApprove={onClose} />
+					<PaypalButtons purchaseAmt={purchaseAmt} onApprove={onPaid} />
 				</div>
 			</DialogContent>
 			<DialogActions>
