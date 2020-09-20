@@ -24,7 +24,7 @@ LanguageSelector.propTypes = {
 export default function LanguageSelector({ value, onChange }) {
 	const { loading, error, data } = useQuery(LANGUAGES_QUERY);
 
-	const supportedLanguages = loading ? [] : data.supportedLanguages;
+	const supportedLanguages = loading || error ? [] : data.supportedLanguages;
 
 	return (
 		<FormControl>
