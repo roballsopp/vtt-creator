@@ -31,7 +31,7 @@ const Title = styled(DialogTitle)({
 
 const useStyles = makeStyles(theme => ({
 	priceInfo: {
-		paddingTop: theme.spacing(2),
+		paddingBottom: theme.spacing(2),
 	},
 }));
 
@@ -135,16 +135,16 @@ export default function CueExtractionDialog({ open, onRequestClose, onExtractCom
 				</IconButton>
 			</Title>
 			<DialogContent>
+				<div className={classes.priceInfo}>
+					<Typography gutterBottom>Transcription cost: (${cost.toFixed(2)})</Typography>
+					<Typography variant="caption">
+						The cost of this transcription will be deducted from your credit balance only if it completes successfully.
+					</Typography>
+				</div>
 				{extracting && (
 					<UploadProgress progressBytes={progressBytes} totalBytes={totalBytes} uploadState={uploadState} />
 				)}
 				{!extracting && <LanguageSelector value={languageCode} onChange={setLanguageCode} />}
-				<div className={classes.priceInfo}>
-					<Typography variant="subtitle2">
-						The cost (${cost.toFixed(2)}) of this transcription will be deducted from
-						your credit balance only if it completes successfully.
-					</Typography>
-				</div>
 			</DialogContent>
 			<DialogActions>
 				<Button name="Extract Cues Cancel" onClick={handleRequestClose} color="primary">
