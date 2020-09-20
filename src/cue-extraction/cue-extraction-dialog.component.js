@@ -4,15 +4,10 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
 import IconButton from '@material-ui/core/IconButton';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
-import { styled } from '@material-ui/styles';
+import { styled, makeStyles } from '@material-ui/styles';
 import UploadProgress, {
 	UPLOAD_STATE_COMPLETED,
 	UPLOAD_STATE_EXTRACTING,
@@ -20,17 +15,12 @@ import UploadProgress, {
 	UPLOAD_STATE_UPLOADING,
 	UPLOAD_STATE_FAILED,
 } from './upload-progress.component';
+import LanguageSelector from './LanguageSelector';
+import useApiHelper from './useApiHelper';
 import { getAudioBlobFromVideo } from '../services/av.service';
 import { handleError } from '../services/error-handler.service';
-import {
-	getUploadUrl,
-	deleteFile,
-	initSpeechToTextOp,
-	pollSpeechToTextOp,
-	uploadFile,
-	getSpeechToTextLanguages,
-} from '../services/rest-api.service';
-import { useToast, Button, useVideoFile } from '../common';
+import { uploadFile } from '../services/rest-api.service';
+import { useToast, Button, useVideoFile, useCredit } from '../common';
 import { useDuration } from '../common/video';
 
 const Title = styled(DialogTitle)({
@@ -38,6 +28,12 @@ const Title = styled(DialogTitle)({
 	justifyContent: 'space-between',
 	alignItems: 'center',
 });
+
+const useStyles = makeStyles(theme => ({
+	priceInfo: {
+		paddingBottom: theme.spacing(2),
+	},
+}));
 
 CueExtractionDialog.propTypes = {
 	open: PropTypes.bool,
@@ -48,68 +44,67 @@ CueExtractionDialog.propTypes = {
 export default function CueExtractionDialog({ open, onRequestClose, onExtractComplete }) {
 	const { videoFile } = useVideoFile();
 	const { duration } = useDuration();
+	const { cost } = useCredit();
+	const classes = useStyles();
 	const [extracting, setExtracting] = React.useState(false);
 	const [progressBytes, setProgressBytes] = React.useState(0);
 	const [totalBytes, setTotalBytes] = React.useState(0);
 	const [uploadState, setUploadState] = React.useState();
 	const [languageCode, setLanguageCode] = React.useState('en-US');
-	const [languages, setLanguages] = React.useState([]);
-	const fileNameRef = React.useRef('');
+	const operationIdRef = React.useRef('');
 
 	const toast = useToast();
+	const {
+		getUploadUrl,
+		initTranscription,
+		pollTranscriptionJob,
+		finishTranscription,
+		failTranscription,
+	} = useApiHelper();
 
-	React.useEffect(() => {
-		const getLanguages = async () => {
-			const { languages } = await getSpeechToTextLanguages();
-			setLanguages(languages);
-		};
-		getLanguages();
-	}, []);
-
-	const cleanup = async () => {
-		if (fileNameRef.current) {
-			try {
-				await deleteFile(fileNameRef.current);
-				fileNameRef.current = '';
-			} catch (e) {
-				handleError(e);
-			}
+	const handleFailure = () => {
+		if (operationIdRef.current) {
+			failTranscription(operationIdRef.current)
+				.then(() => {
+					operationIdRef.current = '';
+				})
+				.catch(handleError);
 		}
 	};
 
 	const handleRequestClose = e => {
 		if (uploadState === UPLOAD_STATE_PROCESSING) {
-			cleanup();
+			handleFailure();
 		}
 		onRequestClose(e);
 	};
 
 	const extractCuesFromVideo = async e => {
 		setExtracting(true);
-
 		try {
 			setUploadState(UPLOAD_STATE_EXTRACTING);
 			const audioBlob = await getAudioBlobFromVideo(videoFile);
 
 			setUploadState(UPLOAD_STATE_UPLOADING);
 			const { filename, url } = await getUploadUrl();
-			fileNameRef.current = filename;
 			await uploadFile(audioBlob, url, e => {
 				setProgressBytes(e.loaded);
 				setTotalBytes(e.total);
 			});
 
 			setUploadState(UPLOAD_STATE_PROCESSING);
-			const { operationId } = await initSpeechToTextOp(filename, { languageCode });
+			const { operationId } = await initTranscription(filename, languageCode);
+			operationIdRef.current = operationId;
 			recordS2TEvent(duration);
-			const results = await pollSpeechToTextOp(operationId, 2000);
+			const results = await pollTranscriptionJob(operationId, 2000);
 
 			setUploadState(UPLOAD_STATE_COMPLETED);
 
 			if (results && results.length) {
 				onExtractComplete(results);
-				toast.success('Upload successful!');
+				toast.success('Extraction successful!');
 				onRequestClose(e);
+				await finishTranscription(operationId);
 			} else {
 				toast.error('Unable to extract any audio!');
 			}
@@ -117,11 +112,11 @@ export default function CueExtractionDialog({ open, onRequestClose, onExtractCom
 			setUploadState(UPLOAD_STATE_FAILED);
 			handleError(err);
 			toast.error('Oh no! Something went wrong!');
+			// TODO: handle file cleanup when upload completes but job fails to start
+			if (operationIdRef.current) handleFailure();
 		}
 
 		setExtracting(false);
-
-		cleanup();
 	};
 
 	return (
@@ -140,28 +135,16 @@ export default function CueExtractionDialog({ open, onRequestClose, onExtractCom
 				</IconButton>
 			</Title>
 			<DialogContent>
+				<div className={classes.priceInfo}>
+					<Typography gutterBottom>Transcription cost: (${cost.toFixed(2)})</Typography>
+					<Typography variant="caption">
+						The cost of this transcription will be deducted from your credit balance only if it completes successfully.
+					</Typography>
+				</div>
 				{extracting && (
 					<UploadProgress progressBytes={progressBytes} totalBytes={totalBytes} uploadState={uploadState} />
 				)}
-				{!extracting && (
-					<FormControl>
-						<InputLabel htmlFor="select-language">Language</InputLabel>
-						<Select
-							value={languageCode}
-							onChange={e => setLanguageCode(e.target.value)}
-							inputProps={{
-								name: 'select-language',
-								id: 'select-language',
-							}}>
-							{languages.map(lang => (
-								<MenuItem key={lang.value} value={lang.value}>
-									{lang.display}
-								</MenuItem>
-							))}
-						</Select>
-						<FormHelperText>In what language is the video content spoken?</FormHelperText>
-					</FormControl>
-				)}
+				{!extracting && <LanguageSelector value={languageCode} onChange={setLanguageCode} />}
 			</DialogContent>
 			<DialogActions>
 				<Button name="Extract Cues Cancel" onClick={handleRequestClose} color="primary">

@@ -36,7 +36,11 @@ module.exports = config => {
 					// only stringify strings, SPEECH_TO_TEXT_JOB_TIMEOUT should be a number, see note here: https://webpack.js.org/plugins/define-plugin/#usage
 					SPEECH_TO_TEXT_JOB_TIMEOUT: process.env.SPEECH_TO_TEXT_JOB_TIMEOUT,
 					SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN),
+					COGNITO_CLIENT_ID: JSON.stringify(process.env.COGNITO_CLIENT_ID),
+					COGNITO_DOMAIN: JSON.stringify(process.env.COGNITO_DOMAIN),
 					DEBUG: process.env.DEBUG,
+					GA_PRODUCT: JSON.stringify(process.env.GA_PRODUCT),
+					PAYPAL_CLIENT_ID: JSON.stringify(process.env.PAYPAL_CLIENT_ID),
 				}),
 				new HtmlWebpackPlugin({
 					hash: true,

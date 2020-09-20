@@ -12,7 +12,7 @@
   ],
   "globals": {
     "document": false,
-    "Stripe": "readonly"
+    "paypal": "readonly"
   },
   "parserOptions": {
     "ecmaVersion": 9,

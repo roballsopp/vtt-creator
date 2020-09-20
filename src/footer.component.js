@@ -1,10 +1,8 @@
 import * as React from 'react';
-import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
-import { DonateButton } from './common';
-import { LinkedIn, Github } from './common/icons';
+import { AccountButton } from './account';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -35,34 +33,12 @@ export default function Footer() {
 	return (
 		<Paper square className={classes.root} elevation={8}>
 			<div className={classes.footerSection}>
-				<Typography variant="body2" color="inherit">
-					Created by Robert Allsopp
-				</Typography>
-				<div className={classes.footerDivider} />
-				<IconButton
-					edge="start"
-					size="small"
-					component="a"
-					color="inherit"
-					aria-label="Robert's LinkedIn Profile"
-					href="https://www.linkedin.com/in/robertallsopp"
-					style={{ marginRight: 12 }}>
-					<LinkedIn fontSize="small" />
-				</IconButton>
-				<IconButton
-					size="small"
-					component="a"
-					color="inherit"
-					aria-label="Robert's Github Profile"
-					href="https://github.com/roballsopp">
-					<Github fontSize="small" />
-				</IconButton>
+				<Button color="inherit" href="/privacy">
+					Privacy
+				</Button>
 			</div>
 			<div className={classes.footerSection}>
-				<Typography variant="body2" color="inherit" style={{ marginRight: 16 }}>
-					Like this tool? Help me keep it running!
-				</Typography>
-				<DonateButton name="Footer Donate Checkout" />
+				<AccountButton />
 			</div>
 		</Paper>
 	);

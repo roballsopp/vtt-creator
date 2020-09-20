@@ -38,11 +38,7 @@ function getCueFromWords(wordsList, cursor) {
 	}
 
 	return [
-		new VTTCue(
-			parseGoogleTime(wordsList[start].startTime),
-			parseGoogleTime(wordsList[cursor - 1].endTime),
-			joinWords(wordsList, start, cursor)
-		),
+		new VTTCue(wordsList[start].startTime, wordsList[cursor - 1].endTime, joinWords(wordsList, start, cursor)),
 		cursor - start,
 	];
 }
@@ -101,11 +97,6 @@ export function parseVTTTime(formattedTime) {
 function parseTimeUnit(unit) {
 	const parsed = parseInt(unit);
 	return isNaN(parsed) ? 0 : parsed;
-}
-
-// timeString is a string in the format "10.500s"
-function parseGoogleTime(timeString) {
-	return parseFloat(timeString.slice(0, -1));
 }
 
 export function getCuesFromVTT(file) {
