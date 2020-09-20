@@ -29,7 +29,7 @@ AddCreditInput.propTypes = {
 };
 
 export default function AddCreditInput({ user, defaultValue, onApprove }) {
-	const [purchaseAmt, setPurchaseAmt] = React.useState('');
+	const [purchaseAmt, setPurchaseAmt] = React.useState(defaultValue || '');
 	const [paypalError, setPaypalError] = React.useState(false);
 	const [inputErr, setInputError] = React.useState(false);
 
