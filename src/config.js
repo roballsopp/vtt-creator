@@ -16,4 +16,4 @@ export const SignupUrl = `${CognitoDomain}/signup?client_id=${CognitoClientId}&r
 const LogoutReturnUrl = encodeURIComponent(`${window.location.origin}/logout-redirect`);
 export const LogoutUrl = `${CognitoDomain}/logout?client_id=${CognitoClientId}&logout_uri=${LogoutReturnUrl}`;
 
-export const TranscriptionCost = 0.1; // $0.10 per minute
+export const TranscriptionCost = 0.15; // $0.15 per minute

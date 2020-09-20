@@ -24,7 +24,8 @@ CreditProvider.propTypes = {
 
 export function CreditProvider({ children }) {
 	const { duration } = useDuration();
-	const cost = Math.round((duration / 60) * TranscriptionCost * 100) / 100;
+	// round up to next whole cent
+	const cost = Math.ceil((duration / 60) * TranscriptionCost * 100) / 100;
 	const { loading, error, data } = useQuery(USER_QUERY);
 	const credit = loading || error || !data ? 0 : data.self.credit;
 

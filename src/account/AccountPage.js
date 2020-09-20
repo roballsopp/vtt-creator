@@ -7,8 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
-import PaypalButtons from './PaypalButtons';
-import DollarsInput from './DollarsInput';
+import AddCreditInput from './AddCreditInput';
 import { VC as VCIcon } from '../common/icons';
 import { LogoutUrl, TranscriptionCost } from '../config';
 
@@ -41,7 +40,9 @@ AccountPage.fragments = {
 			id
 			email
 			credit
+			...AddCreditInputUser
 		}
+		${AddCreditInput.fragments.user}
 	`,
 };
 
@@ -55,7 +56,6 @@ AccountPage.propTypes = {
 
 export default function AccountPage({ user }) {
 	const classes = useStyles();
-	const [purchaseAmt, setPurchaseAmt] = React.useState('');
 
 	return (
 		<main className={classes.root}>
@@ -87,11 +87,7 @@ export default function AccountPage({ user }) {
 					</Grid>
 					<Grid item xs={12}>
 						<div className={classes.addCreditSection}>
-							<Typography variant="subtitle2" gutterBottom>
-								Add Credit:
-							</Typography>
-							<DollarsInput onChange={setPurchaseAmt} />
-							<PaypalButtons purchaseAmt={purchaseAmt} />
+							<AddCreditInput user={user} />
 						</div>
 					</Grid>
 					<Grid item xs={12}>

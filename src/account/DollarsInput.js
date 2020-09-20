@@ -4,26 +4,21 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 
 DollarsInput.propTypes = {
+	defaultValue: PropTypes.string,
+	error: PropTypes.bool,
 	onChange: PropTypes.func.isRequired,
 };
 
-export default function DollarsInput({ onChange }) {
-	const [purchaseAmt, setPurchaseAmt] = React.useState('');
-	const [error, setError] = React.useState(false);
+export default function DollarsInput({ defaultValue, error, onChange }) {
+	const [purchaseAmt, setPurchaseAmt] = React.useState(defaultValue || '');
 
 	const handleChange = e => {
 		setPurchaseAmt(e.target.value);
 	};
 
 	const handleParseAmount = e => {
-		if (!e.target.value) return;
-		const num = Number(e.target.value);
-		if (Number.isNaN(num)) {
-			setError(true);
-		} else {
-			setPurchaseAmt(num.toFixed(2));
-			onChange(num.toFixed(2));
-		}
+		setPurchaseAmt(e.target.value);
+		onChange(e.target.value);
 	};
 
 	return (
@@ -36,11 +31,12 @@ export default function DollarsInput({ onChange }) {
 			value={purchaseAmt}
 			onChange={handleChange}
 			onBlur={handleParseAmount}
-			placeholder="0.00"
+			placeholder="1.00"
 			margin="normal"
-			helperText="Please type a number"
+			helperText="Enter a number. $1.00 minimum."
 			InputProps={{
 				startAdornment: <InputAdornment position="start">$</InputAdornment>,
+				inputProps: { min: '1' },
 			}}
 		/>
 	);
