@@ -69,5 +69,7 @@ export default function PaypalButtons({ purchaseAmt, disabled, onApprove, onErro
 			});
 	};
 
-	return <PayPalButton createOrder={handleCreateOrder} onInit={handleInit} onApprove={handleApprove} onError={onError} />;
+	return (
+		<PayPalButton createOrder={handleCreateOrder} onInit={handleInit} onApprove={handleApprove} onError={onError} />
+	);
 }

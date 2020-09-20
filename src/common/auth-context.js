@@ -79,7 +79,7 @@ export default class AuthErrorBoundary extends React.Component {
 		this.handleAuthRefresh = this.handleAuthRefresh.bind(this);
 	}
 
-	componentDidCatch(error, errorInfo) {
+	componentDidCatch(error) {
 		if (error instanceof UnauthorizedError) {
 			this.setState({ authError: true });
 			window.open(LoginUrl);
