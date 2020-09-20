@@ -58,7 +58,7 @@ export default function PaypalButtons({ purchaseAmt, disabled, onApprove, onErro
 
 	const handleApprove = (data, actions) => {
 		return actions.order
-			.authorize()
+			.capture()
 			.then(() => {
 				return apolloClient.mutate({ mutation: APPLY_PAYPAL_CREDIT_MUTATION, variables: { orderId: data.orderID } });
 			})
