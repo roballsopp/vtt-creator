@@ -17,11 +17,11 @@ import UploadProgress, {
 } from './upload-progress.component';
 import LanguageSelector from './LanguageSelector';
 import useApiHelper from './useApiHelper';
-import { getAudioBlobFromVideo } from '../services/av.service';
-import { handleError } from '../services/error-handler.service';
-import { uploadFile } from '../services/rest-api.service';
-import { useToast, Button, useVideoFile, useCredit } from '../common';
-import { useDuration } from '../common/video';
+import { getAudioBlobFromVideo } from '../../services/av.service';
+import { handleError } from '../../services/error-handler.service';
+import { uploadFile } from '../../services/rest-api.service';
+import { useToast, Button, useVideoFile, useCredit } from '../../common';
+import { useDuration } from '../../common/video';
 
 const Title = styled(DialogTitle)({
 	display: 'flex',

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useApolloClient, gql } from '@apollo/client';
-import { SpeechToTextJobTimeout } from '../config';
+import { SpeechToTextJobTimeout } from '../../config';
 
 export default function useApiHelper() {
 	const apolloClient = useApolloClient();
