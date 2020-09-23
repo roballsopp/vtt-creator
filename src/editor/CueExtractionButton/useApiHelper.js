@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useApolloClient, gql } from '@apollo/client';
-import { SpeechToTextJobTimeout } from '../config';
+import { SpeechToTextJobTimeout } from '../../config';
 
 export default function useApiHelper() {
 	const apolloClient = useApolloClient();
@@ -30,12 +30,14 @@ export default function useApiHelper() {
 					mutation: gql`
 						mutation initTranscription($filename: String!, $languageCode: String!) {
 							beginTranscription(filename: $filename, languageCode: $languageCode) {
-								user {
+								job {
 									id
-									transcriptionState
-									lastTranscriptionOp
+									user {
+										id
+									}
+									operationId
+									state
 								}
-								operationId
 							}
 						}
 					`,
@@ -93,10 +95,13 @@ export default function useApiHelper() {
 					mutation: gql`
 						mutation finishTranscription($operationId: String!) {
 							finishTranscription(operationId: $operationId) {
+								job {
+									id
+									state
+								}
 								user {
 									id
 									credit
-									transcriptionState
 								}
 							}
 						}
@@ -112,10 +117,9 @@ export default function useApiHelper() {
 					mutation: gql`
 						mutation failTranscription($operationId: String!) {
 							failTranscription(operationId: $operationId) {
-								user {
+								job {
 									id
-									credit
-									transcriptionState
+									state
 								}
 							}
 						}

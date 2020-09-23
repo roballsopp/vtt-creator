@@ -11,16 +11,12 @@ import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MoreIcon from '@material-ui/icons/MoreVert';
-import VoiceChatIcon from '@material-ui/icons/VoiceChat';
 import { makeStyles } from '@material-ui/styles';
-import LoginDialog from './LoginDialog';
-import CreditDialog from './CreditDialog';
-import { useFileSelector, useToast, useCues, useVideoFile, Button, useAuth, useCredit } from '../common';
-import { getVTTFromCues, getCuesFromWords, getCuesFromVTT } from '../services/vtt.service';
+import { ExtractFromVideoButton, ExtractFromVideoDialogs, ExtractFromVideoProvider } from './CueExtractionButton';
+import { useFileSelector, useToast, useCues, Button } from '../common';
+import { getVTTFromCues, getCuesFromVTT } from '../services/vtt.service';
 import { getSRTFromCues } from '../services/srt.service';
 import { handleError } from '../services/error-handler.service';
-import CueExtractionDialog from '../cue-extraction/cue-extraction-dialog.component';
-import { apiDisabled } from '../config';
 
 const useStyles = makeStyles({
 	root: {
@@ -46,74 +42,12 @@ export default function VTTMenu() {
 	const classes = useStyles();
 	const toast = useToast();
 	const { cues, onChangeCues, onLoadingCues } = useCues();
-	const { videoFile } = useVideoFile();
-	const { isAuthenticated } = useAuth();
-	const { cost, credit } = useCredit();
 
 	const [optionsMenuAnchorEl, setOptionsMenuAnchorEl] = React.useState(null);
 	const [clearCuesDialogOpen, setClearCuesDialogOpen] = React.useState(false);
-	const [cueExtractionDialogOpen, setCueExtractionDialogOpen] = React.useState(false);
-	const [loginDialogOpen, setLoginDialogOpen] = React.useState(false);
-	const [creditDialogOpen, setCreditDialogOpen] = React.useState(false);
-	const creditDialogPaid = React.useRef(false);
 
 	const onCloseOptionsMenu = () => {
 		setOptionsMenuAnchorEl(null);
-	};
-
-	const handleOpenCueExtractionDialog = () => {
-		onCloseOptionsMenu();
-
-		if (!isAuthenticated) {
-			return setLoginDialogOpen(true);
-		}
-
-		if (cost > credit) {
-			return setCreditDialogOpen(true);
-		}
-
-		setCueExtractionDialogOpen(true);
-	};
-
-	const onCloseCueExtractionDialog = () => {
-		setCueExtractionDialogOpen(false);
-	};
-
-	const handleLoginDialogClose = () => {
-		setLoginDialogOpen(false);
-	};
-
-	const handleLoginDialogExited = () => {
-		if (isAuthenticated) {
-			handleOpenCueExtractionDialog();
-		}
-	};
-
-	const handleCreditDialogPaid = () => {
-		creditDialogPaid.current = true;
-		setCreditDialogOpen(false);
-	};
-
-	const handleCreditDialogClose = () => {
-		setCreditDialogOpen(false);
-	};
-
-	const handleCreditDialogExited = () => {
-		if (creditDialogPaid.current) {
-			creditDialogPaid.current = false;
-			handleOpenCueExtractionDialog();
-		}
-	};
-
-	const onCueExtractComplete = segments => {
-		onLoadingCues(true);
-		// for how this concatenation stuff works: https://cloud.google.com/speech-to-text/docs/basics#transcriptions
-		const words = segments.reduce((arr, { alternatives }) => {
-			return arr.concat(alternatives[0].words);
-		}, []);
-		const newCues = getCuesFromWords(words);
-		onChangeCues(newCues);
-		onLoadingCues(false);
 	};
 
 	const onDownloadVTT = () => {
@@ -159,7 +93,7 @@ export default function VTTMenu() {
 	const openFileSelector = useFileSelector({ accept: '.vtt', onFilesSelected: onVTTFileSelected });
 
 	return (
-		<React.Fragment>
+		<ExtractFromVideoProvider onCloseMenu={onCloseOptionsMenu}>
 			<IconButton edge="end" color="inherit" aria-label="Menu" onClick={e => setOptionsMenuAnchorEl(e.currentTarget)}>
 				<MoreIcon />
 			</IconButton>
@@ -168,10 +102,7 @@ export default function VTTMenu() {
 					<CloudUploadIcon className={classes.menuIcon} />
 					Load from VTT file...
 				</MenuItem>
-				<MenuItem disabled={apiDisabled || !videoFile} onClick={handleOpenCueExtractionDialog}>
-					<VoiceChatIcon className={classes.menuIcon} />
-					Extract from video...
-				</MenuItem>
+				<ExtractFromVideoButton classes={{ menuIcon: classes.menuIcon }} />
 				<MenuItem onClick={onDownloadVTT}>
 					<CloudDownloadIcon className={classes.menuIcon} />
 					Save to VTT file...
@@ -185,20 +116,7 @@ export default function VTTMenu() {
 					Clear Cues
 				</MenuItem>
 			</Menu>
-			{!apiDisabled && (
-				<CueExtractionDialog
-					open={cueExtractionDialogOpen}
-					onRequestClose={onCloseCueExtractionDialog}
-					onExtractComplete={onCueExtractComplete}
-				/>
-			)}
-			<LoginDialog open={loginDialogOpen} onExited={handleLoginDialogExited} onClose={handleLoginDialogClose} />
-			<CreditDialog
-				open={creditDialogOpen}
-				onPaid={handleCreditDialogPaid}
-				onExited={handleCreditDialogExited}
-				onClose={handleCreditDialogClose}
-			/>
+			<ExtractFromVideoDialogs />
 			<Dialog
 				maxWidth="sm"
 				fullWidth
@@ -219,6 +137,6 @@ export default function VTTMenu() {
 					</Button>
 				</DialogActions>
 			</Dialog>
-		</React.Fragment>
+		</ExtractFromVideoProvider>
 	);
 }

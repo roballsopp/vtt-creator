@@ -17,11 +17,11 @@ import UploadProgress, {
 } from './upload-progress.component';
 import LanguageSelector from './LanguageSelector';
 import useApiHelper from './useApiHelper';
-import { getAudioBlobFromVideo } from '../services/av.service';
-import { handleError } from '../services/error-handler.service';
-import { uploadFile } from '../services/rest-api.service';
-import { useToast, Button, useVideoFile, useCredit } from '../common';
-import { useDuration } from '../common/video';
+import { getAudioBlobFromVideo } from '../../services/av.service';
+import { handleError } from '../../services/error-handler.service';
+import { uploadFile } from '../../services/rest-api.service';
+import { useToast, Button, useVideoFile, useCredit } from '../../common';
+import { useDuration } from '../../common/video';
 
 const Title = styled(DialogTitle)({
 	display: 'flex',
@@ -93,10 +93,10 @@ export default function CueExtractionDialog({ open, onRequestClose, onExtractCom
 			});
 
 			setUploadState(UPLOAD_STATE_PROCESSING);
-			const { operationId } = await initTranscription(filename, languageCode);
-			operationIdRef.current = operationId;
+			const { job } = await initTranscription(filename, languageCode);
+			operationIdRef.current = job.operationId;
 			recordS2TEvent(duration);
-			const results = await pollTranscriptionJob(operationId, 2000);
+			const results = await pollTranscriptionJob(job.operationId, 2000);
 
 			setUploadState(UPLOAD_STATE_COMPLETED);
 
@@ -104,7 +104,7 @@ export default function CueExtractionDialog({ open, onRequestClose, onExtractCom
 				onExtractComplete(results);
 				toast.success('Extraction successful!');
 				onRequestClose(e);
-				await finishTranscription(operationId);
+				await finishTranscription(job.operationId);
 			} else {
 				toast.error('Unable to extract any audio!');
 			}
