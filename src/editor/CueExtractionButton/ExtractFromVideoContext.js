@@ -24,7 +24,7 @@ ExtractFromVideoProvider.propTypes = {
 
 export function ExtractFromVideoProvider({ children, onCloseMenu }) {
 	const { onChangeCues, onLoadingCues } = useCues();
-	const { isAuthenticated } = useAuth();
+	const { isAuthenticated, user } = useAuth();
 	const { cost, credit } = useCredit();
 
 	const [cueExtractionDialogOpen, setCueExtractionDialogOpen] = React.useState(false);
@@ -39,7 +39,7 @@ export function ExtractFromVideoProvider({ children, onCloseMenu }) {
 			return setLoginDialogOpen(true);
 		}
 
-		if (cost > credit) {
+		if (cost > credit && !user.unlimitedUsage) {
 			return setCreditDialogOpen(true);
 		}
 
