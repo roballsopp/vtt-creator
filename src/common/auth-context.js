@@ -26,6 +26,7 @@ const USER_QUERY = gql`
 			id
 			email
 			credit
+			unlimitedUsage
 		}
 	}
 `;
@@ -40,16 +41,19 @@ function AuthProvider({ children, authError, onAuthRefresh }) {
 	const classes = useStyles();
 	const apolloClient = useApolloClient();
 	const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+	const [user, setUser] = React.useState(false);
 
 	React.useEffect(() => {
-		apolloClient.query({ query: USER_QUERY }).then(() => {
+		apolloClient.query({ query: USER_QUERY }).then(({ data }) => {
 			setIsAuthenticated(true);
+			setUser(data.self);
 		});
 		// TODO: ignore 401 in apollo
 
 		return listenForAuth(() => {
-			apolloClient.query({ query: USER_QUERY }).then(() => {
+			apolloClient.query({ query: USER_QUERY }).then(({ data }) => {
 				setIsAuthenticated(true);
+				setUser(data.self);
 				onAuthRefresh();
 			});
 			// TODO: ignore 401 in apollo
@@ -69,7 +73,7 @@ function AuthProvider({ children, authError, onAuthRefresh }) {
 		);
 	}
 
-	return <AuthContext.Provider value={{ isAuthenticated }}>{children}</AuthContext.Provider>;
+	return <AuthContext.Provider value={{ isAuthenticated, user }}>{children}</AuthContext.Provider>;
 }
 
 export default class AuthErrorBoundary extends React.Component {

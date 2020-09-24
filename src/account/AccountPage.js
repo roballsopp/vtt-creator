@@ -40,6 +40,7 @@ AccountPage.fragments = {
 			id
 			email
 			credit
+			unlimitedUsage
 			...AddCreditInputUser
 		}
 		${AddCreditInput.fragments.user}
@@ -77,7 +78,9 @@ export default function AccountPage({ user }) {
 					</Grid>
 					<Grid item xs={12}>
 						<Typography variant="h6" gutterBottom>
-							Credit: ${user.credit.toFixed(2)} ({(user.credit / TranscriptionCost).toFixed(1)} minutes)
+							{user.unlimitedUsage && 'Credit: Unlimited'}
+							{!user.unlimitedUsage &&
+								`Credit: $${user.credit.toFixed(2)} (${(user.credit / TranscriptionCost).toFixed(1)} minutes)`}
 						</Typography>
 						<Typography>
 							Extracting video captions automatically costs ${TranscriptionCost.toFixed(2)} per minute of video. More
