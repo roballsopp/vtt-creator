@@ -83,35 +83,65 @@ export default function CueExtractionDialog({ open, onRequestClose, onExtractCom
 		setExtracting(true);
 		try {
 			setUploadState(UPLOAD_STATE_EXTRACTING);
-			const audioBlob = await getAudioBlobFromVideo(videoFile);
+			let audioBlob;
+			try {
+				audioBlob = await getAudioBlobFromVideo(videoFile);
+			} catch (e) {
+				toast.error('Unable to read audio from video file.');
+				throw e;
+			}
 
 			setUploadState(UPLOAD_STATE_UPLOADING);
-			const { filename, url } = await getUploadUrl();
-			await uploadFile(audioBlob, url, e => {
-				setProgressBytes(e.loaded);
-				setTotalBytes(e.total);
-			});
+			let filename, url;
+			try {
+				({ filename, url } = await getUploadUrl());
+			} catch (e) {
+				toast.error('Unable to start upload. Please try again.');
+				throw e;
+			}
+
+			try {
+				await uploadFile(audioBlob, url, e => {
+					setProgressBytes(e.loaded);
+					setTotalBytes(e.total);
+				});
+			} catch (e) {
+				toast.error('Upload failed. Please try again.');
+				throw e;
+			}
 
 			setUploadState(UPLOAD_STATE_PROCESSING);
-			const { job } = await initTranscription(filename, languageCode);
-			operationIdRef.current = job.operationId;
-			recordS2TEvent(duration);
-			const results = await pollTranscriptionJob(job.operationId, 2000);
+			try {
+				const { job } = await initTranscription(filename, languageCode);
+				operationIdRef.current = job.operationId;
+				recordS2TEvent(duration);
+			} catch (e) {
+				toast.error('Unable to start transcription. Please try again.');
+				throw e;
+			}
+
+			let results;
+			try {
+				results = await pollTranscriptionJob(operationIdRef.current, 2000);
+			} catch (e) {
+				toast.error('Transcription failed. Please try again.');
+				throw e;
+			}
 
 			setUploadState(UPLOAD_STATE_COMPLETED);
 
-			if (results && results.length) {
-				onExtractComplete(results);
-				toast.success('Extraction successful!');
-				onRequestClose(e);
-				await finishTranscription(job.operationId);
-			} else {
-				toast.error('Unable to extract any audio!');
+			if (!results || !results.length) {
+				toast.error('Unable to find any transcribable speech.');
+				throw new Error('Unable to find any transcribable speech.');
 			}
+
+			onExtractComplete(results);
+			toast.success('Extraction successful!');
+			onRequestClose(e);
+			await finishTranscription(operationIdRef.current);
 		} catch (err) {
 			setUploadState(UPLOAD_STATE_FAILED);
 			handleError(err);
-			toast.error('Oh no! Something went wrong!');
 			// TODO: handle file cleanup when upload completes but job fails to start
 			if (operationIdRef.current) handleFailure();
 		}
