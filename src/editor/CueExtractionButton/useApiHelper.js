@@ -78,6 +78,12 @@ export default function useApiHelper() {
 							})
 							.catch(err => {
 								clearInterval(intervalId);
+								if (err.networkError) {
+									if (err.networkError.result) {
+										return reject(new Error(err.networkError.result.errors[0].message));
+									}
+									return reject(err.networkError);
+								}
 								reject(new Error(err));
 							});
 					}, interval);
