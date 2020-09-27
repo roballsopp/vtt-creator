@@ -1,5 +1,6 @@
-import * as React from 'react';
-import * as PropTypes from 'prop-types';
+import React from 'react';
+import PropTypes from 'prop-types';
+import * as Sentry from '@sentry/browser';
 import { makeStyles } from '@material-ui/styles';
 import { useApolloClient, gql } from '@apollo/client';
 import { LoginUrl } from '../config';
@@ -46,6 +47,7 @@ function AuthProvider({ children, authError, onAuthRefresh }) {
 	React.useEffect(() => {
 		apolloClient.query({ query: USER_QUERY }).then(({ data }) => {
 			setIsAuthenticated(true);
+			Sentry.setUser(data.self);
 			setUser(data.self);
 		});
 		// TODO: ignore 401 in apollo
@@ -53,6 +55,7 @@ function AuthProvider({ children, authError, onAuthRefresh }) {
 		return listenForAuth(() => {
 			apolloClient.query({ query: USER_QUERY }).then(({ data }) => {
 				setIsAuthenticated(true);
+				Sentry.setUser(data.self);
 				setUser(data.self);
 				onAuthRefresh();
 			});
