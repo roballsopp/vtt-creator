@@ -124,7 +124,7 @@ export function getCuesFromVTT(file) {
 }
 
 export function storeCues(cues) {
-	const reducedCues = cues.map(c => ({ startTime: c.startTime, endTime: c.endTime, text: c.text }));
+	const reducedCues = cues.map(c => ({ id: c.id, startTime: c.startTime, endTime: c.endTime, text: c.text }));
 	localStorage.setItem(CUE_STORAGE_KEY, JSON.stringify(reducedCues));
 }
 
@@ -132,5 +132,5 @@ export function getCuesFromStorage() {
 	const cueStr = localStorage.getItem(CUE_STORAGE_KEY);
 	if (!cueStr) return null;
 	const parsed = JSON.parse(cueStr);
-	return parsed.map(c => new VTTCue(c.startTime, c.endTime, c.text));
+	return parsed.map(c => new VTTCue(c.startTime, c.endTime, c.text, c.id));
 }
