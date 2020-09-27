@@ -31,8 +31,7 @@ export default function CueTrack() {
 		<List
 			className={classes.cueContainer}
 			data={cues}
-			// TODO: its unlikely but possible for two cues to have the exact same start time
-			getKey={cue => cue.startTime}
+			getKey={cue => cue.id}
 			renderItem={(cue, i) => (
 				<CueProvider cue={cue} cueIndex={i}>
 					<CueHandle>

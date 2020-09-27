@@ -38,8 +38,8 @@ export default function MainScreen() {
 	return (
 		<React.Fragment>
 			<VideoFileProvider>
-				<CuesProvider>
-					<VideoDomProvider>
+				<VideoDomProvider>
+					<CuesProvider>
 						<CreditProvider>
 							<main className={classes.root}>
 								<Paper square className={classes.drawer}>
@@ -59,8 +59,8 @@ export default function MainScreen() {
 								</div>
 							</main>
 						</CreditProvider>
-					</VideoDomProvider>
-				</CuesProvider>
+					</CuesProvider>
+				</VideoDomProvider>
 			</VideoFileProvider>
 			<Footer />
 		</React.Fragment>

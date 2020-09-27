@@ -5,6 +5,7 @@ import { CuePropType } from './prop-types';
 import { useToast } from './toast-context';
 import { getCuesFromStorage, storeCues } from '../services/vtt.service';
 import { handleError } from '../services/error-handler.service';
+import { useVideoDom } from './video';
 
 const CuesContext = React.createContext({
 	cues: [],
@@ -24,6 +25,7 @@ export function CuesProvider({ children }) {
 	const [cues, setCues] = React.useState([]);
 	const [loading, onLoadingCues] = React.useState(true);
 	const toast = useToast();
+	const { videoRef } = useVideoDom();
 
 	const onChangeCues = React.useCallback((newCues, reorder) => {
 		const orderedCues = reorder ? sortBy(newCues, ['startTime']) : newCues;
@@ -68,10 +70,15 @@ export function CuesProvider({ children }) {
 					cues,
 					loading,
 					onAddCue: () => {
+						if (videoRef) {
+							return onChangeCues(cues.concat(new VTTCue(videoRef.currentTime, videoRef.currentTime + 2, '')));
+						}
+
 						if (cues.length) {
 							const lastCue = cues[cues.length - 1];
 							return onChangeCues(cues.concat(new VTTCue(lastCue.endTime, lastCue.endTime + 2, '')));
 						}
+
 						return onChangeCues([new VTTCue(0, 2, '')]);
 					},
 					onRemoveCue: i => {
@@ -89,7 +96,7 @@ export function CuesProvider({ children }) {
 					onChangeCues,
 					onLoadingCues,
 				}),
-				[cues, loading, onChangeCues]
+				[cues, loading, onChangeCues, videoRef]
 			)}>
 			{children}
 		</CuesContext.Provider>
