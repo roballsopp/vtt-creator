@@ -8,14 +8,19 @@ const httpLink = createHttpLink({
 });
 
 const authLink = setContext((_, { headers }) => {
-	// get the authentication token from local storage if it exists
 	const authToken = getAuthToken();
 
+	if (authToken) {
+		return {
+			headers: {
+				...headers,
+				authorization: `Bearer ${authToken}`,
+			},
+		};
+	}
+
 	return {
-		headers: {
-			...headers,
-			authorization: `Bearer ${authToken}`,
-		},
+		headers,
 	};
 });
 
