@@ -84,7 +84,7 @@ export default function CueEditor() {
 					label="Caption text"
 					value={text}
 					onChange={onChangeText}
-					onBlur={debouncedOnChangeText.flush}
+					onBlur={() => debouncedOnChangeText.flush()}
 					placeholder="Enter your caption here..."
 				/>
 			</Grid>

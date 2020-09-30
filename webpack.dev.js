@@ -10,8 +10,8 @@ module.exports = {
 		main: ['./src/google-analytics', './src/polyfills', './src/doorbell', './src/index.js'],
 	},
 	mode: 'development',
-	// map webpack's output back to source files when debugging in chrome https://webpack.js.org/guides/development#using-source-maps
-	devtool: 'inline-source-map',
+	// map webpack's output back to source files when debugging in chrome https://webpack.js.org/configuration/devtool/
+	devtool: 'eval-source-map',
 	output: {
 		path: STATIC_FILES_DIR,
 		publicPath: '/',

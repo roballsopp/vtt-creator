@@ -4,6 +4,7 @@ import Link from '@material-ui/core/Link';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/styles';
+import { handleError } from '../services/error-handler.service';
 
 const styles = theme => ({
 	root: {
@@ -28,6 +29,7 @@ class ErrorBoundary extends React.Component {
 
 	componentDidCatch(error, errorInfo) {
 		this.setState({ error });
+		handleError(error);
 		console.error(errorInfo);
 	}
 

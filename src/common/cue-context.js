@@ -136,11 +136,11 @@ export function CueProvider({ cue, cueIndex, children }) {
 				() => ({
 					cue,
 					onChangeCueStart: newStartTime => {
-						const newCue = new VTTCue(newStartTime, cue.endTime, cue.text);
+						const newCue = new VTTCue(newStartTime, cue.endTime, cue.text, cue.id);
 						onChangeCue(newCue, cueIndex, true);
 					},
 					onChangeCueEnd: newEndTime => {
-						const newCue = new VTTCue(cue.startTime, newEndTime, cue.text);
+						const newCue = new VTTCue(cue.startTime, newEndTime, cue.text, cue.id);
 						onChangeCue(newCue, cueIndex);
 					},
 					onDeltaCue: ({ startDelta = 0, endDelta = 0 }) => {
@@ -154,11 +154,11 @@ export function CueProvider({ cue, cueIndex, children }) {
 							newStartTime = 0;
 						}
 
-						const newCue = new VTTCue(newStartTime, newEndTime, cue.text);
+						const newCue = new VTTCue(newStartTime, newEndTime, cue.text, cue.id);
 						onChangeCue(newCue, cueIndex);
 					},
 					onChangeCueText: newText => {
-						const newCue = new VTTCue(cue.startTime, cue.endTime, newText);
+						const newCue = new VTTCue(cue.startTime, cue.endTime, newText, cue.id);
 						onChangeCue(newCue, cueIndex);
 					},
 					onRemoveCue: () => onRemoveCue(cueIndex),
