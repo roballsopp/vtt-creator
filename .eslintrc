@@ -52,7 +52,8 @@
       "printWidth": 120,
       "singleQuote": true,
       "jsxBracketSameLine": true,
-      "trailingComma": "es5"
+      "trailingComma": "es5",
+      "endOfLine": "lf"
     }],
     "space-before-function-paren": 0
   }
