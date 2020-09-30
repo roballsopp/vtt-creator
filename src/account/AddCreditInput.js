@@ -66,7 +66,12 @@ export default function AddCreditInput({ user, defaultValue, onApprove }) {
 				Add Credit:
 			</Typography>
 			<DollarsInput defaultValue={defaultValue} error={inputErr} onChange={handleChangePurchaseAmt} />
-			<PaypalButtons disabled={inputErr} purchaseAmt={purchaseAmt} onError={handlePaypalError} onApprove={onApprove} />
+			<PaypalButtons
+				disabled={inputErr || !purchaseAmt}
+				purchaseAmt={purchaseAmt}
+				onError={handlePaypalError}
+				onApprove={onApprove}
+			/>
 		</React.Fragment>
 	);
 }
