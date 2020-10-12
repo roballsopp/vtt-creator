@@ -24,7 +24,8 @@ export const getAudioBlobFromVideo = async file => {
 
 					// using event style for safari compatibility
 					offlineCtx.addEventListener('complete', e => {
-						resolve(new File([encodeWAV(e.renderedBuffer)], 'extracted_audio.wav', { type: 'audio/wav' }));
+						// use new Blob instead of new File for older edge compatibility: https://stackoverflow.com/a/43241922/2382483
+						resolve(new Blob([encodeWAV(e.renderedBuffer)], { type: 'audio/wav' }));
 					});
 
 					offlineCtx.startRendering();
