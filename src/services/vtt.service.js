@@ -1,4 +1,27 @@
 import { WebVTT } from 'vtt.js';
+import { ExtendableError } from '../errors';
+
+export class EmptyFileError extends ExtendableError {
+	constructor(m = 'Empty file') {
+		super(m);
+		this.name = 'EmptyFileError';
+	}
+}
+
+export class MalformedVTTSignatureError extends ExtendableError {
+	constructor(m = 'Malformed VTT Signature') {
+		super(m);
+		this.name = 'MalformedVTTSignatureError';
+	}
+}
+
+export class MalformedVTTTimestampError extends ExtendableError {
+	constructor(badTimeStamp, m = 'Malformed VTT timestamp') {
+		super(m);
+		this.name = 'MalformedVTTTimestampError';
+		this.badTimeStamp = badTimeStamp;
+	}
+}
 
 const CUE_STORAGE_KEY = 'vtt_creator_cues';
 
@@ -109,11 +132,19 @@ export function getCuesFromVTT(file) {
 		});
 
 		reader.addEventListener('load', async () => {
-			if (!reader.result) return reject(new Error('Empty VTT file'));
+			if (!reader.result) return reject(new EmptyFileError('Empty VTT file'));
 			const cues = [];
 			const parser = new WebVTT.Parser(window, WebVTT.StringDecoder());
 			parser.oncue = c => cues.push(c);
-			parser.onparsingerror = e => reject(new Error(e.message));
+			parser.onparsingerror = e => {
+				if (e.code === 0) return reject(new MalformedVTTSignatureError(e.message));
+				if (e.code === 1) {
+					// eslint-disable-next-line no-case-declarations
+					const badTimeStamp = e.message.replace(/^Malformed timestamp:\s+/, '');
+					return reject(new MalformedVTTTimestampError(badTimeStamp, e.message));
+				}
+				reject(new Error(e.message));
+			};
 			parser.onflush = () => resolve(cues);
 			parser.parse(reader.result);
 			parser.flush();

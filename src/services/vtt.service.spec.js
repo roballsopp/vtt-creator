@@ -1,5 +1,12 @@
 import chai from 'chai';
-import { getCuesFromWords, getVTTFromCues, getCuesFromVTT } from './vtt.service';
+import {
+	getCuesFromWords,
+	getVTTFromCues,
+	getCuesFromVTT,
+	EmptyFileError,
+	MalformedVTTTimestampError,
+	MalformedVTTSignatureError,
+} from './vtt.service';
 
 const words = [
 	{ startTime: 0, endTime: 0.7, word: 'The' },
@@ -53,6 +60,20 @@ you use it first read through the whole document
 00:10.900 --> 00:12.500
 to make sure you understand it?`;
 
+const VTTFileWHours = `WEBVTT - Some title
+
+00:00:00.000 --> 00:00:03.700
+The Volvo group code of conduct is an important tool
+
+00:00:03.700 --> 00:00:07.800
+for anyone who works on Volvo's behalf. So, how do
+
+00:00:07.800 --> 00:00:10.900
+you use it first read through the whole document
+
+00:00:10.900 --> 00:00:12.500
+to make sure you understand it?`;
+
 const cues = [
 	new VTTCue(0, 3.7, 'The Volvo group code of conduct is an important tool'),
 	new VTTCue(3.7, 7.8, "for anyone who works on Volvo's behalf. So, how do"),
@@ -66,6 +87,7 @@ describe('vtt.service', function() {
 			const result = getCuesFromWords(words);
 			cues.map((expectedCue, i) => {
 				const actualCue = result[i];
+				chai.assert.isOk(actualCue.id, `cue ${i} should have a unique id`);
 				chai.assert.equal(actualCue.startTime, expectedCue.startTime, `startTimes for cue ${i} are not equal`);
 				chai.assert.equal(actualCue.endTime, expectedCue.endTime, `endTimes for cue ${i} are not equal`);
 				chai.assert.equal(actualCue.text, expectedCue.text, `text for cue ${i} is not equal`);
@@ -82,14 +104,99 @@ describe('vtt.service', function() {
 	});
 
 	describe('getCuesFromVTT', function() {
-		it('should output the correct cues', async () => {
-			const vttBlob = new Blob([VTTFile], { type: 'text/vtt' });
-			const result = await getCuesFromVTT(vttBlob);
-			cues.map((expectedCue, i) => {
-				const actualCue = result[i];
-				chai.assert.equal(actualCue.startTime, expectedCue.startTime, `startTimes for cue ${i} are not equal`);
-				chai.assert.equal(actualCue.endTime, expectedCue.endTime, `endTimes for cue ${i} are not equal`);
-				chai.assert.equal(actualCue.text, expectedCue.text, `text for cue ${i} is not equal`);
+		describe('when timestamps have minutes in the most significant position', function() {
+			before(async function() {
+				const vttBlob = new Blob([VTTFile], { type: 'text/vtt' });
+				this.result = await getCuesFromVTT(vttBlob);
+			});
+
+			it('outputs the correct cues', function() {
+				cues.map((expectedCue, i) => {
+					const actualCue = this.result[i];
+					chai.assert.isOk(actualCue.id, `cue ${i} should have a unique id`);
+					chai.assert.equal(actualCue.startTime, expectedCue.startTime, `startTimes for cue ${i} are not equal`);
+					chai.assert.equal(actualCue.endTime, expectedCue.endTime, `endTimes for cue ${i} are not equal`);
+					chai.assert.equal(actualCue.text, expectedCue.text, `text for cue ${i} is not equal`);
+				});
+			});
+		});
+
+		describe('when timestamps have hours in the most significant position', function() {
+			before(async function() {
+				const vttBlob = new Blob([VTTFileWHours], { type: 'text/vtt' });
+				this.result = await getCuesFromVTT(vttBlob);
+			});
+
+			it('outputs the correct cues', function() {
+				cues.map((expectedCue, i) => {
+					const actualCue = this.result[i];
+					chai.assert.isOk(actualCue.id, `cue ${i} should have a unique id`);
+					chai.assert.equal(actualCue.startTime, expectedCue.startTime, `startTimes for cue ${i} are not equal`);
+					chai.assert.equal(actualCue.endTime, expectedCue.endTime, `endTimes for cue ${i} are not equal`);
+					chai.assert.equal(actualCue.text, expectedCue.text, `text for cue ${i} is not equal`);
+				});
+			});
+		});
+
+		describe('when the file is empty', function() {
+			before(function() {
+				this.vttBlob = new Blob([''], { type: 'text/vtt' });
+			});
+
+			it('throws an EmptyFileError', function(done) {
+				getCuesFromVTT(this.vttBlob)
+					.then(() => {
+						done(new Error('Expected an error to be thrown'));
+					})
+					.catch(e => {
+						chai.expect(e).to.be.an.instanceof(EmptyFileError);
+						done();
+					});
+			});
+		});
+
+		describe('when the file has a malformed timestamp', function() {
+			before(function() {
+				const VTTFile = `WEBVTT - Some title
+
+				00:00:00,000 --> 00:00:03.700
+				The Volvo group code of conduct is an important tool`.replace('\t', '');
+
+				this.vttBlob = new Blob([VTTFile], { type: 'text/vtt' });
+			});
+
+			it('throws a MalformedVTTTimestampError', function(done) {
+				getCuesFromVTT(this.vttBlob)
+					.then(() => {
+						done(new Error('Expected an error to be thrown'));
+					})
+					.catch(e => {
+						chai.expect(e).to.be.an.instanceof(MalformedVTTTimestampError);
+						chai.expect(e.badTimeStamp).to.equal('00:00:00,000 --> 00:00:03.700');
+						done();
+					});
+			});
+		});
+
+		describe('when the file has a malformed header', function() {
+			before(function() {
+				const VTTFile = `WEBVT - Some title
+
+				00:00:00.000 --> 00:00:03.700
+				The Volvo group code of conduct is an important tool`.replace('\t', '');
+
+				this.vttBlob = new Blob([VTTFile], { type: 'text/vtt' });
+			});
+
+			it('throws a MalformedVTTSignatureError', function(done) {
+				getCuesFromVTT(this.vttBlob)
+					.then(() => {
+						done(new Error('Expected an error to be thrown'));
+					})
+					.catch(e => {
+						chai.expect(e).to.be.an.instanceof(MalformedVTTSignatureError);
+						done();
+					});
 			});
 		});
 	});

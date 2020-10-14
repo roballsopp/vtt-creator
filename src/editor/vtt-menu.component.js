@@ -13,10 +13,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import { makeStyles } from '@material-ui/styles';
 import { ExtractFromVideoButton, ExtractFromVideoDialogs, ExtractFromVideoProvider } from './CueExtractionButton';
-import { useFileSelector, useToast, useCues, Button } from '../common';
-import { getVTTFromCues, getCuesFromVTT } from '../services/vtt.service';
+import { useFileSelector, useCues, Button, useCueFromFileLoader } from '../common';
+import { getVTTFromCues } from '../services/vtt.service';
 import { getSRTFromCues } from '../services/srt.service';
-import { handleError } from '../services/error-handler.service';
 
 const useStyles = makeStyles({
 	root: {
@@ -40,8 +39,8 @@ const useStyles = makeStyles({
 
 export default function VTTMenu() {
 	const classes = useStyles();
-	const toast = useToast();
-	const { cues, onChangeCues, onLoadingCues } = useCues();
+	const { cues, onChangeCues } = useCues();
+	const { loadCuesFromFile } = useCueFromFileLoader();
 
 	const [optionsMenuAnchorEl, setOptionsMenuAnchorEl] = React.useState(null);
 	const [clearCuesDialogOpen, setClearCuesDialogOpen] = React.useState(false);
@@ -75,19 +74,11 @@ export default function VTTMenu() {
 	};
 
 	const onVTTFileSelected = React.useCallback(
-		async e => {
+		e => {
 			onCloseOptionsMenu();
-			onLoadingCues(true);
-			try {
-				const newCues = await getCuesFromVTT(e.target.files[0]);
-				onChangeCues(newCues, true); // check if VTT files require ordering
-			} catch (e) {
-				handleError(e);
-				toast.error('Oh no! An error occurred loading the cues.');
-			}
-			onLoadingCues(false);
+			loadCuesFromFile(e.target.files[0]);
 		},
-		[onChangeCues, onLoadingCues, toast]
+		[loadCuesFromFile]
 	);
 
 	const openFileSelector = useFileSelector({ accept: '.vtt', onFilesSelected: onVTTFileSelected });
