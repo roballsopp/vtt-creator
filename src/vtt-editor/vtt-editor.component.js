@@ -2,6 +2,7 @@ import * as React from 'react';
 import Divider from '@material-ui/core/Divider';
 import FabButton from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
+import Tooltip from '@material-ui/core/Tooltip';
 import { makeStyles } from '@material-ui/styles';
 import { List, Loader, useCues, CueProvider } from '../common';
 import CueEditor from './cue-editor.component';
@@ -56,9 +57,11 @@ export default function VTTEditor() {
 				</AutoScrollProvider>
 			)}
 			{loading && <Loader />}
-			<FabButton className={classes.fab} color="primary" aria-label="Add Cue" onClick={onAddCue}>
-				<AddIcon />
-			</FabButton>
+			<Tooltip title="Add Cue" placement="top">
+				<FabButton className={classes.fab} color="primary" aria-label="Add Cue" onClick={onAddCue}>
+					<AddIcon />
+				</FabButton>
+			</Tooltip>
 		</div>
 	);
 }
