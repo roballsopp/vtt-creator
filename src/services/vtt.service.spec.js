@@ -53,6 +53,20 @@ you use it first read through the whole document
 00:10.900 --> 00:12.500
 to make sure you understand it?`;
 
+const VTTFileWHours = `WEBVTT - Some title
+
+00:00:00.000 --> 00:00:03.700
+The Volvo group code of conduct is an important tool
+
+00:00:03.700 --> 00:00:07.800
+for anyone who works on Volvo's behalf. So, how do
+
+00:00:07.800 --> 00:00:10.900
+you use it first read through the whole document
+
+00:00:10.900 --> 00:00:12.500
+to make sure you understand it?`;
+
 const cues = [
 	new VTTCue(0, 3.7, 'The Volvo group code of conduct is an important tool'),
 	new VTTCue(3.7, 7.8, "for anyone who works on Volvo's behalf. So, how do"),
@@ -66,6 +80,7 @@ describe('vtt.service', function() {
 			const result = getCuesFromWords(words);
 			cues.map((expectedCue, i) => {
 				const actualCue = result[i];
+				chai.assert.isOk(actualCue.id, `cue ${i} should have a unique id`);
 				chai.assert.equal(actualCue.startTime, expectedCue.startTime, `startTimes for cue ${i} are not equal`);
 				chai.assert.equal(actualCue.endTime, expectedCue.endTime, `endTimes for cue ${i} are not equal`);
 				chai.assert.equal(actualCue.text, expectedCue.text, `text for cue ${i} is not equal`);
@@ -82,14 +97,37 @@ describe('vtt.service', function() {
 	});
 
 	describe('getCuesFromVTT', function() {
-		it('should output the correct cues', async () => {
-			const vttBlob = new Blob([VTTFile], { type: 'text/vtt' });
-			const result = await getCuesFromVTT(vttBlob);
-			cues.map((expectedCue, i) => {
-				const actualCue = result[i];
-				chai.assert.equal(actualCue.startTime, expectedCue.startTime, `startTimes for cue ${i} are not equal`);
-				chai.assert.equal(actualCue.endTime, expectedCue.endTime, `endTimes for cue ${i} are not equal`);
-				chai.assert.equal(actualCue.text, expectedCue.text, `text for cue ${i} is not equal`);
+		describe('when timestamps have minutes in the most significant position', function() {
+			before(async function() {
+				const vttBlob = new Blob([VTTFile], { type: 'text/vtt' });
+				this.result = await getCuesFromVTT(vttBlob);
+			});
+
+			it('outputs the correct cues', async function() {
+				cues.map((expectedCue, i) => {
+					const actualCue = this.result[i];
+					chai.assert.isOk(actualCue.id, `cue ${i} should have a unique id`);
+					chai.assert.equal(actualCue.startTime, expectedCue.startTime, `startTimes for cue ${i} are not equal`);
+					chai.assert.equal(actualCue.endTime, expectedCue.endTime, `endTimes for cue ${i} are not equal`);
+					chai.assert.equal(actualCue.text, expectedCue.text, `text for cue ${i} is not equal`);
+				});
+			});
+		});
+
+		describe('when timestamps have hours in the most significant position', function() {
+			before(async function() {
+				const vttBlob = new Blob([VTTFileWHours], { type: 'text/vtt' });
+				this.result = await getCuesFromVTT(vttBlob);
+			});
+
+			it('outputs the correct cues', async function() {
+				cues.map((expectedCue, i) => {
+					const actualCue = this.result[i];
+					chai.assert.isOk(actualCue.id, `cue ${i} should have a unique id`);
+					chai.assert.equal(actualCue.startTime, expectedCue.startTime, `startTimes for cue ${i} are not equal`);
+					chai.assert.equal(actualCue.endTime, expectedCue.endTime, `endTimes for cue ${i} are not equal`);
+					chai.assert.equal(actualCue.text, expectedCue.text, `text for cue ${i} is not equal`);
+				});
 			});
 		});
 	});
