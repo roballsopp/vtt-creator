@@ -23,9 +23,9 @@ const useStyles = makeStyles({
 		display: 'flex',
 		flexDirection: 'column',
 		height: '100%',
+		zIndex: 1,
 	},
 	player: {
-		padding: 8,
 		flex: 1,
 		minHeight: 0,
 		minWidth: 0,
