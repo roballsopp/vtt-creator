@@ -1,5 +1,27 @@
 import { WebVTT } from 'vtt.js';
-import { EmptyFileError, MalformedVTTSignatureError, MalformedVTTTimestampError } from './errors';
+import { ExtendableError } from '../errors';
+
+export class EmptyFileError extends ExtendableError {
+	constructor(m = 'Empty file') {
+		super(m);
+		this.name = 'EmptyFileError';
+	}
+}
+
+export class MalformedVTTSignatureError extends ExtendableError {
+	constructor(m = 'Malformed VTT Signature') {
+		super(m);
+		this.name = 'MalformedVTTSignatureError';
+	}
+}
+
+export class MalformedVTTTimestampError extends ExtendableError {
+	constructor(badTimeStamp, m = 'Malformed VTT timestamp') {
+		super(m);
+		this.name = 'MalformedVTTTimestampError';
+		this.badTimeStamp = badTimeStamp;
+	}
+}
 
 const CUE_STORAGE_KEY = 'vtt_creator_cues';
 

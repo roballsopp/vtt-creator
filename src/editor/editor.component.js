@@ -4,7 +4,7 @@ import Paper from '@material-ui/core/Paper';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
-import { CuesProvider, VideoFileProvider, CreditProvider } from '../common';
+import { CuesProvider, CuesFromFileProvider, VideoFileProvider, CreditProvider } from '../common';
 import { VC as VCIcon } from '../common/icons';
 import { VideoDomProvider } from '../common/video';
 import Footer from '../footer.component';
@@ -40,25 +40,27 @@ export default function MainScreen() {
 			<VideoFileProvider>
 				<VideoDomProvider>
 					<CuesProvider>
-						<CreditProvider>
-							<main className={classes.root}>
-								<Paper square className={classes.drawer}>
-									<AppBar position="static" color="primary">
-										<Toolbar>
-											<VCIcon fontSize="large" edge="start" style={{ marginRight: 8 }} />
-											<Typography variant="h6" color="inherit" style={{ flexGrow: 1 }}>
-												VTT Creator
-											</Typography>
-											<VttMenu />
-										</Toolbar>
-									</AppBar>
-									<VTTEditor />
-								</Paper>
-								<div className={classes.player}>
-									<Player />
-								</div>
-							</main>
-						</CreditProvider>
+						<CuesFromFileProvider>
+							<CreditProvider>
+								<main className={classes.root}>
+									<Paper square className={classes.drawer}>
+										<AppBar position="static" color="primary">
+											<Toolbar>
+												<VCIcon fontSize="large" edge="start" style={{ marginRight: 8 }} />
+												<Typography variant="h6" color="inherit" style={{ flexGrow: 1 }}>
+													VTT Creator
+												</Typography>
+												<VttMenu />
+											</Toolbar>
+										</AppBar>
+										<VTTEditor />
+									</Paper>
+									<div className={classes.player}>
+										<Player />
+									</div>
+								</main>
+							</CreditProvider>
+						</CuesFromFileProvider>
 					</CuesProvider>
 				</VideoDomProvider>
 			</VideoFileProvider>

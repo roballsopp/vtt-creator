@@ -1,6 +1,12 @@
 import chai from 'chai';
-import { getCuesFromWords, getVTTFromCues, getCuesFromVTT } from './vtt.service';
-import { EmptyFileError, MalformedVTTTimestampError, MalformedVTTSignatureError } from './errors';
+import {
+	getCuesFromWords,
+	getVTTFromCues,
+	getCuesFromVTT,
+	EmptyFileError,
+	MalformedVTTTimestampError,
+	MalformedVTTSignatureError,
+} from './vtt.service';
 
 const words = [
 	{ startTime: 0, endTime: 0.7, word: 'The' },
