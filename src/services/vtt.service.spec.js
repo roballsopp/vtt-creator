@@ -1,5 +1,6 @@
 import chai from 'chai';
 import { getCuesFromWords, getVTTFromCues, getCuesFromVTT } from './vtt.service';
+import { EmptyFileError, MalformedVTTTimestampError, MalformedVTTSignatureError } from './errors';
 
 const words = [
 	{ startTime: 0, endTime: 0.7, word: 'The' },
@@ -103,7 +104,7 @@ describe('vtt.service', function() {
 				this.result = await getCuesFromVTT(vttBlob);
 			});
 
-			it('outputs the correct cues', async function() {
+			it('outputs the correct cues', function() {
 				cues.map((expectedCue, i) => {
 					const actualCue = this.result[i];
 					chai.assert.isOk(actualCue.id, `cue ${i} should have a unique id`);
@@ -120,7 +121,7 @@ describe('vtt.service', function() {
 				this.result = await getCuesFromVTT(vttBlob);
 			});
 
-			it('outputs the correct cues', async function() {
+			it('outputs the correct cues', function() {
 				cues.map((expectedCue, i) => {
 					const actualCue = this.result[i];
 					chai.assert.isOk(actualCue.id, `cue ${i} should have a unique id`);
@@ -128,6 +129,68 @@ describe('vtt.service', function() {
 					chai.assert.equal(actualCue.endTime, expectedCue.endTime, `endTimes for cue ${i} are not equal`);
 					chai.assert.equal(actualCue.text, expectedCue.text, `text for cue ${i} is not equal`);
 				});
+			});
+		});
+
+		describe('when the file is empty', function() {
+			before(function() {
+				this.vttBlob = new Blob([''], { type: 'text/vtt' });
+			});
+
+			it('throws an EmptyFileError', function(done) {
+				getCuesFromVTT(this.vttBlob)
+					.then(() => {
+						done(new Error('Expected an error to be thrown'));
+					})
+					.catch(e => {
+						chai.expect(e).to.be.an.instanceof(EmptyFileError);
+						done();
+					});
+			});
+		});
+
+		describe('when the file has a malformed timestamp', function() {
+			before(function() {
+				const VTTFile = `WEBVTT - Some title
+
+				00:00:00,000 --> 00:00:03.700
+				The Volvo group code of conduct is an important tool`.replace('\t', '');
+
+				this.vttBlob = new Blob([VTTFile], { type: 'text/vtt' });
+			});
+
+			it('throws a MalformedVTTTimestampError', function(done) {
+				getCuesFromVTT(this.vttBlob)
+					.then(() => {
+						done(new Error('Expected an error to be thrown'));
+					})
+					.catch(e => {
+						chai.expect(e).to.be.an.instanceof(MalformedVTTTimestampError);
+						chai.expect(e.badTimeStamp).to.equal('00:00:00,000 --> 00:00:03.700');
+						done();
+					});
+			});
+		});
+
+		describe('when the file has a malformed header', function() {
+			before(function() {
+				const VTTFile = `WEBVT - Some title
+
+				00:00:00.000 --> 00:00:03.700
+				The Volvo group code of conduct is an important tool`.replace('\t', '');
+
+				this.vttBlob = new Blob([VTTFile], { type: 'text/vtt' });
+			});
+
+			it('throws a MalformedVTTSignatureError', function(done) {
+				getCuesFromVTT(this.vttBlob)
+					.then(() => {
+						done(new Error('Expected an error to be thrown'));
+					})
+					.catch(e => {
+						chai.expect(e).to.be.an.instanceof(MalformedVTTSignatureError);
+						done();
+					});
 			});
 		});
 	});
