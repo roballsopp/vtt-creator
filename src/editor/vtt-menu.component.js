@@ -11,6 +11,7 @@ import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MoreIcon from '@material-ui/icons/MoreVert';
+import Tooltip from '@material-ui/core/Tooltip';
 import { makeStyles } from '@material-ui/styles';
 import { ExtractFromVideoButton, ExtractFromVideoDialogs, ExtractFromVideoProvider } from './CueExtractionButton';
 import { useFileSelector, useCues, Button, useCueFromFileLoader } from '../common';
@@ -85,9 +86,11 @@ export default function VTTMenu() {
 
 	return (
 		<ExtractFromVideoProvider onCloseMenu={onCloseOptionsMenu}>
-			<IconButton edge="end" color="inherit" aria-label="Menu" onClick={e => setOptionsMenuAnchorEl(e.currentTarget)}>
-				<MoreIcon />
-			</IconButton>
+			<Tooltip title="VTT Options">
+				<IconButton edge="end" color="inherit" aria-label="Menu" onClick={e => setOptionsMenuAnchorEl(e.currentTarget)}>
+					<MoreIcon />
+				</IconButton>
+			</Tooltip>
 			<Menu anchorEl={optionsMenuAnchorEl} open={!!optionsMenuAnchorEl} onClose={onCloseOptionsMenu}>
 				<MenuItem onClick={openFileSelector}>
 					<CloudUploadIcon className={classes.menuIcon} />

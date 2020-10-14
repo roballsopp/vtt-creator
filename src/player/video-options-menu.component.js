@@ -4,6 +4,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import Tooltip from '@material-ui/core/Tooltip';
 import { useOverlay } from '../common/video';
 import useFileSelector from '../common/use-file-selector.hook';
 import { getSupportedVideoFileExtensions } from '../services/av.service';
@@ -37,9 +38,11 @@ export default function VideoOptionsMenu({ onFilesSelected: outerOnFilesSelected
 
 	return (
 		<React.Fragment>
-			<IconButton color="inherit" aria-label="Video Options" onClick={onOpenOptionsMenu}>
-				<MoreIcon />
-			</IconButton>
+			<Tooltip title="Video Options">
+				<IconButton color="inherit" aria-label="Video Options" onClick={onOpenOptionsMenu}>
+					<MoreIcon />
+				</IconButton>
+			</Tooltip>
 			<Menu anchorEl={optionsMenuAnchorEl} open={!!optionsMenuAnchorEl} onClose={onCloseOptionsMenu}>
 				<MenuItem onClick={onOpenFileSelector}>Select New Video File...</MenuItem>
 			</Menu>
