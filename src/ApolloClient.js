@@ -1,13 +1,10 @@
 import { ApolloClient, ApolloLink, createHttpLink, InMemoryCache, from, Observable } from '@apollo/client';
 import { ApiURL, cognitoUserPool } from './config';
 import { UnauthorizedError } from './errors';
-import { handleError } from './services/error-handler.service';
 
 const httpLink = createHttpLink({
 	uri: `${ApiURL}/graphql`,
 });
-
-let refreshing = false;
 
 const authLink = new ApolloLink((operation, forward) => {
 	return new Observable(observer => {
@@ -16,9 +13,11 @@ const authLink = new ApolloLink((operation, forward) => {
 			return observer.error(new UnauthorizedError('No user'));
 		}
 
+		// cognitoUser.refreshSession is called under the hood here when the session becomes invalid. In that case, a refreshed session will be returned
+		// https://github.com/aws-amplify/amplify-js/blob/master/packages/amazon-cognito-identity-js/src/CognitoUser.js#L1418
 		cognitoUser.getSession((err, session) => {
 			if (err) {
-				return observer.error(new UnauthorizedError(`Session error: ${err}`));
+				return observer.error(new UnauthorizedError(`Cognito session error: ${err.message}`));
 			}
 
 			operation.setContext(({ headers }) => ({
@@ -40,21 +39,7 @@ const authLink = new ApolloLink((operation, forward) => {
 					}
 					observer.error(networkError);
 				},
-				// if that link calls complete, refresh auth and just pass through
-				complete: () => {
-					observer.complete();
-					const refreshToken = session.getRefreshToken();
-					// if we don't have a refresh token, or we are already refreshing, don't try to refresh
-					if (!refreshToken || refreshing) return;
-
-					refreshing = true;
-					// refresh on each request for sliding window
-					cognitoUser.refreshSession(refreshToken, err => {
-						refreshing = false;
-						// refresh token probably expired, just log error
-						if (err) handleError(err);
-					});
-				},
+				complete: () => observer.complete(),
 			});
 		});
 	});
