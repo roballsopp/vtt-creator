@@ -1,7 +1,7 @@
-export default class UnauthorizedError {
-	constructor(message, stack) {
-		this.message = message;
+import ExtendableError from './ExtendableError';
+export default class UnauthorizedError extends ExtendableError {
+	constructor(m = 'Unauthorized') {
+		super(m);
 		this.name = 'UnauthorizedError';
-		this.stack = stack;
 	}
 }

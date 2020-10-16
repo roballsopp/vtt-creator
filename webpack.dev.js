@@ -41,6 +41,7 @@ module.exports = {
 			SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN),
 			COGNITO_CLIENT_ID: JSON.stringify(process.env.COGNITO_CLIENT_ID),
 			COGNITO_DOMAIN: JSON.stringify(process.env.COGNITO_DOMAIN),
+			COGNITO_USER_POOL_ID: JSON.stringify(process.env.COGNITO_USER_POOL_ID),
 			DEBUG: process.env.DEBUG,
 			GA_PRODUCT: JSON.stringify(process.env.GA_PRODUCT),
 			PAYPAL_CLIENT_ID: JSON.stringify(process.env.PAYPAL_CLIENT_ID),
