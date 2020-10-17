@@ -4,8 +4,7 @@ import { createBrowserHistory } from 'history';
 import { makeStyles } from '@material-ui/styles';
 import { Editor } from './editor';
 import { Splash } from './splash';
-import { CheckoutCancel, CheckoutSuccess } from './checkout';
-import { AccountPage, LoginRedirect, LogoutRedirect } from './account';
+import { AccountPage } from './account';
 import PrivacyPage from './privacy';
 import { GAProduct } from './config';
 
@@ -38,10 +37,6 @@ export default function AppRouter() {
 				<Route path="/" exact component={Splash} />
 				<Route path="/editor" exact component={Editor} />
 				<Route path="/account" exact component={AccountPage} />
-				<Route path="/checkout-cancel" exact component={CheckoutCancel} />
-				<Route path="/checkout-success" exact component={CheckoutSuccess} />
-				<Route path="/login-redirect" exact component={LoginRedirect} />
-				<Route path="/logout-redirect" exact component={LogoutRedirect} />
 				<Route path="/privacy" exact component={PrivacyPage} />
 			</Router>
 		</div>
