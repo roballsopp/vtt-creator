@@ -3,10 +3,25 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import { gql } from '@apollo/client';
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/styles';
 import { handleError } from '../services/error-handler.service';
 import PaypalButtons from './PaypalButtons';
 import DollarsInput from './DollarsInput';
+
+const useStyles = makeStyles(theme => ({
+	loader: {
+		display: 'flex',
+		alignItems: 'center',
+		height: 75,
+		marginTop: theme.spacing(2),
+		marginBottom: theme.spacing(2),
+	},
+	spinner: {
+		marginRight: theme.spacing(2),
+	},
+}));
 
 AddCreditInput.fragments = {
 	user: gql`
@@ -25,23 +40,38 @@ AddCreditInput.propTypes = {
 		credit: PropTypes.number.isRequired,
 	}).isRequired,
 	defaultValue: PropTypes.string,
-	onApprove: PropTypes.func,
+	onApproved: PropTypes.func,
+	onError: PropTypes.func,
 };
 
-export default function AddCreditInput({ user, defaultValue, onApprove }) {
+export default function AddCreditInput({ user, defaultValue, onApproved, onError }) {
 	const [purchaseAmt, setPurchaseAmt] = React.useState(defaultValue || '');
 	const [paypalError, setPaypalError] = React.useState(false);
 	const [inputErr, setInputError] = React.useState(false);
+	const [awaitingApproval, setAwaitingApproval] = React.useState(false);
+
+	const classes = useStyles();
 
 	const handlePaypalError = err => {
+		setAwaitingApproval(false);
 		setPaypalError(true);
 		handleError(err);
+		onError(err);
 	};
 
 	const handleChangePurchaseAmt = amt => {
 		setPurchaseAmt(amt);
 		const amtNum = Number(amt);
 		setInputError(Number.isNaN(amtNum) || amtNum < 1);
+	};
+
+	const handleApproveStart = () => {
+		setAwaitingApproval(true);
+	};
+
+	const handleApproved = () => {
+		setAwaitingApproval(false);
+		if (onApproved) onApproved();
 	};
 
 	if (paypalError) {
@@ -65,12 +95,21 @@ export default function AddCreditInput({ user, defaultValue, onApprove }) {
 			<Typography variant="subtitle2" gutterBottom>
 				Add Credit:
 			</Typography>
-			<DollarsInput defaultValue={defaultValue} error={inputErr} onChange={handleChangePurchaseAmt} />
+			{awaitingApproval && (
+				<div className={classes.loader}>
+					<CircularProgress className={classes.spinner} />
+					<Typography variant="h6">Waiting for order to complete...</Typography>
+				</div>
+			)}
+			{!awaitingApproval && (
+				<DollarsInput defaultValue={defaultValue} error={inputErr} onChange={handleChangePurchaseAmt} />
+			)}
 			<PaypalButtons
-				disabled={inputErr || !purchaseAmt}
+				disabled={inputErr || !purchaseAmt || awaitingApproval}
 				purchaseAmt={purchaseAmt}
 				onError={handlePaypalError}
-				onApprove={onApprove}
+				onApprove={handleApproveStart}
+				onApproved={handleApproved}
 			/>
 		</React.Fragment>
 	);

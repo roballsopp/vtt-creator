@@ -1,3 +1,5 @@
+import { gql } from '@apollo/client';
+import PropTypes from 'prop-types';
 import * as React from 'react';
 import Link from '@material-ui/core/Link';
 import Paper from '@material-ui/core/Paper';
@@ -41,7 +43,23 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
-export default function Footer() {
+Footer.fragments = {
+	user: gql`
+		fragment FooterUser on User {
+			id
+			...AccountButtonUser
+		}
+		${AccountButton.fragments.user}
+	`,
+};
+
+Footer.propTypes = {
+	user: PropTypes.shape({
+		id: PropTypes.string.isRequired,
+	}),
+};
+
+export default function Footer({ user }) {
 	const classes = useStyles();
 
 	return (
@@ -59,7 +77,7 @@ export default function Footer() {
 				</Typography>
 			</div>
 			<div className={classes.rightSection}>
-				<AccountButton />
+				<AccountButton user={user} />
 			</div>
 		</Paper>
 	);

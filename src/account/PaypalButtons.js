@@ -18,11 +18,12 @@ const APPLY_PAYPAL_CREDIT_MUTATION = gql`
 PaypalButtons.propTypes = {
 	purchaseAmt: PropTypes.string.isRequired,
 	disabled: PropTypes.bool,
-	onApprove: PropTypes.func,
+	onApprove: PropTypes.func.isRequired,
+	onApproved: PropTypes.func.isRequired,
 	onError: PropTypes.func.isRequired,
 };
 
-export default function PaypalButtons({ purchaseAmt, disabled, onApprove, onError }) {
+export default function PaypalButtons({ purchaseAmt, disabled, onApprove, onApproved, onError }) {
 	const apolloClient = useApolloClient();
 	const actionsRef = React.useRef();
 
@@ -57,13 +58,14 @@ export default function PaypalButtons({ purchaseAmt, disabled, onApprove, onErro
 	};
 
 	const handleApprove = (data, actions) => {
+		onApprove();
 		return actions.order
 			.capture()
 			.then(() => {
 				return apolloClient.mutate({ mutation: APPLY_PAYPAL_CREDIT_MUTATION, variables: { orderId: data.orderID } });
 			})
 			.then(result => {
-				if (onApprove) onApprove(result);
+				onApproved(result);
 				return result;
 			})
 			.catch(err => {
@@ -73,6 +75,12 @@ export default function PaypalButtons({ purchaseAmt, disabled, onApprove, onErro
 	};
 
 	return (
-		<PayPalButton createOrder={handleCreateOrder} onInit={handleInit} onApprove={handleApprove} onError={onError} />
+		<PayPalButton
+			shippingPreference="NO_SHIPPING"
+			createOrder={handleCreateOrder}
+			onInit={handleInit}
+			onApprove={handleApprove}
+			onError={onError}
+		/>
 	);
 }

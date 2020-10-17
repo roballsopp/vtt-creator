@@ -1,3 +1,5 @@
+import { gql } from '@apollo/client';
+import PropTypes from 'prop-types';
 import * as React from 'react';
 import download from 'downloadjs';
 import Dialog from '@material-ui/core/Dialog';
@@ -38,7 +40,22 @@ const useStyles = makeStyles({
 	},
 });
 
-export default function VTTMenu() {
+VTTMenu.fragments = {
+	user: gql`
+		fragment VTTMenuUser on User {
+			...ExtractFromVideoProviderUser
+			...ExtractFromVideoDialogsUser
+		}
+		${ExtractFromVideoProvider.fragments.user}
+		${ExtractFromVideoDialogs.fragments.user}
+	`,
+};
+
+VTTMenu.propTypes = {
+	user: PropTypes.object,
+};
+
+export default function VTTMenu({ user }) {
 	const classes = useStyles();
 	const { cues, onChangeCues } = useCues();
 	const { loadCuesFromFile } = useCueFromFileLoader();
@@ -85,7 +102,7 @@ export default function VTTMenu() {
 	const openFileSelector = useFileSelector({ accept: '.vtt', onFilesSelected: onVTTFileSelected });
 
 	return (
-		<ExtractFromVideoProvider onCloseMenu={onCloseOptionsMenu}>
+		<ExtractFromVideoProvider user={user} onCloseMenu={onCloseOptionsMenu}>
 			<Tooltip title="VTT Options">
 				<IconButton edge="end" color="inherit" aria-label="Menu" onClick={e => setOptionsMenuAnchorEl(e.currentTarget)}>
 					<MoreIcon />
@@ -110,7 +127,7 @@ export default function VTTMenu() {
 					Clear Cues
 				</MenuItem>
 			</Menu>
-			<ExtractFromVideoDialogs />
+			<ExtractFromVideoDialogs user={user} />
 			<Dialog
 				maxWidth="sm"
 				fullWidth

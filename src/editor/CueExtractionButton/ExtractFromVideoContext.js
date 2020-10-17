@@ -1,16 +1,27 @@
+import { gql } from '@apollo/client';
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { useCues, useAuth, useCredit } from '../../common';
+import { GetTotalCost, TranscriptionCost } from '../../config';
+import { useCues } from '../../common';
+import { useDuration } from '../../common/video';
 import { getCuesFromWords } from '../../services/vtt.service';
+import { useAuthDialog } from '../../AuthDialog';
+
+ExtractFromVideoProvider.fragments = {
+	user: gql`
+		fragment ExtractFromVideoProviderUser on User {
+			id
+			credit
+			unlimitedUsage
+		}
+	`,
+};
 
 const ExtractFromVideoContext = React.createContext({
-	loginDialogOpen: false,
 	creditDialogOpen: false,
 	cueExtractionDialogOpen: false,
 	handleCueExtractionDialogOpen: () => {},
 	handleCueExtractionDialogClose: () => {},
-	handleLoginDialogClose: () => {},
-	handleLoginDialogExited: () => {},
 	handleCreditDialogPaid: () => {},
 	handleCreditDialogClose: () => {},
 	handleCreditDialogExited: () => {},
@@ -18,46 +29,60 @@ const ExtractFromVideoContext = React.createContext({
 });
 
 ExtractFromVideoProvider.propTypes = {
+	user: PropTypes.shape({
+		id: PropTypes.string.isRequired,
+		credit: PropTypes.number.isRequired,
+		unlimitedUsage: PropTypes.bool,
+	}),
 	children: PropTypes.node.isRequired,
 	onCloseMenu: PropTypes.func.isRequired,
 };
 
-export function ExtractFromVideoProvider({ children, onCloseMenu }) {
+export function ExtractFromVideoProvider({ user, children, onCloseMenu }) {
 	const { onChangeCues, onLoadingCues } = useCues();
-	const { isAuthenticated, user } = useAuth();
-	const { cost, credit } = useCredit();
+	const { openLoginDialog, authDialogEvents } = useAuthDialog();
+	const { duration } = useDuration();
+	const cost = GetTotalCost(duration);
 
 	const [cueExtractionDialogOpen, setCueExtractionDialogOpen] = React.useState(false);
-	const [loginDialogOpen, setLoginDialogOpen] = React.useState(false);
 	const [creditDialogOpen, setCreditDialogOpen] = React.useState(false);
+	const [awaitingLogin, setAwaitingLogin] = React.useState(false);
 	const creditDialogPaid = React.useRef(false);
 
-	const handleCueExtractionDialogOpen = () => {
+	const openLoginPrompt = React.useCallback(() => {
+		setAwaitingLogin(true);
+		return openLoginDialog(
+			`Extracting captions automatically costs $${TranscriptionCost.toFixed(
+				2
+			)} per minute of video and requires an account. Please login or sign up below.`
+		);
+	}, [openLoginDialog]);
+
+	const handleCueExtractionDialogOpen = React.useCallback(() => {
 		onCloseMenu();
 
-		if (!isAuthenticated) {
-			return setLoginDialogOpen(true);
-		}
+		if (!user) return openLoginPrompt();
 
-		if (cost > credit && !user.unlimitedUsage) {
+		if (cost > user.credit && !user.unlimitedUsage) {
 			return setCreditDialogOpen(true);
 		}
 
 		setCueExtractionDialogOpen(true);
-	};
+	}, [cost, user, onCloseMenu, openLoginPrompt]);
+
+	React.useEffect(() => {
+		const handleLoginExited = () => {
+			if (awaitingLogin && user) handleCueExtractionDialogOpen();
+			setAwaitingLogin(false);
+		};
+		authDialogEvents.on('exited', handleLoginExited);
+		return () => {
+			authDialogEvents.off('exited', handleLoginExited);
+		};
+	}, [user, awaitingLogin, authDialogEvents, handleCueExtractionDialogOpen]);
 
 	const handleCueExtractionDialogClose = () => {
 		setCueExtractionDialogOpen(false);
-	};
-
-	const handleLoginDialogClose = () => {
-		setLoginDialogOpen(false);
-	};
-
-	const handleLoginDialogExited = () => {
-		if (isAuthenticated) {
-			handleCueExtractionDialogOpen();
-		}
 	};
 
 	const handleCreditDialogPaid = () => {
@@ -90,13 +115,10 @@ export function ExtractFromVideoProvider({ children, onCloseMenu }) {
 	return (
 		<ExtractFromVideoContext.Provider
 			value={{
-				loginDialogOpen,
 				creditDialogOpen,
 				cueExtractionDialogOpen,
 				handleCueExtractionDialogOpen,
 				handleCueExtractionDialogClose,
-				handleLoginDialogClose,
-				handleLoginDialogExited,
 				handleCreditDialogPaid,
 				handleCreditDialogClose,
 				handleCreditDialogExited,

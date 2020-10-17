@@ -7,6 +7,7 @@ import { Splash } from './splash';
 import { AccountPage } from './account';
 import PrivacyPage from './privacy';
 import { GAProduct } from './config';
+import { AuthDialogProvider } from './AuthDialog';
 
 const useStyles = makeStyles({
 	root: {
@@ -35,8 +36,16 @@ export default function AppRouter() {
 		<div className={classes.root}>
 			<Router history={history}>
 				<Route path="/" exact component={Splash} />
-				<Route path="/editor" exact component={Editor} />
-				<Route path="/account" exact component={AccountPage} />
+				<Route path="/editor" exact>
+					<AuthDialogProvider>
+						<Editor />
+					</AuthDialogProvider>
+				</Route>
+				<Route path="/account" exact>
+					<AuthDialogProvider>
+						<AccountPage />
+					</AuthDialogProvider>
+				</Route>
 				<Route path="/privacy" exact component={PrivacyPage} />
 			</Router>
 		</div>

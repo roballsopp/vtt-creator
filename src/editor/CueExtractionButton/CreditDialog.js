@@ -10,16 +10,9 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import { styled } from '@material-ui/styles';
 import { AddCreditInput } from '../../account';
-import { Button, Loader, useCredit } from '../../common';
-
-const USER_QUERY = gql`
-	query CreditDialogUserQuery {
-		self {
-			...AddCreditInputUser
-		}
-	}
-	${AddCreditInput.fragments.user}
-`;
+import { Button } from '../../common';
+import { useDuration } from '../../common/video';
+import { GetTotalCost } from '../../config';
 
 const Title = styled(DialogTitle)({
 	display: 'flex',
@@ -27,17 +20,34 @@ const Title = styled(DialogTitle)({
 	alignItems: 'center',
 });
 
+CreditDialog.fragments = {
+	user: gql`
+		fragment CreditDialogUser on User {
+			id
+			credit
+			unlimitedUsage
+			...AddCreditInputUser
+		}
+		${AddCreditInput.fragments.user}
+	`,
+};
+
 CreditDialog.propTypes = {
+	user: PropTypes.shape({
+		id: PropTypes.string.isRequired,
+		credit: PropTypes.number.isRequired,
+		unlimitedUsage: PropTypes.bool,
+	}).isRequired,
 	open: PropTypes.bool,
 	onPaid: PropTypes.func.isRequired,
 	onClose: PropTypes.func.isRequired,
 	onExited: PropTypes.func.isRequired,
 };
 
-export default function CreditDialog({ open, onClose, onPaid, onExited }) {
-	const { cost, credit } = useCredit();
-	const { loading, error, data } = useQuery(USER_QUERY);
-	const defaultValue = Math.max(cost - credit, 1).toFixed(2);
+export default function CreditDialog({ user, open, onClose, onPaid, onExited }) {
+	const { duration } = useDuration();
+	const cost = GetTotalCost(duration);
+	const defaultValue = Math.max(cost - user.credit, 1).toFixed(2);
 
 	return (
 		<Dialog
@@ -56,13 +66,19 @@ export default function CreditDialog({ open, onClose, onPaid, onExited }) {
 				</IconButton>
 			</Title>
 			<DialogContent>
-				<Typography paragraph>Remaining credit: ${credit.toFixed(2)}</Typography>
-				<Typography paragraph>Transcription cost ${cost.toFixed(2)}</Typography>
-				<Typography paragraph>Specify a USD amount to add to your account below and pay with paypal:</Typography>
+				<Typography paragraph color="error">
+					Remaining credit: ${user.credit.toFixed(2)}
+				</Typography>
+				<Typography paragraph color="error">
+					Transcription cost ${cost.toFixed(2)}
+				</Typography>
+				<Typography paragraph>
+					Specify a USD amount to add to your account below and pay with paypal. Any amount you add beyond the cost of
+					this video will be saved and can be applied to later videos. Check your remaining credit at any time by
+					clicking the Account button in the lower right corner of the screen.
+				</Typography>
 				<div>
-					{error && <Typography color="error">Error loading payment form. You may need to login.</Typography>}
-					{loading && <Loader />}
-					{!loading && !error && <AddCreditInput user={data.self} defaultValue={defaultValue} onApprove={onPaid} />}
+					<AddCreditInput user={user} defaultValue={defaultValue} onApproved={onPaid} />
 				</div>
 			</DialogContent>
 			<DialogActions>

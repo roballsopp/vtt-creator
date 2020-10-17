@@ -8,6 +8,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import { styled, makeStyles } from '@material-ui/styles';
+import { GetTotalCost } from '../../config';
 import UploadProgress, {
 	UPLOAD_STATE_COMPLETED,
 	UPLOAD_STATE_EXTRACTING,
@@ -20,7 +21,7 @@ import useApiHelper from './useApiHelper';
 import { getAudioBlobFromVideo } from '../../services/av.service';
 import { handleError } from '../../services/error-handler.service';
 import { uploadFile } from '../../services/rest-api.service';
-import { useToast, Button, useVideoFile, useCredit } from '../../common';
+import { useToast, Button, useVideoFile } from '../../common';
 import { useDuration } from '../../common/video';
 
 const Title = styled(DialogTitle)({
@@ -44,7 +45,7 @@ CueExtractionDialog.propTypes = {
 export default function CueExtractionDialog({ open, onRequestClose, onExtractComplete }) {
 	const { videoFile } = useVideoFile();
 	const { duration } = useDuration();
-	const { cost } = useCredit();
+	const cost = GetTotalCost(duration);
 	const classes = useStyles();
 	const [extracting, setExtracting] = React.useState(false);
 	const [progressBytes, setProgressBytes] = React.useState(0);
