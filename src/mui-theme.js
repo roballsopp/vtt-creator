@@ -20,5 +20,10 @@ export default createMuiTheme({
 				transition: 'initial',
 			},
 		},
+		MuiTooltip: {
+			tooltip: {
+				fontSize: 12,
+			},
+		},
 	},
 });
