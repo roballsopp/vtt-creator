@@ -1,6 +1,5 @@
 import React from 'react';
 import EventEmitter from 'events';
-import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import * as Sentry from '@sentry/browser';
 import { gql, useApolloClient } from '@apollo/client';
@@ -21,59 +20,48 @@ AuthDialogProvider.propTypes = {
 };
 
 export function AuthDialogProvider({ children }) {
-	const history = useHistory();
 	const apolloClient = useApolloClient();
-	const params = new URLSearchParams(history.location.search);
-	const viewId = params.get('authDialog');
-	const email = params.get('email');
+	const [viewId, setViewId] = React.useState('');
+	const [email, setEmail] = React.useState(null);
 	const authEventsRef = React.useRef(new EventEmitter());
 	const [loginMessage, setLoginMessage] = React.useState('');
 
-	const handleOpenLoginDialog = React.useCallback(
-		msg => {
-			setLoginMessage(msg);
-			history.push(`${history.location.pathname}?authDialog=LOGIN`);
-		},
-		[history]
-	);
+	const handleOpenLoginDialog = React.useCallback(msg => {
+		setLoginMessage(msg);
+		setViewId('LOGIN');
+	}, []);
 
 	const handleOpenSignUpDialog = React.useCallback(() => {
 		setLoginMessage('');
-		history.push(`${history.location.pathname}?authDialog=SIGNUP`);
-	}, [history]);
+		setViewId('SIGNUP');
+	}, []);
 
 	const handleOpenForgotPasswordDialog = React.useCallback(() => {
 		setLoginMessage('');
-		history.push(`${history.location.pathname}?authDialog=FORGOT_PWD`);
-	}, [history]);
+		setViewId('FORGOT_PWD');
+	}, []);
 
-	const handleOpenPasswordResetDialog = React.useCallback(
-		user => {
-			setLoginMessage('');
-			const email = encodeURIComponent(user.getUsername());
-			history.push(`${history.location.pathname}?authDialog=RESET_PWD&email=${email}`);
-		},
-		[history]
-	);
+	const handleOpenPasswordResetDialog = React.useCallback(user => {
+		setLoginMessage('');
+		setEmail(user.getUsername());
+		setViewId('RESET_PWD');
+	}, []);
 
-	const handleOpenVerifyEmailDialog = React.useCallback(
-		user => {
-			setLoginMessage('');
-			const email = encodeURIComponent(user.getUsername());
-			history.push(`${history.location.pathname}?authDialog=VERIFY_EMAIL&email=${email}`);
-		},
-		[history]
-	);
+	const handleOpenVerifyEmailDialog = React.useCallback(user => {
+		setLoginMessage('');
+		setEmail(user.getUsername());
+		setViewId('VERIFY_EMAIL');
+	}, []);
 
 	const handleOpenEmailVerifiedDialog = React.useCallback(() => {
 		setLoginMessage('');
-		history.push(`${history.location.pathname}?authDialog=EMAIL_VERIFIED`);
-	}, [history]);
+		setViewId('EMAIL_VERIFIED');
+	}, []);
 
 	const handleCloseDialog = React.useCallback(() => {
 		setLoginMessage('');
-		history.push(`${history.location.pathname}`);
-	}, [history]);
+		setViewId('');
+	}, []);
 
 	const handleLogin = React.useCallback(
 		(email, password) => {
