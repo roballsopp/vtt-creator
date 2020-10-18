@@ -88,7 +88,7 @@ export default function VerifyEmailDialog() {
 						</Grid>
 					)}
 					<Grid item>
-						<Typography>Enter your email below and we&apos;ll send you a code to reset your password.</Typography>
+						<Typography>Enter your verification code below.</Typography>
 					</Grid>
 					<Grid item>
 						<TextField
