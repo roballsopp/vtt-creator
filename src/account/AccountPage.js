@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { gql } from '@apollo/client';
 import AppBar from '@material-ui/core/AppBar';
@@ -7,9 +8,10 @@ import Grid from '@material-ui/core/Grid';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
+import { useAuthDialog } from '../AuthDialog';
 import AddCreditInput from './AddCreditInput';
 import { VC as VCIcon } from '../common/icons';
-import { LogoutUrl, TranscriptionCost } from '../config';
+import { TranscriptionCost } from '../config';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -52,11 +54,19 @@ AccountPage.propTypes = {
 		id: PropTypes.string.isRequired,
 		email: PropTypes.string.isRequired,
 		credit: PropTypes.number.isRequired,
+		unlimitedUsage: PropTypes.bool,
 	}).isRequired,
 };
 
 export default function AccountPage({ user }) {
+	const { logout } = useAuthDialog();
 	const classes = useStyles();
+	const history = useHistory();
+
+	const handleLogout = () => {
+		logout();
+		history.push('/editor');
+	};
 
 	return (
 		<main className={classes.root}>
@@ -94,7 +104,7 @@ export default function AccountPage({ user }) {
 						</div>
 					</Grid>
 					<Grid item xs={12}>
-						<Button color="secondary" size="large" variant="contained" href={LogoutUrl}>
+						<Button color="secondary" size="large" variant="contained" onClick={handleLogout}>
 							Log out
 						</Button>
 					</Grid>
