@@ -1,5 +1,7 @@
-import * as React from 'react';
-import * as PropTypes from 'prop-types';
+import { gql } from '@apollo/client';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { useHistory } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
 import muiBlueGreys from '@material-ui/core/colors/blueGrey';
@@ -81,12 +83,22 @@ const useStyles = makeStyles({
 	},
 });
 
-Splash.propTypes = {
-	history: PropTypes.object.isRequired,
+Splash.fragments = {
+	user: gql`
+		fragment SplashUser on User {
+			...FooterUser
+		}
+		${Footer.fragments.user}
+	`,
 };
 
-export default function Splash({ history }) {
+Splash.propTypes = {
+	user: PropTypes.object,
+};
+
+export default function Splash({ user }) {
 	const classes = useStyles();
+	const history = useHistory();
 
 	return (
 		<React.Fragment>
@@ -133,7 +145,7 @@ export default function Splash({ history }) {
 					</div>
 				</div>
 			</main>
-			<Footer />
+			<Footer user={user} />
 		</React.Fragment>
 	);
 }

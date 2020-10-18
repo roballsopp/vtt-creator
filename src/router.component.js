@@ -35,7 +35,11 @@ export default function AppRouter() {
 	return (
 		<div className={classes.root}>
 			<Router history={history}>
-				<Route path="/" exact component={Splash} />
+				<Route path="/" exact>
+					<AuthDialogProvider>
+						<Splash />
+					</AuthDialogProvider>
+				</Route>
 				<Route path="/editor" exact>
 					<AuthDialogProvider>
 						<Editor />
