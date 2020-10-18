@@ -52,7 +52,7 @@ export function ExtractFromVideoProvider({ user, children, onCloseMenu }) {
 	const openLoginPrompt = React.useCallback(() => {
 		setAwaitingLogin(true);
 		return openLoginDialog(
-			`Extracting captions automatically costs $${TranscriptionCost.toFixed(
+			`Automatic caption extraction costs $${TranscriptionCost.toFixed(
 				2
 			)} per minute of video and requires an account. Please login or sign up below.`
 		);
