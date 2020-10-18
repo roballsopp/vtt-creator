@@ -21,8 +21,9 @@ AuthDialogProvider.propTypes = {
 
 export function AuthDialogProvider({ children }) {
 	const apolloClient = useApolloClient();
-	const [viewId, setViewId] = React.useState('');
-	const [email, setEmail] = React.useState(null);
+	const params = new URLSearchParams(window.location.search);
+	const [viewId, setViewId] = React.useState(params.get('authDialog'));
+	const [email, setEmail] = React.useState(params.get('email'));
 	const authEventsRef = React.useRef(new EventEmitter());
 	const [loginMessage, setLoginMessage] = React.useState('');
 
