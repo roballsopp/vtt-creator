@@ -170,6 +170,8 @@ export default function CueExtractionDialog({ open, onRequestClose, onExtractCom
 					<Typography gutterBottom>Transcription cost: (${cost.toFixed(2)})</Typography>
 					<Typography variant="caption">
 						The cost of this transcription will be deducted from your credit balance only if it completes successfully.
+						It can take up to 20 minutes to complete the transcription process for an hour long video. Please be patient
+						and do not close this window until your transcription completes.
 					</Typography>
 				</div>
 				{extracting && (
