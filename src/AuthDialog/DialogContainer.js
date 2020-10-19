@@ -3,6 +3,7 @@ import EventEmitter from 'events';
 import PropTypes from 'prop-types';
 import * as Sentry from '@sentry/browser';
 import { gql, useApolloClient } from '@apollo/client';
+import qs from 'qs';
 import { AuthenticationDetails, CognitoUser } from 'amazon-cognito-identity-js';
 import Dialog from '@material-ui/core/Dialog';
 import { cognitoUserPool } from '../config';
@@ -21,9 +22,9 @@ AuthDialogProvider.propTypes = {
 
 export function AuthDialogProvider({ children }) {
 	const apolloClient = useApolloClient();
-	const params = new URLSearchParams(window.location.search);
-	const [viewId, setViewId] = React.useState(params.get('authDialog'));
-	const [email, setEmail] = React.useState(params.get('email'));
+	const params = useQueryParams();
+	const [viewId, setViewId] = React.useState(params.authDialog || '');
+	const [email, setEmail] = React.useState(params.email || '');
 	const authEventsRef = React.useRef(new EventEmitter());
 	const [loginMessage, setLoginMessage] = React.useState('');
 
@@ -114,10 +115,12 @@ export function AuthDialogProvider({ children }) {
 							handleCloseDialog();
 						});
 					},
-					onFailure: err => {
-						authEventsRef.current.emit('login-fail', err);
-						handleError(err);
-						reject(err);
+					onFailure: _err => {
+						// it seems this could be a non-Error object only sometimes...
+						const error = _err instanceof Error ? _err : new Error(_err.message);
+						authEventsRef.current.emit('login-fail', error);
+						handleError(error);
+						reject(error);
 					},
 				});
 			});
@@ -271,4 +274,12 @@ export function AuthDialogProvider({ children }) {
 			</Dialog>
 		</AuthDialogContext.Provider>
 	);
+}
+
+function useQueryParams() {
+	const queryString = window.location.search;
+	return React.useMemo(() => {
+		if (!queryString) return {};
+		return qs.parse(queryString.slice(1));
+	}, [queryString]);
 }
