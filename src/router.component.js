@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Router, Route } from 'react-router-dom';
+import { Router, Route, Switch } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { makeStyles } from '@material-ui/styles';
 import { Editor } from './editor';
@@ -35,22 +35,26 @@ export default function AppRouter() {
 	return (
 		<div className={classes.root}>
 			<Router history={history}>
-				<Route path="/" exact>
-					<AuthDialogProvider>
-						<Splash />
-					</AuthDialogProvider>
-				</Route>
-				<Route path="/editor" exact>
-					<AuthDialogProvider>
-						<Editor />
-					</AuthDialogProvider>
-				</Route>
-				<Route path="/account" exact>
-					<AuthDialogProvider>
-						<AccountPage />
-					</AuthDialogProvider>
-				</Route>
-				<Route path="/privacy" exact component={PrivacyPage} />
+				<Switch>
+					<Route path="/" exact>
+						<AuthDialogProvider>
+							<Splash />
+						</AuthDialogProvider>
+					</Route>
+					<Route path="/editor" exact>
+						<AuthDialogProvider>
+							<Editor />
+						</AuthDialogProvider>
+					</Route>
+					<Route path="/account" exact>
+						<AuthDialogProvider>
+							<AccountPage />
+						</AuthDialogProvider>
+					</Route>
+					<Route path="/privacy" exact>
+						<PrivacyPage />
+					</Route>
+				</Switch>
 			</Router>
 		</div>
 	);
