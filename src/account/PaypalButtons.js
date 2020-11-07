@@ -5,6 +5,14 @@ import { useApolloClient, gql } from '@apollo/client';
 
 const PayPalButton = paypal.Buttons.driver('react', { React, ReactDOM });
 
+const CREATE_PAYPAL_ORDER_MUTATION = gql`
+	mutation createPaypalOrder($purchaseAmt: Float!) {
+		createPaypalOrder(purchaseAmt: $purchaseAmt) {
+			orderId
+		}
+	}
+`;
+
 const APPLY_PAYPAL_CREDIT_MUTATION = gql`
 	mutation applyPaypalCredit($orderId: String!) {
 		applyCreditFromPaypal(orderId: $orderId) {
@@ -37,19 +45,14 @@ export default function PaypalButtons({ purchaseAmt, disabled, onApprove, onAppr
 		}
 	}, [disabled]);
 
-	const handleCreateOrder = (data, actions) => {
-		return actions.order.create({
-			purchase_units: [
-				{
-					amount: {
-						value: purchaseAmt,
-					},
-				},
-			],
-			application_context: {
-				shipping_preference: 'NO_SHIPPING',
-			},
+	const handleCreateOrder = async () => {
+		const {
+			data: { createPaypalOrder },
+		} = await apolloClient.mutate({
+			mutation: CREATE_PAYPAL_ORDER_MUTATION,
+			variables: { purchaseAmt: Number(purchaseAmt) },
 		});
+		return createPaypalOrder.orderId;
 	};
 
 	const handleInit = (data, actions) => {
@@ -57,13 +60,10 @@ export default function PaypalButtons({ purchaseAmt, disabled, onApprove, onAppr
 		actionsRef.current = actions;
 	};
 
-	const handleApprove = (data, actions) => {
+	const handleApprove = data => {
 		onApprove();
-		return actions.order
-			.capture()
-			.then(() => {
-				return apolloClient.mutate({ mutation: APPLY_PAYPAL_CREDIT_MUTATION, variables: { orderId: data.orderID } });
-			})
+		return apolloClient
+			.mutate({ mutation: APPLY_PAYPAL_CREDIT_MUTATION, variables: { orderId: data.orderID } })
 			.then(result => {
 				onApproved(result);
 				return result;
