@@ -26,7 +26,7 @@ export function ExtractFromVideoProvider({ children, onCloseMenu }) {
 	const { onChangeCues, onLoadingCues } = useCues();
 	const { openLoginDialog, authDialogEvents } = useAuthDialog();
 	const { duration } = useDuration();
-	const { user, loading } = useUser();
+	const { user } = useUser();
 	const cost = GetTotalCost(duration);
 
 	const [cueExtractionDialogOpen, setCueExtractionDialogOpen] = React.useState(false);
