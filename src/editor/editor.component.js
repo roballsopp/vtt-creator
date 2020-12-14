@@ -1,5 +1,3 @@
-import { gql } from '@apollo/client';
-import PropTypes from 'prop-types';
 import * as React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Paper from '@material-ui/core/Paper';
@@ -34,22 +32,7 @@ const useStyles = makeStyles({
 	},
 });
 
-Editor.fragments = {
-	user: gql`
-		fragment EditorUser on User {
-			...VTTMenuUser
-			...FooterUser
-		}
-		${VttMenu.fragments.user}
-		${Footer.fragments.user}
-	`,
-};
-
-Editor.propTypes = {
-	user: PropTypes.object,
-};
-
-export default function Editor({ user }) {
+export default function Editor() {
 	const classes = useStyles();
 
 	return (
@@ -66,7 +49,7 @@ export default function Editor({ user }) {
 											<Typography variant="h6" color="inherit" style={{ flexGrow: 1 }}>
 												VTT Creator
 											</Typography>
-											<VttMenu user={user} />
+											<VttMenu />
 										</Toolbar>
 									</AppBar>
 									<VTTEditor />
@@ -79,7 +62,7 @@ export default function Editor({ user }) {
 					</CuesProvider>
 				</VideoDomProvider>
 			</VideoFileProvider>
-			<Footer user={user} />
+			<Footer />
 		</React.Fragment>
 	);
 }

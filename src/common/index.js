@@ -8,6 +8,7 @@ import { ToastProvider, useToast } from './toast-context';
 import { VideoFileProvider, useVideoFile } from './video-file-context';
 import useFileSelector from './use-file-selector.hook';
 import useDragging from './use-dragging.hook';
+import { UserProvider, useUser } from './user.context';
 
 export {
 	Button,
@@ -26,4 +27,6 @@ export {
 	useVideoFile,
 	useFileSelector,
 	useDragging,
+	UserProvider,
+	useUser,
 };

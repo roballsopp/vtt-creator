@@ -7,7 +7,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import * as Sentry from '@sentry/browser';
 import theme from './mui-theme';
 import Router from './router.component';
-import { ToastProvider, ErrorBoundary } from './common';
+import { ToastProvider, ErrorBoundary, UserProvider } from './common';
 import { SentryDSN } from './config';
 
 function AppWrapper() {
@@ -17,7 +17,9 @@ function AppWrapper() {
 				<CssBaseline />
 				<ErrorBoundary>
 					<ToastProvider>
-						<Router />
+						<UserProvider>
+							<Router />
+						</UserProvider>
 					</ToastProvider>
 				</ErrorBoundary>
 			</MuiThemeProvider>

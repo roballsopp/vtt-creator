@@ -1,10 +1,8 @@
-import { gql } from '@apollo/client';
-import PropTypes from 'prop-types';
 import * as React from 'react';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
 import { useAuthDialog } from '../AuthDialog';
+import { useUser, Button } from '../common';
 
 const useStyles = makeStyles(theme => ({
 	or: {
@@ -12,27 +10,15 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
-AccountButton.fragments = {
-	user: gql`
-		fragment AccountButtonUser on User {
-			id
-		}
-	`,
-};
-
-AccountButton.propTypes = {
-	user: PropTypes.shape({
-		id: PropTypes.string.isRequired,
-	}),
-};
-
-export default function AccountButton({ user }) {
+export default function AccountButton() {
 	const { openLoginDialog, openSignupDialog } = useAuthDialog();
+	const { user, loading } = useUser();
+
 	const classes = useStyles();
 
-	if (user) {
+	if (user || loading) {
 		return (
-			<Button name="Account" href="/account" color="secondary" variant="contained">
+			<Button name="Account" loading={loading} href="/account" color="secondary" variant="contained">
 				Account
 			</Button>
 		);
