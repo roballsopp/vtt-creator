@@ -88,7 +88,6 @@ export function AuthDialogProvider({ children }) {
 								email: user.email,
 								credit: Number(user['custom:credit'] || 0),
 								unlimitedUsage: user['custom:unlimited_usage'] === 'true',
-								lastOrderDate: user['custom:last_order_date'] && new Date(user['custom:last_order_date']),
 								__typename: 'User',
 							};
 
