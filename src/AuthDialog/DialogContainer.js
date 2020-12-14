@@ -2,10 +2,11 @@ import React from 'react';
 import EventEmitter from 'events';
 import PropTypes from 'prop-types';
 import * as Sentry from '@sentry/browser';
-import { gql, useApolloClient } from '@apollo/client';
+import { useApolloClient } from '@apollo/client';
 import qs from 'qs';
 import { AuthenticationDetails, CognitoUser } from 'amazon-cognito-identity-js';
 import Dialog from '@material-ui/core/Dialog';
+import { useUser } from '../common';
 import { cognitoUserPool } from '../config';
 import { handleError } from '../services/error-handler.service';
 import LoginDialog from './LoginDialog';
@@ -14,6 +15,7 @@ import PasswordResetDialog from './PasswordResetDialog';
 import SignUpDialog from './SignUpDialog';
 import VerifyEmailDialog from './VerifyEmailDialog';
 import EmailVerifiedDialog from './EmailVerifiedDialog';
+import LoadingUserDialog from './LoadingUserDialog';
 import { AuthDialogContext } from './auth-dialog-context';
 
 AuthDialogProvider.propTypes = {
@@ -23,6 +25,7 @@ AuthDialogProvider.propTypes = {
 export function AuthDialogProvider({ children }) {
 	const apolloClient = useApolloClient();
 	const params = useQueryParams();
+	const { setUser, userEvents } = useUser();
 	const [viewId, setViewId] = React.useState(params.authDialog || '');
 	const [email, setEmail] = React.useState(params.email || '');
 	const authEventsRef = React.useRef(new EventEmitter());
@@ -88,26 +91,11 @@ export function AuthDialogProvider({ children }) {
 								email: user.email,
 								credit: Number(user['custom:credit'] || 0),
 								unlimitedUsage: user['custom:unlimited_usage'] === 'true',
-								__typename: 'User',
 							};
 
 							Sentry.setUser(graphUser);
 
-							apolloClient.writeQuery({
-								query: gql`
-									query {
-										self {
-											id
-											email
-											credit
-											unlimitedUsage
-										}
-									}
-								`,
-								data: {
-									self: graphUser,
-								},
-							});
+							setUser(graphUser);
 
 							authEventsRef.current.emit('login');
 							resolve();
@@ -124,7 +112,7 @@ export function AuthDialogProvider({ children }) {
 				});
 			});
 		},
-		[apolloClient, handleCloseDialog]
+		[setUser, handleCloseDialog]
 	);
 
 	const handleLogout = React.useCallback(() => {
@@ -235,6 +223,14 @@ export function AuthDialogProvider({ children }) {
 		authEventsRef.current.emit('exited');
 	}, []);
 
+	React.useEffect(() => {
+		const handleUserLoaded = () => handleCloseDialog();
+		userEvents.on('loaded', handleUserLoaded);
+		return () => {
+			userEvents.off('loaded', handleUserLoaded);
+		};
+	}, [userEvents, handleCloseDialog]);
+
 	return (
 		<AuthDialogContext.Provider
 			value={{
@@ -264,15 +260,22 @@ export function AuthDialogProvider({ children }) {
 				onClose={handleCloseDialog}
 				onExited={handleExited}
 				aria-labelledby="auth-dialog">
-				{viewId === 'LOGIN' && <LoginDialog errorMessage={loginMessage} />}
-				{viewId === 'FORGOT_PWD' && <ForgotPasswordDialog />}
-				{viewId === 'RESET_PWD' && <PasswordResetDialog />}
-				{viewId === 'SIGNUP' && <SignUpDialog />}
-				{viewId === 'VERIFY_EMAIL' && <VerifyEmailDialog />}
-				{viewId === 'EMAIL_VERIFIED' && <EmailVerifiedDialog />}
+				<AuthView viewId={viewId} loginMessage={loginMessage} />
 			</Dialog>
 		</AuthDialogContext.Provider>
 	);
+}
+
+function AuthView({ viewId, loginMessage }) {
+	const { loading } = useUser();
+	if (loading) return <LoadingUserDialog />;
+	if (viewId === 'LOGIN') return <LoginDialog errorMessage={loginMessage} />;
+	if (viewId === 'FORGOT_PWD') return <ForgotPasswordDialog />;
+	if (viewId === 'RESET_PWD') return <PasswordResetDialog />;
+	if (viewId === 'SIGNUP') return <SignUpDialog />;
+	if (viewId === 'VERIFY_EMAIL') return <VerifyEmailDialog />;
+	if (viewId === 'EMAIL_VERIFIED') return <EmailVerifiedDialog />;
+	return null;
 }
 
 function useQueryParams() {

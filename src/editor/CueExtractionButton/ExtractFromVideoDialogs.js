@@ -15,7 +15,7 @@ export default function ExtractFromVideoDialogs() {
 		handleCueExtractComplete,
 	} = useExtractFromVideo();
 
-	const { user, loading } = useUser();
+	const { user } = useUser();
 
 	return (
 		<React.Fragment>

@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { gql } from '@apollo/client';
 import IconButton from '@material-ui/core/IconButton';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -19,18 +18,6 @@ const Title = styled(DialogTitle)({
 	justifyContent: 'space-between',
 	alignItems: 'center',
 });
-
-CreditDialog.fragments = {
-	user: gql`
-		fragment CreditDialogUser on User {
-			id
-			credit
-			unlimitedUsage
-			...AddCreditInputUser
-		}
-		${AddCreditInput.fragments.user}
-	`,
-};
 
 CreditDialog.propTypes = {
 	user: PropTypes.shape({
