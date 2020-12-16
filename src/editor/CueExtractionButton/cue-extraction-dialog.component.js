@@ -32,7 +32,7 @@ const Title = styled(DialogTitle)({
 
 const useStyles = makeStyles(theme => ({
 	priceInfo: {
-		paddingBottom: theme.spacing(2),
+		paddingBottom: theme.spacing(4),
 	},
 }));
 

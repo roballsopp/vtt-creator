@@ -28,7 +28,7 @@ export default function UploadProgress({ uploadState, progressBytes, totalBytes 
 	const progressPercent = 100 * (progressBytes / totalBytes);
 
 	return (
-		<Grid container spacing={1}>
+		<Grid container spacing={2}>
 			<Grid item xs zeroMinWidth>
 				<Typography noWrap>{getMessageFromUploadState(uploadState)}</Typography>
 			</Grid>

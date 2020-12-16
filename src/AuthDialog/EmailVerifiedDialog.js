@@ -34,7 +34,7 @@ export default function EmailVerifiedDialog() {
 				</IconButton>
 			</Title>
 			<DialogContent>
-				<Grid container spacing={2} direction="column">
+				<Grid container spacing={4} direction="column">
 					<Grid item>
 						<Typography>Great, your email has been verified! You can now login and continue working.</Typography>
 					</Grid>

@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
 		backgroundColor: theme.palette.primary.main,
 		color: 'white',
 		zIndex: 1,
-		padding: theme.spacing(1, 2),
+		padding: theme.spacing(2, 4),
 	},
 	leftSection: {
 		display: 'flex',

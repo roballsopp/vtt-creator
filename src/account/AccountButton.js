@@ -6,7 +6,7 @@ import { useUser, Button } from '../common';
 
 const useStyles = makeStyles(theme => ({
 	or: {
-		margin: theme.spacing(0, 1),
+		margin: theme.spacing(0, 2),
 	},
 }));
 

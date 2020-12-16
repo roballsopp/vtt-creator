@@ -15,11 +15,11 @@ const useStyles = makeStyles(theme => ({
 		display: 'flex',
 		alignItems: 'center',
 		height: 75,
-		marginTop: theme.spacing(2),
-		marginBottom: theme.spacing(2),
+		marginTop: theme.spacing(4),
+		marginBottom: theme.spacing(4),
 	},
 	spinner: {
-		marginRight: theme.spacing(2),
+		marginRight: theme.spacing(4),
 	},
 }));
 

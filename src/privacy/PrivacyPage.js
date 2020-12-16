@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
 		flexDirection: 'column',
 		minHeight: 0,
 		minWidth: 0,
-		padding: theme.spacing(2),
+		padding: theme.spacing(4),
 	},
 }));
 
@@ -41,7 +41,7 @@ export default function PrivacyPage() {
 				</Toolbar>
 			</AppBar>
 			<div className={classes.content}>
-				<Grid container spacing={2}>
+				<Grid container spacing={4}>
 					<Grid item xs={12}>
 						<Typography variant="h4">Privacy Policy</Typography>
 					</Grid>

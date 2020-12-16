@@ -41,16 +41,16 @@ const useStyles = makeStyles(theme => ({
 	controlBar: {
 		display: 'flex',
 		alignItems: 'center',
-		padding: theme.spacing(0, 4),
+		padding: theme.spacing(0, 8),
 	},
 	controlLeft: {
-		marginRight: 4,
+		marginRight: theme.spacing(1),
 	},
 	controlRight: {
-		marginLeft: 4,
+		marginLeft: theme.spacing(1),
 	},
 	playDuration: {
-		marginLeft: 4,
+		marginLeft: theme.spacing(1),
 		marginRight: 10,
 	},
 }));

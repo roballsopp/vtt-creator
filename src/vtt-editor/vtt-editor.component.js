@@ -10,25 +10,25 @@ import { AutoScrollProvider } from './auto-scroll.context';
 import AutoScrollItem from './auto-scroll-item.component';
 import CueLoader from './cue-loader.component';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
 	root: {
 		position: 'relative',
 		flex: 1,
 		width: 400,
 	},
 	list: {
-		marginTop: 4,
+		marginTop: theme.spacing(1),
 		marginBottom: 90,
 	},
 	cueEditor: {
-		padding: 16,
+		padding: 10,
 	},
 	fab: {
 		position: 'absolute',
-		bottom: 16,
-		right: 16,
+		bottom: theme.spacing(4),
+		right: theme.spacing(4),
 	},
-});
+}));
 
 VTTEditor.propTypes = {};
 
