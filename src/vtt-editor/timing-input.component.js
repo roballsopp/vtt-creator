@@ -7,6 +7,7 @@ import { formatSeconds, parseVTTTime } from '../services/vtt.service';
 TimingInput.propTypes = {
 	value: PropTypes.number,
 	onChange: PropTypes.func.isRequired,
+	onBlur: PropTypes.func,
 };
 
 export default function TimingInput({ value, onChange, ...props }) {
@@ -21,8 +22,8 @@ export default function TimingInput({ value, onChange, ...props }) {
 			{...props}
 			value={vttTime}
 			onBlur={e => {
-				e.target.value = parseVTTTime(e.target.value);
-				onChange(e);
+				onChange(parseVTTTime(e.target.value));
+				if (props.onBlur) props.onBlur(e);
 			}}
 			InputProps={{ inputComponent: CustomMaskedInput }}
 			placeholder="00:00.000"

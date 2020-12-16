@@ -28,7 +28,13 @@ export default function usePlayProgress({ onTimeUpdate } = {}) {
 	return React.useMemo(
 		() => ({
 			onSeek: pos => {
-				if (videoRef) videoRef.currentTime = pos * videoRef.duration;
+				const clipped = Math.min(Math.max(pos, 0), 1);
+				if (videoRef) videoRef.currentTime = clipped * videoRef.duration;
+			},
+			handleNudge: delta => {
+				if (videoRef) {
+					videoRef.currentTime = Math.min(Math.max(videoRef.currentTime + delta, 0), videoRef.duration);
+				}
 			},
 		}),
 		[videoRef]
