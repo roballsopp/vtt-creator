@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React from 'react';
+import Tooltip from '@material-ui/core/Tooltip';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 import PauseIcon from '@material-ui/icons/Pause';
@@ -12,6 +13,7 @@ import IconToggle from './icon-toggle.component';
 import VolumeInput from './volume-input.component';
 import PlayProgress from './play-progress.component';
 import PlayTime from './play-time.component';
+import PlaySpeed from './play-speed.component';
 
 const useStyles = makeStyles({
 	controlBar: {
@@ -73,26 +75,37 @@ export default function VideoControls(props) {
 					</div>
 					{isFullScreenEnabled() && (
 						<div className={classes.controlRight}>
-							<IconToggle
-								on={fullscreen}
-								onIcon={<FullscreenExitIcon />}
-								offIcon={<FullscreenIcon />}
-								aria-label="Toggle fullscreen"
-								size="small"
-								color="inherit"
-								onToggle={onToggleFullscreen}
-							/>
+							<Tooltip title="Toggle Full Screen">
+								<span>
+									<IconToggle
+										on={fullscreen}
+										onIcon={<FullscreenExitIcon />}
+										offIcon={<FullscreenIcon />}
+										aria-label="Toggle fullscreen"
+										size="small"
+										color="inherit"
+										onToggle={onToggleFullscreen}
+									/>
+								</span>
+							</Tooltip>
 						</div>
 					)}
 					<div className={classes.controlRight}>
-						<IconToggle
-							on
-							onIcon={<CaptionsIcon />}
-							aria-label="Toggle captions"
-							size="small"
-							color="inherit"
-							onToggle={onToggleCaptions}
-						/>
+						<Tooltip title="Hide/Show Captions">
+							<span>
+								<IconToggle
+									on
+									onIcon={<CaptionsIcon />}
+									aria-label="Toggle captions"
+									size="small"
+									color="inherit"
+									onToggle={onToggleCaptions}
+								/>
+							</span>
+						</Tooltip>
+					</div>
+					<div className={classes.controlRight}>
+						<PlaySpeed />
 					</div>
 				</div>
 			</div>
