@@ -7,6 +7,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { makeStyles } from '@material-ui/styles';
 import debounce from 'lodash/debounce';
 import { useCue } from '../common';
+import { useKeyboardControl } from '../common/video';
 import TimingInput from './timing-input.component';
 
 const useStyles = makeStyles({
@@ -25,6 +26,8 @@ CueEditor.propTypes = {};
 export default function CueEditor() {
 	const classes = useStyles();
 	const { cue, onChangeCueStart, onChangeCueEnd, onChangeCueText, onRemoveCue } = useCue();
+	const { enableKeyboardControls, disableKeyboardControls } = useKeyboardControl();
+	const disableKeyboardRequest = React.useRef();
 	const [text, setText] = React.useState(cue.text);
 
 	const debouncedOnChangeText = React.useCallback(debounce(onChangeCueText, 400), [onChangeCueText]);
@@ -51,6 +54,15 @@ export default function CueEditor() {
 
 	const onChangeTimeSpan = e => {
 		onChangeCueEnd(cue.startTime + parseFloat(e.target.value));
+	};
+
+	const handleFocus = () => {
+		disableKeyboardRequest.current = disableKeyboardControls();
+	};
+
+	const handleBlur = () => {
+		enableKeyboardControls(disableKeyboardRequest.current);
+		debouncedOnChangeText.flush();
 	};
 
 	return (
@@ -87,7 +99,8 @@ export default function CueEditor() {
 					label="Caption text"
 					value={text}
 					onChange={onChangeText}
-					onBlur={() => debouncedOnChangeText.flush()}
+					onFocus={handleFocus}
+					onBlur={handleBlur}
 					placeholder="Enter your caption here..."
 				/>
 			</Grid>

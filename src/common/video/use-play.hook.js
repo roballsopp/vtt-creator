@@ -26,6 +26,7 @@ export default function usePlay({ onPlayPause } = {}) {
 	return React.useMemo(
 		() => ({
 			onTogglePlay: () => {
+				if (!videoRef) return;
 				if (videoRef.paused || videoRef.ended) videoRef.play();
 				else videoRef.pause();
 			},

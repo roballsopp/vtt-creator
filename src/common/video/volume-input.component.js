@@ -18,19 +18,7 @@ const useStyles = makeStyles({
 	},
 });
 
-const useSliderStyles = makeStyles({
-	track: {
-		backgroundColor: 'white',
-	},
-	thumb: {
-		backgroundColor: 'white',
-	},
-	rail: {
-		backgroundColor: 'white',
-	},
-});
-
-export default function VolumeInput() {
+export default function VolumeInput({ disabled }) {
 	const classes = useStyles();
 	const { volume, muted, onVolumeChange, onToggleMute } = useVolume();
 
@@ -43,19 +31,20 @@ export default function VolumeInput() {
 			<Slider
 				value={volume}
 				step={0.05}
+				disabled={disabled}
 				onChange={(e, v) => {
 					const volume = parseFloat(v);
 					onVolumeChange(volume);
 					throttledOnChange(volume);
 				}}
 				max={1}
-				classes={useSliderStyles()}
 			/>
 			<div className={classes.muteButton}>
 				<IconToggle
 					on={!!volume && !muted}
 					onIcon={<VolumeIcon />}
 					offIcon={<VolumeOffIcon />}
+					disabled={disabled}
 					aria-label="Toggle mute"
 					size="small"
 					color="inherit"
