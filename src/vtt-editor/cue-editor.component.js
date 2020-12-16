@@ -3,6 +3,7 @@ import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import TextField from '@material-ui/core/TextField';
+import Tooltip from '@material-ui/core/Tooltip';
 import { makeStyles } from '@material-ui/styles';
 import debounce from 'lodash/debounce';
 import { useCue } from '../common';
@@ -70,9 +71,11 @@ export default function CueEditor() {
 					<TimingInput variant="outlined" label="End Time" value={cue.endTime} onChange={onChangeEndTime} />
 				</Grid>
 				<Grid item className={classes.headerEnd}>
-					<IconButton aria-label="Delete" onClick={onRemoveCue} className={classes.closeIcon} edge="end">
-						<CloseIcon fontSize="small" />
-					</IconButton>
+					<Tooltip title="Delete Cue">
+						<IconButton aria-label="Delete" onClick={onRemoveCue} className={classes.closeIcon} edge="end">
+							<CloseIcon fontSize="small" />
+						</IconButton>
+					</Tooltip>
 				</Grid>
 			</Grid>
 			<Grid item xs={12}>

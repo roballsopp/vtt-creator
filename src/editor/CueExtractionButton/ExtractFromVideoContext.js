@@ -1,21 +1,10 @@
-import { gql } from '@apollo/client';
-import * as React from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { GetTotalCost, TranscriptionCost } from '../../config';
-import { useCues } from '../../common';
+import { useCues, useUser } from '../../common';
 import { useDuration } from '../../common/video';
 import { getCuesFromWords } from '../../services/vtt.service';
 import { useAuthDialog } from '../../AuthDialog';
-
-ExtractFromVideoProvider.fragments = {
-	user: gql`
-		fragment ExtractFromVideoProviderUser on User {
-			id
-			credit
-			unlimitedUsage
-		}
-	`,
-};
 
 const ExtractFromVideoContext = React.createContext({
 	creditDialogOpen: false,
@@ -29,19 +18,15 @@ const ExtractFromVideoContext = React.createContext({
 });
 
 ExtractFromVideoProvider.propTypes = {
-	user: PropTypes.shape({
-		id: PropTypes.string.isRequired,
-		credit: PropTypes.number.isRequired,
-		unlimitedUsage: PropTypes.bool,
-	}),
 	children: PropTypes.node.isRequired,
 	onCloseMenu: PropTypes.func.isRequired,
 };
 
-export function ExtractFromVideoProvider({ user, children, onCloseMenu }) {
+export function ExtractFromVideoProvider({ children, onCloseMenu }) {
 	const { onChangeCues, onLoadingCues } = useCues();
 	const { openLoginDialog, authDialogEvents } = useAuthDialog();
 	const { duration } = useDuration();
+	const { user } = useUser();
 	const cost = GetTotalCost(duration);
 
 	const [cueExtractionDialogOpen, setCueExtractionDialogOpen] = React.useState(false);

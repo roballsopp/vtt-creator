@@ -1,5 +1,3 @@
-import { gql } from '@apollo/client';
-import PropTypes from 'prop-types';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
@@ -83,20 +81,7 @@ const useStyles = makeStyles({
 	},
 });
 
-Splash.fragments = {
-	user: gql`
-		fragment SplashUser on User {
-			...FooterUser
-		}
-		${Footer.fragments.user}
-	`,
-};
-
-Splash.propTypes = {
-	user: PropTypes.object,
-};
-
-export default function Splash({ user }) {
+export default function Splash() {
 	const classes = useStyles();
 	const history = useHistory();
 
@@ -145,7 +130,7 @@ export default function Splash({ user }) {
 					</div>
 				</div>
 			</main>
-			<Footer user={user} />
+			<Footer />
 		</React.Fragment>
 	);
 }
