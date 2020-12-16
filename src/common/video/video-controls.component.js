@@ -15,7 +15,7 @@ import IconToggle from './icon-toggle.component';
 import { useVideoDom } from './video-dom.context';
 import VolumeInput from './volume-input.component';
 import PlayProgress from './play-progress.component';
-import PlayTime from './play-time.component';
+import { PlayTime, PlayDuration } from './play-time.component';
 import PlaySpeed from './play-speed.component';
 
 const createControlsTheme = outer => {
@@ -43,20 +43,15 @@ const useStyles = makeStyles(theme => ({
 		alignItems: 'center',
 		padding: theme.spacing(0, 4),
 	},
-	controlGroupLeft: {
-		display: 'flex',
-		alignItems: 'center',
-	},
 	controlLeft: {
 		marginRight: 4,
 	},
-	controlGroupRight: {
-		display: 'flex',
-		alignItems: 'center',
-		justifyContent: 'flex-end',
-	},
 	controlRight: {
 		marginLeft: 4,
+	},
+	playDuration: {
+		marginLeft: 4,
+		marginRight: 10,
 	},
 }));
 
@@ -94,6 +89,9 @@ export default function VideoControls({ className }) {
 						<PlayTime />
 					</div>
 					<PlayProgress disabled={disabled} />
+					<div className={classes.playDuration}>
+						<PlayDuration />
+					</div>
 					<div className={classes.controlRight}>
 						<VolumeInput disabled={disabled} />
 					</div>
