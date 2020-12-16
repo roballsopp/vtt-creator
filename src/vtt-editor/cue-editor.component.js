@@ -26,8 +26,10 @@ CueEditor.propTypes = {};
 export default function CueEditor() {
 	const classes = useStyles();
 	const { cue, onChangeCueStart, onChangeCueEnd, onChangeCueText, onRemoveCue } = useCue();
-	const { enableKeyboardControls, disableKeyboardControls } = useKeyboardControl();
-	const disableKeyboardRequest = React.useRef();
+	const captionInputKeyCtrl = useKeyboardControl();
+	const startInputKeyCtrl = useKeyboardControl();
+	const durInputKeyCtrl = useKeyboardControl();
+	const endInputKeyCtrl = useKeyboardControl();
 	const [text, setText] = React.useState(cue.text);
 
 	const debouncedOnChangeText = React.useCallback(debounce(onChangeCueText, 400), [onChangeCueText]);
@@ -44,35 +46,33 @@ export default function CueEditor() {
 		debouncedOnChangeText(e.target.value);
 	};
 
-	const onChangeStartTime = e => {
-		onChangeCueStart(parseFloat(e.target.value));
+	const onChangeStartTime = secs => {
+		onChangeCueStart(Number(secs));
 	};
 
-	const onChangeEndTime = e => {
-		onChangeCueEnd(parseFloat(e.target.value));
+	const onChangeEndTime = secs => {
+		onChangeCueEnd(Number(secs));
 	};
 
-	const onChangeTimeSpan = e => {
-		onChangeCueEnd(cue.startTime + parseFloat(e.target.value));
-	};
-
-	const handleFocus = () => {
-		disableKeyboardRequest.current = disableKeyboardControls();
-	};
-
-	const handleBlur = () => {
-		enableKeyboardControls(disableKeyboardRequest.current);
-		debouncedOnChangeText.flush();
+	const onChangeTimeSpan = secs => {
+		onChangeCueEnd(cue.startTime + Number(secs));
 	};
 
 	return (
 		<Grid container spacing={2}>
 			<Grid container item alignItems="center" spacing={1} wrap="nowrap" justify="space-between">
 				<Grid item>
-					<TimingInput variant="outlined" label="Start Time" value={cue.startTime} onChange={onChangeStartTime} />
+					<TimingInput
+						{...startInputKeyCtrl}
+						variant="outlined"
+						label="Start Time"
+						value={cue.startTime}
+						onChange={onChangeStartTime}
+					/>
 				</Grid>
 				<Grid item>
 					<TimingInput
+						{...durInputKeyCtrl}
 						variant="outlined"
 						label="Show For"
 						value={cue.endTime - cue.startTime}
@@ -80,7 +80,13 @@ export default function CueEditor() {
 					/>
 				</Grid>
 				<Grid item>
-					<TimingInput variant="outlined" label="End Time" value={cue.endTime} onChange={onChangeEndTime} />
+					<TimingInput
+						{...endInputKeyCtrl}
+						variant="outlined"
+						label="End Time"
+						value={cue.endTime}
+						onChange={onChangeEndTime}
+					/>
 				</Grid>
 				<Grid item className={classes.headerEnd}>
 					<Tooltip title="Delete Cue">
@@ -99,8 +105,11 @@ export default function CueEditor() {
 					label="Caption text"
 					value={text}
 					onChange={onChangeText}
-					onFocus={handleFocus}
-					onBlur={handleBlur}
+					onFocus={captionInputKeyCtrl.onFocus}
+					onBlur={() => {
+						captionInputKeyCtrl.onBlur();
+						debouncedOnChangeText.flush();
+					}}
 					placeholder="Enter your caption here..."
 				/>
 			</Grid>
