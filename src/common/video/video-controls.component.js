@@ -1,5 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Tooltip from '@material-ui/core/Tooltip';
+import { createMuiTheme, ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 import PauseIcon from '@material-ui/icons/Pause';
@@ -10,21 +12,38 @@ import useFullscreen, { isFullScreenEnabled } from './use-fullscreen.hook';
 import usePlay from './use-play.hook';
 import useCaptions from './use-captions.hook';
 import IconToggle from './icon-toggle.component';
+import { useVideoDom } from './video-dom.context';
 import VolumeInput from './volume-input.component';
 import PlayProgress from './play-progress.component';
 import PlayTime from './play-time.component';
 import PlaySpeed from './play-speed.component';
 
-const useStyles = makeStyles({
+const createControlsTheme = (outer) => {
+	return createMuiTheme({
+		...outer,
+		palette: {
+			...outer.palette,
+			text: {
+				...outer.palette.text,
+				default: 'rgba(255,255,255,1.0)',
+				disabled: 'rgba(255,255,255,0.38)',
+			},
+			action: {
+				...outer.palette.action,
+				active: 'rgba(255,255,255,1.0)',
+				disabled: 'rgba(255,255,255,0.38)',
+			},
+		},
+	});
+};
+
+const useStyles = makeStyles(theme => ({
 	controlBar: {
 		display: 'flex',
 		alignItems: 'center',
-		justifyContent: 'spaceBetween',
-		marginBottom: 4,
-		padding: '0 12px',
+		padding: theme.spacing(0, 4),
 	},
 	controlGroupLeft: {
-		flex: 1,
 		display: 'flex',
 		alignItems: 'center',
 	},
@@ -32,7 +51,6 @@ const useStyles = makeStyles({
 		marginRight: 4,
 	},
 	controlGroupRight: {
-		flex: 1,
 		display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'flex-end',
@@ -40,27 +58,34 @@ const useStyles = makeStyles({
 	controlRight: {
 		marginLeft: 4,
 	},
-});
+}));
 
-export default function VideoControls(props) {
+VideoControls.propTypes = {
+	className: PropTypes.any,
+};
+
+export default function VideoControls({ className }) {
+	const { videoRef } = useVideoDom();
 	const [paused, onPlayPause] = React.useState(true);
 	const { onTogglePlay } = usePlay({ onPlayPause });
 	const { fullscreen, onToggleFullscreen } = useFullscreen();
 	const { onToggleCaptions } = useCaptions();
+	const disabled = !videoRef;
 
 	const classes = useStyles();
 	return (
-		<div {...props}>
-			<div className={classes.controlBar}>
-				<div className={classes.controlGroupLeft}>
+		<MuiThemeProvider theme={createControlsTheme}>
+			<div className={className}>
+				<div className={classes.controlBar}>
 					<div className={classes.controlLeft}>
 						<IconToggle
 							on={paused}
 							onIcon={<PlayIcon />}
 							offIcon={<PauseIcon />}
+							disabled={disabled}
+							color="default"
 							aria-label="Play/Pause"
 							size="small"
-							color="inherit"
 							edge="start"
 							onToggle={onTogglePlay}
 						/>
@@ -68,10 +93,9 @@ export default function VideoControls(props) {
 					<div className={classes.controlLeft}>
 						<PlayTime />
 					</div>
-				</div>
-				<div className={classes.controlGroupRight}>
+					<PlayProgress disabled={disabled} />
 					<div className={classes.controlRight}>
-						<VolumeInput />
+						<VolumeInput disabled={disabled} />
 					</div>
 					{isFullScreenEnabled() && (
 						<div className={classes.controlRight}>
@@ -81,9 +105,9 @@ export default function VideoControls(props) {
 										on={fullscreen}
 										onIcon={<FullscreenExitIcon />}
 										offIcon={<FullscreenIcon />}
+										disabled={disabled}
 										aria-label="Toggle fullscreen"
 										size="small"
-										color="inherit"
 										onToggle={onToggleFullscreen}
 									/>
 								</span>
@@ -96,20 +120,19 @@ export default function VideoControls(props) {
 								<IconToggle
 									on
 									onIcon={<CaptionsIcon />}
+									disabled={disabled}
 									aria-label="Toggle captions"
 									size="small"
-									color="inherit"
 									onToggle={onToggleCaptions}
 								/>
 							</span>
 						</Tooltip>
 					</div>
 					<div className={classes.controlRight}>
-						<PlaySpeed />
+						<PlaySpeed disabled={disabled} />
 					</div>
 				</div>
 			</div>
-			<PlayProgress />
-		</div>
+		</MuiThemeProvider>
 	);
 }

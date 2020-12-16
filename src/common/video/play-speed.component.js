@@ -6,7 +6,7 @@ import SpeedIcon from '@material-ui/icons/Speed';
 import Tooltip from '@material-ui/core/Tooltip';
 import { useVideoDom } from './video-dom.context';
 
-export default function PlaySpeed() {
+export default function PlaySpeed({ disabled }) {
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [speed, setSpeed] = React.useState(1);
 
@@ -29,14 +29,17 @@ export default function PlaySpeed() {
 	return (
 		<React.Fragment>
 			<Tooltip title="Playback Speed">
-				<IconButton
-					color="inherit"
-					aria-label="Change Playback Speed"
-					size="small"
-					edge="start"
-					onClick={handleOpenMenu}>
-					<SpeedIcon />
-				</IconButton>
+				<span>
+					<IconButton
+						color="inherit"
+						disabled={disabled}
+						aria-label="Change Playback Speed"
+						size="small"
+						edge="start"
+						onClick={handleOpenMenu}>
+						<SpeedIcon />
+					</IconButton>
+				</span>
 			</Tooltip>
 			<Menu id="playback-speed-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleCloseMenu}>
 				<MenuItem dense selected={speed === 0.25} onClick={handleSelectSpeed(0.25)}>

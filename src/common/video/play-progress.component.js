@@ -11,8 +11,8 @@ const PLAYHEAD_RADIUS = 6;
 const useStyles = makeStyles(theme => ({
 	root: {
 		padding: 12,
-		paddingTop: 0,
 		cursor: 'pointer',
+		flex: 1,
 	},
 	playheadContainer: {
 		position: 'relative',

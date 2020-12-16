@@ -12,7 +12,6 @@ const useStyles = makeStyles({
 		width: '100%',
 		position: 'relative',
 		cursor: 'pointer',
-		backgroundImage: 'linear-gradient(to top, rgba(0,0,0,1) 0px, rgba(0,0,0,0) 100px)',
 	},
 	topGradient: {
 		position: 'absolute',
@@ -56,9 +55,6 @@ export default function VideoOverlay({ className, topElement }) {
 				<div className={classes.topGradient} />
 				<div onClick={e => e.stopPropagation()} className={classes.topElement}>
 					{topElement}
-				</div>
-				<div className={classes.bottomElement}>
-					<VideoControls onClick={e => e.stopPropagation()} />
 				</div>
 			</div>
 		</div>
