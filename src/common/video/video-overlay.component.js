@@ -1,7 +1,6 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
-import VideoControls from './video-controls.component';
 import usePlay from './use-play.hook';
 import { useOverlay } from './overlay.context';
 

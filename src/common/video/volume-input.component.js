@@ -18,21 +18,6 @@ const useStyles = makeStyles({
 	},
 });
 
-const useSliderStyles = makeStyles(theme => ({
-	track: {
-		backgroundColor: theme.palette.action.active,
-	},
-	thumb: {
-		backgroundColor: theme.palette.action.active,
-	},
-	rail: {
-		backgroundColor: theme.palette.action.active,
-	},
-	disabled: {
-		color: theme.palette.action.disabled,
-	},
-}));
-
 export default function VolumeInput({ disabled }) {
 	const classes = useStyles();
 	const { volume, muted, onVolumeChange, onToggleMute } = useVolume();

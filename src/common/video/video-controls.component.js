@@ -18,7 +18,7 @@ import PlayProgress from './play-progress.component';
 import PlayTime from './play-time.component';
 import PlaySpeed from './play-speed.component';
 
-const createControlsTheme = (outer) => {
+const createControlsTheme = outer => {
 	return createMuiTheme({
 		...outer,
 		palette: {
