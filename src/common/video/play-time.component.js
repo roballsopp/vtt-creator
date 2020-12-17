@@ -11,28 +11,32 @@ const useStyles = makeStyles({
 	},
 });
 
-export function PlayTime() {
+export function PlayTime({ className }) {
 	const [currentTime, onTimeUpdate] = React.useState(0);
 	usePlayProgress({ onTimeUpdate });
 	const classes = useStyles();
 	return (
-		<Tooltip title="Current Time">
-			<Typography variant="subtitle2" className={classes.text}>
-				{formatSeconds(currentTime)}
-			</Typography>
-		</Tooltip>
+		<div className={className}>
+			<Tooltip title="Current Time">
+				<span>
+					{formatSeconds(currentTime)}
+				</span>
+			</Tooltip>
+		</div>
 	);
 }
 
-export function PlayDuration() {
+export function PlayDuration({ className }) {
 	const classes = useStyles();
 	const { duration } = useDuration();
 	return (
-		<Tooltip title="Video Duration">
-			<Typography variant="subtitle2" className={classes.text}>
-				{formatSeconds(duration)}
-			</Typography>
-		</Tooltip>
+		<div className={className}>
+			<Tooltip title="Video Duration">
+				<span>
+					{formatSeconds(duration)}
+				</span>
+			</Tooltip>
+		</div>
 	);
 }
 

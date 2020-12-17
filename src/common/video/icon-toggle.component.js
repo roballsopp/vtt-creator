@@ -12,14 +12,14 @@ IconToggle.propTypes = {
 export default function IconToggle({ onIcon, offIcon, on, onToggle, ...buttonProps }) {
 	if (on) {
 		return (
-			<IconButton color="inherit" {...buttonProps} onClick={onToggle}>
+			<IconButton {...buttonProps} onClick={onToggle}>
 				{onIcon}
 			</IconButton>
 		);
 	}
 
 	return (
-		<IconButton color="inherit" {...buttonProps} onClick={onToggle}>
+		<IconButton {...buttonProps} onClick={onToggle}>
 			{offIcon ? offIcon : onIcon}
 		</IconButton>
 	);

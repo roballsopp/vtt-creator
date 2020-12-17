@@ -34,14 +34,26 @@ const createControlsTheme = outer => {
 				disabled: 'rgba(255,255,255,0.38)',
 			},
 		},
+		overrides: {
+			...outer.overrides,
+			MuiIconButton: {
+				root: {
+					padding: 4,
+					fontSize: '1.5em',
+				},
+			},
+		},
 	});
 };
 
 const useStyles = makeStyles(theme => ({
-	controlBar: {
+	root: {
 		display: 'flex',
 		alignItems: 'center',
 		padding: theme.spacing(0, 8),
+		height: 38,
+		color: 'white',
+		fontSize: 20,
 	},
 	controlLeft: {
 		marginRight: theme.spacing(1),
@@ -49,9 +61,13 @@ const useStyles = makeStyles(theme => ({
 	controlRight: {
 		marginLeft: theme.spacing(1),
 	},
+	playTime: {
+		marginLeft: theme.spacing(3),
+		marginRight: theme.spacing(1),
+	},
 	playDuration: {
 		marginLeft: theme.spacing(1),
-		marginRight: 10,
+		marginRight: theme.spacing(3),
 	},
 }));
 
@@ -71,64 +87,46 @@ export default function VideoControls({ className }) {
 	return (
 		<MuiThemeProvider theme={createControlsTheme}>
 			<div className={className}>
-				<div className={classes.controlBar}>
-					<div className={classes.controlLeft}>
-						<IconToggle
-							on={paused}
-							onIcon={<PlayIcon />}
-							offIcon={<PauseIcon />}
-							disabled={disabled}
-							color="default"
-							aria-label="Play/Pause"
-							size="small"
-							edge="start"
-							onToggle={onTogglePlay}
-						/>
-					</div>
-					<div className={classes.controlLeft}>
-						<PlayTime />
-					</div>
+				<div className={classes.root}>
+					<IconToggle
+						on={paused}
+						onIcon={<PlayIcon fontSize="inherit" />}
+						offIcon={<PauseIcon fontSize="inherit" />}
+						disabled={disabled}
+						aria-label="Play/Pause"
+						onToggle={onTogglePlay}
+						className={classes.controlLeft}
+					/>
+					<VolumeInput disabled={disabled} className={classes.controlLeft} />
+					<PlayTime className={classes.playTime} />
 					<PlayProgress disabled={disabled} />
-					<div className={classes.playDuration}>
-						<PlayDuration />
-					</div>
-					<div className={classes.controlRight}>
-						<VolumeInput disabled={disabled} />
-					</div>
-					{isFullScreenEnabled() && (
+					<PlayDuration className={classes.playDuration} />
+					<Tooltip title="Hide/Show Captions">
 						<div className={classes.controlRight}>
-							<Tooltip title="Toggle Full Screen">
-								<span>
-									<IconToggle
-										on={fullscreen}
-										onIcon={<FullscreenExitIcon />}
-										offIcon={<FullscreenIcon />}
-										disabled={disabled}
-										aria-label="Toggle fullscreen"
-										size="small"
-										onToggle={onToggleFullscreen}
-									/>
-								</span>
-							</Tooltip>
+							<IconToggle
+								on
+								onIcon={<CaptionsIcon fontSize="inherit" />}
+								disabled={disabled}
+								aria-label="Toggle captions"
+								onToggle={onToggleCaptions}
+							/>
 						</div>
-					)}
-					<div className={classes.controlRight}>
-						<Tooltip title="Hide/Show Captions">
-							<span>
+					</Tooltip>
+					<PlaySpeed className={classes.controlRight} disabled={disabled} />
+					{isFullScreenEnabled() && (
+						<Tooltip title="Toggle Full Screen">
+							<div className={classes.controlRight}>
 								<IconToggle
-									on
-									onIcon={<CaptionsIcon />}
+									on={fullscreen}
+									onIcon={<FullscreenExitIcon fontSize="inherit" />}
+									offIcon={<FullscreenIcon fontSize="inherit" />}
 									disabled={disabled}
-									aria-label="Toggle captions"
-									size="small"
-									onToggle={onToggleCaptions}
+									aria-label="Toggle fullscreen"
+									onToggle={onToggleFullscreen}
 								/>
-							</span>
+							</div>
 						</Tooltip>
-					</div>
-					<div className={classes.controlRight}>
-						<PlaySpeed disabled={disabled} />
-					</div>
+					)}
 				</div>
 			</div>
 		</MuiThemeProvider>

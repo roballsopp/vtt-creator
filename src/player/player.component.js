@@ -17,17 +17,13 @@ const useStyles = makeStyles({
 		justifyContent: 'center',
 		flex: 1,
 		backgroundColor: 'black',
-		color: 'white',
 		minHeight: 0,
 		minWidth: 0,
 	},
 	video: {
-		height: 'calc(100% - 30px)',
+		height: 'calc(100% - 38px)',
 		margin: 'auto',
 		maxWidth: 1000,
-	},
-	videoControls: {
-		height: 30,
 	},
 	vttTimeline: {
 		flex: 1,
@@ -44,7 +40,7 @@ export default function Player() {
 			<div className={classes.root}>
 				<div className={classes.videoContainer}>
 					<Video className={classes.video} />
-					<VideoControls className={classes.videoControls} />
+					<VideoControls />
 				</div>
 				<div className={classes.vttTimeline}>
 					<VttTimeline />
