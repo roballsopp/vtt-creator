@@ -18,6 +18,7 @@ const useStyles = makeStyles({
 	},
 	timingInput: {
 		marginRight: 4,
+		flex: 1,
 	},
 	closeIcon: {
 		padding: 8,

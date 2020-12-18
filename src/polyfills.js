@@ -1,8 +1,5 @@
 import 'regenerator-runtime/runtime';
-import 'core-js/es/map';
-import 'core-js/es/set';
-import 'core-js/es/promise';
-import 'core-js/es/object';
+import 'core-js/stable';
 import { VTTCue as BaseCue } from 'vtt.js';
 import { v4 as uuid } from 'uuid';
 
