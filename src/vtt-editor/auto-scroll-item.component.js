@@ -13,24 +13,24 @@ export default function AutoScrollItem({ cueTime, children, className, ...props 
 	const { scrollToChild } = useAutoScroll();
 
 	const prevTimeRef = React.useRef(0);
-	const [itemContainerRef, setItemContainerRef] = React.useState();
+	const itemContainerRef = React.useRef(null);
 
 	usePlayProgress({
 		onTimeUpdate: React.useCallback(
 			currentTime => {
 				const cueWasJustPassedForward = currentTime >= cueTime && prevTimeRef.current < cueTime;
 				const cueWasJustPassedBackward = currentTime < cueTime && prevTimeRef.current >= cueTime;
-				if (itemContainerRef && (cueWasJustPassedForward || cueWasJustPassedBackward)) {
-					scrollToChild(itemContainerRef);
+				if (itemContainerRef.current && (cueWasJustPassedForward || cueWasJustPassedBackward)) {
+					scrollToChild(itemContainerRef.current);
 				}
 				prevTimeRef.current = currentTime;
 			},
-			[cueTime, itemContainerRef, scrollToChild]
+			[cueTime, scrollToChild]
 		),
 	});
 
 	return (
-		<div {...props} ref={setItemContainerRef} className={className}>
+		<div {...props} ref={itemContainerRef} className={className}>
 			{children}
 		</div>
 	);
