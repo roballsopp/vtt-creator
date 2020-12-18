@@ -30,11 +30,7 @@ export default function PlaySpeed({ disabled, className }) {
 		<React.Fragment>
 			<Tooltip title="Playback Speed">
 				<div className={className}>
-					<IconButton
-						color="inherit"
-						disabled={disabled}
-						aria-label="Change Playback Speed"
-						onClick={handleOpenMenu}>
+					<IconButton color="inherit" disabled={disabled} aria-label="Change Playback Speed" onClick={handleOpenMenu}>
 						<SpeedIcon fontSize="inherit" />
 					</IconButton>
 				</div>
