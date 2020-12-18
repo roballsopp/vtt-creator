@@ -3,7 +3,9 @@ import * as PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 
-const AutoScrollContext = React.createContext({});
+const AutoScrollContext = React.createContext({
+	scrollToChild: () => {},
+});
 
 const useStyles = makeStyles({
 	root: {
@@ -28,7 +30,7 @@ AutoScrollProvider.propTypes = {
 };
 
 export function AutoScrollProvider({ children, className }) {
-	const [scrollContainerRef, setScrollContainerRef] = React.useState();
+	const scrollContainerRef = React.useRef();
 	const classes = useStyles();
 
 	return (
@@ -36,13 +38,14 @@ export function AutoScrollProvider({ children, className }) {
 			value={React.useMemo(
 				() => ({
 					scrollToChild: el => {
-						scrollContainerRef.scrollTop = el.offsetTop;
+						if (!scrollContainerRef.current) return;
+						scrollContainerRef.current.scrollTop = el.offsetTop;
 					},
 				}),
-				[scrollContainerRef]
+				[]
 			)}>
 			<div className={clsx(className, classes.root)}>
-				<div className={classes.inner} ref={setScrollContainerRef}>
+				<div className={classes.inner} ref={scrollContainerRef}>
 					{children}
 				</div>
 			</div>
