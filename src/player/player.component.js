@@ -12,9 +12,6 @@ const useStyles = makeStyles({
 		height: '100%',
 	},
 	videoContainer: {
-		display: 'flex',
-		flexDirection: 'column',
-		justifyContent: 'center',
 		flex: 1,
 		backgroundColor: 'black',
 		minHeight: 0,
