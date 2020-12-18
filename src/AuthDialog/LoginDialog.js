@@ -77,7 +77,7 @@ export default function LoginDialog({ errorMessage }) {
 				</IconButton>
 			</Title>
 			<DialogContent>
-				<Grid container spacing={2} direction="column">
+				<Grid container spacing={4} direction="column">
 					{error && (
 						<Grid item>
 							<Typography color="error">{error}</Typography>

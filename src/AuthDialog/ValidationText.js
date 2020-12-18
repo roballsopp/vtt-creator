@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
 		display: 'flex',
 	},
 	icon: {
-		marginRight: theme.spacing(1),
+		marginRight: theme.spacing(2),
 	},
 	invalid: {
 		color: 'red',

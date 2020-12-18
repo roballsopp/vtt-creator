@@ -31,9 +31,9 @@ const useStyles = makeStyles(theme => ({
 		fontSize: 16,
 		color: theme.palette.common.white,
 		whiteSpace: 'pre',
-		padding: theme.spacing(1),
+		padding: theme.spacing(2),
 		backgroundColor: theme.palette.grey[900],
-		margin: theme.spacing(0, 3),
+		margin: theme.spacing(0, 6),
 	},
 	monoSpaced: {
 		fontFamily: 'monospace',

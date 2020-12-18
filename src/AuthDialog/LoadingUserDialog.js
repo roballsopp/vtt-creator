@@ -8,7 +8,7 @@ export default function LoadingUserDialog() {
 	return (
 		<React.Fragment>
 			<DialogContent>
-				<Grid container spacing={2} direction="row" alignContent="center">
+				<Grid container spacing={4} direction="row" alignContent="center">
 					<Grid item>
 						<CircularProgress />
 					</Grid>

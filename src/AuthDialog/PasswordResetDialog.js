@@ -64,7 +64,7 @@ export default function PasswordResetDialog() {
 				</IconButton>
 			</Title>
 			<DialogContent>
-				<Grid container spacing={2} direction="column">
+				<Grid container spacing={4} direction="column">
 					<Grid item>
 						<Typography>
 							If you&apos;re registered with VTT Creator, you&apos;ll receive a code in your email inbox shortly. Enter

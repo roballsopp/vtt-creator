@@ -4,6 +4,7 @@ export default createMuiTheme({
 	palette: {
 		// type: 'dark',
 	},
+	spacing: 4,
 	overrides: {
 		MuiSnackbarContent: {
 			root: {
@@ -18,6 +19,16 @@ export default createMuiTheme({
 		MuiLinearProgress: {
 			bar1Determinate: {
 				transition: 'initial',
+			},
+		},
+		MuiToolbar: {
+			gutters: {
+				paddingLeft: 16,
+				paddingRight: 16,
+				'@media (min-width: 600px)': {
+					paddingLeft: 24,
+					paddingRight: 24,
+				},
 			},
 		},
 		MuiTooltip: {

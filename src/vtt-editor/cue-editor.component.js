@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import TextField from '@material-ui/core/TextField';
@@ -14,7 +13,12 @@ const useStyles = makeStyles({
 	header: {
 		backgroundColor: 'white',
 	},
-	headerEnd: {},
+	timingRow: {
+		display: 'flex',
+	},
+	timingInput: {
+		marginRight: 4,
+	},
 	closeIcon: {
 		padding: 8,
 		marginLeft: -4,
@@ -59,49 +63,48 @@ export default function CueEditor() {
 	};
 
 	return (
-		<Grid container spacing={2}>
-			<Grid container item alignItems="center" spacing={1} wrap="nowrap" justify="space-between">
-				<Grid item>
-					<TimingInput
-						{...startInputKeyCtrl}
-						variant="outlined"
-						label="Start Time"
-						value={cue.startTime}
-						onChange={onChangeStartTime}
-					/>
-				</Grid>
-				<Grid item>
-					<TimingInput
-						{...durInputKeyCtrl}
-						variant="outlined"
-						label="Show For"
-						value={cue.endTime - cue.startTime}
-						onChange={onChangeTimeSpan}
-					/>
-				</Grid>
-				<Grid item>
-					<TimingInput
-						{...endInputKeyCtrl}
-						variant="outlined"
-						label="End Time"
-						value={cue.endTime}
-						onChange={onChangeEndTime}
-					/>
-				</Grid>
-				<Grid item className={classes.headerEnd}>
-					<Tooltip title="Delete Cue">
-						<IconButton aria-label="Delete" onClick={onRemoveCue} className={classes.closeIcon} edge="end">
-							<CloseIcon fontSize="small" />
-						</IconButton>
-					</Tooltip>
-				</Grid>
-			</Grid>
-			<Grid item xs={12}>
+		<div>
+			<div className={classes.timingRow}>
+				<TimingInput
+					{...startInputKeyCtrl}
+					className={classes.timingInput}
+					margin="dense"
+					variant="outlined"
+					label="Start Time"
+					value={cue.startTime}
+					onChange={onChangeStartTime}
+				/>
+				<TimingInput
+					{...durInputKeyCtrl}
+					className={classes.timingInput}
+					margin="dense"
+					variant="outlined"
+					label="Show For"
+					value={cue.endTime - cue.startTime}
+					onChange={onChangeTimeSpan}
+				/>
+				<TimingInput
+					{...endInputKeyCtrl}
+					className={classes.timingInput}
+					margin="dense"
+					variant="outlined"
+					label="End Time"
+					value={cue.endTime}
+					onChange={onChangeEndTime}
+				/>
+				<Tooltip title="Delete Cue">
+					<IconButton aria-label="Delete" onClick={onRemoveCue} className={classes.closeIcon} edge="end">
+						<CloseIcon fontSize="small" />
+					</IconButton>
+				</Tooltip>
+			</div>
+			<div>
 				<TextField
 					variant="outlined"
+					margin="dense"
 					fullWidth
 					multiline
-					rows="2"
+					rows="3"
 					label="Caption text"
 					value={text}
 					onChange={onChangeText}
@@ -112,7 +115,7 @@ export default function CueEditor() {
 					}}
 					placeholder="Enter your caption here..."
 				/>
-			</Grid>
-		</Grid>
+			</div>
+		</div>
 	);
 }

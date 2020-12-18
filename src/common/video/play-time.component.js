@@ -1,38 +1,28 @@
 import Tooltip from '@material-ui/core/Tooltip';
 import React from 'react';
-import Typography from '@material-ui/core/Typography';
 import usePlayProgress from './use-play-progress.hook';
 import useDuration from './use-duration.hook';
-import { makeStyles } from '@material-ui/styles';
 
-const useStyles = makeStyles({
-	text: {
-		fontSize: 16,
-	},
-});
-
-export function PlayTime() {
+export function PlayTime({ className }) {
 	const [currentTime, onTimeUpdate] = React.useState(0);
 	usePlayProgress({ onTimeUpdate });
-	const classes = useStyles();
 	return (
-		<Tooltip title="Current Time">
-			<Typography variant="subtitle2" className={classes.text}>
-				{formatSeconds(currentTime)}
-			</Typography>
-		</Tooltip>
+		<div className={className}>
+			<Tooltip title="Current Time">
+				<span>{formatSeconds(currentTime)}</span>
+			</Tooltip>
+		</div>
 	);
 }
 
-export function PlayDuration() {
-	const classes = useStyles();
+export function PlayDuration({ className }) {
 	const { duration } = useDuration();
 	return (
-		<Tooltip title="Video Duration">
-			<Typography variant="subtitle2" className={classes.text}>
-				{formatSeconds(duration)}
-			</Typography>
-		</Tooltip>
+		<div className={className}>
+			<Tooltip title="Video Duration">
+				<span>{formatSeconds(duration)}</span>
+			</Tooltip>
+		</div>
 	);
 }
 

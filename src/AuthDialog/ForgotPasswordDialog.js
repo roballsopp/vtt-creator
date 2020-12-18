@@ -48,7 +48,7 @@ export default function ForgotPasswordDialog() {
 				</IconButton>
 			</Title>
 			<DialogContent>
-				<Grid container spacing={2} direction="column">
+				<Grid container spacing={4} direction="column">
 					{sendCodeFailed && (
 						<Grid item>
 							<Typography color="error">Something went wrong while sending your code. Please try again.</Typography>
