@@ -12,6 +12,7 @@ export function VideoDomProvider({ children }) {
 	const toast = useToast();
 	const [videoRef, onVideoRef] = React.useState();
 	const [videoContainerRef, onVideoContainerRef] = React.useState();
+	const playPromiseRef = React.useRef(Promise.resolve());
 
 	React.useEffect(() => {
 		if (!videoRef) return;
@@ -28,6 +29,16 @@ export function VideoDomProvider({ children }) {
 		};
 	}, [toast, videoRef]);
 
+	// play() method is actually asynchronous and you'll get fun error messages if you try to pause before play has resolved:
+	// https://developers.google.com/web/updates/2017/06/play-request-was-interrupted
+	const togglePlay = React.useCallback(() => {
+		if (!videoRef) return;
+		return playPromiseRef.current.then(() => {
+			if (videoRef.paused || videoRef.ended) return videoRef.play();
+			else videoRef.pause();
+		});
+	}, [videoRef]);
+
 	return (
 		<VideoDomContext.Provider
 			value={{
@@ -35,6 +46,7 @@ export function VideoDomProvider({ children }) {
 				videoContainerRef,
 				onVideoRef,
 				onVideoContainerRef,
+				togglePlay,
 			}}>
 			{children}
 		</VideoDomContext.Provider>
