@@ -13,7 +13,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Tooltip from '@material-ui/core/Tooltip';
 import { makeStyles } from '@material-ui/styles';
-import { ExtractFromVideoButton, ExtractFromVideoDialogs, ExtractFromVideoProvider } from './CueExtractionButton';
+import { ExtractFromVideoMenuItem, useExtractFromVideo } from './CueExtractionButton';
 import { useFileSelector, useCues, Button, useCueFromFileLoader } from '../common';
 import { getVTTFromCues } from '../services/vtt.service';
 import { getSRTFromCues } from '../services/srt.service';
@@ -42,6 +42,7 @@ export default function VTTMenu() {
 	const classes = useStyles();
 	const { cues, onChangeCues } = useCues();
 	const { loadCuesFromFile } = useCueFromFileLoader();
+	const { extractDialogEvents } = useExtractFromVideo();
 
 	const [optionsMenuAnchorEl, setOptionsMenuAnchorEl] = React.useState(null);
 	const [clearCuesDialogOpen, setClearCuesDialogOpen] = React.useState(false);
@@ -82,10 +83,17 @@ export default function VTTMenu() {
 		[loadCuesFromFile]
 	);
 
+	React.useEffect(() => {
+		extractDialogEvents.on('opening', onCloseOptionsMenu);
+		return () => {
+			extractDialogEvents.off('opening', onCloseOptionsMenu);
+		};
+	}, [extractDialogEvents]);
+
 	const openFileSelector = useFileSelector({ accept: '.vtt', onFilesSelected: onVTTFileSelected });
 
 	return (
-		<ExtractFromVideoProvider onCloseMenu={onCloseOptionsMenu}>
+		<React.Fragment>
 			<Tooltip title="VTT Options">
 				<IconButton edge="end" color="inherit" aria-label="Menu" onClick={e => setOptionsMenuAnchorEl(e.currentTarget)}>
 					<MoreIcon />
@@ -96,7 +104,7 @@ export default function VTTMenu() {
 					<CloudUploadIcon className={classes.menuIcon} />
 					Load from VTT file...
 				</MenuItem>
-				<ExtractFromVideoButton classes={{ menuIcon: classes.menuIcon }} />
+				<ExtractFromVideoMenuItem classes={{ menuIcon: classes.menuIcon }} />
 				<MenuItem onClick={onDownloadVTT}>
 					<CloudDownloadIcon className={classes.menuIcon} />
 					Save to VTT file...
@@ -110,7 +118,6 @@ export default function VTTMenu() {
 					Clear Cues
 				</MenuItem>
 			</Menu>
-			<ExtractFromVideoDialogs />
 			<Dialog
 				maxWidth="sm"
 				fullWidth
@@ -131,6 +138,6 @@ export default function VTTMenu() {
 					</Button>
 				</DialogActions>
 			</Dialog>
-		</ExtractFromVideoProvider>
+		</React.Fragment>
 	);
 }

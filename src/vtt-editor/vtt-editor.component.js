@@ -8,7 +8,7 @@ import { List, Loader, useCues, CueProvider } from '../common';
 import CueEditor from './cue-editor.component';
 import { AutoScrollProvider } from './auto-scroll.context';
 import AutoScrollItem from './auto-scroll-item.component';
-import CueLoader from './cue-loader.component';
+import EmptyState from './EmptyState';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -38,8 +38,8 @@ export default function VTTEditor() {
 
 	return (
 		<div className={classes.root}>
-			{!loading && !cues.length && <CueLoader />}
-			{!loading && cues.length && (
+			{!loading && !cues.length ? <EmptyState /> : null}
+			{!loading && cues.length ? (
 				<AutoScrollProvider>
 					<List
 						className={classes.list}
@@ -55,8 +55,8 @@ export default function VTTEditor() {
 						)}
 					/>
 				</AutoScrollProvider>
-			)}
-			{loading && <Loader />}
+			) : null}
+			{loading ? <Loader /> : null}
 			<Tooltip title="Add Cue" placement="top">
 				<FabButton className={classes.fab} color="primary" aria-label="Add Cue" onClick={onAddCue}>
 					<AddIcon />

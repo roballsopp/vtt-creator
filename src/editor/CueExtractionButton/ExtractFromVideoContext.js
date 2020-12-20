@@ -1,4 +1,5 @@
 import React from 'react';
+import EventEmitter from 'events';
 import PropTypes from 'prop-types';
 import { GetTotalCost, TranscriptionCost } from '../../config';
 import { useCues, useUser } from '../../common';
@@ -15,18 +16,19 @@ const ExtractFromVideoContext = React.createContext({
 	handleCreditDialogClose: () => {},
 	handleCreditDialogExited: () => {},
 	handleCueExtractComplete: () => {},
+	extractDialogEvents: {},
 });
 
 ExtractFromVideoProvider.propTypes = {
 	children: PropTypes.node.isRequired,
-	onCloseMenu: PropTypes.func.isRequired,
 };
 
-export function ExtractFromVideoProvider({ children, onCloseMenu }) {
+export function ExtractFromVideoProvider({ children }) {
 	const { onChangeCues, onLoadingCues } = useCues();
 	const { openLoginDialog, authDialogEvents } = useAuthDialog();
 	const { duration } = useDuration();
 	const { user } = useUser();
+	const extractDialogEvents = React.useRef(new EventEmitter());
 	const cost = GetTotalCost(duration);
 
 	const [cueExtractionDialogOpen, setCueExtractionDialogOpen] = React.useState(false);
@@ -44,7 +46,7 @@ export function ExtractFromVideoProvider({ children, onCloseMenu }) {
 	}, [openLoginDialog]);
 
 	const handleCueExtractionDialogOpen = React.useCallback(() => {
-		onCloseMenu();
+		extractDialogEvents.current.emit('opening');
 
 		if (!user) return openLoginPrompt();
 
@@ -53,7 +55,7 @@ export function ExtractFromVideoProvider({ children, onCloseMenu }) {
 		}
 
 		setCueExtractionDialogOpen(true);
-	}, [cost, user, onCloseMenu, openLoginPrompt]);
+	}, [cost, user, openLoginPrompt]);
 
 	React.useEffect(() => {
 		const handleLoginExited = () => {
@@ -100,6 +102,7 @@ export function ExtractFromVideoProvider({ children, onCloseMenu }) {
 	return (
 		<ExtractFromVideoContext.Provider
 			value={{
+				extractDialogEvents: extractDialogEvents.current,
 				creditDialogOpen,
 				cueExtractionDialogOpen,
 				handleCueExtractionDialogOpen,
