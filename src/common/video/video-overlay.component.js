@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { useOverlay } from './overlay.context';
-import { useVideoDom } from './video-dom.context';
+import { useVideoControl } from './video-control-context';
 
 const useStyles = makeStyles({
 	root: {
@@ -43,7 +43,7 @@ VideoOverlay.propTypes = {
 
 export default function VideoOverlay({ className, topElement }) {
 	const { showOverlay } = useOverlay();
-	const { togglePlay } = useVideoDom();
+	const { togglePlay } = useVideoControl();
 	const classes = useStyles();
 
 	if (!showOverlay) return null;

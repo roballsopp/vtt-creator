@@ -8,6 +8,7 @@ import useVolume from './use-volume.hook';
 import { VideoDomProvider, useVideoDom } from './video-dom.context';
 import Video from './video.component';
 import { KeyboardControlProvider, useKeyboardControl } from './keyboard-control.context';
+import { VideoControlProvider, useVideoControl } from './video-control-context';
 
 export {
 	isFullScreenEnabled,
@@ -24,4 +25,6 @@ export {
 	useVolume,
 	VideoDomProvider,
 	Video,
+	VideoControlProvider,
+	useVideoControl,
 };

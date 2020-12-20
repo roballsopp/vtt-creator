@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { v4 as uuid } from 'uuid';
-import { useVideoDom } from './video-dom.context';
-import usePlayProgress from './use-play-progress.hook';
+import { useVideoControl } from './video-control-context';
 
 const KeyboardControlContext = React.createContext({
 	enableKeyboardControls: () => {},
@@ -16,8 +15,7 @@ KeyboardControlProvider.propTypes = {
 export function KeyboardControlProvider({ children }) {
 	const [disableRequests, setDisableRequests] = React.useState([]);
 
-	const { togglePlay } = useVideoDom();
-	const { handleNudge } = usePlayProgress();
+	const { togglePlay, nudgeVideo } = useVideoControl();
 
 	React.useEffect(() => {
 		const handleKeyDown = e => {
@@ -25,16 +23,16 @@ export function KeyboardControlProvider({ children }) {
 			if (e.code === 'Space') {
 				togglePlay();
 			} else if (e.code === 'ArrowLeft') {
-				handleNudge(-0.015);
+				nudgeVideo(-0.015);
 			} else if (e.code === 'ArrowRight') {
-				handleNudge(0.015);
+				nudgeVideo(0.015);
 			}
 		};
 		document.addEventListener('keydown', handleKeyDown);
 		return () => {
 			document.removeEventListener('keydown', handleKeyDown);
 		};
-	}, [togglePlay, handleNudge, disableRequests]);
+	}, [togglePlay, nudgeVideo, disableRequests]);
 
 	const disableKeyboardControls = React.useCallback(() => {
 		const requestId = uuid();

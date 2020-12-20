@@ -1,10 +1,11 @@
-import * as React from 'react';
+import React from 'react';
 import throttle from 'lodash/throttle';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { makeStyles } from '@material-ui/styles';
 import usePlayProgress from './use-play-progress.hook';
 import useDuration from './use-duration.hook';
 import useDragging from '../use-dragging.hook';
+import { useVideoControl } from './video-control-context';
 
 const PLAYHEAD_RADIUS = 6;
 
@@ -20,13 +21,6 @@ const useStyles = makeStyles(theme => ({
 	playhead: {
 		position: 'absolute',
 		top: `calc(50% - ${PLAYHEAD_RADIUS}px)`,
-		left: ({ playpos, progressElRef }) => {
-			if (progressElRef.current) {
-				const { width } = progressElRef.current.getBoundingClientRect();
-				return width * playpos - PLAYHEAD_RADIUS;
-			}
-			return 0;
-		},
 		height: PLAYHEAD_RADIUS * 2,
 		width: PLAYHEAD_RADIUS * 2,
 		borderRadius: PLAYHEAD_RADIUS,
@@ -37,24 +31,35 @@ const useStyles = makeStyles(theme => ({
 
 export default function PlayProgress() {
 	const progressElRef = React.useRef();
-	const [dragging, setDragging] = React.useState(false);
+	const playheadRef = React.useRef();
+	const draggingRef = React.useRef(false);
+
 	const [playpos, setPlaypos] = React.useState(0);
-	const [playheadRef, setPlayheadRef] = React.useState();
-	const classes = useStyles({ playpos, progressElRef });
+
+	const playheadPos = React.useMemo(() => {
+		if (progressElRef.current) {
+			const { width } = progressElRef.current.getBoundingClientRect();
+			return width * playpos - PLAYHEAD_RADIUS;
+		}
+		return 0;
+	}, [playpos]);
+
+	const classes = useStyles();
 
 	const { duration } = useDuration();
+	const { seekVideo } = useVideoControl();
 
-	const { onSeek } = usePlayProgress({
+	usePlayProgress({
 		onTimeUpdate: React.useCallback(
 			currentTime => {
 				const progress = duration && currentTime ? currentTime / duration : 0;
-				if (!dragging) setPlaypos(progress);
+				if (!draggingRef.current) setPlaypos(progress);
 			},
-			[dragging, duration]
+			[duration]
 		),
 	});
 
-	const throttledSeek = React.useCallback(throttle(onSeek, 200), [onSeek]);
+	const throttledSeek = React.useCallback(throttle(seekVideo, 200), [seekVideo]);
 
 	React.useEffect(() => () => throttledSeek.cancel(), [throttledSeek]);
 
@@ -66,13 +71,19 @@ export default function PlayProgress() {
 		return playpos;
 	}, []);
 
-	const onClickProgressBar = React.useCallback(e => onSeek(getPlayposFromMouseEvent(e)), [
-		onSeek,
-		getPlayposFromMouseEvent,
-	]);
+	const onClickProgressBar = React.useCallback(
+		e => {
+			const playpos = getPlayposFromMouseEvent(e);
+			setPlaypos(playpos);
+			seekVideo(playpos);
+		},
+		[seekVideo, getPlayposFromMouseEvent]
+	);
 
-	useDragging(playheadRef, {
-		onDragStart: React.useCallback(() => setDragging(true), []),
+	useDragging(playheadRef.current, {
+		onDragStart: React.useCallback(() => {
+			draggingRef.current = true;
+		}, []),
 		onDragging: React.useCallback(
 			e => {
 				const playpos = getPlayposFromMouseEvent(e);
@@ -83,7 +94,7 @@ export default function PlayProgress() {
 		),
 		onDragEnd: React.useCallback(() => {
 			throttledSeek.flush();
-			setDragging(false);
+			draggingRef.current = false;
 		}, [throttledSeek]),
 	});
 
@@ -91,7 +102,12 @@ export default function PlayProgress() {
 		<div className={classes.root} onClick={onClickProgressBar}>
 			<div className={classes.playheadContainer}>
 				<LinearProgress ref={progressElRef} variant="determinate" value={playpos * 100} />
-				<div ref={setPlayheadRef} className={classes.playhead} onMouseDown={e => e.stopPropagation()} />
+				<div
+					ref={playheadRef}
+					className={classes.playhead}
+					style={{ left: playheadPos }}
+					onMouseDown={e => e.stopPropagation()}
+				/>
 			</div>
 		</div>
 	);

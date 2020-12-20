@@ -1,8 +1,13 @@
-import * as React from 'react';
-import * as PropTypes from 'prop-types';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { useToast } from '../toast-context';
 
-const VideoDomContext = React.createContext({});
+const VideoDomContext = React.createContext({
+	videoRef: null,
+	videoContainerRef: null,
+	onVideoRef: () => {},
+	onVideoContainerRef: () => {},
+});
 
 VideoDomProvider.propTypes = {
 	children: PropTypes.node.isRequired,
@@ -12,7 +17,6 @@ export function VideoDomProvider({ children }) {
 	const toast = useToast();
 	const [videoRef, onVideoRef] = React.useState();
 	const [videoContainerRef, onVideoContainerRef] = React.useState();
-	const playPromiseRef = React.useRef(Promise.resolve());
 
 	React.useEffect(() => {
 		if (!videoRef) return;
@@ -29,25 +33,17 @@ export function VideoDomProvider({ children }) {
 		};
 	}, [toast, videoRef]);
 
-	// play() method is actually asynchronous and you'll get fun error messages if you try to pause before play has resolved:
-	// https://developers.google.com/web/updates/2017/06/play-request-was-interrupted
-	const togglePlay = React.useCallback(() => {
-		if (!videoRef) return;
-		return playPromiseRef.current.then(() => {
-			if (videoRef.paused || videoRef.ended) return videoRef.play();
-			else videoRef.pause();
-		});
-	}, [videoRef]);
-
 	return (
 		<VideoDomContext.Provider
-			value={{
-				videoRef,
-				videoContainerRef,
-				onVideoRef,
-				onVideoContainerRef,
-				togglePlay,
-			}}>
+			value={React.useMemo(
+				() => ({
+					videoRef,
+					videoContainerRef,
+					onVideoRef,
+					onVideoContainerRef,
+				}),
+				[videoRef, videoContainerRef, onVideoRef, onVideoContainerRef]
+			)}>
 			{children}
 		</VideoDomContext.Provider>
 	);

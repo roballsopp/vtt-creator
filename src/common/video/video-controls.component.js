@@ -12,6 +12,7 @@ import useFullscreen, { isFullScreenEnabled } from './use-fullscreen.hook';
 import usePlay from './use-play.hook';
 import useCaptions from './use-captions.hook';
 import IconToggle from './icon-toggle.component';
+import { useVideoControl } from './video-control-context';
 import { useVideoDom } from './video-dom.context';
 import VolumeInput from './volume-input.component';
 import PlayProgress from './play-progress.component';
@@ -78,10 +79,12 @@ VideoControls.propTypes = {
 export default function VideoControls({ className }) {
 	const { videoRef } = useVideoDom();
 	const [paused, onPlayPause] = React.useState(true);
-	const { onTogglePlay } = usePlay({ onPlayPause });
+	const { togglePlay } = useVideoControl();
 	const { fullscreen, onToggleFullscreen } = useFullscreen();
 	const { onToggleCaptions } = useCaptions();
 	const disabled = !videoRef;
+
+	usePlay({ onPlayPause });
 
 	const classes = useStyles();
 	return (
@@ -94,7 +97,7 @@ export default function VideoControls({ className }) {
 						offIcon={<PauseIcon fontSize="inherit" />}
 						disabled={disabled}
 						aria-label="Play/Pause"
-						onToggle={onTogglePlay}
+						onToggle={togglePlay}
 						className={classes.controlLeft}
 					/>
 					<VolumeInput disabled={disabled} className={classes.controlLeft} />

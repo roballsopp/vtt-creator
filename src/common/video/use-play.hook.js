@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useVideoDom } from './video-dom.context';
 
 export default function usePlay({ onPlayPause } = {}) {
-	const { videoRef, togglePlay } = useVideoDom();
+	const { videoRef } = useVideoDom();
 
 	React.useEffect(() => {
 		if (!onPlayPause || !videoRef) return;
@@ -22,11 +22,4 @@ export default function usePlay({ onPlayPause } = {}) {
 			videoRef.removeEventListener('loadstart', onLoadStart);
 		};
 	}, [onPlayPause, videoRef]);
-
-	return React.useMemo(
-		() => ({
-			onTogglePlay: () => togglePlay(),
-		}),
-		[togglePlay]
-	);
 }

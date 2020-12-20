@@ -1,9 +1,10 @@
-import * as React from 'react';
+import React from 'react';
 import clsx from 'clsx';
-import * as PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { useVideoDom } from './video-dom.context';
 import VideoOverlay from './video-overlay.component';
+import SeekingOverlay from './SeekingOverlay';
 
 const useStyles = makeStyles({
 	root: {
@@ -39,6 +40,7 @@ export default function Video({ src, topElement, children, className }) {
 				{children}
 			</video>
 			<VideoOverlay className={classes.overlay} topElement={topElement} />
+			<SeekingOverlay className={classes.overlay} />
 		</div>
 	);
 }

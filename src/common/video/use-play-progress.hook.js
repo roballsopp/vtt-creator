@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { useVideoDom } from './video-dom.context';
 
 export default function usePlayProgress({ onTimeUpdate } = {}) {
@@ -24,19 +24,4 @@ export default function usePlayProgress({ onTimeUpdate } = {}) {
 			videoRef.removeEventListener('timeupdate', onTimeUpdateInner);
 		};
 	}, [videoRef, onTimeUpdate]);
-
-	return React.useMemo(
-		() => ({
-			onSeek: pos => {
-				const clipped = Math.min(Math.max(pos, 0), 1);
-				if (videoRef) videoRef.currentTime = clipped * videoRef.duration;
-			},
-			handleNudge: delta => {
-				if (videoRef) {
-					videoRef.currentTime = Math.min(Math.max(videoRef.currentTime + delta, 0), videoRef.duration);
-				}
-			},
-		}),
-		[videoRef]
-	);
 }
