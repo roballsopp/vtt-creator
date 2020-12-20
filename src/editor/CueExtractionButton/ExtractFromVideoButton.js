@@ -16,11 +16,11 @@ export default function ExtractFromVideoButton(buttonProps) {
 				title="Select a video in the pane to the right to use this feature"
 				placement="bottom"
 				PopperProps={{ anchorEl: buttonRef.current }}>
-				<span>
+				<div>
 					<Button {...buttonProps} disabled ref={buttonRef}>
 						Extract from video
 					</Button>
-				</span>
+				</div>
 			</Tooltip>
 		);
 	}
