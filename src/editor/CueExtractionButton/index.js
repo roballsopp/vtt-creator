@@ -1,5 +1,12 @@
 import ExtractFromVideoButton from './ExtractFromVideoButton';
-import { ExtractFromVideoProvider } from './ExtractFromVideoContext';
+import ExtractFromVideoMenuItem from './ExtractFromVideoMenuItem';
+import { ExtractFromVideoProvider, useExtractFromVideo } from './ExtractFromVideoContext';
 import ExtractFromVideoDialogs from './ExtractFromVideoDialogs';
 
-export { ExtractFromVideoButton, ExtractFromVideoDialogs, ExtractFromVideoProvider };
+export {
+	ExtractFromVideoButton,
+	ExtractFromVideoMenuItem,
+	ExtractFromVideoDialogs,
+	ExtractFromVideoProvider,
+	useExtractFromVideo,
+};

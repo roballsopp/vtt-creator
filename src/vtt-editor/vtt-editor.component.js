@@ -8,7 +8,7 @@ import { List, Loader, useCues, CueProvider } from '../common';
 import CueEditor from './cue-editor.component';
 import { AutoScrollProvider } from './auto-scroll.context';
 import AutoScrollItem from './auto-scroll-item.component';
-import CueLoader from './cue-loader.component';
+import EmptyState from './EmptyState';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -38,7 +38,7 @@ export default function VTTEditor() {
 
 	return (
 		<div className={classes.root}>
-			{!loading && !cues.length && <CueLoader />}
+			{!loading && !cues.length && <EmptyState />}
 			{!loading && cues.length && (
 				<AutoScrollProvider>
 					<List

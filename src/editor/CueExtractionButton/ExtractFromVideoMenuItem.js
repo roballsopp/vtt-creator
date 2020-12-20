@@ -1,33 +1,36 @@
 import * as React from 'react';
-import Button from '@material-ui/core/Button';
+import MenuItem from '@material-ui/core/MenuItem';
 import Tooltip from '@material-ui/core/Tooltip';
+import VoiceChatIcon from '@material-ui/icons/VoiceChat';
 import { useVideoFile } from '../../common';
 import { useExtractFromVideo } from './ExtractFromVideoContext';
 
-export default function ExtractFromVideoButton(buttonProps) {
+export default function ExtractFromVideoMenuItem({ classes }) {
 	const { videoFile } = useVideoFile();
 	const { handleCueExtractionDialogOpen } = useExtractFromVideo();
-	const buttonRef = React.useRef();
+	const [buttonEl, setButtonEl] = React.useState();
 
 	if (!videoFile) {
 		// span needed here because tooltips don't activate on disabled elements: https://material-ui.com/components/tooltips/#disabled-elements
 		return (
 			<Tooltip
 				title="Select a video in the pane to the right to use this feature"
-				placement="bottom"
-				PopperProps={{ anchorEl: buttonRef.current }}>
+				placement="right"
+				PopperProps={{ anchorEl: buttonEl }}>
 				<span>
-					<Button {...buttonProps} disabled ref={buttonRef}>
-						Extract from video
-					</Button>
+					<MenuItem disabled ref={setButtonEl}>
+						<VoiceChatIcon className={classes.menuIcon} />
+						Extract from video...
+					</MenuItem>
 				</span>
 			</Tooltip>
 		);
 	}
 
 	return (
-		<Button {...buttonProps} onClick={handleCueExtractionDialogOpen}>
-			Extract from video
-		</Button>
+		<MenuItem onClick={handleCueExtractionDialogOpen}>
+			<VoiceChatIcon className={classes.menuIcon} />
+			Extract from video...
+		</MenuItem>
 	);
 }
