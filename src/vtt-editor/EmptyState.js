@@ -53,7 +53,7 @@ export default function EmptyState() {
 					of this pane.
 				</Typography>
 				<Typography align="center" className={classes.actionGutter}>
-					You can also load captions from an existing VTT file from your computer:
+					You can also load captions from an existing VTT file on your computer:
 				</Typography>
 				<Button
 					startIcon={<PublishIcon />}
