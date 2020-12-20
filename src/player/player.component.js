@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { makeStyles } from '@material-ui/styles';
+import { PlayingProvider } from '../common/video/playing-context';
 import VideoControls from '../common/video/video-controls.component';
 import VttTimeline from '../vtt-timeline';
-import { OverlayProvider, useVideoDom } from '../common/video';
+import { OverlayProvider, VolumeProvider, SeekingProvider, useVideoDom } from '../common/video';
 import Video from './video.component';
 
 const useStyles = makeStyles({
@@ -34,16 +35,22 @@ export default function Player() {
 	const { onVideoContainerRef } = useVideoDom();
 
 	return (
-		<OverlayProvider>
-			<div className={classes.root}>
-				<div ref={onVideoContainerRef} className={classes.videoContainer}>
-					<Video className={classes.video} />
-					<VideoControls />
-				</div>
-				<div className={classes.vttTimeline}>
-					<VttTimeline />
-				</div>
-			</div>
-		</OverlayProvider>
+		<PlayingProvider>
+			<VolumeProvider>
+				<SeekingProvider>
+					<OverlayProvider>
+						<div className={classes.root}>
+							<div ref={onVideoContainerRef} className={classes.videoContainer}>
+								<Video className={classes.video} />
+								<VideoControls />
+							</div>
+							<div className={classes.vttTimeline}>
+								<VttTimeline />
+							</div>
+						</div>
+					</OverlayProvider>
+				</SeekingProvider>
+			</VolumeProvider>
+		</PlayingProvider>
 	);
 }

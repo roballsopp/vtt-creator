@@ -1,6 +1,6 @@
-import * as React from 'react';
-import * as PropTypes from 'prop-types';
-import { usePlayProgress } from '../common/video';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { usePlayTimeEvent } from '../common/video';
 import { useAutoScroll } from './auto-scroll.context';
 
 AutoScrollItem.propTypes = {
@@ -15,8 +15,8 @@ export default function AutoScrollItem({ cueTime, children, className, ...props 
 	const prevTimeRef = React.useRef(0);
 	const itemContainerRef = React.useRef(null);
 
-	usePlayProgress({
-		onTimeUpdate: React.useCallback(
+	usePlayTimeEvent(
+		React.useCallback(
 			currentTime => {
 				const cueWasJustPassedForward = currentTime >= cueTime && prevTimeRef.current < cueTime;
 				const cueWasJustPassedBackward = currentTime < cueTime && prevTimeRef.current >= cueTime;
@@ -26,8 +26,8 @@ export default function AutoScrollItem({ cueTime, children, className, ...props 
 				prevTimeRef.current = currentTime;
 			},
 			[cueTime, scrollToChild]
-		),
-	});
+		)
+	);
 
 	return (
 		<div {...props} ref={itemContainerRef} className={className}>

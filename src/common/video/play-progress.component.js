@@ -2,8 +2,8 @@ import React from 'react';
 import throttle from 'lodash/throttle';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { makeStyles } from '@material-ui/styles';
-import usePlayProgress from './use-play-progress.hook';
-import useDuration from './use-duration.hook';
+import { usePlayTimeEvent } from './play-time-context';
+import { useDuration } from './duration-context';
 import useDragging from '../use-dragging.hook';
 import { useVideoControl } from './video-control-context';
 
@@ -49,15 +49,15 @@ export default function PlayProgress() {
 	const { duration } = useDuration();
 	const { seekVideo } = useVideoControl();
 
-	usePlayProgress({
-		onTimeUpdate: React.useCallback(
+	usePlayTimeEvent(
+		React.useCallback(
 			currentTime => {
 				const progress = duration && currentTime ? currentTime / duration : 0;
 				if (!draggingRef.current) setPlaypos(progress);
 			},
 			[duration]
-		),
-	});
+		)
+	);
 
 	const throttledSeek = React.useCallback(throttle(seekVideo, 200), [seekVideo]);
 
