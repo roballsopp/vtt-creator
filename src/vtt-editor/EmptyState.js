@@ -47,8 +47,8 @@ export default function EmptyState() {
 	return (
 		<div className={classes.root}>
 			<Typography align="center" className={classes.gutterBottom}>
-				You can manually add caption cues here by clicking the <AddIcon className={classes.alignIcon} /> at the
-				bottom of this pane.
+				You can manually add caption cues here by clicking the <AddIcon className={classes.alignIcon} /> at the bottom
+				of this pane.
 			</Typography>
 			<Typography align="center" className={classes.actionGutter}>
 				You can also load captions from an existing VTT file from your computer:
