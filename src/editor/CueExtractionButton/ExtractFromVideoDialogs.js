@@ -24,7 +24,7 @@ export default function ExtractFromVideoDialogs() {
 				onRequestClose={handleCueExtractionDialogClose}
 				onExtractComplete={handleCueExtractComplete}
 			/>
-			{user && (
+			{user ? (
 				<CreditDialog
 					user={user}
 					open={creditDialogOpen}
@@ -32,7 +32,7 @@ export default function ExtractFromVideoDialogs() {
 					onExited={handleCreditDialogExited}
 					onClose={handleCreditDialogClose}
 				/>
-			)}
+			) : null}
 		</React.Fragment>
 	);
 }
