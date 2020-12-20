@@ -10,12 +10,14 @@ import { useAuthDialog } from '../../AuthDialog';
 const ExtractFromVideoContext = React.createContext({
 	creditDialogOpen: false,
 	cueExtractionDialogOpen: false,
+	notSupportedDialogOpen: false,
 	handleCueExtractionDialogOpen: () => {},
 	handleCueExtractionDialogClose: () => {},
 	handleCreditDialogPaid: () => {},
 	handleCreditDialogClose: () => {},
 	handleCreditDialogExited: () => {},
 	handleCueExtractComplete: () => {},
+	handleNotSupportedDialogClose: () => {},
 	extractDialogEvents: {},
 });
 
@@ -33,6 +35,7 @@ export function ExtractFromVideoProvider({ children }) {
 
 	const [cueExtractionDialogOpen, setCueExtractionDialogOpen] = React.useState(false);
 	const [creditDialogOpen, setCreditDialogOpen] = React.useState(false);
+	const [notSupportedDialogOpen, setNotSupportedDialogOpen] = React.useState(false);
 	const [awaitingLogin, setAwaitingLogin] = React.useState(false);
 	const creditDialogPaid = React.useRef(false);
 
@@ -47,6 +50,8 @@ export function ExtractFromVideoProvider({ children }) {
 
 	const handleCueExtractionDialogOpen = React.useCallback(() => {
 		extractDialogEvents.current.emit('opening');
+
+		if (!window.AudioContext) return setNotSupportedDialogOpen(true);
 
 		if (!user) return openLoginPrompt();
 
@@ -81,6 +86,10 @@ export function ExtractFromVideoProvider({ children }) {
 		setCreditDialogOpen(false);
 	};
 
+	const handleNotSupportedDialogClose = () => {
+		setNotSupportedDialogOpen(false);
+	};
+
 	const handleCreditDialogExited = () => {
 		if (creditDialogPaid.current) {
 			creditDialogPaid.current = false;
@@ -105,12 +114,14 @@ export function ExtractFromVideoProvider({ children }) {
 				extractDialogEvents: extractDialogEvents.current,
 				creditDialogOpen,
 				cueExtractionDialogOpen,
+				notSupportedDialogOpen,
 				handleCueExtractionDialogOpen,
 				handleCueExtractionDialogClose,
 				handleCreditDialogPaid,
 				handleCreditDialogClose,
 				handleCreditDialogExited,
 				handleCueExtractComplete,
+				handleNotSupportedDialogClose,
 			}}>
 			{children}
 		</ExtractFromVideoContext.Provider>
