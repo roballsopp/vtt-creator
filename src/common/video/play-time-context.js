@@ -14,7 +14,9 @@ export function PlayTimeProvider({ children }) {
 	const [playtime, setPlayTime] = React.useState(0);
 	usePlayTimeEvent(setPlayTime);
 	return (
-		<PlayTimeContext.Provider value={React.useMemo(() => ({ playtime }), [playtime])}>{children}</PlayTimeContext.Provider>
+		<PlayTimeContext.Provider value={React.useMemo(() => ({ playtime }), [playtime])}>
+			{children}
+		</PlayTimeContext.Provider>
 	);
 }
 
