@@ -3,16 +3,19 @@ import { useUser } from '../../common';
 import { useExtractFromVideo } from './ExtractFromVideoContext';
 import CreditDialog from './CreditDialog';
 import CueExtractionDialog from './cue-extraction-dialog.component';
+import NotSupportedDialog from './NotSupportedDialog';
 
 export default function ExtractFromVideoDialogs() {
 	const {
 		creditDialogOpen,
 		cueExtractionDialogOpen,
+		notSupportedDialogOpen,
 		handleCueExtractionDialogClose,
 		handleCreditDialogPaid,
 		handleCreditDialogClose,
 		handleCreditDialogExited,
 		handleCueExtractComplete,
+		handleNotSupportedDialogClose,
 	} = useExtractFromVideo();
 
 	const { user } = useUser();
@@ -33,6 +36,7 @@ export default function ExtractFromVideoDialogs() {
 					onClose={handleCreditDialogClose}
 				/>
 			) : null}
+			<NotSupportedDialog open={notSupportedDialogOpen} onClose={handleNotSupportedDialogClose} />
 		</React.Fragment>
 	);
 }
