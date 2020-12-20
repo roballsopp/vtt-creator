@@ -7,17 +7,13 @@ import { useExtractFromVideo } from './ExtractFromVideoContext';
 export default function ExtractFromVideoButton(buttonProps) {
 	const { videoFile } = useVideoFile();
 	const { handleCueExtractionDialogOpen } = useExtractFromVideo();
-	const buttonRef = React.useRef();
 
 	if (!videoFile) {
 		// span needed here because tooltips don't activate on disabled elements: https://material-ui.com/components/tooltips/#disabled-elements
 		return (
-			<Tooltip
-				title="Select a video in the pane to the right to use this feature"
-				placement="bottom"
-				PopperProps={{ anchorEl: buttonRef.current }}>
+			<Tooltip title="Select a video in the pane to the right to use this feature" placement="bottom">
 				<div>
-					<Button {...buttonProps} disabled ref={buttonRef}>
+					<Button {...buttonProps} disabled>
 						Extract from video
 					</Button>
 				</div>

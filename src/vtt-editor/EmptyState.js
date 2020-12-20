@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React from 'react';
+import clsx from 'clsx';
 import Typography from '@material-ui/core/Typography';
 import AddIcon from '@material-ui/icons/AddCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
@@ -13,8 +14,9 @@ const useStyles = makeStyles(theme => ({
 		width: '100%',
 		height: '100%',
 		display: 'flex',
+		flexDirection: 'column',
 		padding: theme.spacing(8),
-		alignItems: 'center',
+		justifyContent: 'center',
 	},
 	actionGutter: {
 		marginBottom: theme.spacing(4),
@@ -47,33 +49,35 @@ export default function EmptyState() {
 
 	return (
 		<div className={classes.root}>
-			<div className={classes.ie11Fix}>
-				<Typography align="center" className={classes.gutterBottom}>
-					You can manually add caption cues here by clicking the <AddIcon className={classes.alignIcon} /> at the bottom
-					of this pane.
+			<div className={clsx(classes.gutterBottom, classes.ie11Fix)}>
+				<Typography align="center">
+					You can manually add caption cues here by clicking the <AddIcon className={classes.alignIcon} /> at the
+					bottom of this pane.
 				</Typography>
-				<Typography align="center" className={classes.actionGutter}>
-					You can also load captions from an existing VTT file on your computer:
-				</Typography>
-				<Button
-					startIcon={<PublishIcon />}
-					variant="contained"
-					color="secondary"
-					onClick={openFileSelector}
-					className={classes.gutterBottom}>
+			</div>
+			<div className={clsx(classes.actionGutter, classes.ie11Fix)}>
+				<Typography align="center">You can also load captions from an existing VTT file on your computer:</Typography>
+			</div>
+			<div className={clsx(classes.gutterBottom, classes.ie11Fix)}>
+				<Button startIcon={<PublishIcon />} variant="contained" color="secondary" onClick={openFileSelector}>
 					Load from VTT file
 				</Button>
-				<Typography align="center" className={classes.actionGutter}>
+			</div>
+			<div className={clsx(classes.actionGutter, classes.ie11Fix)}>
+				<Typography align="center">
 					You can even let VTT Creator automatically extract captions straight from your video:
 				</Typography>
+			</div>
+			<div className={clsx(classes.gutterBottom, classes.ie11Fix)}>
 				<ExtractFromVideoButton
 					startIcon={<VoiceChatIcon />}
 					variant="contained"
 					color="secondary"
-					onClick={openFileSelector}
-					className={classes.gutterBottom}>
+					onClick={openFileSelector}>
 					Extract from video
 				</ExtractFromVideoButton>
+			</div>
+			<div className={classes.ie11Fix}>
 				<Typography align="center">
 					See more options in the <MoreIcon className={classes.alignIcon} /> menu at the top of this pane.
 				</Typography>
