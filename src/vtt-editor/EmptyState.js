@@ -1,8 +1,9 @@
 import * as React from 'react';
 import Typography from '@material-ui/core/Typography';
 import AddIcon from '@material-ui/icons/AddCircle';
-import VoiceChatIcon from '@material-ui/icons/VoiceChat';
+import MoreIcon from '@material-ui/icons/MoreVert';
 import PublishIcon from '@material-ui/icons/Publish';
+import VoiceChatIcon from '@material-ui/icons/VoiceChat';
 import { makeStyles } from '@material-ui/styles';
 import { useFileSelector, Button, useCueFromFileLoader } from '../common';
 import { ExtractFromVideoButton } from '../editor/CueExtractionButton';
@@ -16,6 +17,9 @@ const useStyles = makeStyles(theme => ({
 		flexDirection: 'column',
 		justifyContent: 'center',
 		alignItems: 'center',
+	},
+	actionGutter: {
+		marginBottom: theme.spacing(4),
 	},
 	gutterBottom: {
 		marginBottom: theme.spacing(8),
@@ -43,8 +47,11 @@ export default function EmptyState() {
 	return (
 		<div className={classes.root}>
 			<Typography align="center" className={classes.gutterBottom}>
-				Add caption cues here by clicking the <AddIcon className={classes.alignIcon} /> button below, or by loading an
-				existing VTT file from your computer.
+				You can manually add caption cues here by clicking the <AddIcon className={classes.alignIcon} /> at the
+				bottom of this pane.
+			</Typography>
+			<Typography align="center" className={classes.actionGutter}>
+				You can also load captions from an existing VTT file from your computer:
 			</Typography>
 			<Button
 				startIcon={<PublishIcon />}
@@ -52,18 +59,22 @@ export default function EmptyState() {
 				color="primary"
 				onClick={openFileSelector}
 				className={classes.gutterBottom}>
-				Load VTT File
+				Load from VTT file
 			</Button>
-			<Typography align="center" className={classes.gutterBottom}>
-				You can also let VTT Creator automatically extract captions straight from your video.
+			<Typography align="center" className={classes.actionGutter}>
+				You can even let VTT Creator automatically extract captions straight from your video:
 			</Typography>
 			<ExtractFromVideoButton
 				startIcon={<VoiceChatIcon />}
 				variant="contained"
 				color="primary"
-				onClick={openFileSelector}>
+				onClick={openFileSelector}
+				className={classes.gutterBottom}>
 				Extract from video
 			</ExtractFromVideoButton>
+			<Typography align="center">
+				See more options in the <MoreIcon className={classes.alignIcon} /> menu at the top of this pane.
+			</Typography>
 		</div>
 	);
 }

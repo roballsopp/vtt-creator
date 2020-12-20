@@ -1,5 +1,6 @@
-import * as React from 'react';
-import * as PropTypes from 'prop-types';
+import React from 'react';
+import PropTypes from 'prop-types';
+import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
 import { useFileSelector, useToast, useVideoFile, Button } from '../common';
 import { Video as BaseVideo } from '../common/video';
@@ -9,16 +10,21 @@ import { getSupportedVideoFileExtensions } from '../services/av.service';
 
 const ACCEPT = getSupportedVideoFileExtensions().join(',');
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
 	loaderRoot: {
 		width: '100%',
 		height: '100%',
 		display: 'flex',
+		flexDirection: 'column',
 		justifyContent: 'center',
 		alignItems: 'center',
 		backgroundColor: 'black',
+		color: 'white',
 	},
-});
+	actionGutter: {
+		marginBottom: theme.spacing(4),
+	},
+}));
 
 Video.propTypes = {
 	className: PropTypes.any,
@@ -50,6 +56,9 @@ export default function Video({ className }) {
 	if (!src) {
 		return (
 			<div className={classes.loaderRoot}>
+				<Typography align="center" className={classes.actionGutter}>
+					Choose a video from your computer to create or edit captions for:
+				</Typography>
 				<Button name="Initial Select Video" variant="contained" color="primary" onClick={openFileSelector}>
 					Select Video File
 				</Button>
