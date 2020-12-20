@@ -1,11 +1,12 @@
-import * as React from 'react';
+import React from 'react';
 import throttle from 'lodash/throttle';
 import Slider from '@material-ui/core/Slider';
 import VolumeIcon from '@material-ui/icons/VolumeUp';
 import VolumeOffIcon from '@material-ui/icons/VolumeOff';
 import { makeStyles } from '@material-ui/styles';
 import IconToggle from './icon-toggle.component';
-import useVolume from './use-volume.hook';
+import { useVideoControl } from './video-control-context';
+import { useVolume } from './volume-context';
 
 const useStyles = makeStyles(theme => ({
 	container: {
@@ -21,9 +22,10 @@ const useStyles = makeStyles(theme => ({
 
 export default function VolumeInput({ disabled, className }) {
 	const classes = useStyles();
-	const { volume, muted, onVolumeChange, onToggleMute } = useVolume();
+	const { volume, muted } = useVolume();
+	const { setVolume, toggleMute } = useVideoControl();
 
-	const throttledOnChange = React.useCallback(throttle(onVolumeChange, 300), [onVolumeChange]);
+	const throttledOnChange = React.useCallback(throttle(setVolume, 300), [setVolume]);
 
 	React.useEffect(() => () => throttledOnChange.cancel(), [throttledOnChange]);
 
@@ -36,7 +38,7 @@ export default function VolumeInput({ disabled, className }) {
 					offIcon={<VolumeOffIcon fontSize="inherit" />}
 					disabled={disabled}
 					aria-label="Toggle mute"
-					onToggle={onToggleMute}
+					onToggle={toggleMute}
 					className={classes.muteButton}
 				/>
 				<Slider
@@ -45,7 +47,7 @@ export default function VolumeInput({ disabled, className }) {
 					disabled={disabled}
 					onChange={(e, v) => {
 						const volume = parseFloat(v);
-						onVolumeChange(volume);
+						setVolume(volume);
 						throttledOnChange(volume);
 					}}
 					max={1}

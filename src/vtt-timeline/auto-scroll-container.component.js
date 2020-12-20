@@ -1,8 +1,8 @@
-import * as React from 'react';
-import * as PropTypes from 'prop-types';
+import React from 'react';
+import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
-import { usePlayProgress } from '../common/video';
+import { usePlayTimeEvent } from '../common/video';
 
 const useStyles = makeStyles({
 	root: {
@@ -27,8 +27,8 @@ export default function AutoScrollContainer({ pixelsPerSec, horizontal, children
 
 	const [scrollContainerRef, setScrollContainerRef] = React.useState();
 
-	usePlayProgress({
-		onTimeUpdate: React.useCallback(
+	usePlayTimeEvent(
+		React.useCallback(
 			currentTime => {
 				const scrollPixels = currentTime && pixelsPerSec ? pixelsPerSec * currentTime : 0;
 				if (scrollContainerRef) {
@@ -37,8 +37,8 @@ export default function AutoScrollContainer({ pixelsPerSec, horizontal, children
 				}
 			},
 			[horizontal, pixelsPerSec, scrollContainerRef]
-		),
-	});
+		)
+	);
 
 	return (
 		<div

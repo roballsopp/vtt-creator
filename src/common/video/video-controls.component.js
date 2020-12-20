@@ -8,10 +8,10 @@ import PauseIcon from '@material-ui/icons/Pause';
 import PlayIcon from '@material-ui/icons/PlayArrow';
 import CaptionsIcon from '@material-ui/icons/ClosedCaption';
 import { makeStyles } from '@material-ui/styles';
+import { usePlaying } from './playing-context';
 import useFullscreen, { isFullScreenEnabled } from './use-fullscreen.hook';
-import usePlay from './use-play.hook';
-import useCaptions from './use-captions.hook';
 import IconToggle from './icon-toggle.component';
+import { useVideoControl } from './video-control-context';
 import { useVideoDom } from './video-dom.context';
 import VolumeInput from './volume-input.component';
 import PlayProgress from './play-progress.component';
@@ -77,10 +77,9 @@ VideoControls.propTypes = {
 
 export default function VideoControls({ className }) {
 	const { videoRef } = useVideoDom();
-	const [paused, onPlayPause] = React.useState(true);
-	const { onTogglePlay } = usePlay({ onPlayPause });
+	const { playing } = usePlaying();
+	const { togglePlay, toggleCaptions } = useVideoControl();
 	const { fullscreen, onToggleFullscreen } = useFullscreen();
-	const { onToggleCaptions } = useCaptions();
 	const disabled = !videoRef;
 
 	const classes = useStyles();
@@ -89,12 +88,12 @@ export default function VideoControls({ className }) {
 			<div className={className}>
 				<div className={classes.root}>
 					<IconToggle
-						on={paused}
-						onIcon={<PlayIcon fontSize="inherit" />}
-						offIcon={<PauseIcon fontSize="inherit" />}
+						on={playing}
+						onIcon={<PauseIcon fontSize="inherit" />}
+						offIcon={<PlayIcon fontSize="inherit" />}
 						disabled={disabled}
 						aria-label="Play/Pause"
-						onToggle={onTogglePlay}
+						onToggle={togglePlay}
 						className={classes.controlLeft}
 					/>
 					<VolumeInput disabled={disabled} className={classes.controlLeft} />
@@ -108,7 +107,7 @@ export default function VideoControls({ className }) {
 								onIcon={<CaptionsIcon fontSize="inherit" />}
 								disabled={disabled}
 								aria-label="Toggle captions"
-								onToggle={onToggleCaptions}
+								onToggle={toggleCaptions}
 							/>
 						</div>
 					</Tooltip>

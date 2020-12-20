@@ -1,6 +1,6 @@
-import * as React from 'react';
-import * as PropTypes from 'prop-types';
-import usePlay from './use-play.hook';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { usePlayEvent } from './playing-context';
 import { useVideoDom } from './video-dom.context';
 
 const OverlayContext = React.createContext({});
@@ -13,7 +13,7 @@ export function OverlayProvider({ children }) {
 	const { videoContainerRef } = useVideoDom();
 	const [showOverlay, setShowOverlay] = React.useState(true);
 	const [suspendMouseMove, setSuspendMouseMove] = React.useState(false);
-	const [paused, onPlayPause] = React.useState(true);
+	const [playing, setPlaying] = React.useState(true);
 	const overlayTimeout = React.useRef();
 
 	const onStartOverlayTimeout = React.useCallback((timeout = 3000) => {
@@ -26,10 +26,10 @@ export function OverlayProvider({ children }) {
 		}, timeout);
 	}, []);
 
-	usePlay({
-		onPlayPause: React.useCallback(paused => {
-			onPlayPause(paused);
-			if (paused) {
+	usePlayEvent(
+		React.useCallback(playing => {
+			setPlaying(playing);
+			if (!playing) {
 				setShowOverlay(true);
 				clearTimeout(overlayTimeout.current);
 			} else {
@@ -40,11 +40,11 @@ export function OverlayProvider({ children }) {
 					setSuspendMouseMove(false);
 				}, 500);
 			}
-		}, []),
-	});
+		}, [])
+	);
 
 	React.useEffect(() => {
-		if (paused || suspendMouseMove) return;
+		if (!playing || suspendMouseMove) return;
 
 		const startTimeout = () => onStartOverlayTimeout();
 		if (videoContainerRef) {
@@ -56,7 +56,7 @@ export function OverlayProvider({ children }) {
 				videoContainerRef.removeEventListener('mousemove', startTimeout);
 			}
 		};
-	}, [paused, onStartOverlayTimeout, videoContainerRef, suspendMouseMove]);
+	}, [playing, onStartOverlayTimeout, videoContainerRef, suspendMouseMove]);
 
 	// clean up any timeouts on unmount
 	React.useEffect(() => () => clearTimeout(overlayTimeout.current), []);
@@ -65,7 +65,7 @@ export function OverlayProvider({ children }) {
 		<OverlayContext.Provider
 			value={React.useMemo(
 				() => ({
-					showOverlay: paused || showOverlay,
+					showOverlay: !playing || showOverlay,
 					onShowOverlay: () => {
 						if (overlayTimeout.current) {
 							clearTimeout(overlayTimeout.current);
@@ -74,7 +74,7 @@ export function OverlayProvider({ children }) {
 					},
 					onStartOverlayTimeout,
 				}),
-				[onStartOverlayTimeout, paused, showOverlay]
+				[onStartOverlayTimeout, playing, showOverlay]
 			)}>
 			{children}
 		</OverlayContext.Provider>

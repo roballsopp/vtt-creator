@@ -1,15 +1,14 @@
 import Tooltip from '@material-ui/core/Tooltip';
 import React from 'react';
-import usePlayProgress from './use-play-progress.hook';
-import useDuration from './use-duration.hook';
+import { usePlayTime } from './play-time-context';
+import { useDuration } from './duration-context';
 
 export function PlayTime({ className }) {
-	const [currentTime, onTimeUpdate] = React.useState(0);
-	usePlayProgress({ onTimeUpdate });
+	const { playtime } = usePlayTime();
 	return (
 		<div className={className}>
 			<Tooltip title="Current Time">
-				<span>{formatSeconds(currentTime)}</span>
+				<span>{formatSeconds(playtime)}</span>
 			</Tooltip>
 		</div>
 	);

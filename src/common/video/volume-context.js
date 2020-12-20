@@ -1,7 +1,17 @@
-import * as React from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { useVideoDom } from './video-dom.context';
 
-export default function useVolume() {
+const VolumeContext = React.createContext({
+	volume: 1,
+	muted: false,
+});
+
+VolumeProvider.propTypes = {
+	children: PropTypes.node.isRequired,
+};
+
+export function VolumeProvider({ children }) {
 	const [volume, setVolume] = React.useState(1);
 	const [muted, setMuted] = React.useState(false);
 	const { videoRef } = useVideoDom();
@@ -32,17 +42,20 @@ export default function useVolume() {
 		};
 	}, [muted, volume, videoRef]);
 
-	return React.useMemo(
-		() => ({
-			volume,
-			muted,
-			onVolumeChange: volume => {
-				if (videoRef) videoRef.volume = volume;
-			},
-			onToggleMute: () => {
-				if (videoRef) videoRef.muted = !videoRef.muted;
-			},
-		}),
-		[volume, muted, videoRef]
+	return (
+		<VolumeContext.Provider
+			value={React.useMemo(
+				() => ({
+					volume,
+					muted,
+				}),
+				[volume, muted]
+			)}>
+			{children}
+		</VolumeContext.Provider>
 	);
+}
+
+export function useVolume() {
+	return React.useContext(VolumeContext);
 }
