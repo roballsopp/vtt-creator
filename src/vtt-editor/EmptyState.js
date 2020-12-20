@@ -53,12 +53,12 @@ export default function EmptyState() {
 					of this pane.
 				</Typography>
 				<Typography align="center" className={classes.actionGutter}>
-					You can also load captions from an existing VTT file from your computer:
+					You can also load captions from an existing VTT file on your computer:
 				</Typography>
 				<Button
 					startIcon={<PublishIcon />}
 					variant="contained"
-					color="primary"
+					color="secondary"
 					onClick={openFileSelector}
 					className={classes.gutterBottom}>
 					Load from VTT file
@@ -69,7 +69,7 @@ export default function EmptyState() {
 				<ExtractFromVideoButton
 					startIcon={<VoiceChatIcon />}
 					variant="contained"
-					color="primary"
+					color="secondary"
 					onClick={openFileSelector}
 					className={classes.gutterBottom}>
 					Extract from video

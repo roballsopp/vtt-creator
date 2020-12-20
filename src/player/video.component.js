@@ -59,7 +59,7 @@ export default function Video({ className }) {
 				<Typography align="center" className={classes.actionGutter}>
 					Choose a video from your computer to create or edit captions for:
 				</Typography>
-				<Button name="Initial Select Video" variant="contained" color="primary" onClick={openFileSelector}>
+				<Button name="Initial Select Video" variant="contained" color="secondary" onClick={openFileSelector}>
 					Select Video File
 				</Button>
 			</div>

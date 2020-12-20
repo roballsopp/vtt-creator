@@ -94,7 +94,7 @@ export default function VTTMenu() {
 
 	return (
 		<React.Fragment>
-			<Tooltip title="VTT Options">
+			<Tooltip title="Cue Options">
 				<IconButton edge="end" color="inherit" aria-label="Menu" onClick={e => setOptionsMenuAnchorEl(e.currentTarget)}>
 					<MoreIcon />
 				</IconButton>

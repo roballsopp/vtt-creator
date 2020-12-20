@@ -8,7 +8,6 @@ import VideoOverlay from './video-overlay.component';
 const useStyles = makeStyles({
 	root: {
 		position: 'relative',
-		backgroundColor: 'black',
 	},
 	video: {
 		height: '100%',
@@ -32,10 +31,10 @@ Video.propTypes = {
 
 export default function Video({ src, topElement, children, className }) {
 	const classes = useStyles();
-	const { onVideoRef, onVideoContainerRef } = useVideoDom();
+	const { onVideoRef } = useVideoDom();
 
 	return (
-		<div ref={onVideoContainerRef} className={clsx(classes.root, className)}>
+		<div className={clsx(classes.root, className)}>
 			<video src={src} ref={onVideoRef} className={classes.video}>
 				{children}
 			</video>

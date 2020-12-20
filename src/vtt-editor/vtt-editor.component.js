@@ -58,7 +58,7 @@ export default function VTTEditor() {
 			) : null}
 			{loading ? <Loader /> : null}
 			<Tooltip title="Add Cue" placement="top">
-				<FabButton className={classes.fab} color="primary" aria-label="Add Cue" onClick={onAddCue}>
+				<FabButton className={classes.fab} color="secondary" aria-label="Add Cue" onClick={onAddCue}>
 					<AddIcon />
 				</FabButton>
 			</Tooltip>
