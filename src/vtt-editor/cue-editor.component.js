@@ -20,9 +20,9 @@ const useStyles = makeStyles({
 		marginRight: 4,
 		flex: 1,
 	},
-	closeIcon: {
-		padding: 8,
-		marginLeft: -4,
+	iconWrapper: {
+		display: 'flex',
+		alignItems: 'center',
 	},
 });
 
@@ -94,9 +94,11 @@ export default function CueEditor() {
 					onChange={onChangeEndTime}
 				/>
 				<Tooltip title="Delete Cue">
-					<IconButton aria-label="Delete" onClick={onRemoveCue} className={classes.closeIcon} edge="end">
-						<CloseIcon fontSize="small" />
-					</IconButton>
+					<div className={classes.iconWrapper}>
+						<IconButton aria-label="Delete" onClick={onRemoveCue} size="small" edge="end">
+							<CloseIcon fontSize="small" />
+						</IconButton>
+					</div>
 				</Tooltip>
 			</div>
 			<div>
