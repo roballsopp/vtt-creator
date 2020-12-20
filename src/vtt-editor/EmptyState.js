@@ -51,8 +51,8 @@ export default function EmptyState() {
 		<div className={classes.root}>
 			<div className={clsx(classes.gutterBottom, classes.ie11Fix)}>
 				<Typography align="center">
-					You can manually add caption cues here by clicking the <AddIcon className={classes.alignIcon} /> at the
-					bottom of this pane.
+					You can manually add caption cues here by clicking the <AddIcon className={classes.alignIcon} /> at the bottom
+					of this pane.
 				</Typography>
 			</div>
 			<div className={clsx(classes.actionGutter, classes.ie11Fix)}>
