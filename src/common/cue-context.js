@@ -1,5 +1,5 @@
-import * as React from 'react';
-import * as PropTypes from 'prop-types';
+import React from 'react';
+import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
 import { CuePropType } from './prop-types';
 import { useToast } from './toast-context';
@@ -32,13 +32,13 @@ export function CuesProvider({ children }) {
 		setCues(orderedCues);
 	}, []);
 
-	const saveCuesToStorage = React.useCallback(() => {
+	const saveCuesToStorage = React.useCallback(cues => {
 		try {
 			storeCues(cues);
 		} catch (e) {
 			handleError(e);
 		}
-	}, [cues]);
+	}, []);
 
 	// load cues on mount
 	React.useEffect(() => {
@@ -54,14 +54,15 @@ export function CuesProvider({ children }) {
 
 	// save cues if we leave the site
 	React.useEffect(() => {
-		window.addEventListener('beforeunload', saveCuesToStorage);
-		return () => {
-			window.removeEventListener('beforeunload', saveCuesToStorage);
+		const handleBeforeUnload = () => {
+			saveCuesToStorage(cues);
 		};
-	}, [saveCuesToStorage]);
-
-	// save cues on unmount
-	React.useEffect(() => () => saveCuesToStorage(), [saveCuesToStorage]);
+		// this actually fires when the browser window is closing _and_ when a react router navigation happens
+		window.addEventListener('beforeunload', handleBeforeUnload);
+		return () => {
+			window.removeEventListener('beforeunload', handleBeforeUnload);
+		};
+	}, [cues, saveCuesToStorage]);
 
 	return (
 		<CuesContext.Provider
@@ -71,7 +72,7 @@ export function CuesProvider({ children }) {
 					loading,
 					onAddCue: () => {
 						if (videoRef) {
-							return onChangeCues(cues.concat(new VTTCue(videoRef.currentTime, videoRef.currentTime + 2, '')));
+							return onChangeCues(cues.concat(new VTTCue(videoRef.currentTime, videoRef.currentTime + 2, '')), true);
 						}
 
 						if (cues.length) {
@@ -155,7 +156,7 @@ export function CueProvider({ cue, cueIndex, children }) {
 						}
 
 						const newCue = new VTTCue(newStartTime, newEndTime, cue.text, cue.id);
-						onChangeCue(newCue, cueIndex);
+						onChangeCue(newCue, cueIndex, true);
 					},
 					onChangeCueText: newText => {
 						const newCue = new VTTCue(cue.startTime, cue.endTime, newText, cue.id);
