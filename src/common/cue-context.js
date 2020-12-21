@@ -71,7 +71,7 @@ export function CuesProvider({ children }) {
 					loading,
 					onAddCue: () => {
 						if (videoRef) {
-							return onChangeCues(cues.concat(new VTTCue(videoRef.currentTime, videoRef.currentTime + 2, '')));
+							return onChangeCues(cues.concat(new VTTCue(videoRef.currentTime, videoRef.currentTime + 2, '')), true);
 						}
 
 						if (cues.length) {
@@ -155,7 +155,7 @@ export function CueProvider({ cue, cueIndex, children }) {
 						}
 
 						const newCue = new VTTCue(newStartTime, newEndTime, cue.text, cue.id);
-						onChangeCue(newCue, cueIndex);
+						onChangeCue(newCue, cueIndex, true);
 					},
 					onChangeCueText: newText => {
 						const newCue = new VTTCue(cue.startTime, cue.endTime, newText, cue.id);
