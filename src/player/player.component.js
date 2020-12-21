@@ -21,7 +21,6 @@ const useStyles = makeStyles({
 	video: {
 		height: 'calc(100% - 38px)',
 		margin: 'auto',
-		maxWidth: 1000,
 	},
 	vttTimeline: {
 		flex: 1,

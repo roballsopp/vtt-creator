@@ -20,12 +20,13 @@ export function KeyboardControlProvider({ children }) {
 	React.useEffect(() => {
 		const handleKeyDown = e => {
 			if (disableRequests.length) return;
-			if (e.code === 'Space') {
+			// e.code doesn't work in ie11
+			if (e.keyCode === 32) {
 				togglePlay();
-			} else if (e.code === 'ArrowLeft') {
-				nudgeVideo(-0.015);
-			} else if (e.code === 'ArrowRight') {
-				nudgeVideo(0.015);
+			} else if (e.keyCode === 37) {
+				nudgeVideo(-0.05); // this can apparently get too small for ie11 (0.015 wouldn't work)
+			} else if (e.keyCode === 39) {
+				nudgeVideo(0.05);
 			}
 		};
 		document.addEventListener('keydown', handleKeyDown);
