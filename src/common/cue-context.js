@@ -128,7 +128,7 @@ CueProvider.propTypes = {
 	children: PropTypes.node.isRequired,
 };
 
-export function CueProvider({ cue, cueIndex, children }) {
+function CueProvider({ cue, cueIndex, children }) {
 	const { onChangeCue, onRemoveCue } = useCues();
 
 	return (
@@ -170,6 +170,10 @@ export function CueProvider({ cue, cueIndex, children }) {
 		</CueContext.Provider>
 	);
 }
+
+const CueProviderMemo = React.memo(CueProvider);
+
+export { CueProviderMemo as CueProvider };
 
 export function useCue() {
 	return React.useContext(CueContext);

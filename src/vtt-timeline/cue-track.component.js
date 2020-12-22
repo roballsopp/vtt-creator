@@ -1,5 +1,4 @@
-import * as React from 'react';
-import Typography from '@material-ui/core/Typography';
+import React from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { List, useCues, CueProvider } from '../common';
 import CueHandle from './cue-handle';
@@ -9,15 +8,6 @@ const useStyles = makeStyles({
 		position: 'relative',
 		height: '100%',
 		color: 'white',
-	},
-	cueContent: {
-		backgroundColor: 'rgba(0, 0, 0, 0.4)',
-		display: 'flex',
-		justifyContent: 'center',
-		alignItems: 'center',
-		height: '100%',
-		padding: 30,
-		userSelect: 'none',
 	},
 });
 
@@ -34,13 +24,7 @@ export default function CueTrack() {
 			getKey={cue => cue.id}
 			renderItem={(cue, i) => (
 				<CueProvider cue={cue} cueIndex={i}>
-					<CueHandle>
-						<div className={classes.cueContent}>
-							<Typography color="inherit" variant="h5" noWrap>
-								{cue.text}
-							</Typography>
-						</div>
-					</CueHandle>
+					<CueHandle startTime={cue.startTime} endTime={cue.endTime} text={cue.text} />
 				</CueProvider>
 			)}
 		/>

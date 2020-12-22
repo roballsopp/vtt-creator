@@ -1,8 +1,8 @@
-import * as React from 'react';
-import * as PropTypes from 'prop-types';
+import React from 'react';
+import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
-import { useCue } from '../../common';
 import CueHandleLeft from './cue-handle-left.component';
 import CueHandleRight from './cue-handle-right.component';
 import CueHandleCenter from './cue-handle-center.component';
@@ -16,9 +16,6 @@ const useStyles = makeStyles({
 	},
 	borderHandleContainer: {
 		position: 'relative',
-		height: '100%',
-	},
-	content: {
 		height: '100%',
 	},
 	edgeHandle: {
@@ -43,14 +40,24 @@ const useStyles = makeStyles({
 		bottom: 0,
 		right: 0,
 	},
+	cueContent: {
+		backgroundColor: 'rgba(0, 0, 0, 0.4)',
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+		height: '100%',
+		padding: 30,
+		userSelect: 'none',
+	},
 });
 
 CueHandle.propTypes = {
-	children: PropTypes.node,
+	startTime: PropTypes.number.isRequired,
+	endTime: PropTypes.number.isRequired,
+	text: PropTypes.string.isRequired,
 };
 
-export default function CueHandle({ children }) {
-	const { cue } = useCue();
+function CueHandle({ startTime, endTime, text }) {
 	const [pos, setPos] = React.useState({ left: 0, right: 0 });
 	const { pixelsPerSec, zoomContainerRect } = useZoom();
 	const classes = useStyles();
@@ -59,11 +66,11 @@ export default function CueHandle({ children }) {
 	React.useEffect(() => {
 		if (Number.isFinite(pixelsPerSec) && Number.isFinite(containerWidth)) {
 			setPos({
-				left: Math.round(cue.startTime * pixelsPerSec),
-				right: Math.round(containerWidth - cue.endTime * pixelsPerSec),
+				left: Math.round(startTime * pixelsPerSec),
+				right: Math.round(containerWidth - endTime * pixelsPerSec),
 			});
 		}
-	}, [pixelsPerSec, cue.startTime, cue.endTime, containerWidth]);
+	}, [pixelsPerSec, startTime, endTime, containerWidth]);
 
 	const onChangeLeft = React.useCallback(delta => {
 		setPos(p => {
@@ -95,7 +102,11 @@ export default function CueHandle({ children }) {
 	return (
 		<div className={classes.cue} style={pos}>
 			<div className={classes.borderHandleContainer}>
-				<div className={classes.content}>{children}</div>
+				<div className={classes.cueContent}>
+					<Typography color="inherit" variant="h5" noWrap>
+						{text}
+					</Typography>
+				</div>
 				<CueHandleCenter className={classes.centerHandle} onChange={onSlideCue} />
 				<CueHandleLeft className={clsx(classes.edgeHandle, classes.leftHandle)} onChange={onChangeLeft} />
 				<CueHandleRight className={clsx(classes.edgeHandle, classes.rightHandle)} onChange={onChangeRight} />
@@ -103,3 +114,5 @@ export default function CueHandle({ children }) {
 		</div>
 	);
 }
+
+export default React.memo(CueHandle);
