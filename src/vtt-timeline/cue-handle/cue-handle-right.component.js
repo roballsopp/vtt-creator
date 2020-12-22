@@ -28,10 +28,9 @@ function CueHandleRight({ onChange, className }) {
 	const classes = useStyles();
 	const { onDeltaCue } = useCue();
 	const [handleRef, setHandleRef] = React.useState();
-	const { pixelsPerSec } = useZoom();
-
 	const startPosRef = React.useRef(0);
 	const prevPosRef = React.useRef(0);
+	const { pixelsPerSec } = useZoom();
 
 	const onDragStart = React.useCallback(e => {
 		startPosRef.current = e.clientX;
