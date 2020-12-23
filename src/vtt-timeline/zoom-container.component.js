@@ -54,11 +54,11 @@ export default function ZoomContainer({ children }) {
 		: pixelsPerSec * 60; // default to 1 minute
 
 	const handleZoomIn = () => {
-		setPixelsPerSec(p => p + 50);
+		setPixelsPerSec(p => p * 1.25);
 	};
 
 	const handleZoomOut = () => {
-		setPixelsPerSec(p => p - 50);
+		setPixelsPerSec(p => p / 1.25);
 	};
 
 	const zoomContext = React.useMemo(() => ({ pixelsPerSec, zoomContainerWidth }), [pixelsPerSec, zoomContainerWidth]);
