@@ -18,12 +18,11 @@ const useStyles = makeStyles({
 CueHandleCenter.propTypes = {
 	cueIndex: PropTypes.number.isRequired,
 	onDragging: PropTypes.func.isRequired,
-	onClick: PropTypes.func.isRequired,
 	onChangeCueTiming: PropTypes.func.isRequired,
 	className: PropTypes.string,
 };
 
-function CueHandleCenter({ cueIndex, onDragging, onClick, onChangeCueTiming, className }) {
+function CueHandleCenter({ cueIndex, onDragging, onChangeCueTiming, className }) {
 	const classes = useStyles();
 	const [handleRef, setHandleRef] = React.useState();
 	const startPosRef = React.useRef(0);
@@ -60,14 +59,17 @@ function CueHandleCenter({ cueIndex, onDragging, onClick, onChangeCueTiming, cla
 				const relPos = e.clientX - bbox.x;
 				const d = (relPos - startPosRef.current) / pixelsPerSec;
 				onChangeCueTiming(cueIndex, { startDelta: d, endDelta: d });
-				// if we didn't perform a drag, treat this as a click event
-				if (!didDragRef.current) onClick(e);
 			},
-			[trackEl, cueIndex, pixelsPerSec, onChangeCueTiming, onClick]
+			[trackEl, cueIndex, pixelsPerSec, onChangeCueTiming]
 		),
 	});
 
-	return <div ref={setHandleRef} className={clsx(classes.root, className)} />;
+	const handleClick = e => {
+		// if we performed a drag, don't fire the click event
+		if (didDragRef.current) e.stopPropagation();
+	};
+
+	return <div ref={setHandleRef} className={clsx(classes.root, className)} onClick={handleClick} />;
 }
 
 export default React.memo(CueHandleCenter);

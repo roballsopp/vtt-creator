@@ -75,7 +75,6 @@ function CueHandle({ cue, cueIndex, onChangeCueTiming, onRemoveCue }) {
 	const [pos, setPos] = React.useState({ left: 0 });
 	const { pixelsPerSec } = useZoom();
 	const classes = useStyles();
-	const { seekVideo } = useVideoControl();
 
 	React.useEffect(() => {
 		if (Number.isFinite(pixelsPerSec)) {
@@ -112,13 +111,13 @@ function CueHandle({ cue, cueIndex, onChangeCueTiming, onRemoveCue }) {
 		});
 	}, []);
 
-	const handleRemoveCue = React.useCallback(() => {
-		onRemoveCue(cueIndex);
-	}, [cueIndex, onRemoveCue]);
-
-	const handleSeekToCue = () => {
-		seekVideo(cue.startTime);
-	};
+	const handleRemoveCue = React.useCallback(
+		e => {
+			e.stopPropagation();
+			onRemoveCue(cueIndex);
+		},
+		[cueIndex, onRemoveCue]
+	);
 
 	return (
 		<div className={classes.cue} style={pos}>
@@ -131,7 +130,6 @@ function CueHandle({ cue, cueIndex, onChangeCueTiming, onRemoveCue }) {
 				<CueHandleCenter
 					className={classes.centerHandle}
 					cueIndex={cueIndex}
-					onClick={handleSeekToCue}
 					onDragging={onSlideCue}
 					onChangeCueTiming={onChangeCueTiming}
 				/>
