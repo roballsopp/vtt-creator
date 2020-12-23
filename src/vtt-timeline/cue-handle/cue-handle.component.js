@@ -1,14 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
+import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/styles';
 import CueHandleLeft from './cue-handle-left.component';
 import CueHandleRight from './cue-handle-right.component';
 import CueHandleCenter from './cue-handle-center.component';
 import { useZoom } from '../zoom-container.component';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
 	cue: {
 		position: 'absolute',
 		top: 0,
@@ -49,7 +52,12 @@ const useStyles = makeStyles({
 		padding: 30,
 		userSelect: 'none',
 	},
-});
+	removeButton: {
+		position: 'absolute',
+		top: theme.spacing(2),
+		right: theme.spacing(2),
+	},
+}));
 
 CueHandle.propTypes = {
 	cue: PropTypes.shape({
@@ -59,9 +67,10 @@ CueHandle.propTypes = {
 	}).isRequired,
 	cueIndex: PropTypes.number.isRequired,
 	onChangeCueTiming: PropTypes.func.isRequired,
+	onRemoveCue: PropTypes.func.isRequired,
 };
 
-function CueHandle({ cue, cueIndex, onChangeCueTiming }) {
+function CueHandle({ cue, cueIndex, onChangeCueTiming, onRemoveCue }) {
 	const [pos, setPos] = React.useState({ left: 0 });
 	const { pixelsPerSec } = useZoom();
 	const classes = useStyles();
@@ -101,6 +110,10 @@ function CueHandle({ cue, cueIndex, onChangeCueTiming }) {
 		});
 	}, []);
 
+	const handleRemoveCue = React.useCallback(() => {
+		onRemoveCue(cueIndex);
+	}, [cueIndex, onRemoveCue]);
+
 	return (
 		<div className={classes.cue} style={pos}>
 			<div className={classes.borderHandleContainer}>
@@ -127,6 +140,13 @@ function CueHandle({ cue, cueIndex, onChangeCueTiming }) {
 					onDragging={onChangeRight}
 					onChangeCueTiming={onChangeCueTiming}
 				/>
+				<Tooltip title="Delete Cue">
+					<div className={classes.removeButton}>
+						<IconButton aria-label="Delete" onClick={handleRemoveCue} size="small" edge="end" color="inherit">
+							<CloseIcon fontSize="small" color="inherit" />
+						</IconButton>
+					</div>
+				</Tooltip>
 			</div>
 		</div>
 	);

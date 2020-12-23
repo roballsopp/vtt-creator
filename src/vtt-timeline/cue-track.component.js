@@ -15,13 +15,13 @@ const useStyles = makeStyles({
 CueTrack.propTypes = {};
 
 export default function CueTrack() {
-	const { cues, changeCueTiming } = useCues();
+	const { cues, changeCueTiming, onRemoveCue } = useCues();
 	const classes = useStyles();
 
 	return (
 		<CueTrackProvider className={classes.cueContainer}>
 			{cues.map((cue, i) => (
-				<CueHandle cue={cue} cueIndex={i} onChangeCueTiming={changeCueTiming} key={cue.id} />
+				<CueHandle cue={cue} cueIndex={i} onChangeCueTiming={changeCueTiming} onRemoveCue={onRemoveCue} key={cue.id} />
 			))}
 		</CueTrackProvider>
 	);
