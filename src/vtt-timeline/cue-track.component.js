@@ -2,6 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { useCues } from '../common';
 import CueHandle from './cue-handle';
+import { CueTrackProvider } from './cue-track-context';
 
 const useStyles = makeStyles({
 	cueContainer: {
@@ -18,10 +19,10 @@ export default function CueTrack() {
 	const classes = useStyles();
 
 	return (
-		<div className={classes.cueContainer}>
+		<CueTrackProvider className={classes.cueContainer}>
 			{cues.map((cue, i) => (
 				<CueHandle cue={cue} cueIndex={i} onChangeCueTiming={changeCueTiming} key={cue.id} />
 			))}
-		</div>
+		</CueTrackProvider>
 	);
 }

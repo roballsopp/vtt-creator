@@ -1,8 +1,9 @@
-import * as React from 'react';
+import React from 'react';
 import clsx from 'clsx';
-import * as PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { useDragging } from '../../common';
+import { useCueTrack } from '../cue-track-context';
 import { useZoom } from '../zoom-container.component';
 
 const useStyles = makeStyles({
@@ -32,25 +33,35 @@ function CueHandleLeft({ cueIndex, onDragging, onChangeCueTiming, className }) {
 	const startPosRef = React.useRef(0);
 	const prevPosRef = React.useRef(0);
 	const { pixelsPerSec } = useZoom();
+	const { trackEl } = useCueTrack();
 
 	useDragging(handleRef, {
-		onDragStart: React.useCallback(e => {
-			startPosRef.current = e.clientX;
-			prevPosRef.current = e.clientX;
-		}, []),
+		onDragStart: React.useCallback(
+			e => {
+				const bbox = trackEl.getBoundingClientRect();
+				const relPos = e.clientX - bbox.x;
+				startPosRef.current = relPos;
+				prevPosRef.current = relPos;
+			},
+			[trackEl]
+		),
 		onDragging: React.useCallback(
 			e => {
-				onDragging(e.clientX - prevPosRef.current);
-				prevPosRef.current = e.clientX;
+				const bbox = trackEl.getBoundingClientRect();
+				const relPos = e.clientX - bbox.x;
+				onDragging(relPos - prevPosRef.current);
+				prevPosRef.current = relPos;
 			},
-			[onDragging]
+			[trackEl, onDragging]
 		),
 		onDragEnd: React.useCallback(
 			e => {
-				const startDelta = (e.clientX - startPosRef.current) / pixelsPerSec;
+				const bbox = trackEl.getBoundingClientRect();
+				const relPos = e.clientX - bbox.x;
+				const startDelta = (relPos - startPosRef.current) / pixelsPerSec;
 				onChangeCueTiming(cueIndex, { startDelta });
 			},
-			[cueIndex, pixelsPerSec, onChangeCueTiming]
+			[trackEl, cueIndex, pixelsPerSec, onChangeCueTiming]
 		),
 	});
 
