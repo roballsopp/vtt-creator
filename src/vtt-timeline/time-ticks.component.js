@@ -22,10 +22,10 @@ TimeTicks.defaultProps = {
 
 export default function TimeTicks({ height, svgSize }) {
 	const classes = useStyles();
-	const { pixelsPerSec, zoomContainerRect } = useZoom();
+	const { pixelsPerSec, zoomContainerWidth } = useZoom();
 
 	// keep svgs to a reasonable size
-	const numSvgs = Math.floor(zoomContainerRect.width / svgSize);
+	const numSvgs = Math.floor(zoomContainerWidth / svgSize);
 	const numTicks = Math.ceil(svgSize / pixelsPerSec);
 
 	const svgs = [];
@@ -47,7 +47,7 @@ export default function TimeTicks({ height, svgSize }) {
 		elapsedPixels += svgSize;
 	}
 
-	const lastSvgSize = zoomContainerRect.width % svgSize;
+	const lastSvgSize = zoomContainerWidth % svgSize;
 
 	if (lastSvgSize) {
 		const tickOffset = -(elapsedPixels % pixelsPerSec);

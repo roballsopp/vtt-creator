@@ -4,7 +4,7 @@ import FabButton from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import Tooltip from '@material-ui/core/Tooltip';
 import { makeStyles } from '@material-ui/styles';
-import { List, Loader, useCues, CueProvider } from '../common';
+import { List, Loader, useCues } from '../common';
 import CueEditor from './cue-editor.component';
 import { AutoScrollProvider } from './auto-scroll.context';
 import AutoScrollItem from './auto-scroll-item.component';
@@ -34,7 +34,16 @@ VTTEditor.propTypes = {};
 
 export default function VTTEditor() {
 	const classes = useStyles();
-	const { cues, loading, onAddCue } = useCues();
+	const {
+		cues,
+		loading,
+		onAddCue,
+		onRemoveCue,
+		changeCueEnd,
+		changeCueStart,
+		changeCueText,
+		changeCueTiming,
+	} = useCues();
 
 	return (
 		<div className={classes.root}>
@@ -46,12 +55,20 @@ export default function VTTEditor() {
 						data={cues}
 						getKey={cue => cue.id}
 						renderItem={(cue, i, isLast) => (
-							<CueProvider cue={cue} cueIndex={i}>
+							<React.Fragment key={cue.id}>
 								<AutoScrollItem cueTime={cue.startTime} className={classes.cueEditor}>
-									<CueEditor />
+									<CueEditor
+										cue={cue}
+										cueIndex={i}
+										onRemoveCue={onRemoveCue}
+										onChangeCueEnd={changeCueEnd}
+										onChangeCueStart={changeCueStart}
+										onChangeCueText={changeCueText}
+										onChangeCueTiming={changeCueTiming}
+									/>
 								</AutoScrollItem>
 								{!isLast && <Divider />}
-							</CueProvider>
+							</React.Fragment>
 						)}
 					/>
 				</AutoScrollProvider>

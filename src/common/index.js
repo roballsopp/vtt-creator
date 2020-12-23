@@ -1,5 +1,5 @@
 import Button from './button.component';
-import { CuesProvider, useCues, CueProvider, useCue } from './cue-context';
+import { CuesProvider, useCues } from './cue-context';
 import { CuesFromFileProvider, useCueFromFileLoader } from './cues-from-file-context';
 import ErrorBoundary from './error-boundary.component';
 import List from './list.component';
@@ -14,8 +14,6 @@ export {
 	Button,
 	CuesProvider,
 	useCues,
-	CueProvider,
-	useCue,
 	CuesFromFileProvider,
 	useCueFromFileLoader,
 	ErrorBoundary,

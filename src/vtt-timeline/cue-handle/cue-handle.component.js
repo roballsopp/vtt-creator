@@ -52,50 +52,52 @@ const useStyles = makeStyles({
 });
 
 CueHandle.propTypes = {
-	startTime: PropTypes.number.isRequired,
-	endTime: PropTypes.number.isRequired,
-	text: PropTypes.string.isRequired,
+	cue: PropTypes.shape({
+		startTime: PropTypes.number.isRequired,
+		endTime: PropTypes.number.isRequired,
+		text: PropTypes.string.isRequired,
+	}).isRequired,
+	cueIndex: PropTypes.number.isRequired,
+	onChangeCueTiming: PropTypes.func.isRequired,
 };
 
-function CueHandle({ startTime, endTime, text }) {
-	const [pos, setPos] = React.useState({ left: 0, right: 0 });
-	const { pixelsPerSec, zoomContainerRect } = useZoom();
+function CueHandle({ cue, cueIndex, onChangeCueTiming }) {
+	const [pos, setPos] = React.useState({ left: 0 });
+	const { pixelsPerSec } = useZoom();
 	const classes = useStyles();
-	const containerWidth = zoomContainerRect ? zoomContainerRect.width : 0;
 
 	React.useEffect(() => {
-		if (Number.isFinite(pixelsPerSec) && Number.isFinite(containerWidth)) {
+		if (Number.isFinite(pixelsPerSec)) {
+			const startPos = cue.startTime * pixelsPerSec;
+			const width = (cue.endTime - cue.startTime) * pixelsPerSec;
 			setPos({
-				left: Math.round(startTime * pixelsPerSec),
-				right: Math.round(containerWidth - endTime * pixelsPerSec),
+				left: Math.round(startPos),
+				width,
 			});
 		}
-	}, [pixelsPerSec, startTime, endTime, containerWidth]);
+	}, [pixelsPerSec, cue.startTime, cue.endTime]);
 
 	const onChangeLeft = React.useCallback(delta => {
 		setPos(p => {
 			const left = p.left + delta;
-			return { ...p, left: left < 0 ? 0 : left };
+			const width = p.width - delta;
+			return { left: left < 0 ? 0 : left, width };
 		});
 	}, []);
 
 	const onChangeRight = React.useCallback(delta => {
-		setPos(p => ({ ...p, right: p.right - delta }));
+		setPos(p => ({ ...p, width: p.width + delta }));
 	}, []);
 
 	const onSlideCue = React.useCallback(delta => {
 		setPos(p => {
 			const left = p.left + delta;
-			const right = p.right - delta;
 
 			if (left < 0) {
-				return {
-					left: 0,
-					right: p.right + p.left,
-				};
+				return { ...p, left: 0 };
 			}
 
-			return { left, right };
+			return { ...p, left };
 		});
 	}, []);
 
@@ -104,12 +106,27 @@ function CueHandle({ startTime, endTime, text }) {
 			<div className={classes.borderHandleContainer}>
 				<div className={classes.cueContent}>
 					<Typography color="inherit" variant="h5" noWrap>
-						{text}
+						{cue.text}
 					</Typography>
 				</div>
-				<CueHandleCenter className={classes.centerHandle} onChange={onSlideCue} />
-				<CueHandleLeft className={clsx(classes.edgeHandle, classes.leftHandle)} onChange={onChangeLeft} />
-				<CueHandleRight className={clsx(classes.edgeHandle, classes.rightHandle)} onChange={onChangeRight} />
+				<CueHandleCenter
+					className={classes.centerHandle}
+					cueIndex={cueIndex}
+					onDragging={onSlideCue}
+					onChangeCueTiming={onChangeCueTiming}
+				/>
+				<CueHandleLeft
+					className={clsx(classes.edgeHandle, classes.leftHandle)}
+					cueIndex={cueIndex}
+					onDragging={onChangeLeft}
+					onChangeCueTiming={onChangeCueTiming}
+				/>
+				<CueHandleRight
+					className={clsx(classes.edgeHandle, classes.rightHandle)}
+					cueIndex={cueIndex}
+					onDragging={onChangeRight}
+					onChangeCueTiming={onChangeCueTiming}
+				/>
 			</div>
 		</div>
 	);

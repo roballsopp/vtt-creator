@@ -2,7 +2,7 @@ import * as React from 'react';
 import clsx from 'clsx';
 import * as PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
-import { useDragging, useCue } from '../../common';
+import { useDragging } from '../../common';
 import { useZoom } from '../zoom-container.component';
 
 const useStyles = makeStyles({
@@ -20,40 +20,39 @@ const useStyles = makeStyles({
 });
 
 CueHandleLeft.propTypes = {
-	onChange: PropTypes.func.isRequired,
+	cueIndex: PropTypes.number.isRequired,
+	onDragging: PropTypes.func.isRequired,
+	onChangeCueTiming: PropTypes.func.isRequired,
 	className: PropTypes.string,
 };
 
-function CueHandleLeft({ onChange, className }) {
+function CueHandleLeft({ cueIndex, onDragging, onChangeCueTiming, className }) {
 	const classes = useStyles();
-	const { onDeltaCue } = useCue();
 	const [handleRef, setHandleRef] = React.useState();
 	const startPosRef = React.useRef(0);
 	const prevPosRef = React.useRef(0);
 	const { pixelsPerSec } = useZoom();
 
-	const onDragStart = React.useCallback(e => {
-		startPosRef.current = e.clientX;
-		prevPosRef.current = e.clientX;
-	}, []);
-
-	const onDragging = React.useCallback(
-		e => {
-			onChange(e.clientX - prevPosRef.current);
+	useDragging(handleRef, {
+		onDragStart: React.useCallback(e => {
+			startPosRef.current = e.clientX;
 			prevPosRef.current = e.clientX;
-		},
-		[onChange]
-	);
-
-	const onDragEnd = React.useCallback(
-		e => {
-			const startDelta = (e.clientX - startPosRef.current) / pixelsPerSec;
-			onDeltaCue({ startDelta });
-		},
-		[pixelsPerSec, onDeltaCue]
-	);
-
-	useDragging(handleRef, { onDragStart, onDragging, onDragEnd });
+		}, []),
+		onDragging: React.useCallback(
+			e => {
+				onDragging(e.clientX - prevPosRef.current);
+				prevPosRef.current = e.clientX;
+			},
+			[onDragging]
+		),
+		onDragEnd: React.useCallback(
+			e => {
+				const startDelta = (e.clientX - startPosRef.current) / pixelsPerSec;
+				onChangeCueTiming(cueIndex, { startDelta });
+			},
+			[cueIndex, pixelsPerSec, onChangeCueTiming]
+		),
+	});
 
 	return (
 		<div ref={setHandleRef} className={clsx(classes.root, className)}>

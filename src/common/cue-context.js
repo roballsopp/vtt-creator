@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
-import { CuePropType } from './prop-types';
 import { useToast } from './toast-context';
 import { getCuesFromStorage, storeCues } from '../services/vtt.service';
 import { handleError } from '../services/error-handler.service';
@@ -9,10 +8,13 @@ import { useVideoDom } from './video';
 
 const CuesContext = React.createContext({
 	cues: [],
+	loading: true,
 	onAddCue: () => {},
 	onRemoveCue: () => {},
-	// onChangeCue takes three args, the new cue, the index of the cue, and a boolean to indicate whether startTime was changed
-	onChangeCue: () => {},
+	changeCueStart: () => {},
+	changeCueEnd: () => {},
+	changeCueText: () => {},
+	changeCueTiming: () => {},
 	onChangeCues: () => {},
 	onLoadingCues: () => {},
 });
@@ -26,11 +28,6 @@ export function CuesProvider({ children }) {
 	const [loading, onLoadingCues] = React.useState(true);
 	const toast = useToast();
 	const { videoRef } = useVideoDom();
-
-	const onChangeCues = React.useCallback((newCues, reorder) => {
-		const orderedCues = reorder ? sortBy(newCues, ['startTime']) : newCues;
-		setCues(orderedCues);
-	}, []);
 
 	const saveCuesToStorage = React.useCallback(cues => {
 		try {
@@ -64,40 +61,104 @@ export function CuesProvider({ children }) {
 		};
 	}, [cues, saveCuesToStorage]);
 
+	const onAddCue = React.useCallback(() => {
+		setCues(cues => {
+			const newCues = cues.slice();
+
+			if (videoRef) {
+				// if we have a video loaded, insert the new cue at the current video time
+				const newCue = new VTTCue(videoRef.currentTime, videoRef.currentTime + 2, '');
+				const newIndex = newCues.findIndex(c => c.startTime > newCue.startTime);
+				if (newIndex === -1) {
+					newCues.push(newCue);
+				} else {
+					newCues.splice(newIndex, 0, newCue);
+				}
+			} else if (cues.length) {
+				// if we have some cues already, but no video, insert after the last cue
+				const lastCue = cues[cues.length - 1];
+				newCues.push(new VTTCue(lastCue.endTime, lastCue.endTime + 2, ''));
+			} else {
+				// if we're here, this is the only cue, and we have no video. just put it at the end
+				newCues.push(new VTTCue(0, 2, ''));
+			}
+
+			return newCues;
+		});
+	}, [videoRef]);
+
+	const onRemoveCue = React.useCallback(i => {
+		setCues(cues => {
+			const newCues = cues.slice();
+			newCues.splice(i, 1);
+			return newCues;
+		});
+	}, []);
+
+	const changeCueStart = React.useCallback((cueIdx, newStartTime) => {
+		setCues(cues => {
+			const newCues = cues.slice();
+			const oldCue = cues[cueIdx];
+			newCues[cueIdx] = new VTTCue(newStartTime, oldCue.endTime, oldCue.text, oldCue.id);
+			return sortBy(newCues, ['startTime']);
+		});
+	}, []);
+
+	const changeCueEnd = React.useCallback((cueIdx, newEndTime) => {
+		setCues(cues => {
+			const newCues = cues.slice();
+			const oldCue = cues[cueIdx];
+			newCues[cueIdx] = new VTTCue(oldCue.startTime, newEndTime, oldCue.text, oldCue.id);
+			return newCues;
+		});
+	}, []);
+
+	const changeCueText = React.useCallback((cueIdx, newText) => {
+		setCues(cues => {
+			const newCues = cues.slice();
+			const oldCue = cues[cueIdx];
+			newCues[cueIdx] = new VTTCue(oldCue.startTime, oldCue.endTime, newText, oldCue.id);
+			return newCues;
+		});
+	}, []);
+
+	const changeCueTiming = React.useCallback((cueIdx, { startDelta = 0, endDelta = 0 }) => {
+		setCues(cues => {
+			const oldCue = cues[cueIdx];
+
+			let newStartTime = oldCue.startTime + startDelta;
+			let newEndTime = oldCue.endTime + endDelta;
+
+			if (newStartTime < 0 && endDelta) {
+				newStartTime = 0;
+				newEndTime = oldCue.endTime - oldCue.startTime;
+			} else if (newStartTime < 0) {
+				newStartTime = 0;
+			}
+
+			const newCues = cues.slice();
+			newCues[cueIdx] = new VTTCue(newStartTime, newEndTime, oldCue.text, oldCue.id);
+
+			return sortBy(newCues, ['startTime']);
+		});
+	}, []);
+
 	return (
 		<CuesContext.Provider
 			value={React.useMemo(
 				() => ({
 					cues,
 					loading,
-					onAddCue: () => {
-						if (videoRef) {
-							return onChangeCues(cues.concat(new VTTCue(videoRef.currentTime, videoRef.currentTime + 2, '')), true);
-						}
-
-						if (cues.length) {
-							const lastCue = cues[cues.length - 1];
-							return onChangeCues(cues.concat(new VTTCue(lastCue.endTime, lastCue.endTime + 2, '')));
-						}
-
-						return onChangeCues([new VTTCue(0, 2, '')]);
-					},
-					onRemoveCue: i => {
-						const newCues = cues.slice();
-						newCues.splice(i, 1);
-						return onChangeCues(newCues);
-					},
-					// onChangeCue args (cue, i, reorder)
-					onChangeCue: (cue, i, reorder) => {
-						const newCues = cues.slice();
-						newCues[i] = cue;
-						onChangeCues(newCues, reorder);
-					},
-					// onChangeCues args (cue, reorder)
-					onChangeCues,
+					onAddCue,
+					onRemoveCue,
+					changeCueStart,
+					changeCueEnd,
+					changeCueText,
+					changeCueTiming,
+					onChangeCues: setCues,
 					onLoadingCues,
 				}),
-				[cues, loading, onChangeCues, videoRef]
+				[cues, loading, onAddCue, onRemoveCue, changeCueStart, changeCueEnd, changeCueText, changeCueTiming]
 			)}>
 			{children}
 		</CuesContext.Provider>
@@ -106,75 +167,4 @@ export function CuesProvider({ children }) {
 
 export function useCues() {
 	return React.useContext(CuesContext);
-}
-
-/* Context for a SINGLE cue.
-
-   Wrap up an individual cue's index in the list, and
-   some of the logic associated with changing a cue
-*/
-const CueContext = React.createContext({
-	cue: {},
-	onChangeCueStart: () => {},
-	onChangeCueEnd: () => {},
-	onDeltaCue: () => {},
-	onChangeCueText: () => {},
-	onRemoveCue: () => {},
-});
-
-CueProvider.propTypes = {
-	cue: CuePropType,
-	cueIndex: PropTypes.number,
-	children: PropTypes.node.isRequired,
-};
-
-function CueProvider({ cue, cueIndex, children }) {
-	const { onChangeCue, onRemoveCue } = useCues();
-
-	return (
-		<CueContext.Provider
-			value={React.useMemo(
-				() => ({
-					cue,
-					onChangeCueStart: newStartTime => {
-						const newCue = new VTTCue(newStartTime, cue.endTime, cue.text, cue.id);
-						onChangeCue(newCue, cueIndex, true);
-					},
-					onChangeCueEnd: newEndTime => {
-						const newCue = new VTTCue(cue.startTime, newEndTime, cue.text, cue.id);
-						onChangeCue(newCue, cueIndex);
-					},
-					onDeltaCue: ({ startDelta = 0, endDelta = 0 }) => {
-						let newStartTime = cue.startTime + startDelta;
-						let newEndTime = cue.endTime + endDelta;
-
-						if (newStartTime < 0 && endDelta) {
-							newStartTime = 0;
-							newEndTime = cue.endTime - cue.startTime;
-						} else if (newStartTime < 0) {
-							newStartTime = 0;
-						}
-
-						const newCue = new VTTCue(newStartTime, newEndTime, cue.text, cue.id);
-						onChangeCue(newCue, cueIndex, true);
-					},
-					onChangeCueText: newText => {
-						const newCue = new VTTCue(cue.startTime, cue.endTime, newText, cue.id);
-						onChangeCue(newCue, cueIndex);
-					},
-					onRemoveCue: () => onRemoveCue(cueIndex),
-				}),
-				[cue, cueIndex, onChangeCue, onRemoveCue]
-			)}>
-			{children}
-		</CueContext.Provider>
-	);
-}
-
-const CueProviderMemo = React.memo(CueProvider);
-
-export { CueProviderMemo as CueProvider };
-
-export function useCue() {
-	return React.useContext(CueContext);
 }
