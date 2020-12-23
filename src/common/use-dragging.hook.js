@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 export default function useDragging(elementRef, { onDragging, onDragStart, onDragEnd }) {
 	const [dragging, setDragging] = React.useState(false);
