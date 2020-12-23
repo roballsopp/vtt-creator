@@ -32,6 +32,7 @@ function CueHandleLeft({ cueIndex, onDragging, onChangeCueTiming, className }) {
 	const [handleRef, setHandleRef] = React.useState();
 	const startPosRef = React.useRef(0);
 	const prevPosRef = React.useRef(0);
+	const didDragRef = React.useRef(false);
 	const { pixelsPerSec } = useZoom();
 	const { trackEl } = useCueTrack();
 
@@ -42,6 +43,7 @@ function CueHandleLeft({ cueIndex, onDragging, onChangeCueTiming, className }) {
 				const relPos = e.clientX - bbox.x;
 				startPosRef.current = relPos;
 				prevPosRef.current = relPos;
+				didDragRef.current = false;
 			},
 			[trackEl]
 		),
@@ -51,6 +53,7 @@ function CueHandleLeft({ cueIndex, onDragging, onChangeCueTiming, className }) {
 				const relPos = e.clientX - bbox.x;
 				onDragging(relPos - prevPosRef.current);
 				prevPosRef.current = relPos;
+				didDragRef.current = true;
 			},
 			[trackEl, onDragging]
 		),
@@ -65,8 +68,13 @@ function CueHandleLeft({ cueIndex, onDragging, onChangeCueTiming, className }) {
 		),
 	});
 
+	const handleClick = e => {
+		// if we performed a drag, don't fire the click event
+		if (didDragRef.current) e.stopPropagation();
+	};
+
 	return (
-		<div ref={setHandleRef} className={clsx(classes.root, className)}>
+		<div ref={setHandleRef} className={clsx(classes.root, className)} onClick={handleClick}>
 			<div className={classes.borderLine} />
 		</div>
 	);

@@ -6,7 +6,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/styles';
-import { useVideoControl } from '../../common/video';
 import CueHandleLeft from './cue-handle-left.component';
 import CueHandleRight from './cue-handle-right.component';
 import CueHandleCenter from './cue-handle-center.component';
@@ -75,7 +74,6 @@ function CueHandle({ cue, cueIndex, onChangeCueTiming, onRemoveCue }) {
 	const [pos, setPos] = React.useState({ left: 0 });
 	const { pixelsPerSec } = useZoom();
 	const classes = useStyles();
-	const { seekVideo } = useVideoControl();
 
 	React.useEffect(() => {
 		if (Number.isFinite(pixelsPerSec)) {
@@ -112,13 +110,13 @@ function CueHandle({ cue, cueIndex, onChangeCueTiming, onRemoveCue }) {
 		});
 	}, []);
 
-	const handleRemoveCue = React.useCallback(() => {
-		onRemoveCue(cueIndex);
-	}, [cueIndex, onRemoveCue]);
-
-	const handleSeekToCue = () => {
-		seekVideo(cue.startTime);
-	};
+	const handleRemoveCue = React.useCallback(
+		e => {
+			e.stopPropagation();
+			onRemoveCue(cueIndex);
+		},
+		[cueIndex, onRemoveCue]
+	);
 
 	return (
 		<div className={classes.cue} style={pos}>
@@ -131,7 +129,6 @@ function CueHandle({ cue, cueIndex, onChangeCueTiming, onRemoveCue }) {
 				<CueHandleCenter
 					className={classes.centerHandle}
 					cueIndex={cueIndex}
-					onClick={handleSeekToCue}
 					onDragging={onSlideCue}
 					onChangeCueTiming={onChangeCueTiming}
 				/>
