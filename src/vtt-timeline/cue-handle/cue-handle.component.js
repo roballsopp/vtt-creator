@@ -61,16 +61,16 @@ const useStyles = makeStyles(theme => ({
 
 CueHandle.propTypes = {
 	cue: PropTypes.shape({
+		id: PropTypes.string.isRequired,
 		startTime: PropTypes.number.isRequired,
 		endTime: PropTypes.number.isRequired,
 		text: PropTypes.string.isRequired,
 	}).isRequired,
-	cueIndex: PropTypes.number.isRequired,
 	onChangeCueTiming: PropTypes.func.isRequired,
 	onRemoveCue: PropTypes.func.isRequired,
 };
 
-function CueHandle({ cue, cueIndex, onChangeCueTiming, onRemoveCue }) {
+function CueHandle({ cue, onChangeCueTiming, onRemoveCue }) {
 	const [pos, setPos] = React.useState({ left: 0 });
 	const { pixelsPerSec } = useZoom();
 	const classes = useStyles();
@@ -113,9 +113,9 @@ function CueHandle({ cue, cueIndex, onChangeCueTiming, onRemoveCue }) {
 	const handleRemoveCue = React.useCallback(
 		e => {
 			e.stopPropagation();
-			onRemoveCue(cueIndex);
+			onRemoveCue(cue.id);
 		},
-		[cueIndex, onRemoveCue]
+		[cue.id, onRemoveCue]
 	);
 
 	return (
@@ -128,19 +128,19 @@ function CueHandle({ cue, cueIndex, onChangeCueTiming, onRemoveCue }) {
 				</div>
 				<CueHandleCenter
 					className={classes.centerHandle}
-					cueIndex={cueIndex}
+					cueId={cue.id}
 					onDragging={onSlideCue}
 					onChangeCueTiming={onChangeCueTiming}
 				/>
 				<CueHandleLeft
 					className={clsx(classes.edgeHandle, classes.leftHandle)}
-					cueIndex={cueIndex}
+					cueId={cue.id}
 					onDragging={onChangeLeft}
 					onChangeCueTiming={onChangeCueTiming}
 				/>
 				<CueHandleRight
 					className={clsx(classes.edgeHandle, classes.rightHandle)}
-					cueIndex={cueIndex}
+					cueId={cue.id}
 					onDragging={onChangeRight}
 					onChangeCueTiming={onChangeCueTiming}
 				/>

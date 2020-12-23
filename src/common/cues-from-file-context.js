@@ -52,16 +52,16 @@ CuesFromFileProvider.propTypes = {
 
 export function CuesFromFileProvider({ children }) {
 	const classes = useStyles();
-	const { onChangeCues, onLoadingCues } = useCues();
+	const { setCues, setCuesLoading } = useCues();
 	const toast = useToast();
 	const [malformedVTTDialogState, setMalformedVTTDialogState] = React.useState({ message: '', open: false });
 
 	const loadCuesFromFile = React.useCallback(
 		async file => {
-			onLoadingCues(true);
+			setCuesLoading(true);
 			try {
 				const newCues = await getCuesFromVTT(file);
-				onChangeCues(newCues); // check if VTT files require ordering
+				setCues(newCues); // check if VTT files require ordering
 			} catch (e) {
 				if (e instanceof EmptyFileError) {
 					toast.error('This VTT file appears to be empty.');
@@ -80,9 +80,9 @@ export function CuesFromFileProvider({ children }) {
 					toast.error('Oh no! An error occurred loading the cues.');
 				}
 			}
-			onLoadingCues(false);
+			setCuesLoading(false);
 		},
-		[onChangeCues, onLoadingCues, toast]
+		[setCues, setCuesLoading, toast]
 	);
 
 	const handleMalformedDialogClose = () => {

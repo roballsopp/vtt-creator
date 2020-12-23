@@ -21,13 +21,13 @@ const useStyles = makeStyles({
 });
 
 CueHandleRight.propTypes = {
-	cueIndex: PropTypes.number.isRequired,
+	cueId: PropTypes.string.isRequired,
 	onDragging: PropTypes.func.isRequired,
 	onChangeCueTiming: PropTypes.func.isRequired,
 	className: PropTypes.string,
 };
 
-function CueHandleRight({ cueIndex, onDragging, onChangeCueTiming, className }) {
+function CueHandleRight({ cueId, onDragging, onChangeCueTiming, className }) {
 	const classes = useStyles();
 	const [handleRef, setHandleRef] = React.useState();
 	const startPosRef = React.useRef(0);
@@ -40,7 +40,7 @@ function CueHandleRight({ cueIndex, onDragging, onChangeCueTiming, className }) 
 		onDragStart: React.useCallback(
 			e => {
 				const bbox = trackEl.getBoundingClientRect();
-				const relPos = e.clientX - bbox.x;
+				const relPos = e.clientX - bbox.left;
 				startPosRef.current = relPos;
 				prevPosRef.current = relPos;
 				didDragRef.current = false;
@@ -50,7 +50,7 @@ function CueHandleRight({ cueIndex, onDragging, onChangeCueTiming, className }) 
 		onDragging: React.useCallback(
 			e => {
 				const bbox = trackEl.getBoundingClientRect();
-				const relPos = e.clientX - bbox.x;
+				const relPos = e.clientX - bbox.left;
 				onDragging(relPos - prevPosRef.current);
 				prevPosRef.current = relPos;
 				didDragRef.current = true;
@@ -60,11 +60,11 @@ function CueHandleRight({ cueIndex, onDragging, onChangeCueTiming, className }) 
 		onDragEnd: React.useCallback(
 			e => {
 				const bbox = trackEl.getBoundingClientRect();
-				const relPos = e.clientX - bbox.x;
+				const relPos = e.clientX - bbox.left;
 				const endDelta = (relPos - startPosRef.current) / pixelsPerSec;
-				onChangeCueTiming(cueIndex, { endDelta });
+				onChangeCueTiming(cueId, { endDelta });
 			},
-			[trackEl, cueIndex, pixelsPerSec, onChangeCueTiming]
+			[trackEl, cueId, pixelsPerSec, onChangeCueTiming]
 		),
 	});
 

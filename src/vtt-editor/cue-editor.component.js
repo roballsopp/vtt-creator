@@ -28,18 +28,18 @@ const useStyles = makeStyles({
 
 CueEditor.propTypes = {
 	cue: PropTypes.shape({
+		id: PropTypes.string.isRequired,
 		startTime: PropTypes.number.isRequired,
 		endTime: PropTypes.number.isRequired,
 		text: PropTypes.string.isRequired,
 	}).isRequired,
-	cueIndex: PropTypes.number.isRequired,
 	onRemoveCue: PropTypes.func.isRequired,
 	onChangeCueEnd: PropTypes.func.isRequired,
 	onChangeCueStart: PropTypes.func.isRequired,
 	onChangeCueText: PropTypes.func.isRequired,
 };
 
-function CueEditor({ cue, cueIndex, onRemoveCue, onChangeCueEnd, onChangeCueStart, onChangeCueText }) {
+function CueEditor({ cue, onRemoveCue, onChangeCueEnd, onChangeCueStart, onChangeCueText }) {
 	const classes = useStyles();
 	const captionInputKeyCtrl = useKeyboardControl();
 	const startInputKeyCtrl = useKeyboardControl();
@@ -58,23 +58,23 @@ function CueEditor({ cue, cueIndex, onRemoveCue, onChangeCueEnd, onChangeCueStar
 
 	const onChangeText = e => {
 		setText(e.target.value);
-		debouncedOnChangeText(cueIndex, e.target.value);
+		debouncedOnChangeText(cue.id, e.target.value);
 	};
 
 	const onChangeStartTime = secs => {
-		onChangeCueStart(cueIndex, Number(secs));
+		onChangeCueStart(cue.id, Number(secs));
 	};
 
 	const onChangeEndTime = secs => {
-		onChangeCueEnd(cueIndex, Number(secs));
+		onChangeCueEnd(cue.id, Number(secs));
 	};
 
 	const onChangeTimeSpan = secs => {
-		onChangeCueEnd(cueIndex, cue.startTime + Number(secs));
+		onChangeCueEnd(cue.id, cue.startTime + Number(secs));
 	};
 
 	const handleRemoveCue = () => {
-		onRemoveCue(cueIndex);
+		onRemoveCue(cue.id);
 	};
 
 	return (
