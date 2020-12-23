@@ -36,10 +36,9 @@ export function VideoControlProvider({ children }) {
 							else videoRef.pause();
 						});
 					},
-					seekVideo: pos => {
-						const clipped = Math.min(Math.max(pos, 0), 1);
+					seekVideo: newTime => {
 						if (videoRef) {
-							videoRef.currentTime = clipped * videoRef.duration;
+							videoRef.currentTime = newTime;
 						}
 					},
 					nudgeVideo: delta => {

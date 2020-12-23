@@ -18,15 +18,17 @@ const useStyles = makeStyles({
 CueHandleCenter.propTypes = {
 	cueIndex: PropTypes.number.isRequired,
 	onDragging: PropTypes.func.isRequired,
+	onClick: PropTypes.func.isRequired,
 	onChangeCueTiming: PropTypes.func.isRequired,
 	className: PropTypes.string,
 };
 
-function CueHandleCenter({ cueIndex, onDragging, onChangeCueTiming, className }) {
+function CueHandleCenter({ cueIndex, onDragging, onClick, onChangeCueTiming, className }) {
 	const classes = useStyles();
 	const [handleRef, setHandleRef] = React.useState();
 	const startPosRef = React.useRef(0);
 	const prevPosRef = React.useRef(0);
+	const didDragRef = React.useRef(false);
 	const { pixelsPerSec } = useZoom();
 	const { trackEl } = useCueTrack();
 
@@ -38,6 +40,7 @@ function CueHandleCenter({ cueIndex, onDragging, onChangeCueTiming, className })
 				const relPos = e.clientX - bbox.x;
 				startPosRef.current = relPos;
 				prevPosRef.current = relPos;
+				didDragRef.current = false;
 			},
 			[trackEl]
 		),
@@ -47,6 +50,7 @@ function CueHandleCenter({ cueIndex, onDragging, onChangeCueTiming, className })
 				const relPos = e.clientX - bbox.x;
 				onDragging(relPos - prevPosRef.current);
 				prevPosRef.current = relPos;
+				didDragRef.current = true;
 			},
 			[onDragging, trackEl]
 		),
@@ -56,8 +60,10 @@ function CueHandleCenter({ cueIndex, onDragging, onChangeCueTiming, className })
 				const relPos = e.clientX - bbox.x;
 				const d = (relPos - startPosRef.current) / pixelsPerSec;
 				onChangeCueTiming(cueIndex, { startDelta: d, endDelta: d });
+				// if we didn't perform a drag, treat this as a click event
+				if (!didDragRef.current) onClick(e);
 			},
-			[trackEl, cueIndex, pixelsPerSec, onChangeCueTiming]
+			[trackEl, cueIndex, pixelsPerSec, onChangeCueTiming, onClick]
 		),
 	});
 

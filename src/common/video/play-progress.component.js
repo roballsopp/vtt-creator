@@ -74,10 +74,11 @@ export default function PlayProgress() {
 	const onClickProgressBar = React.useCallback(
 		e => {
 			const playpos = getPlayposFromMouseEvent(e);
-			setPlaypos(playpos);
-			seekVideo(playpos);
+			const clipped = Math.min(Math.max(playpos, 0), 1);
+			setPlaypos(clipped);
+			seekVideo(clipped * duration);
 		},
-		[seekVideo, getPlayposFromMouseEvent]
+		[seekVideo, duration, getPlayposFromMouseEvent]
 	);
 
 	useDragging(playheadRef.current, {
@@ -87,8 +88,9 @@ export default function PlayProgress() {
 		onDragging: React.useCallback(
 			e => {
 				const playpos = getPlayposFromMouseEvent(e);
-				setPlaypos(playpos);
-				throttledSeek(playpos);
+				const clipped = Math.min(Math.max(playpos, 0), 1);
+				setPlaypos(clipped);
+				throttledSeek(playpos * clipped);
 			},
 			[getPlayposFromMouseEvent, throttledSeek]
 		),
