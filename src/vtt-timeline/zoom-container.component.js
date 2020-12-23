@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Fab from '@material-ui/core/Fab';
+import Tooltip from '@material-ui/core/Tooltip';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
 import { makeStyles } from '@material-ui/styles';
@@ -71,17 +72,21 @@ export default function ZoomContainer({ children }) {
 				</div>
 			</AutoScrollContainer>
 			<div className={classes.zoomControls}>
-				<Fab
-					color="secondary"
-					size="small"
-					aria-label="Zoom In"
-					onClick={handleZoomIn}
-					className={classes.zoomButtonMargin}>
-					<ZoomInIcon />
-				</Fab>
-				<Fab color="secondary" size="small" aria-label="Zoom Out" onClick={handleZoomOut}>
-					<ZoomOutIcon />
-				</Fab>
+				<Tooltip title="Zoom In" placement="top">
+					<Fab
+						color="secondary"
+						size="small"
+						aria-label="Zoom In"
+						onClick={handleZoomIn}
+						className={classes.zoomButtonMargin}>
+						<ZoomInIcon />
+					</Fab>
+				</Tooltip>
+				<Tooltip title="Zoom Out" placement="top">
+					<Fab color="secondary" size="small" aria-label="Zoom Out" onClick={handleZoomOut}>
+						<ZoomOutIcon />
+					</Fab>
+				</Tooltip>
 			</div>
 		</div>
 	);
