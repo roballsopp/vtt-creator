@@ -13,13 +13,13 @@ KeyboardControlProvider.propTypes = {
 };
 
 export function KeyboardControlProvider({ children }) {
-	const [disableRequests, setDisableRequests] = React.useState([]);
+	const disableRequests = React.useRef([]);
 
 	const { togglePlay, nudgeVideo } = useVideoControl();
 
 	React.useEffect(() => {
 		const handleKeyDown = e => {
-			if (disableRequests.length) return;
+			if (disableRequests.current.length) return;
 			// e.code doesn't work in ie11
 			if (e.keyCode === 32) {
 				togglePlay();
@@ -33,22 +33,19 @@ export function KeyboardControlProvider({ children }) {
 		return () => {
 			document.removeEventListener('keydown', handleKeyDown);
 		};
-	}, [togglePlay, nudgeVideo, disableRequests]);
+	}, [togglePlay, nudgeVideo]);
 
 	const disableKeyboardControls = React.useCallback(() => {
 		const requestId = uuid();
-		setDisableRequests(r => [...r, requestId]);
+		disableRequests.current.push(requestId);
 		return requestId;
 	}, []);
 
 	const enableKeyboardControls = React.useCallback(requestId => {
-		setDisableRequests(r => {
-			const idx = r.indexOf(requestId);
-			if (idx === -1) return r;
-			const rCopy = [...r];
-			rCopy.splice(idx, 1);
-			return rCopy;
-		});
+		const idx = disableRequests.current.indexOf(requestId);
+		if (idx > -1) {
+			disableRequests.current.splice(idx, 1);
+		}
 	}, []);
 
 	return (
