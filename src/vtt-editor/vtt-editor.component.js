@@ -34,16 +34,7 @@ VTTEditor.propTypes = {};
 
 export default function VTTEditor() {
 	const classes = useStyles();
-	const {
-		cues,
-		loading,
-		onAddCue,
-		onRemoveCue,
-		changeCueEnd,
-		changeCueStart,
-		changeCueText,
-		changeCueTiming,
-	} = useCues();
+	const { cues, loading, addCue, removeCue, changeCueEnd, changeCueStart, changeCueText, changeCueTiming } = useCues();
 
 	return (
 		<div className={classes.root}>
@@ -59,8 +50,7 @@ export default function VTTEditor() {
 								<AutoScrollItem cueTime={cue.startTime} className={classes.cueEditor}>
 									<CueEditor
 										cue={cue}
-										cueIndex={i}
-										onRemoveCue={onRemoveCue}
+										onRemoveCue={removeCue}
 										onChangeCueEnd={changeCueEnd}
 										onChangeCueStart={changeCueStart}
 										onChangeCueText={changeCueText}
@@ -75,7 +65,7 @@ export default function VTTEditor() {
 			) : null}
 			{loading ? <Loader /> : null}
 			<Tooltip title="Add Cue" placement="top">
-				<FabButton className={classes.fab} color="secondary" aria-label="Add Cue" onClick={onAddCue}>
+				<FabButton className={classes.fab} color="secondary" aria-label="Add Cue" onClick={addCue}>
 					<AddIcon />
 				</FabButton>
 			</Tooltip>

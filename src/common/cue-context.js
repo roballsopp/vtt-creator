@@ -9,14 +9,14 @@ import { useVideoDom } from './video';
 const CuesContext = React.createContext({
 	cues: [],
 	loading: true,
-	onAddCue: () => {},
-	onRemoveCue: () => {},
+	addCue: () => {},
+	removeCue: () => {},
 	changeCueStart: () => {},
 	changeCueEnd: () => {},
 	changeCueText: () => {},
 	changeCueTiming: () => {},
-	onChangeCues: () => {},
-	onLoadingCues: () => {},
+	setCues: () => {},
+	setCuesLoading: () => {},
 });
 
 CuesProvider.propTypes = {
@@ -25,7 +25,7 @@ CuesProvider.propTypes = {
 
 export function CuesProvider({ children }) {
 	const [cues, setCues] = React.useState([]);
-	const [loading, onLoadingCues] = React.useState(true);
+	const [loading, setLoading] = React.useState(true);
 	const toast = useToast();
 	const { videoRef } = useVideoDom();
 
@@ -46,7 +46,7 @@ export function CuesProvider({ children }) {
 			handleError(e);
 			toast.error('There was a problem loading the cues from your last session.');
 		}
-		onLoadingCues(false);
+		setLoading(false);
 	}, [toast]);
 
 	// save cues if we leave the site
@@ -61,7 +61,7 @@ export function CuesProvider({ children }) {
 		};
 	}, [cues, saveCuesToStorage]);
 
-	const onAddCue = React.useCallback(() => {
+	const addCue = React.useCallback(() => {
 		setCues(cues => {
 			const newCues = cues.slice();
 
@@ -87,44 +87,55 @@ export function CuesProvider({ children }) {
 		});
 	}, [videoRef]);
 
-	const onRemoveCue = React.useCallback(i => {
+	const removeCue = React.useCallback(id => {
 		setCues(cues => {
 			const newCues = cues.slice();
-			newCues.splice(i, 1);
+			const idx = newCues.findIndex(c => c.id === id);
+			if (idx === -1) return handleError(new Error('Could not find cue in list'));
+			newCues.splice(idx, 1);
 			return newCues;
 		});
 	}, []);
 
-	const changeCueStart = React.useCallback((cueIdx, newStartTime) => {
+	const changeCueStart = React.useCallback((id, newStartTime) => {
 		setCues(cues => {
 			const newCues = cues.slice();
-			const oldCue = cues[cueIdx];
-			newCues[cueIdx] = new VTTCue(newStartTime, oldCue.endTime, oldCue.text, oldCue.id);
+			const idx = newCues.findIndex(c => c.id === id);
+			if (idx === -1) return handleError(new Error('Could not find cue in list'));
+			const oldCue = cues[idx];
+			newCues[idx] = new VTTCue(newStartTime, oldCue.endTime, oldCue.text, oldCue.id);
 			return sortBy(newCues, ['startTime']);
 		});
 	}, []);
 
-	const changeCueEnd = React.useCallback((cueIdx, newEndTime) => {
+	const changeCueEnd = React.useCallback((id, newEndTime) => {
 		setCues(cues => {
 			const newCues = cues.slice();
-			const oldCue = cues[cueIdx];
-			newCues[cueIdx] = new VTTCue(oldCue.startTime, newEndTime, oldCue.text, oldCue.id);
+			const idx = newCues.findIndex(c => c.id === id);
+			if (idx === -1) return handleError(new Error('Could not find cue in list'));
+			const oldCue = cues[idx];
+			newCues[idx] = new VTTCue(oldCue.startTime, newEndTime, oldCue.text, oldCue.id);
 			return newCues;
 		});
 	}, []);
 
-	const changeCueText = React.useCallback((cueIdx, newText) => {
+	const changeCueText = React.useCallback((id, newText) => {
 		setCues(cues => {
 			const newCues = cues.slice();
-			const oldCue = cues[cueIdx];
-			newCues[cueIdx] = new VTTCue(oldCue.startTime, oldCue.endTime, newText, oldCue.id);
+			const idx = newCues.findIndex(c => c.id === id);
+			if (idx === -1) return handleError(new Error('Could not find cue in list'));
+			const oldCue = cues[idx];
+			newCues[idx] = new VTTCue(oldCue.startTime, oldCue.endTime, newText, oldCue.id);
 			return newCues;
 		});
 	}, []);
 
-	const changeCueTiming = React.useCallback((cueIdx, { startDelta = 0, endDelta = 0 }) => {
+	const changeCueTiming = React.useCallback((id, { startDelta = 0, endDelta = 0 }) => {
 		setCues(cues => {
-			const oldCue = cues[cueIdx];
+			const idx = cues.findIndex(c => c.id === id);
+			if (idx === -1) return handleError(new Error('Could not find cue in list'));
+
+			const oldCue = cues[idx];
 
 			let newStartTime = oldCue.startTime + startDelta;
 			let newEndTime = oldCue.endTime + endDelta;
@@ -137,7 +148,7 @@ export function CuesProvider({ children }) {
 			}
 
 			const newCues = cues.slice();
-			newCues[cueIdx] = new VTTCue(newStartTime, newEndTime, oldCue.text, oldCue.id);
+			newCues[idx] = new VTTCue(newStartTime, newEndTime, oldCue.text, oldCue.id);
 
 			return sortBy(newCues, ['startTime']);
 		});
@@ -149,16 +160,16 @@ export function CuesProvider({ children }) {
 				() => ({
 					cues,
 					loading,
-					onAddCue,
-					onRemoveCue,
+					addCue,
+					removeCue,
 					changeCueStart,
 					changeCueEnd,
 					changeCueText,
 					changeCueTiming,
-					onChangeCues: setCues,
-					onLoadingCues,
+					setCues,
+					setCuesLoading: setLoading,
 				}),
-				[cues, loading, onAddCue, onRemoveCue, changeCueStart, changeCueEnd, changeCueText, changeCueTiming]
+				[cues, loading, addCue, removeCue, changeCueStart, changeCueEnd, changeCueText, changeCueTiming]
 			)}>
 			{children}
 		</CuesContext.Provider>

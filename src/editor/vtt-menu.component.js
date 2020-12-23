@@ -40,7 +40,7 @@ const useStyles = makeStyles({
 
 export default function VTTMenu() {
 	const classes = useStyles();
-	const { cues, onChangeCues } = useCues();
+	const { cues, setCues } = useCues();
 	const { loadCuesFromFile } = useCueFromFileLoader();
 	const { extractDialogEvents } = useExtractFromVideo();
 
@@ -71,7 +71,7 @@ export default function VTTMenu() {
 	};
 
 	const onClearCues = () => {
-		onChangeCues([]);
+		setCues([]);
 		setClearCuesDialogOpen(false);
 	};
 

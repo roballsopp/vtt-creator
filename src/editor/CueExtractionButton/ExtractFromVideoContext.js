@@ -26,7 +26,7 @@ ExtractFromVideoProvider.propTypes = {
 };
 
 export function ExtractFromVideoProvider({ children }) {
-	const { onChangeCues, onLoadingCues } = useCues();
+	const { setCues, setCuesLoading } = useCues();
 	const { openLoginDialog, authDialogEvents } = useAuthDialog();
 	const { duration } = useDuration();
 	const { user } = useUser();
@@ -98,14 +98,14 @@ export function ExtractFromVideoProvider({ children }) {
 	};
 
 	const handleCueExtractComplete = segments => {
-		onLoadingCues(true);
+		setCuesLoading(true);
 		// for how this concatenation stuff works: https://cloud.google.com/speech-to-text/docs/basics#transcriptions
 		const words = segments.reduce((arr, { alternatives }) => {
 			return arr.concat(alternatives[0].words);
 		}, []);
 		const newCues = getCuesFromWords(words);
-		onChangeCues(newCues);
-		onLoadingCues(false);
+		setCues(newCues);
+		setCuesLoading(false);
 	};
 
 	return (
