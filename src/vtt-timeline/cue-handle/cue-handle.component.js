@@ -6,7 +6,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/styles';
-import { useVideoControl } from '../../common/video';
 import CueHandleLeft from './cue-handle-left.component';
 import CueHandleRight from './cue-handle-right.component';
 import CueHandleCenter from './cue-handle-center.component';
