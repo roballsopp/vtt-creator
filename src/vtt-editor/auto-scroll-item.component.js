@@ -9,7 +9,7 @@ AutoScrollItem.propTypes = {
 	className: PropTypes.string,
 };
 
-export default function AutoScrollItem({ cueTime, children, className, ...props }) {
+function AutoScrollItem({ cueTime, children, className, ...props }) {
 	const { scrollToChild } = useAutoScroll();
 
 	const prevTimeRef = React.useRef(0);
@@ -35,3 +35,5 @@ export default function AutoScrollItem({ cueTime, children, className, ...props 
 		</div>
 	);
 }
+
+export default React.memo(AutoScrollItem);

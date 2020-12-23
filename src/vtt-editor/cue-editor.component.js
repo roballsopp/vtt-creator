@@ -1,11 +1,11 @@
-import * as React from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
 import { makeStyles } from '@material-ui/styles';
 import debounce from 'lodash/debounce';
-import { useCue } from '../common';
 import { useKeyboardControl } from '../common/video';
 import TimingInput from './timing-input.component';
 
@@ -26,11 +26,21 @@ const useStyles = makeStyles({
 	},
 });
 
-CueEditor.propTypes = {};
+CueEditor.propTypes = {
+	cue: PropTypes.shape({
+		startTime: PropTypes.number.isRequired,
+		endTime: PropTypes.number.isRequired,
+		text: PropTypes.string.isRequired,
+	}).isRequired,
+	cueIndex: PropTypes.number.isRequired,
+	onRemoveCue: PropTypes.func.isRequired,
+	onChangeCueEnd: PropTypes.func.isRequired,
+	onChangeCueStart: PropTypes.func.isRequired,
+	onChangeCueText: PropTypes.func.isRequired,
+};
 
-export default function CueEditor() {
+function CueEditor({ cue, cueIndex, onRemoveCue, onChangeCueEnd, onChangeCueStart, onChangeCueText }) {
 	const classes = useStyles();
-	const { cue, onChangeCueStart, onChangeCueEnd, onChangeCueText, onRemoveCue } = useCue();
 	const captionInputKeyCtrl = useKeyboardControl();
 	const startInputKeyCtrl = useKeyboardControl();
 	const durInputKeyCtrl = useKeyboardControl();
@@ -48,19 +58,23 @@ export default function CueEditor() {
 
 	const onChangeText = e => {
 		setText(e.target.value);
-		debouncedOnChangeText(e.target.value);
+		debouncedOnChangeText(cueIndex, e.target.value);
 	};
 
 	const onChangeStartTime = secs => {
-		onChangeCueStart(Number(secs));
+		onChangeCueStart(cueIndex, Number(secs));
 	};
 
 	const onChangeEndTime = secs => {
-		onChangeCueEnd(Number(secs));
+		onChangeCueEnd(cueIndex, Number(secs));
 	};
 
 	const onChangeTimeSpan = secs => {
-		onChangeCueEnd(cue.startTime + Number(secs));
+		onChangeCueEnd(cueIndex, cue.startTime + Number(secs));
+	};
+
+	const handleRemoveCue = () => {
+		onRemoveCue(cueIndex);
 	};
 
 	return (
@@ -95,7 +109,7 @@ export default function CueEditor() {
 				/>
 				<Tooltip title="Delete Cue">
 					<div className={classes.iconWrapper}>
-						<IconButton aria-label="Delete" onClick={onRemoveCue} size="small" edge="end">
+						<IconButton aria-label="Delete" onClick={handleRemoveCue} size="small" edge="end">
 							<CloseIcon fontSize="small" />
 						</IconButton>
 					</div>
@@ -122,3 +136,5 @@ export default function CueEditor() {
 		</div>
 	);
 }
+
+export default React.memo(CueEditor);

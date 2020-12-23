@@ -61,7 +61,7 @@ export function CuesFromFileProvider({ children }) {
 			onLoadingCues(true);
 			try {
 				const newCues = await getCuesFromVTT(file);
-				onChangeCues(newCues, true); // check if VTT files require ordering
+				onChangeCues(newCues); // check if VTT files require ordering
 			} catch (e) {
 				if (e instanceof EmptyFileError) {
 					toast.error('This VTT file appears to be empty.');

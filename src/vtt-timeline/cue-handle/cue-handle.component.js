@@ -1,8 +1,8 @@
-import * as React from 'react';
-import * as PropTypes from 'prop-types';
+import React from 'react';
+import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
-import { useCue } from '../../common';
 import CueHandleLeft from './cue-handle-left.component';
 import CueHandleRight from './cue-handle-right.component';
 import CueHandleCenter from './cue-handle-center.component';
@@ -16,9 +16,6 @@ const useStyles = makeStyles({
 	},
 	borderHandleContainer: {
 		position: 'relative',
-		height: '100%',
-	},
-	content: {
 		height: '100%',
 	},
 	edgeHandle: {
@@ -43,63 +40,96 @@ const useStyles = makeStyles({
 		bottom: 0,
 		right: 0,
 	},
+	cueContent: {
+		backgroundColor: 'rgba(0, 0, 0, 0.4)',
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+		height: '100%',
+		padding: 30,
+		userSelect: 'none',
+	},
 });
 
 CueHandle.propTypes = {
-	children: PropTypes.node,
+	cue: PropTypes.shape({
+		startTime: PropTypes.number.isRequired,
+		endTime: PropTypes.number.isRequired,
+		text: PropTypes.string.isRequired,
+	}).isRequired,
+	cueIndex: PropTypes.number.isRequired,
+	onChangeCueTiming: PropTypes.func.isRequired,
 };
 
-export default function CueHandle({ children }) {
-	const { cue } = useCue();
-	const [pos, setPos] = React.useState({ left: 0, right: 0 });
-	const { pixelsPerSec, zoomContainerRect } = useZoom();
+function CueHandle({ cue, cueIndex, onChangeCueTiming }) {
+	const [pos, setPos] = React.useState({ left: 0 });
+	const { pixelsPerSec } = useZoom();
 	const classes = useStyles();
-	const containerWidth = zoomContainerRect ? zoomContainerRect.width : 0;
 
 	React.useEffect(() => {
-		if (Number.isFinite(pixelsPerSec) && Number.isFinite(containerWidth)) {
+		if (Number.isFinite(pixelsPerSec)) {
+			const startPos = cue.startTime * pixelsPerSec;
+			const width = (cue.endTime - cue.startTime) * pixelsPerSec;
 			setPos({
-				left: Math.round(cue.startTime * pixelsPerSec),
-				right: Math.round(containerWidth - cue.endTime * pixelsPerSec),
+				left: Math.round(startPos),
+				width,
 			});
 		}
-	}, [pixelsPerSec, cue.startTime, cue.endTime, containerWidth]);
+	}, [pixelsPerSec, cue.startTime, cue.endTime]);
 
 	const onChangeLeft = React.useCallback(delta => {
 		setPos(p => {
 			const left = p.left + delta;
-			return { ...p, left: left < 0 ? 0 : left };
+			const width = p.width - delta;
+			return { left: left < 0 ? 0 : left, width };
 		});
 	}, []);
 
 	const onChangeRight = React.useCallback(delta => {
-		setPos(p => ({ ...p, right: p.right - delta }));
+		setPos(p => ({ ...p, width: p.width + delta }));
 	}, []);
 
 	const onSlideCue = React.useCallback(delta => {
 		setPos(p => {
 			const left = p.left + delta;
-			const right = p.right - delta;
 
 			if (left < 0) {
-				return {
-					left: 0,
-					right: p.right + p.left,
-				};
+				return { ...p, left: 0 };
 			}
 
-			return { left, right };
+			return { ...p, left };
 		});
 	}, []);
 
 	return (
 		<div className={classes.cue} style={pos}>
 			<div className={classes.borderHandleContainer}>
-				<div className={classes.content}>{children}</div>
-				<CueHandleCenter className={classes.centerHandle} onChange={onSlideCue} />
-				<CueHandleLeft className={clsx(classes.edgeHandle, classes.leftHandle)} onChange={onChangeLeft} />
-				<CueHandleRight className={clsx(classes.edgeHandle, classes.rightHandle)} onChange={onChangeRight} />
+				<div className={classes.cueContent}>
+					<Typography color="inherit" variant="h5" noWrap>
+						{cue.text}
+					</Typography>
+				</div>
+				<CueHandleCenter
+					className={classes.centerHandle}
+					cueIndex={cueIndex}
+					onDragging={onSlideCue}
+					onChangeCueTiming={onChangeCueTiming}
+				/>
+				<CueHandleLeft
+					className={clsx(classes.edgeHandle, classes.leftHandle)}
+					cueIndex={cueIndex}
+					onDragging={onChangeLeft}
+					onChangeCueTiming={onChangeCueTiming}
+				/>
+				<CueHandleRight
+					className={clsx(classes.edgeHandle, classes.rightHandle)}
+					cueIndex={cueIndex}
+					onDragging={onChangeRight}
+					onChangeCueTiming={onChangeCueTiming}
+				/>
 			</div>
 		</div>
 	);
 }
+
+export default React.memo(CueHandle);

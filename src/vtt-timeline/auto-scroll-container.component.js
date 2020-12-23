@@ -25,25 +25,25 @@ AutoScrollContainer.propTypes = {
 export default function AutoScrollContainer({ pixelsPerSec, horizontal, children, className, ...props }) {
 	const classes = useStyles();
 
-	const [scrollContainerRef, setScrollContainerRef] = React.useState();
+	const scrollContainerRef = React.useRef();
 
 	usePlayTimeEvent(
 		React.useCallback(
 			currentTime => {
 				const scrollPixels = currentTime && pixelsPerSec ? pixelsPerSec * currentTime : 0;
-				if (scrollContainerRef) {
-					if (horizontal) scrollContainerRef.scrollLeft = scrollPixels;
-					else scrollContainerRef.scrollTop = scrollPixels;
+				if (scrollContainerRef.current) {
+					if (horizontal) scrollContainerRef.current.scrollLeft = scrollPixels;
+					else scrollContainerRef.current.scrollTop = scrollPixels;
 				}
 			},
-			[horizontal, pixelsPerSec, scrollContainerRef]
+			[horizontal, pixelsPerSec]
 		)
 	);
 
 	return (
 		<div
 			{...props}
-			ref={setScrollContainerRef}
+			ref={scrollContainerRef}
 			className={clsx(
 				{
 					[classes.root]: !horizontal,
