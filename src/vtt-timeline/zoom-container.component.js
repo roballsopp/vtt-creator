@@ -1,5 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Fab from '@material-ui/core/Fab';
+import ZoomInIcon from '@material-ui/icons/ZoomIn';
+import ZoomOutIcon from '@material-ui/icons/ZoomOut';
 import { makeStyles } from '@material-ui/styles';
 import usePlayerDuration from '../player/use-player-duration.hook';
 import AutoScrollContainer from './auto-scroll-container.component';
@@ -21,6 +24,15 @@ const useStyles = makeStyles(theme => ({
 	content: {
 		height: '100%',
 	},
+	zoomControls: {
+		position: 'absolute',
+		right: theme.spacing(2),
+		bottom: theme.spacing(6),
+		zIndex: 3,
+	},
+	zoomButtonMargin: {
+		marginRight: theme.spacing(1),
+	},
 }));
 
 const ZoomContext = React.createContext({ pixelsPerSec: 200, zoomContainerWidth: 12000 });
@@ -31,7 +43,7 @@ ZoomContainer.propTypes = {
 
 export default function ZoomContainer({ children }) {
 	const classes = useStyles();
-	const [pixelsPerSec] = React.useState(200);
+	const [pixelsPerSec, setPixelsPerSec] = React.useState(200);
 	const { duration } = usePlayerDuration();
 
 	// round up to next whole minute to reduce timeline re-renders
@@ -40,6 +52,14 @@ export default function ZoomContainer({ children }) {
 	const zoomContainerWidth = Number.isFinite(duration)
 		? Math.round(pixelsPerSec * Math.ceil(duration / 60) * 60)
 		: pixelsPerSec * 60; // default to 1 minute
+
+	const handleZoomIn = () => {
+		setPixelsPerSec(p => p + 50);
+	};
+
+	const handleZoomOut = () => {
+		setPixelsPerSec(p => p - 50);
+	};
 
 	const zoomContext = React.useMemo(() => ({ pixelsPerSec, zoomContainerWidth }), [pixelsPerSec, zoomContainerWidth]);
 
@@ -50,6 +70,19 @@ export default function ZoomContainer({ children }) {
 					<ZoomContext.Provider value={zoomContext}>{children}</ZoomContext.Provider>
 				</div>
 			</AutoScrollContainer>
+			<div className={classes.zoomControls}>
+				<Fab
+					color="secondary"
+					size="small"
+					aria-label="Zoom In"
+					onClick={handleZoomIn}
+					className={classes.zoomButtonMargin}>
+					<ZoomInIcon />
+				</Fab>
+				<Fab color="secondary" size="small" aria-label="Zoom Out" onClick={handleZoomOut}>
+					<ZoomOutIcon />
+				</Fab>
+			</div>
 		</div>
 	);
 }
