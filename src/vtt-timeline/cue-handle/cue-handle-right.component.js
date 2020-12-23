@@ -40,7 +40,7 @@ function CueHandleRight({ cueIndex, onDragging, onChangeCueTiming, className }) 
 		onDragStart: React.useCallback(
 			e => {
 				const bbox = trackEl.getBoundingClientRect();
-				const relPos = e.clientX - bbox.x;
+				const relPos = e.clientX - bbox.left;
 				startPosRef.current = relPos;
 				prevPosRef.current = relPos;
 				didDragRef.current = false;
@@ -50,7 +50,7 @@ function CueHandleRight({ cueIndex, onDragging, onChangeCueTiming, className }) 
 		onDragging: React.useCallback(
 			e => {
 				const bbox = trackEl.getBoundingClientRect();
-				const relPos = e.clientX - bbox.x;
+				const relPos = e.clientX - bbox.left;
 				onDragging(relPos - prevPosRef.current);
 				prevPosRef.current = relPos;
 				didDragRef.current = true;
@@ -60,7 +60,7 @@ function CueHandleRight({ cueIndex, onDragging, onChangeCueTiming, className }) 
 		onDragEnd: React.useCallback(
 			e => {
 				const bbox = trackEl.getBoundingClientRect();
-				const relPos = e.clientX - bbox.x;
+				const relPos = e.clientX - bbox.left;
 				const endDelta = (relPos - startPosRef.current) / pixelsPerSec;
 				onChangeCueTiming(cueIndex, { endDelta });
 			},

@@ -36,7 +36,7 @@ function CueHandleCenter({ cueIndex, onDragging, onChangeCueTiming, className })
 			e => {
 				// we use client bounding box to get relative position to the track element so that scrolling while sliding works as expected
 				const bbox = trackEl.getBoundingClientRect();
-				const relPos = e.clientX - bbox.x;
+				const relPos = e.clientX - bbox.left;
 				startPosRef.current = relPos;
 				prevPosRef.current = relPos;
 				didDragRef.current = false;
@@ -46,7 +46,7 @@ function CueHandleCenter({ cueIndex, onDragging, onChangeCueTiming, className })
 		onDragging: React.useCallback(
 			e => {
 				const bbox = trackEl.getBoundingClientRect();
-				const relPos = e.clientX - bbox.x;
+				const relPos = e.clientX - bbox.left;
 				onDragging(relPos - prevPosRef.current);
 				prevPosRef.current = relPos;
 				didDragRef.current = true;
@@ -56,7 +56,7 @@ function CueHandleCenter({ cueIndex, onDragging, onChangeCueTiming, className })
 		onDragEnd: React.useCallback(
 			e => {
 				const bbox = trackEl.getBoundingClientRect();
-				const relPos = e.clientX - bbox.x;
+				const relPos = e.clientX - bbox.left;
 				const d = (relPos - startPosRef.current) / pixelsPerSec;
 				onChangeCueTiming(cueIndex, { startDelta: d, endDelta: d });
 			},

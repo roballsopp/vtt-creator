@@ -20,7 +20,7 @@ export function CueTrackProvider({ children, className }) {
 	// navigate video when user clicks on a location in the track
 	const handleTrackClick = e => {
 		const bbox = trackEl.getBoundingClientRect();
-		seekVideo((e.clientX - bbox.x) / pixelsPerSec);
+		seekVideo((e.clientX - bbox.left) / pixelsPerSec);
 	};
 
 	return (
