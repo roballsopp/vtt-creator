@@ -12,7 +12,7 @@
     "test-ci": "karma start karma.conf.js --single-run"
   },
   "author": "rallsopp06@gmail.com",
-  "license": "ISC",
+  "license": "UNLICENSED",
   "dependencies": {
     "@apollo/client": "^3.1.5",
     "@babel/core": "^7.10.5",
