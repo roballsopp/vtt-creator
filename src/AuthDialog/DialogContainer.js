@@ -63,7 +63,10 @@ export function AuthDialogProvider({ children }) {
 		setViewId('EMAIL_VERIFIED');
 	}, []);
 
-	const handleCloseDialog = React.useCallback(() => {
+	const handleCloseDialog = React.useCallback((e, reason) => {
+		if (['backdropClick', 'escapeKeyDown'].includes(reason)) {
+			return;
+		}
 		setLoginMessage('');
 		setViewId('');
 	}, []);
@@ -252,13 +255,13 @@ export function AuthDialogProvider({ children }) {
 			}}>
 			{children}
 			<Dialog
-				disableBackdropClick
-				disableEscapeKeyDown
 				maxWidth="xs"
 				fullWidth
 				open={Boolean(viewId)}
 				onClose={handleCloseDialog}
-				onExited={handleExited}
+				TransitionProps={{
+					onExited: handleExited,
+				}}
 				aria-labelledby="auth-dialog">
 				<AuthView viewId={viewId} loginMessage={loginMessage} />
 			</Dialog>

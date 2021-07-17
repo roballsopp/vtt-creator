@@ -61,7 +61,11 @@ export default function CueExtractionDialog({ open, onRequestClose, onExtractCom
 	const toast = useToast();
 	const { getUploadUrl, initTranscription, pollTranscriptionJob, cancelTranscription } = useApiHelper();
 
-	const handleRequestClose = e => {
+	const handleRequestClose = (e, reason) => {
+		if (['backdropClick', 'escapeKeyDown'].includes(reason)) {
+			return;
+		}
+
 		if (uploadState === UPLOAD_STATE_PROCESSING && jobIdRef.current) {
 			transcriptionPollRef.current.cancel();
 			cancelTranscription(jobIdRef.current)
@@ -147,14 +151,7 @@ export default function CueExtractionDialog({ open, onRequestClose, onExtractCom
 	};
 
 	return (
-		<Dialog
-			disableBackdropClick
-			disableEscapeKeyDown
-			maxWidth="sm"
-			fullWidth
-			open={open}
-			onClose={handleRequestClose}
-			aria-labelledby="extract-dialog-title">
+		<Dialog maxWidth="sm" fullWidth open={open} onClose={handleRequestClose} aria-labelledby="extract-dialog-title">
 			<Title id="extract-dialog-title" disableTypography>
 				<Typography variant="h6">Extract cues from video</Typography>
 				<IconButton aria-label="Close" edge="end" onClick={handleRequestClose}>

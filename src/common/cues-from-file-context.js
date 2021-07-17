@@ -85,7 +85,10 @@ export function CuesFromFileProvider({ children }) {
 		[setCues, setCuesLoading, toast]
 	);
 
-	const handleMalformedDialogClose = () => {
+	const handleMalformedDialogClose = (e, reason) => {
+		if (['backdropClick', 'escapeKeyDown'].includes(reason)) {
+			return;
+		}
 		setMalformedVTTDialogState({ open: false, message: '' });
 	};
 
@@ -93,8 +96,6 @@ export function CuesFromFileProvider({ children }) {
 		<CuesFromFileContext.Provider value={React.useMemo(() => ({ loadCuesFromFile }), [loadCuesFromFile])}>
 			{children}
 			<Dialog
-				disableBackdropClick
-				disableEscapeKeyDown
 				maxWidth="md"
 				fullWidth
 				open={malformedVTTDialogState.open}

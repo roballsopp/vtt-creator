@@ -36,15 +36,20 @@ export default function CreditDialog({ user, open, onClose, onPaid, onExited }) 
 	const cost = GetTotalCost(duration);
 	const defaultValue = Math.max(cost - user.credit, 1).toFixed(2);
 
+	function handleClose(e, reason) {
+		if (['backdropClick', 'escapeKeyDown'].includes(reason)) {
+			return;
+		}
+		onClose(e);
+	}
+
 	return (
 		<Dialog
-			disableBackdropClick
-			disableEscapeKeyDown
 			maxWidth="sm"
 			fullWidth
 			open={open}
-			onClose={onClose}
-			onExited={onExited}
+			onClose={handleClose}
+			TransitionProps={{ onExited }}
 			aria-labelledby="extract-dialog-title">
 			<Title id="extract-dialog-title" disableTypography>
 				<Typography variant="h6">Not Enough Credit</Typography>
