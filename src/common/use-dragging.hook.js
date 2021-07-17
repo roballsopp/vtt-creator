@@ -1,49 +1,49 @@
-import React from 'react';
+import React from 'react'
 
-export default function useDragging(elementRef, { onDragging, onDragStart, onDragEnd }) {
-	const [dragging, setDragging] = React.useState(false);
+export default function useDragging(elementRef, {onDragging, onDragStart, onDragEnd}) {
+	const [dragging, setDragging] = React.useState(false)
 
 	React.useEffect(() => {
 		if (dragging) {
 			const onMouseMove = e => {
-				onDragging && onDragging(e);
-			};
-			window.addEventListener('mousemove', onMouseMove);
+				onDragging && onDragging(e)
+			}
+			window.addEventListener('mousemove', onMouseMove)
 			return () => {
-				window.removeEventListener('mousemove', onMouseMove);
-			};
+				window.removeEventListener('mousemove', onMouseMove)
+			}
 		}
-	}, [dragging, onDragging]);
+	}, [dragging, onDragging])
 
 	React.useEffect(() => {
 		const onMouseDown = e => {
-			setDragging(true);
-			onDragStart && onDragStart(e);
-		};
+			setDragging(true)
+			onDragStart && onDragStart(e)
+		}
 
 		if (elementRef) {
-			elementRef.addEventListener('mousedown', onMouseDown);
+			elementRef.addEventListener('mousedown', onMouseDown)
 		}
 
 		return () => {
 			if (elementRef) {
-				elementRef.removeEventListener('mousedown', onMouseDown);
+				elementRef.removeEventListener('mousedown', onMouseDown)
 			}
-		};
-	}, [elementRef, onDragStart]);
+		}
+	}, [elementRef, onDragStart])
 
 	React.useEffect(() => {
 		if (dragging) {
 			const onMouseUp = e => {
-				setDragging(false);
-				onDragEnd && onDragEnd(e);
-			};
-			window.addEventListener('mouseup', onMouseUp);
+				setDragging(false)
+				onDragEnd && onDragEnd(e)
+			}
+			window.addEventListener('mouseup', onMouseUp)
 			return () => {
-				window.removeEventListener('mouseup', onMouseUp);
-			};
+				window.removeEventListener('mouseup', onMouseUp)
+			}
 		}
-	}, [dragging, onDragEnd]);
+	}, [dragging, onDragEnd])
 
-	return [dragging];
+	return [dragging]
 }

@@ -1,3 +1,3 @@
-import VttTimeline from './vtt-timeline.component';
+import VttTimeline from './vtt-timeline.component'
 
-export default VttTimeline;
+export default VttTimeline

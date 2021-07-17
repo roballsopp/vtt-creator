@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { useUser } from '../../common';
-import { useExtractFromVideo } from './ExtractFromVideoContext';
-import CreditDialog from './CreditDialog';
-import CueExtractionDialog from './cue-extraction-dialog.component';
-import NotSupportedDialog from './NotSupportedDialog';
+import * as React from 'react'
+import {useUser} from '../../common'
+import {useExtractFromVideo} from './ExtractFromVideoContext'
+import CreditDialog from './CreditDialog'
+import CueExtractionDialog from './cue-extraction-dialog.component'
+import NotSupportedDialog from './NotSupportedDialog'
 
 export default function ExtractFromVideoDialogs() {
 	const {
@@ -16,9 +16,9 @@ export default function ExtractFromVideoDialogs() {
 		handleCreditDialogExited,
 		handleCueExtractComplete,
 		handleNotSupportedDialogClose,
-	} = useExtractFromVideo();
+	} = useExtractFromVideo()
 
-	const { user } = useUser();
+	const {user} = useUser()
 
 	return (
 		<React.Fragment>
@@ -38,5 +38,5 @@ export default function ExtractFromVideoDialogs() {
 			) : null}
 			<NotSupportedDialog open={notSupportedDialogOpen} onClose={handleNotSupportedDialogClose} />
 		</React.Fragment>
-	);
+	)
 }

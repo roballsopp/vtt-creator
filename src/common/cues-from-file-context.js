@@ -1,29 +1,29 @@
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import CloseIcon from '@material-ui/icons/Close';
-import { styled, makeStyles } from '@material-ui/styles';
-import React from 'react';
-import PropTypes from 'prop-types';
-import { handleError } from '../services/error-handler.service';
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import IconButton from '@material-ui/core/IconButton'
+import Typography from '@material-ui/core/Typography'
+import CloseIcon from '@material-ui/icons/Close'
+import {styled, makeStyles} from '@material-ui/styles'
+import React from 'react'
+import PropTypes from 'prop-types'
+import {handleError} from '../services/error-handler.service'
 import {
 	EmptyFileError,
 	getCuesFromVTT,
 	MalformedVTTSignatureError,
 	MalformedVTTTimestampError,
-} from '../services/vtt.service';
-import Button from './button.component';
-import { useCues } from './cue-context';
-import { useToast } from './toast-context';
+} from '../services/vtt.service'
+import Button from './button.component'
+import {useCues} from './cue-context'
+import {useToast} from './toast-context'
 
 const Title = styled(DialogTitle)({
 	display: 'flex',
 	justifyContent: 'space-between',
 	alignItems: 'center',
-});
+})
 
 const useStyles = makeStyles(theme => ({
 	code: {
@@ -40,60 +40,60 @@ const useStyles = makeStyles(theme => ({
 		backgroundColor: theme.palette.grey[300],
 		fontSize: 16,
 	},
-}));
+}))
 
 const CuesFromFileContext = React.createContext({
 	loadCuesFromFile: () => {},
-});
+})
 
 CuesFromFileProvider.propTypes = {
 	children: PropTypes.node.isRequired,
-};
+}
 
-export function CuesFromFileProvider({ children }) {
-	const classes = useStyles();
-	const { setCues, setCuesLoading } = useCues();
-	const toast = useToast();
-	const [malformedVTTDialogState, setMalformedVTTDialogState] = React.useState({ message: '', open: false });
+export function CuesFromFileProvider({children}) {
+	const classes = useStyles()
+	const {setCues, setCuesLoading} = useCues()
+	const toast = useToast()
+	const [malformedVTTDialogState, setMalformedVTTDialogState] = React.useState({message: '', open: false})
 
 	const loadCuesFromFile = React.useCallback(
 		async file => {
-			setCuesLoading(true);
+			setCuesLoading(true)
 			try {
-				const newCues = await getCuesFromVTT(file);
-				setCues(newCues); // check if VTT files require ordering
+				const newCues = await getCuesFromVTT(file)
+				setCues(newCues) // check if VTT files require ordering
 			} catch (e) {
 				if (e instanceof EmptyFileError) {
-					toast.error('This VTT file appears to be empty.');
+					toast.error('This VTT file appears to be empty.')
 				} else if (e instanceof MalformedVTTTimestampError) {
 					setMalformedVTTDialogState({
 						open: true,
 						message: `Couldn't extract cues due to a malformed VTT timestamp: "${e.badTimeStamp}"`,
-					});
+					})
 				} else if (e instanceof MalformedVTTSignatureError) {
 					setMalformedVTTDialogState({
 						open: true,
 						message: `Couldn't extract cues due to a missing or invalid "WEBVTT" header.`,
-					});
+					})
 				} else {
-					handleError(e);
-					toast.error('Oh no! An error occurred loading the cues.');
+					handleError(e)
+					toast.error('Oh no! An error occurred loading the cues.')
 				}
 			}
-			setCuesLoading(false);
+			setCuesLoading(false)
 		},
 		[setCues, setCuesLoading, toast]
-	);
+	)
 
 	const handleMalformedDialogClose = (e, reason) => {
 		if (['backdropClick', 'escapeKeyDown'].includes(reason)) {
-			return;
+			return
 		}
-		setMalformedVTTDialogState({ open: false, message: '' });
-	};
+		setMalformedVTTDialogState({open: false, message: ''})
+	}
 
 	return (
-		<CuesFromFileContext.Provider value={React.useMemo(() => ({ loadCuesFromFile }), [loadCuesFromFile])}>
+		<CuesFromFileContext.Provider value={React.useMemo(() => ({loadCuesFromFile}), [loadCuesFromFile])}>
 			{children}
 			<Dialog
 				maxWidth="md"
@@ -150,9 +150,9 @@ export function CuesFromFileProvider({ children }) {
 				</DialogActions>
 			</Dialog>
 		</CuesFromFileContext.Provider>
-	);
+	)
 }
 
 export function useCueFromFileLoader() {
-	return React.useContext(CuesFromFileContext);
+	return React.useContext(CuesFromFileContext)
 }

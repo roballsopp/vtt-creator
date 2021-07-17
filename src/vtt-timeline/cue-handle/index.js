@@ -1,3 +1,3 @@
-import CueHandle from './cue-handle.component';
+import CueHandle from './cue-handle.component'
 
-export default CueHandle;
+export default CueHandle

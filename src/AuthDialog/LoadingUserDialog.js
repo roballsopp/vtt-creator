@@ -1,8 +1,8 @@
-import React from 'react';
-import DialogContent from '@material-ui/core/DialogContent';
-import Grid from '@material-ui/core/Grid';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Typography from '@material-ui/core/Typography';
+import React from 'react'
+import DialogContent from '@material-ui/core/DialogContent'
+import Grid from '@material-ui/core/Grid'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import Typography from '@material-ui/core/Typography'
 
 export default function LoadingUserDialog() {
 	return (
@@ -18,5 +18,5 @@ export default function LoadingUserDialog() {
 				</Grid>
 			</DialogContent>
 		</React.Fragment>
-	);
+	)
 }

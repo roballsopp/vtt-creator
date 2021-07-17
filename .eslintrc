@@ -47,13 +47,15 @@
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "prettier/prettier": ["error", {
+      "semi": false,
       "useTabs": true,
       "tabWidth": 2,
       "printWidth": 120,
       "singleQuote": true,
       "jsxBracketSameLine": true,
       "trailingComma": "es5",
-      "endOfLine": "lf"
+      "endOfLine": "lf",
+      "bracketSpacing": false
     }],
     "space-before-function-paren": 0
   }

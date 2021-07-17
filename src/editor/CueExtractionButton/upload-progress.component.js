@@ -1,14 +1,14 @@
-import * as React from 'react';
-import * as PropTypes from 'prop-types';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import LinearProgress from '@material-ui/core/LinearProgress';
+import * as React from 'react'
+import * as PropTypes from 'prop-types'
+import Typography from '@material-ui/core/Typography'
+import Grid from '@material-ui/core/Grid'
+import LinearProgress from '@material-ui/core/LinearProgress'
 
-export const UPLOAD_STATE_EXTRACTING = 'extracting';
-export const UPLOAD_STATE_UPLOADING = 'uploading';
-export const UPLOAD_STATE_PROCESSING = 'processing';
-export const UPLOAD_STATE_COMPLETED = 'completed';
-export const UPLOAD_STATE_FAILED = 'failed';
+export const UPLOAD_STATE_EXTRACTING = 'extracting'
+export const UPLOAD_STATE_UPLOADING = 'uploading'
+export const UPLOAD_STATE_PROCESSING = 'processing'
+export const UPLOAD_STATE_COMPLETED = 'completed'
+export const UPLOAD_STATE_FAILED = 'failed'
 
 const UploadStatePropType = PropTypes.oneOf([
 	UPLOAD_STATE_EXTRACTING,
@@ -16,16 +16,16 @@ const UploadStatePropType = PropTypes.oneOf([
 	UPLOAD_STATE_PROCESSING,
 	UPLOAD_STATE_COMPLETED,
 	UPLOAD_STATE_FAILED,
-]);
+])
 
 UploadProgress.propTypes = {
 	uploadState: UploadStatePropType,
 	progressBytes: PropTypes.number,
 	totalBytes: PropTypes.number,
-};
+}
 
-export default function UploadProgress({ uploadState, progressBytes, totalBytes }) {
-	const progressPercent = 100 * (progressBytes / totalBytes);
+export default function UploadProgress({uploadState, progressBytes, totalBytes}) {
+	const progressPercent = 100 * (progressBytes / totalBytes)
 
 	return (
 		<Grid container spacing={2}>
@@ -41,45 +41,45 @@ export default function UploadProgress({ uploadState, progressBytes, totalBytes 
 				<ProgressBar uploadState={uploadState} progressPercent={progressPercent} />
 			</Grid>
 		</Grid>
-	);
+	)
 }
 
 UploadProgress.propTypes = {
 	uploadState: UploadStatePropType,
 	progressPercent: PropTypes.number,
-};
+}
 
-function ProgressBar({ uploadState, progressPercent }) {
+function ProgressBar({uploadState, progressPercent}) {
 	switch (uploadState) {
 		case UPLOAD_STATE_EXTRACTING:
 		case UPLOAD_STATE_PROCESSING:
-			return <LinearProgress color="secondary" />;
+			return <LinearProgress color="secondary" />
 		case UPLOAD_STATE_UPLOADING:
-			return <LinearProgress variant="determinate" value={progressPercent} />;
+			return <LinearProgress variant="determinate" value={progressPercent} />
 		case UPLOAD_STATE_FAILED:
-			return <LinearProgress color="secondary" variant="determinate" value={100} />;
+			return <LinearProgress color="secondary" variant="determinate" value={100} />
 		default:
-			return null;
+			return null
 	}
 }
 
 function getMessageFromUploadState(uploadState) {
 	switch (uploadState) {
 		case UPLOAD_STATE_EXTRACTING:
-			return 'Extracting audio...';
+			return 'Extracting audio...'
 		case UPLOAD_STATE_UPLOADING:
-			return 'Uploading audio...';
+			return 'Uploading audio...'
 		case UPLOAD_STATE_PROCESSING:
-			return 'Processing audio...';
+			return 'Processing audio...'
 		case UPLOAD_STATE_FAILED:
-			return 'Upload failed.';
+			return 'Upload failed.'
 		case UPLOAD_STATE_COMPLETED:
-			return 'Done!';
+			return 'Done!'
 		default:
-			throw new Error('Unsupported progress state.');
+			throw new Error('Unsupported progress state.')
 	}
 }
 
 function bytesToMB(bytes) {
-	return (bytes / 1048576).toFixed(2);
+	return (bytes / 1048576).toFixed(2)
 }

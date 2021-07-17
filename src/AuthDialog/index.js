@@ -1,4 +1,4 @@
-import { AuthDialogProvider } from './DialogContainer';
-import { useAuthDialog } from './auth-dialog-context';
+import {AuthDialogProvider} from './DialogContainer'
+import {useAuthDialog} from './auth-dialog-context'
 
-export { AuthDialogProvider, useAuthDialog };
+export {AuthDialogProvider, useAuthDialog}

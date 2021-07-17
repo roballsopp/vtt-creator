@@ -1,15 +1,15 @@
-import * as React from 'react';
-import { useApolloClient, gql } from '@apollo/client';
-import { SpeechToTextJobTimeout } from '../../config';
+import * as React from 'react'
+import {useApolloClient, gql} from '@apollo/client'
+import {SpeechToTextJobTimeout} from '../../config'
 
 export default function useApiHelper() {
-	const apolloClient = useApolloClient();
+	const apolloClient = useApolloClient()
 
 	return React.useMemo(
 		() => ({
 			getUploadUrl: async () => {
 				const {
-					data: { uploadUrl },
+					data: {uploadUrl},
 				} = await apolloClient.query({
 					fetchPolicy: 'network-only',
 					query: gql`
@@ -20,12 +20,12 @@ export default function useApiHelper() {
 							}
 						}
 					`,
-				});
-				return uploadUrl;
+				})
+				return uploadUrl
 			},
 			initTranscription: async (filename, languageCode) => {
 				const {
-					data: { beginTranscription },
+					data: {beginTranscription},
 				} = await apolloClient.mutate({
 					mutation: gql`
 						mutation initTranscription($filename: String!, $languageCode: String!) {
@@ -40,12 +40,12 @@ export default function useApiHelper() {
 							}
 						}
 					`,
-					variables: { filename, languageCode },
-				});
-				return beginTranscription;
+					variables: {filename, languageCode},
+				})
+				return beginTranscription
 			},
 			pollTranscriptionJob: (jobId, interval = 1000, timeout = SpeechToTextJobTimeout) => {
-				let intervalId;
+				let intervalId
 				return {
 					promise: new Promise((resolve, reject) => {
 						intervalId = setInterval(async () => {
@@ -67,37 +67,37 @@ export default function useApiHelper() {
 											}
 										}
 									`,
-									variables: { jobId },
+									variables: {jobId},
 								})
-								.then(({ data: { transcriptionJob } }) => {
+								.then(({data: {transcriptionJob}}) => {
 									if (transcriptionJob.state !== 'pending') {
-										clearInterval(intervalId);
-										resolve(transcriptionJob.transcript);
+										clearInterval(intervalId)
+										resolve(transcriptionJob.transcript)
 									}
 								})
 								.catch(err => {
-									clearInterval(intervalId);
+									clearInterval(intervalId)
 									if (err.networkError) {
 										if (err.networkError.result) {
-											return reject(new Error(err.networkError.result.errors[0].message));
+											return reject(new Error(err.networkError.result.errors[0].message))
 										}
-										return reject(err.networkError);
+										return reject(err.networkError)
 									}
-									reject(new Error(err));
-								});
-						}, interval);
+									reject(new Error(err))
+								})
+						}, interval)
 
 						setTimeout(() => {
-							clearInterval(intervalId);
-							reject(new Error('Poll timeout exceeded.'));
-						}, timeout);
+							clearInterval(intervalId)
+							reject(new Error('Poll timeout exceeded.'))
+						}, timeout)
 					}),
 					cancel: () => clearInterval(intervalId),
-				};
+				}
 			},
 			cancelTranscription: async jobId => {
 				const {
-					data: { cancelTranscription },
+					data: {cancelTranscription},
 				} = await apolloClient.mutate({
 					mutation: gql`
 						mutation cancelTranscription($jobId: String!) {
@@ -109,11 +109,11 @@ export default function useApiHelper() {
 							}
 						}
 					`,
-					variables: { jobId },
-				});
-				return cancelTranscription;
+					variables: {jobId},
+				})
+				return cancelTranscription
 			},
 		}),
 		[apolloClient]
-	);
+	)
 }

@@ -1,20 +1,20 @@
-import { GAProduct } from './config';
+import {GAProduct} from './config'
 
-window.dataLayer = window.dataLayer || [];
+window.dataLayer = window.dataLayer || []
 
 function gtag() {
-	if (GAProduct) window.dataLayer.push(arguments);
+	if (GAProduct) window.dataLayer.push(arguments)
 }
 
-window.gtag = gtag;
+window.gtag = gtag
 
 if (GAProduct) {
-	const script = document.createElement('script');
-	const head = document.getElementsByTagName('head')[0];
-	script.async = 1;
-	script.src = `https://www.googletagmanager.com/gtag/js?id=${GAProduct}`;
-	head.appendChild(script);
+	const script = document.createElement('script')
+	const head = document.getElementsByTagName('head')[0]
+	script.async = 1
+	script.src = `https://www.googletagmanager.com/gtag/js?id=${GAProduct}`
+	head.appendChild(script)
 
-	gtag('js', new Date());
-	gtag('config', GAProduct);
+	gtag('js', new Date())
+	gtag('config', GAProduct)
 }

@@ -1,13 +1,13 @@
-import React from 'react';
-import clsx from 'clsx';
-import Typography from '@material-ui/core/Typography';
-import AddIcon from '@material-ui/icons/AddCircle';
-import MoreIcon from '@material-ui/icons/MoreVert';
-import PublishIcon from '@material-ui/icons/Publish';
-import VoiceChatIcon from '@material-ui/icons/VoiceChat';
-import { makeStyles } from '@material-ui/styles';
-import { useFileSelector, Button, useCueFromFileLoader } from '../common';
-import { ExtractFromVideoButton } from '../editor/CueExtractionButton';
+import React from 'react'
+import clsx from 'clsx'
+import Typography from '@material-ui/core/Typography'
+import AddIcon from '@material-ui/icons/AddCircle'
+import MoreIcon from '@material-ui/icons/MoreVert'
+import PublishIcon from '@material-ui/icons/Publish'
+import VoiceChatIcon from '@material-ui/icons/VoiceChat'
+import {makeStyles} from '@material-ui/styles'
+import {useFileSelector, Button, useCueFromFileLoader} from '../common'
+import {ExtractFromVideoButton} from '../editor/CueExtractionButton'
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -29,23 +29,23 @@ const useStyles = makeStyles(theme => ({
 	},
 	// apparently children of a flex container in ie11 need to be explicitly told to only take 100% width
 	//  or else they won't wrap and will take _more_ than 100%
-	ie11Fix: { width: '100%', textAlign: 'center' },
-}));
+	ie11Fix: {width: '100%', textAlign: 'center'},
+}))
 
-EmptyState.propTypes = {};
+EmptyState.propTypes = {}
 
 export default function EmptyState() {
-	const classes = useStyles();
-	const { loadCuesFromFile } = useCueFromFileLoader();
+	const classes = useStyles()
+	const {loadCuesFromFile} = useCueFromFileLoader()
 
 	const onVTTFileSelected = React.useCallback(
 		e => {
-			loadCuesFromFile(e.target.files[0]);
+			loadCuesFromFile(e.target.files[0])
 		},
 		[loadCuesFromFile]
-	);
+	)
 
-	const openFileSelector = useFileSelector({ accept: '.vtt', onFilesSelected: onVTTFileSelected });
+	const openFileSelector = useFileSelector({accept: '.vtt', onFilesSelected: onVTTFileSelected})
 
 	return (
 		<div className={classes.root}>
@@ -83,5 +83,5 @@ export default function EmptyState() {
 				</Typography>
 			</div>
 		</div>
-	);
+	)
 }

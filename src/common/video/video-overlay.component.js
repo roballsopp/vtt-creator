@@ -1,8 +1,8 @@
-import * as React from 'react';
-import * as PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/styles';
-import { useOverlay } from './overlay.context';
-import { useVideoControl } from './video-control-context';
+import * as React from 'react'
+import * as PropTypes from 'prop-types'
+import {makeStyles} from '@material-ui/styles'
+import {useOverlay} from './overlay.context'
+import {useVideoControl} from './video-control-context'
 
 const useStyles = makeStyles({
 	root: {
@@ -34,19 +34,19 @@ const useStyles = makeStyles({
 		left: 0,
 		right: 0,
 	},
-});
+})
 
 VideoOverlay.propTypes = {
 	className: PropTypes.string,
 	topElement: PropTypes.node,
-};
+}
 
-export default function VideoOverlay({ className, topElement }) {
-	const { showOverlay } = useOverlay();
-	const { togglePlay } = useVideoControl();
-	const classes = useStyles();
+export default function VideoOverlay({className, topElement}) {
+	const {showOverlay} = useOverlay()
+	const {togglePlay} = useVideoControl()
+	const classes = useStyles()
 
-	if (!showOverlay) return null;
+	if (!showOverlay) return null
 
 	return (
 		<div className={className}>
@@ -57,5 +57,5 @@ export default function VideoOverlay({ className, topElement }) {
 				</div>
 			</div>
 		</div>
-	);
+	)
 }

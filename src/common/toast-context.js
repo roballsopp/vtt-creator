@@ -1,23 +1,23 @@
-import * as React from 'react';
-import * as PropTypes from 'prop-types';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiSnackbarContent from '@material-ui/core/SnackbarContent';
-import IconButton from '@material-ui/core/IconButton';
-import green from '@material-ui/core/colors/green';
-import { makeStyles } from '@material-ui/styles';
-import CloseIcon from '@material-ui/icons/Close';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import ErrorIcon from '@material-ui/icons/Error';
+import * as React from 'react'
+import * as PropTypes from 'prop-types'
+import Snackbar from '@material-ui/core/Snackbar'
+import MuiSnackbarContent from '@material-ui/core/SnackbarContent'
+import IconButton from '@material-ui/core/IconButton'
+import green from '@material-ui/core/colors/green'
+import {makeStyles} from '@material-ui/styles'
+import CloseIcon from '@material-ui/icons/Close'
+import CheckCircleIcon from '@material-ui/icons/CheckCircle'
+import ErrorIcon from '@material-ui/icons/Error'
 
 const variantIcon = {
 	success: CheckCircleIcon,
 	error: ErrorIcon,
-};
+}
 
 const ToastContext = React.createContext({
 	error: () => {},
 	success: () => {},
-});
+})
 
 const useStyles = makeStyles(theme => ({
 	success: {
@@ -38,18 +38,18 @@ const useStyles = makeStyles(theme => ({
 		display: 'flex',
 		alignItems: 'center',
 	},
-}));
+}))
 
 SnackbarContent.propTypes = {
 	message: PropTypes.node,
 	onClose: PropTypes.func,
 	variant: PropTypes.oneOf(['success', 'error']).isRequired,
-};
+}
 
 function SnackbarContent(props) {
-	const classes = useStyles();
-	const { message, onClose, variant, ...other } = props;
-	const Icon = variantIcon[variant];
+	const classes = useStyles()
+	const {message, onClose, variant, ...other} = props
+	const Icon = variantIcon[variant]
 
 	return (
 		<MuiSnackbarContent
@@ -68,32 +68,32 @@ function SnackbarContent(props) {
 			]}
 			{...other}
 		/>
-	);
+	)
 }
 
 ToastProvider.propTypes = {
 	children: PropTypes.node.isRequired,
-};
+}
 
 export function ToastProvider(props) {
 	const [options, setOptions] = React.useState({
 		vertical: 'bottom',
 		horizontal: 'center',
-	});
-	const [show, setShow] = React.useState(false);
-	const [snackBarConfig, setSnackBarConfig] = React.useState({ variant: 'success' });
+	})
+	const [show, setShow] = React.useState(false)
+	const [snackBarConfig, setSnackBarConfig] = React.useState({variant: 'success'})
 
 	const openSuccessToast = React.useCallback((message, options = {}) => {
-		setOptions(options);
-		setSnackBarConfig({ message, variant: 'success' });
-		setShow(true);
-	}, []);
+		setOptions(options)
+		setSnackBarConfig({message, variant: 'success'})
+		setShow(true)
+	}, [])
 
 	const openErrorToast = React.useCallback((message, options = {}) => {
-		setOptions(options);
-		setSnackBarConfig({ message, variant: 'error' });
-		setShow(true);
-	}, []);
+		setOptions(options)
+		setSnackBarConfig({message, variant: 'error'})
+		setShow(true)
+	}, [])
 
 	return (
 		<ToastContext.Provider
@@ -116,9 +116,9 @@ export function ToastProvider(props) {
 				<SnackbarContent onClose={() => setShow(false)} {...snackBarConfig} />
 			</Snackbar>
 		</ToastContext.Provider>
-	);
+	)
 }
 
 export function useToast() {
-	return React.useContext(ToastContext);
+	return React.useContext(ToastContext)
 }

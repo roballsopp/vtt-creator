@@ -1,10 +1,10 @@
-import React from 'react';
-import clsx from 'clsx';
-import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/styles';
-import { useVideoDom } from './video-dom.context';
-import VideoOverlay from './video-overlay.component';
-import SeekingOverlay from './SeekingOverlay';
+import React from 'react'
+import clsx from 'clsx'
+import PropTypes from 'prop-types'
+import {makeStyles} from '@material-ui/styles'
+import {useVideoDom} from './video-dom.context'
+import VideoOverlay from './video-overlay.component'
+import SeekingOverlay from './SeekingOverlay'
 
 const useStyles = makeStyles({
 	root: {
@@ -21,18 +21,18 @@ const useStyles = makeStyles({
 		right: 0,
 		left: 0,
 	},
-});
+})
 
 Video.propTypes = {
 	src: PropTypes.string,
 	topElement: PropTypes.node,
 	children: PropTypes.node,
 	className: PropTypes.string,
-};
+}
 
-export default function Video({ src, topElement, children, className }) {
-	const classes = useStyles();
-	const { onVideoRef } = useVideoDom();
+export default function Video({src, topElement, children, className}) {
+	const classes = useStyles()
+	const {onVideoRef} = useVideoDom()
 
 	return (
 		<div className={clsx(classes.root, className)}>
@@ -42,5 +42,5 @@ export default function Video({ src, topElement, children, className }) {
 			<VideoOverlay className={classes.overlay} topElement={topElement} />
 			<SeekingOverlay className={classes.overlay} />
 		</div>
-	);
+	)
 }

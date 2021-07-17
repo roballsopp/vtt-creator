@@ -1,3 +1,3 @@
-import PrivacyPage from './PrivacyPage';
+import PrivacyPage from './PrivacyPage'
 
-export default PrivacyPage;
+export default PrivacyPage

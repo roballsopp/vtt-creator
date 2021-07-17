@@ -1,11 +1,11 @@
-import * as React from 'react';
-import * as PropTypes from 'prop-types';
-import clsx from 'clsx';
-import { makeStyles } from '@material-ui/styles';
+import * as React from 'react'
+import * as PropTypes from 'prop-types'
+import clsx from 'clsx'
+import {makeStyles} from '@material-ui/styles'
 
 const AutoScrollContext = React.createContext({
 	scrollToChild: () => {},
-});
+})
 
 const useStyles = makeStyles({
 	root: {
@@ -22,24 +22,24 @@ const useStyles = makeStyles({
 		overflowY: 'scroll',
 		scrollBehavior: 'smooth',
 	},
-});
+})
 
 AutoScrollProvider.propTypes = {
 	children: PropTypes.node.isRequired,
 	className: PropTypes.string,
-};
+}
 
-export function AutoScrollProvider({ children, className }) {
-	const scrollContainerRef = React.useRef();
-	const classes = useStyles();
+export function AutoScrollProvider({children, className}) {
+	const scrollContainerRef = React.useRef()
+	const classes = useStyles()
 
 	return (
 		<AutoScrollContext.Provider
 			value={React.useMemo(
 				() => ({
 					scrollToChild: el => {
-						if (!scrollContainerRef.current) return;
-						scrollContainerRef.current.scrollTop = el.offsetTop;
+						if (!scrollContainerRef.current) return
+						scrollContainerRef.current.scrollTop = el.offsetTop
 					},
 				}),
 				[]
@@ -50,9 +50,9 @@ export function AutoScrollProvider({ children, className }) {
 				</div>
 			</div>
 		</AutoScrollContext.Provider>
-	);
+	)
 }
 
 export function useAutoScroll() {
-	return React.useContext(AutoScrollContext);
+	return React.useContext(AutoScrollContext)
 }

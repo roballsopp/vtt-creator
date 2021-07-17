@@ -1,17 +1,17 @@
-import * as React from 'react';
-import { useHistory } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { gql } from '@apollo/client';
-import AppBar from '@material-ui/core/AppBar';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/styles';
-import { useAuthDialog } from '../AuthDialog';
-import AddCreditInput from './AddCreditInput';
-import { VC as VCIcon } from '../common/icons';
-import { TranscriptionCost } from '../config';
+import * as React from 'react'
+import {useHistory} from 'react-router-dom'
+import PropTypes from 'prop-types'
+import {gql} from '@apollo/client'
+import AppBar from '@material-ui/core/AppBar'
+import Button from '@material-ui/core/Button'
+import Grid from '@material-ui/core/Grid'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
+import {makeStyles} from '@material-ui/styles'
+import {useAuthDialog} from '../AuthDialog'
+import AddCreditInput from './AddCreditInput'
+import {VC as VCIcon} from '../common/icons'
+import {TranscriptionCost} from '../config'
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
 		padding: theme.spacing(4),
 		border: `1px solid ${theme.palette.grey[300]}`,
 	},
-}));
+}))
 
 AccountPage.fragments = {
 	user: gql`
@@ -47,7 +47,7 @@ AccountPage.fragments = {
 		}
 		${AddCreditInput.fragments.user}
 	`,
-};
+}
 
 AccountPage.propTypes = {
 	user: PropTypes.shape({
@@ -56,24 +56,24 @@ AccountPage.propTypes = {
 		credit: PropTypes.number.isRequired,
 		unlimitedUsage: PropTypes.bool,
 	}).isRequired,
-};
+}
 
-export default function AccountPage({ user }) {
-	const { logout } = useAuthDialog();
-	const classes = useStyles();
-	const history = useHistory();
+export default function AccountPage({user}) {
+	const {logout} = useAuthDialog()
+	const classes = useStyles()
+	const history = useHistory()
 
 	const handleLogout = () => {
-		logout();
-		history.push('/editor');
-	};
+		logout()
+		history.push('/editor')
+	}
 
 	return (
 		<main className={classes.root}>
 			<AppBar position="static" color="primary">
 				<Toolbar>
-					<VCIcon fontSize="large" edge="start" style={{ marginRight: 8 }} />
-					<Typography variant="h6" color="inherit" style={{ flexGrow: 1 }}>
+					<VCIcon fontSize="large" edge="start" style={{marginRight: 8}} />
+					<Typography variant="h6" color="inherit" style={{flexGrow: 1}}>
 						VTT Creator
 					</Typography>
 					<Button color="secondary" variant="contained" href="/editor">
@@ -116,5 +116,5 @@ export default function AccountPage({ user }) {
 				</Grid>
 			</div>
 		</main>
-	);
+	)
 }

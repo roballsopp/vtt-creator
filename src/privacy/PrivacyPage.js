@@ -1,11 +1,11 @@
-import * as React from 'react';
-import AppBar from '@material-ui/core/AppBar';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/styles';
-import { VC as VCIcon } from '../common/icons';
+import * as React from 'react'
+import AppBar from '@material-ui/core/AppBar'
+import Link from '@material-ui/core/Link'
+import Grid from '@material-ui/core/Grid'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
+import {makeStyles} from '@material-ui/styles'
+import {VC as VCIcon} from '../common/icons'
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -25,17 +25,17 @@ const useStyles = makeStyles(theme => ({
 		minWidth: 0,
 		padding: theme.spacing(4),
 	},
-}));
+}))
 
 export default function PrivacyPage() {
-	const classes = useStyles();
+	const classes = useStyles()
 
 	return (
 		<main className={classes.root}>
 			<AppBar position="static" color="primary">
 				<Toolbar>
-					<VCIcon fontSize="large" edge="start" style={{ marginRight: 8 }} />
-					<Typography variant="h6" color="inherit" style={{ flexGrow: 1 }}>
+					<VCIcon fontSize="large" edge="start" style={{marginRight: 8}} />
+					<Typography variant="h6" color="inherit" style={{flexGrow: 1}}>
 						VTT Creator
 					</Typography>
 				</Toolbar>
@@ -105,5 +105,5 @@ export default function PrivacyPage() {
 				</Grid>
 			</div>
 		</main>
-	);
+	)
 }

@@ -1,11 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import clsx from 'clsx';
-import Typography from '@material-ui/core/Typography';
-import CheckmarkIcon from '@material-ui/icons/Done';
-import CloseIcon from '@material-ui/icons/Close';
-import RemoveIcon from '@material-ui/icons/Remove';
-import { makeStyles } from '@material-ui/styles';
+import React from 'react'
+import PropTypes from 'prop-types'
+import clsx from 'clsx'
+import Typography from '@material-ui/core/Typography'
+import CheckmarkIcon from '@material-ui/icons/Done'
+import CloseIcon from '@material-ui/icons/Close'
+import RemoveIcon from '@material-ui/icons/Remove'
+import {makeStyles} from '@material-ui/styles'
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -20,15 +20,15 @@ const useStyles = makeStyles(theme => ({
 	valid: {
 		color: 'green',
 	},
-}));
+}))
 
 ValidationText.propTypes = {
 	children: PropTypes.string.isRequired,
 	valid: PropTypes.bool,
-};
+}
 
-export default function ValidationText({ children, valid }) {
-	const classes = useStyles();
+export default function ValidationText({children, valid}) {
+	const classes = useStyles()
 
 	return (
 		<Typography
@@ -43,5 +43,5 @@ export default function ValidationText({ children, valid }) {
 			</span>
 			<span>{children}</span>
 		</Typography>
-	);
+	)
 }

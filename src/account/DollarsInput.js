@@ -1,25 +1,25 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import TextField from '@material-ui/core/TextField';
+import * as React from 'react'
+import PropTypes from 'prop-types'
+import InputAdornment from '@material-ui/core/InputAdornment'
+import TextField from '@material-ui/core/TextField'
 
 DollarsInput.propTypes = {
 	defaultValue: PropTypes.string,
 	error: PropTypes.bool,
 	onChange: PropTypes.func.isRequired,
-};
+}
 
-export default function DollarsInput({ defaultValue, error, onChange }) {
-	const [purchaseAmt, setPurchaseAmt] = React.useState(defaultValue || '');
+export default function DollarsInput({defaultValue, error, onChange}) {
+	const [purchaseAmt, setPurchaseAmt] = React.useState(defaultValue || '')
 
 	const handleChange = e => {
-		setPurchaseAmt(e.target.value);
-	};
+		setPurchaseAmt(e.target.value)
+	}
 
 	const handleParseAmount = e => {
-		setPurchaseAmt(e.target.value);
-		onChange(e.target.value);
-	};
+		setPurchaseAmt(e.target.value)
+		onChange(e.target.value)
+	}
 
 	return (
 		<TextField
@@ -36,8 +36,8 @@ export default function DollarsInput({ defaultValue, error, onChange }) {
 			helperText="Enter a number. $1.00 minimum."
 			InputProps={{
 				startAdornment: <InputAdornment position="start">$</InputAdornment>,
-				inputProps: { min: '1' },
+				inputProps: {min: '1'},
 			}}
 		/>
-	);
+	)
 }

@@ -1,8 +1,8 @@
-const path = require('path');
-const { DefinePlugin } = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path')
+const {DefinePlugin} = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
-const STATIC_FILES_DIR = path.resolve(__dirname, 'public');
+const STATIC_FILES_DIR = path.resolve(__dirname, 'public')
 
 module.exports = {
 	// files are named according to `entry` key
@@ -65,4 +65,4 @@ module.exports = {
 		historyApiFallback: true,
 		overlay: true,
 	},
-};
+}

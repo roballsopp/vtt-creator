@@ -1,22 +1,22 @@
-import * as React from 'react';
-import download from 'downloadjs';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import IconButton from '@material-ui/core/IconButton';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import DeleteIcon from '@material-ui/icons/Delete';
-import MoreIcon from '@material-ui/icons/MoreVert';
-import Tooltip from '@material-ui/core/Tooltip';
-import { makeStyles } from '@material-ui/styles';
-import { ExtractFromVideoMenuItem, useExtractFromVideo } from './CueExtractionButton';
-import { useFileSelector, useCues, Button, useCueFromFileLoader } from '../common';
-import { getVTTFromCues } from '../services/vtt.service';
-import { getSRTFromCues } from '../services/srt.service';
+import * as React from 'react'
+import download from 'downloadjs'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import IconButton from '@material-ui/core/IconButton'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
+import CloudUploadIcon from '@material-ui/icons/CloudUpload'
+import DeleteIcon from '@material-ui/icons/Delete'
+import MoreIcon from '@material-ui/icons/MoreVert'
+import Tooltip from '@material-ui/core/Tooltip'
+import {makeStyles} from '@material-ui/styles'
+import {ExtractFromVideoMenuItem, useExtractFromVideo} from './CueExtractionButton'
+import {useFileSelector, useCues, Button, useCueFromFileLoader} from '../common'
+import {getVTTFromCues} from '../services/vtt.service'
+import {getSRTFromCues} from '../services/srt.service'
 
 const useStyles = makeStyles({
 	root: {
@@ -36,61 +36,61 @@ const useStyles = makeStyles({
 	menuIcon: {
 		marginRight: 16,
 	},
-});
+})
 
 export default function VTTMenu() {
-	const classes = useStyles();
-	const { cues, setCues } = useCues();
-	const { loadCuesFromFile } = useCueFromFileLoader();
-	const { extractDialogEvents } = useExtractFromVideo();
+	const classes = useStyles()
+	const {cues, setCues} = useCues()
+	const {loadCuesFromFile} = useCueFromFileLoader()
+	const {extractDialogEvents} = useExtractFromVideo()
 
-	const [optionsMenuAnchorEl, setOptionsMenuAnchorEl] = React.useState(null);
-	const [clearCuesDialogOpen, setClearCuesDialogOpen] = React.useState(false);
+	const [optionsMenuAnchorEl, setOptionsMenuAnchorEl] = React.useState(null)
+	const [clearCuesDialogOpen, setClearCuesDialogOpen] = React.useState(false)
 
 	const onCloseOptionsMenu = () => {
-		setOptionsMenuAnchorEl(null);
-	};
+		setOptionsMenuAnchorEl(null)
+	}
 
 	const onDownloadVTT = () => {
-		download(getVTTFromCues(cues), 'my_captions.vtt', 'text/vtt');
-		onCloseOptionsMenu();
-	};
+		download(getVTTFromCues(cues), 'my_captions.vtt', 'text/vtt')
+		onCloseOptionsMenu()
+	}
 
 	const onDownloadSRT = () => {
-		download(getSRTFromCues(cues), 'my_captions.srt', 'text/srt');
-		onCloseOptionsMenu();
-	};
+		download(getSRTFromCues(cues), 'my_captions.srt', 'text/srt')
+		onCloseOptionsMenu()
+	}
 
 	const onOpenClearCuesDialog = () => {
-		setClearCuesDialogOpen(true);
-		onCloseOptionsMenu();
-	};
+		setClearCuesDialogOpen(true)
+		onCloseOptionsMenu()
+	}
 
 	const onCloseClearCuesDialog = () => {
-		setClearCuesDialogOpen(false);
-	};
+		setClearCuesDialogOpen(false)
+	}
 
 	const onClearCues = () => {
-		setCues([]);
-		setClearCuesDialogOpen(false);
-	};
+		setCues([])
+		setClearCuesDialogOpen(false)
+	}
 
 	const onVTTFileSelected = React.useCallback(
 		e => {
-			onCloseOptionsMenu();
-			loadCuesFromFile(e.target.files[0]);
+			onCloseOptionsMenu()
+			loadCuesFromFile(e.target.files[0])
 		},
 		[loadCuesFromFile]
-	);
+	)
 
 	React.useEffect(() => {
-		extractDialogEvents.on('opening', onCloseOptionsMenu);
+		extractDialogEvents.on('opening', onCloseOptionsMenu)
 		return () => {
-			extractDialogEvents.off('opening', onCloseOptionsMenu);
-		};
-	}, [extractDialogEvents]);
+			extractDialogEvents.off('opening', onCloseOptionsMenu)
+		}
+	}, [extractDialogEvents])
 
-	const openFileSelector = useFileSelector({ accept: '.vtt', onFilesSelected: onVTTFileSelected });
+	const openFileSelector = useFileSelector({accept: '.vtt', onFilesSelected: onVTTFileSelected})
 
 	return (
 		<React.Fragment>
@@ -104,7 +104,7 @@ export default function VTTMenu() {
 					<CloudUploadIcon className={classes.menuIcon} />
 					Load from VTT file...
 				</MenuItem>
-				<ExtractFromVideoMenuItem classes={{ menuIcon: classes.menuIcon }} />
+				<ExtractFromVideoMenuItem classes={{menuIcon: classes.menuIcon}} />
 				<MenuItem onClick={onDownloadVTT}>
 					<CloudDownloadIcon className={classes.menuIcon} />
 					Save to VTT file...
@@ -139,5 +139,5 @@ export default function VTTMenu() {
 				</DialogActions>
 			</Dialog>
 		</React.Fragment>
-	);
+	)
 }

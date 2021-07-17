@@ -1,15 +1,15 @@
-import React from 'react';
-import { useHistory } from 'react-router-dom';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/styles';
-import muiBlueGreys from '@material-ui/core/colors/blueGrey';
-import CloudDownloadIcon from '@material-ui/icons/CloudDownloadOutlined';
-import MemoryIcon from '@material-ui/icons/MemorySharp';
-import SubtitlesIcon from '@material-ui/icons/Subtitles';
-import { Button } from '../common';
-import { VC as VCIcon } from '../common/icons';
-import BannerBgImg from '../../assets/banner_bg.jpg';
-import Footer from '../footer.component';
+import React from 'react'
+import {useHistory} from 'react-router-dom'
+import Typography from '@material-ui/core/Typography'
+import {makeStyles} from '@material-ui/styles'
+import muiBlueGreys from '@material-ui/core/colors/blueGrey'
+import CloudDownloadIcon from '@material-ui/icons/CloudDownloadOutlined'
+import MemoryIcon from '@material-ui/icons/MemorySharp'
+import SubtitlesIcon from '@material-ui/icons/Subtitles'
+import {Button} from '../common'
+import {VC as VCIcon} from '../common/icons'
+import BannerBgImg from '../../assets/banner_bg.jpg'
+import Footer from '../footer.component'
 
 const useStyles = makeStyles({
 	root: {
@@ -79,11 +79,11 @@ const useStyles = makeStyles({
 	featureIcon: {
 		fontSize: 80,
 	},
-});
+})
 
 export default function Splash() {
-	const classes = useStyles();
-	const history = useHistory();
+	const classes = useStyles()
+	const history = useHistory()
 
 	return (
 		<React.Fragment>
@@ -132,5 +132,5 @@ export default function Splash() {
 			</main>
 			<Footer />
 		</React.Fragment>
-	);
+	)
 }

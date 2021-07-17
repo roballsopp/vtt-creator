@@ -1,23 +1,23 @@
-import React from 'react';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
-import Link from '@material-ui/core/Link';
-import TextField from '@material-ui/core/TextField';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
-import CloseIcon from '@material-ui/icons/Close';
-import { makeStyles, styled } from '@material-ui/styles';
-import { Button } from '../common';
-import { useAuthDialog } from './auth-dialog-context';
+import React from 'react'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import Grid from '@material-ui/core/Grid'
+import IconButton from '@material-ui/core/IconButton'
+import Link from '@material-ui/core/Link'
+import TextField from '@material-ui/core/TextField'
+import Tooltip from '@material-ui/core/Tooltip'
+import Typography from '@material-ui/core/Typography'
+import CloseIcon from '@material-ui/icons/Close'
+import {makeStyles, styled} from '@material-ui/styles'
+import {Button} from '../common'
+import {useAuthDialog} from './auth-dialog-context'
 
 const Title = styled(DialogTitle)({
 	display: 'flex',
 	justifyContent: 'space-between',
 	alignItems: 'center',
-});
+})
 
 const useStyles = makeStyles({
 	link: {
@@ -26,43 +26,43 @@ const useStyles = makeStyles({
 	goodMessage: {
 		color: 'green',
 	},
-});
+})
 
-VerifyEmailDialog.propTypes = {};
+VerifyEmailDialog.propTypes = {}
 
 export default function VerifyEmailDialog() {
-	const [code, setCode] = React.useState('');
-	const [error, setError] = React.useState(false);
-	const [codeSent, setCodeSent] = React.useState(false);
-	const [loading, setLoading] = React.useState(false);
-	const classes = useStyles();
+	const [code, setCode] = React.useState('')
+	const [error, setError] = React.useState(false)
+	const [codeSent, setCodeSent] = React.useState(false)
+	const [loading, setLoading] = React.useState(false)
+	const classes = useStyles()
 
-	const { verifyEmail, resendCode, closeDialog } = useAuthDialog();
+	const {verifyEmail, resendCode, closeDialog} = useAuthDialog()
 
 	const handleChangeCode = e => {
-		setCode(e.target.value);
-	};
+		setCode(e.target.value)
+	}
 
 	const handleVerification = () => {
-		setLoading(true);
+		setLoading(true)
 		verifyEmail(code).catch(err => {
-			setLoading(false);
-			setError(err.message);
-			setCodeSent(false);
-		});
-	};
+			setLoading(false)
+			setError(err.message)
+			setCodeSent(false)
+		})
+	}
 
 	const handleResendCode = () => {
 		resendCode()
 			.then(() => {
-				setCodeSent(true);
-				setError(false);
+				setCodeSent(true)
+				setError(false)
 			})
 			.catch(err => {
-				setError(err.message);
-				setCodeSent(false);
-			});
-	};
+				setError(err.message)
+				setCodeSent(false)
+			})
+	}
 
 	return (
 		<React.Fragment>
@@ -128,5 +128,5 @@ export default function VerifyEmailDialog() {
 				)}
 			</DialogActions>
 		</React.Fragment>
-	);
+	)
 }

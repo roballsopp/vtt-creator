@@ -1,7 +1,7 @@
-import { gql, useQuery, useApolloClient } from '@apollo/client';
-import EventEmitter from 'events';
-import React from 'react';
-import PropTypes from 'prop-types';
+import {gql, useQuery, useApolloClient} from '@apollo/client'
+import EventEmitter from 'events'
+import React from 'react'
+import PropTypes from 'prop-types'
 
 const UserContext = React.createContext({
 	user: null,
@@ -9,16 +9,16 @@ const UserContext = React.createContext({
 	error: null,
 	userEvents: null,
 	setUser: () => {},
-});
+})
 
 UserProvider.propTypes = {
 	children: PropTypes.node,
-};
+}
 
-export function UserProvider({ children }) {
-	const userEventsRef = React.useRef(new EventEmitter());
+export function UserProvider({children}) {
+	const userEventsRef = React.useRef(new EventEmitter())
 
-	const { loading, data, error } = useQuery(
+	const {loading, data, error} = useQuery(
 		gql`
 			query getUser {
 				self {
@@ -31,12 +31,12 @@ export function UserProvider({ children }) {
 		`,
 		{
 			onCompleted: resp => {
-				userEventsRef.current.emit('loaded', resp.self);
+				userEventsRef.current.emit('loaded', resp.self)
 			},
 		}
-	);
+	)
 
-	const apolloClient = useApolloClient();
+	const apolloClient = useApolloClient()
 
 	const setUser = React.useCallback(
 		user => {
@@ -57,12 +57,12 @@ export function UserProvider({ children }) {
 						__typename: 'User',
 					},
 				},
-			});
+			})
 		},
 		[apolloClient]
-	);
+	)
 
-	const user = data ? data.self : null;
+	const user = data ? data.self : null
 
 	return (
 		<UserContext.Provider
@@ -75,9 +75,9 @@ export function UserProvider({ children }) {
 			}}>
 			{children}
 		</UserContext.Provider>
-	);
+	)
 }
 
 export function useUser() {
-	return React.useContext(UserContext);
+	return React.useContext(UserContext)
 }

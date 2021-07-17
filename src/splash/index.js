@@ -1,3 +1,3 @@
-import Splash from './splash.component';
+import Splash from './splash.component'
 
-export { Splash };
+export {Splash}

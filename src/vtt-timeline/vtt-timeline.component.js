@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { makeStyles } from '@material-ui/styles';
-import CueTrack from './cue-track.component';
-import AudioTrack from './audio-track.component';
-import ZoomContainer from './zoom-container.component';
-import TimeTicks from './time-ticks.component';
+import * as React from 'react'
+import {makeStyles} from '@material-ui/styles'
+import CueTrack from './cue-track.component'
+import AudioTrack from './audio-track.component'
+import ZoomContainer from './zoom-container.component'
+import TimeTicks from './time-ticks.component'
 
 const useStyles = makeStyles({
 	root: {
@@ -40,12 +40,12 @@ const useStyles = makeStyles({
 		top: 0,
 		left: 0,
 	},
-});
+})
 
-VttTimeline.propTypes = {};
+VttTimeline.propTypes = {}
 
 export default function VttTimeline() {
-	const classes = useStyles();
+	const classes = useStyles()
 
 	return (
 		<ZoomContainer>
@@ -63,5 +63,5 @@ export default function VttTimeline() {
 				</div>
 			</div>
 		</ZoomContainer>
-	);
+	)
 }
