@@ -7,17 +7,17 @@ Check it out at [vtt-creator.com](https://vtt-creator.com).
 ## Development
 To get started, open a terminal window and navigate to the project root. Install dependencies with:
 ```bash
-yarn
+npm install
 ```
 To run the app, run:
 ```bash
-yarn start
+npm start
 ```
 By default, the app will be available at [http://localhost:3000](http://localhost:3000). To change the port, open up the `webpack.dev.js` file located in the project root and change the `devServer.port` entry to your desired port.
 
 To run tests, simply type:
 ```bash
-yarn test
+npm run test
 ```
 
 This project uses [karma](https://karma-runner.github.io) for its test runner, which runs tests in [headless chrome](https://developers.google.com/web/updates/2017/04/headless-chrome). If you don't have chrome installed, you might have to tweak the `karma.conf.js` file located in the project root to [use a different browser](http://karma-runner.github.io/4.0/config/browsers.html).

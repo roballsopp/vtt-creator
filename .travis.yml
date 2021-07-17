@@ -4,11 +4,11 @@ node_js:
 addons:
   chrome: stable
 install:
-  - yarn
+  - npm
 jobs:
   include:
     - stage: test
       name: "Lint"
-      script: yarn lint
-    - script: yarn test-ci
+      script: npm run lint
+    - script: npm run test-ci
       name: "Test"
