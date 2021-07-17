@@ -4,7 +4,7 @@ node_js:
 addons:
   chrome: stable
 install:
-  - npm
+  - npm install
 jobs:
   include:
     - stage: test
