@@ -35,7 +35,6 @@ export default function useApiHelper() {
 									user {
 										id
 									}
-									operationId
 									state
 								}
 							}
@@ -45,19 +44,20 @@ export default function useApiHelper() {
 				});
 				return beginTranscription;
 			},
-			pollTranscriptionJob: (operationId, interval = 1000, timeout = SpeechToTextJobTimeout) => {
-				return new Promise((resolve, reject) => {
-					const intervalId = setInterval(async () => {
-						apolloClient
-							.query({
-								fetchPolicy: 'network-only',
-								query: gql`
-									query getSpeechToTextOp($operationId: String!) {
-										speechToTextOp(operationId: $operationId) {
-											done
-											results {
-												alternatives {
-													confidence
+			pollTranscriptionJob: (jobId, interval = 1000, timeout = SpeechToTextJobTimeout) => {
+				let intervalId;
+				return {
+					promise: new Promise((resolve, reject) => {
+						intervalId = setInterval(async () => {
+							apolloClient
+								.query({
+									fetchPolicy: 'network-only',
+									query: gql`
+										query getTranscriptionJob($jobId: String!) {
+											transcriptionJob(jobId: $jobId) {
+												id
+												state
+												transcript {
 													words {
 														startTime
 														endTime
@@ -66,63 +66,42 @@ export default function useApiHelper() {
 												}
 											}
 										}
+									`,
+									variables: { jobId },
+								})
+								.then(({ data: { transcriptionJob } }) => {
+									if (transcriptionJob.state !== 'pending') {
+										clearInterval(intervalId);
+										resolve(transcriptionJob.transcript);
 									}
-								`,
-								variables: { operationId },
-							})
-							.then(({ data: { speechToTextOp } }) => {
-								if (speechToTextOp.done) {
+								})
+								.catch(err => {
 									clearInterval(intervalId);
-									resolve(speechToTextOp.results);
-								}
-							})
-							.catch(err => {
-								clearInterval(intervalId);
-								if (err.networkError) {
-									if (err.networkError.result) {
-										return reject(new Error(err.networkError.result.errors[0].message));
+									if (err.networkError) {
+										if (err.networkError.result) {
+											return reject(new Error(err.networkError.result.errors[0].message));
+										}
+										return reject(err.networkError);
 									}
-									return reject(err.networkError);
-								}
-								reject(new Error(err));
-							});
-					}, interval);
+									reject(new Error(err));
+								});
+						}, interval);
 
-					setTimeout(() => {
-						clearInterval(intervalId);
-						reject(new Error('Poll timeout exceeded.'));
-					}, timeout);
-				});
+						setTimeout(() => {
+							clearInterval(intervalId);
+							reject(new Error('Poll timeout exceeded.'));
+						}, timeout);
+					}),
+					cancel: () => clearInterval(intervalId),
+				};
 			},
-			finishTranscription: async operationId => {
+			cancelTranscription: async jobId => {
 				const {
-					data: { finishTranscription },
+					data: { cancelTranscription },
 				} = await apolloClient.mutate({
 					mutation: gql`
-						mutation finishTranscription($operationId: String!) {
-							finishTranscription(operationId: $operationId) {
-								job {
-									id
-									state
-								}
-								user {
-									id
-									credit
-								}
-							}
-						}
-					`,
-					variables: { operationId },
-				});
-				return finishTranscription;
-			},
-			failTranscription: async operationId => {
-				const {
-					data: { failTranscription },
-				} = await apolloClient.mutate({
-					mutation: gql`
-						mutation failTranscription($operationId: String!) {
-							failTranscription(operationId: $operationId) {
+						mutation cancelTranscription($jobId: String!) {
+							cancelTranscription(jobId: $jobId) {
 								job {
 									id
 									state
@@ -130,9 +109,9 @@ export default function useApiHelper() {
 							}
 						}
 					`,
-					variables: { operationId },
+					variables: { jobId },
 				});
-				return failTranscription;
+				return cancelTranscription;
 			},
 		}),
 		[apolloClient]

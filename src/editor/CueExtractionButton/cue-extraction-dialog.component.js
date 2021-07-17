@@ -48,40 +48,35 @@ export default function CueExtractionDialog({ open, onRequestClose, onExtractCom
 	const cost = GetTotalCost(duration);
 	const classes = useStyles();
 	const [extracting, setExtracting] = React.useState(false);
+	// there is a brief moment during the call to initTranscription when closing the modal allows a transcription
+	//   to continue. cancelDisabled is true during that time so we can prevent this state
+	const [cancelDisabled, setCancelDisabled] = React.useState(false);
 	const [progressBytes, setProgressBytes] = React.useState(0);
 	const [totalBytes, setTotalBytes] = React.useState(0);
 	const [uploadState, setUploadState] = React.useState();
 	const [languageCode, setLanguageCode] = React.useState('en-US');
-	const operationIdRef = React.useRef('');
+	const jobIdRef = React.useRef('');
+	const transcriptionPollRef = React.useRef(null);
 
 	const toast = useToast();
-	const {
-		getUploadUrl,
-		initTranscription,
-		pollTranscriptionJob,
-		finishTranscription,
-		failTranscription,
-	} = useApiHelper();
+	const { getUploadUrl, initTranscription, pollTranscriptionJob, cancelTranscription } = useApiHelper();
 
-	const handleFailure = () => {
-		if (operationIdRef.current) {
-			failTranscription(operationIdRef.current)
+	const handleRequestClose = e => {
+		if (uploadState === UPLOAD_STATE_PROCESSING && jobIdRef.current) {
+			transcriptionPollRef.current.cancel();
+			cancelTranscription(jobIdRef.current)
 				.then(() => {
-					operationIdRef.current = '';
+					jobIdRef.current = '';
 				})
 				.catch(handleError);
 		}
-	};
-
-	const handleRequestClose = e => {
-		if (uploadState === UPLOAD_STATE_PROCESSING) {
-			handleFailure();
-		}
+		transcriptionPollRef.current = null;
 		onRequestClose(e);
 	};
 
 	const extractCuesFromVideo = async e => {
 		setExtracting(true);
+		setCancelDisabled(false);
 		try {
 			setUploadState(UPLOAD_STATE_EXTRACTING);
 			let audioBlob;
@@ -112,18 +107,21 @@ export default function CueExtractionDialog({ open, onRequestClose, onExtractCom
 			}
 
 			setUploadState(UPLOAD_STATE_PROCESSING);
+			setCancelDisabled(true);
 			try {
 				const { job } = await initTranscription(filename, languageCode);
-				operationIdRef.current = job.operationId;
+				jobIdRef.current = job.id;
+				setCancelDisabled(false);
 				recordS2TEvent(duration);
 			} catch (e) {
 				toast.error('Unable to start transcription. Please try again.');
 				throw e;
 			}
 
-			let results;
+			let transcript;
 			try {
-				results = await pollTranscriptionJob(operationIdRef.current, 2000);
+				transcriptionPollRef.current = pollTranscriptionJob(jobIdRef.current, 2000);
+				transcript = await transcriptionPollRef.current.promise;
 			} catch (e) {
 				toast.error('Transcription failed. Please try again.');
 				throw e;
@@ -131,20 +129,18 @@ export default function CueExtractionDialog({ open, onRequestClose, onExtractCom
 
 			setUploadState(UPLOAD_STATE_COMPLETED);
 
-			if (!results || !results.length) {
+			if (!transcript) {
 				toast.error('Unable to find any transcribable speech.');
 				throw new Error('Unable to find any transcribable speech.');
 			}
 
-			onExtractComplete(results);
+			onExtractComplete(transcript);
 			toast.success('Extraction successful!');
 			onRequestClose(e);
-			await finishTranscription(operationIdRef.current);
 		} catch (err) {
 			setUploadState(UPLOAD_STATE_FAILED);
+			setCancelDisabled(false);
 			handleError(err);
-			// TODO: handle file cleanup when upload completes but job fails to start
-			if (operationIdRef.current) handleFailure();
 		}
 
 		setExtracting(false);
@@ -180,7 +176,7 @@ export default function CueExtractionDialog({ open, onRequestClose, onExtractCom
 				{!extracting && <LanguageSelector value={languageCode} onChange={setLanguageCode} />}
 			</DialogContent>
 			<DialogActions>
-				<Button name="Extract Cues Cancel" onClick={handleRequestClose} color="primary">
+				<Button name="Extract Cues Cancel" onClick={handleRequestClose} color="primary" disabled={cancelDisabled}>
 					Cancel
 				</Button>
 				<Button

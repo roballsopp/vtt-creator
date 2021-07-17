@@ -97,13 +97,9 @@ export function ExtractFromVideoProvider({ children }) {
 		}
 	};
 
-	const handleCueExtractComplete = segments => {
+	const handleCueExtractComplete = transcript => {
 		setCuesLoading(true);
-		// for how this concatenation stuff works: https://cloud.google.com/speech-to-text/docs/basics#transcriptions
-		const words = segments.reduce((arr, { alternatives }) => {
-			return arr.concat(alternatives[0].words);
-		}, []);
-		const newCues = getCuesFromWords(words);
+		const newCues = getCuesFromWords(transcript.words);
 		setCues(newCues);
 		setCuesLoading(false);
 	};
