@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Tooltip from '@material-ui/core/Tooltip';
-import { createMuiTheme, ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
+import { createTheme, ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 import PauseIcon from '@material-ui/icons/Pause';
@@ -19,7 +19,7 @@ import { PlayTime, PlayDuration } from './play-time.component';
 import PlaySpeed from './play-speed.component';
 
 const createControlsTheme = outer => {
-	return createMuiTheme({
+	return createTheme({
 		...outer,
 		palette: {
 			...outer.palette,
