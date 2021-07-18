@@ -120,15 +120,19 @@ export function getJobRunner(apolloClient, uploadFile) {
 					variables: {jobId},
 				})
 				.then(({data: {transcriptionJob}}) => {
-					if (cancelled) {
-						return transcriptionJob
-					}
-
 					if (timedOut) {
 						throw new Error('Poll timeout exceeded.')
 					}
 
-					if (transcriptionJob.state !== 'pending') {
+					if (transcriptionJob.state === 'error') {
+						throw new Error('job failed during polling')
+					}
+
+					if (['cancelled', 'success'].includes(transcriptionJob.state)) {
+						return transcriptionJob
+					}
+
+					if (cancelled) {
 						return transcriptionJob
 					}
 
@@ -224,12 +228,14 @@ export function getJobRunner(apolloClient, uploadFile) {
 				const handleProgress = e => {
 					queue.emit(EVENT_UPLOAD_PROGRESS, e.loaded, e.total)
 				}
+				const uploader = uploadFile(ctx.audioBlob, ctx.uploadUrl, handleProgress)
 				return {
-					promise: uploadFile(ctx.audioBlob, ctx.uploadUrl, handleProgress)
+					promise: uploader.promise
 						.then(() => ctx)
 						.catch(e => {
 							throw new UploadError(e.message)
 						}),
+					cancel: () => uploader.cancel(),
 				}
 			},
 		},

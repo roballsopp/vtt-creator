@@ -34,7 +34,10 @@ describe('JobRunner', function() {
 
 			window.gtag = chai.spy()
 			const apolloClient = new ApolloClient({link: from([dummyLink]), cache: new InMemoryCache()})
-			this.uploadFileSpy = chai.spy(() => Promise.resolve())
+			this.uploadFileSpy = chai.spy(() => ({
+				promise: Promise.resolve(),
+				cancel: () => Promise.resolve(),
+			}))
 			this.runner = getJobRunner(apolloClient, this.uploadFileSpy)
 
 			this.expectedLanguage = 'en-US'
@@ -233,7 +236,30 @@ describe('JobRunner', function() {
 					})
 				})
 
-				describe('then, if an error occurs during the first check', function() {
+				describe('then, if the first check is successful, but the job is failed from the backend', function() {
+					beforeEach(function() {
+						// the job should fail here, so we shouldn't reach the next graphql call, but rather end the job
+						this.linkObserver.next({data: {transcriptionJob: {state: 'error'}}})
+						this.linkObserver.complete()
+						return this.jobPromise
+					})
+
+					it(`the job is no longer 'in progress'`, function() {
+						chai.expect(this.runner.inProgress).to.equal(false)
+					})
+
+					it(`an error is emitted`, function() {
+						chai.expect(this.errorEvents).to.have.length(1)
+					})
+
+					it(`the job state is failed`, function() {
+						chai.expect(this.jobStateEvents).to.have.length(4)
+						chai.expect(this.jobStateEvents[2]).to.equal(JOB_STATE_TRANSCRIBING)
+						chai.expect(this.jobStateEvents[3]).to.equal(JOB_STATE_FAILED)
+					})
+				})
+
+				describe('then, if an error occurs during the first check request', function() {
 					beforeEach(function() {
 						this.linkObserver.error(new Error('error polling transcription'))
 						return this.jobPromise

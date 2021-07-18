@@ -4,9 +4,7 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
-import CloseIcon from '@material-ui/icons/Close'
 import {styled, makeStyles} from '@material-ui/styles'
 import {GetTotalCost} from '../../config'
 import UploadProgress, {
@@ -194,9 +192,6 @@ export default function CueExtractionDialog({open, onRequestClose, onExtractComp
 		<Dialog maxWidth="sm" fullWidth open={open} onClose={handleRequestClose} aria-labelledby="extract-dialog-title">
 			<Title id="extract-dialog-title" disableTypography>
 				<Typography variant="h6">Extract cues from video</Typography>
-				<IconButton aria-label="Close" edge="end" onClick={handleRequestClose}>
-					<CloseIcon />
-				</IconButton>
 			</Title>
 			<DialogContent>
 				<div className={classes.priceInfo}>
