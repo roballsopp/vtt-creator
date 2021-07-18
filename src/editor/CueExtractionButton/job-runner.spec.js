@@ -34,7 +34,10 @@ describe('JobRunner', function() {
 
 			window.gtag = chai.spy()
 			const apolloClient = new ApolloClient({link: from([dummyLink]), cache: new InMemoryCache()})
-			this.uploadFileSpy = chai.spy(() => Promise.resolve())
+			this.uploadFileSpy = chai.spy(() => ({
+				promise: Promise.resolve(),
+				cancel: () => Promise.resolve(),
+			}))
 			this.runner = getJobRunner(apolloClient, this.uploadFileSpy)
 
 			this.expectedLanguage = 'en-US'

@@ -228,12 +228,14 @@ export function getJobRunner(apolloClient, uploadFile) {
 				const handleProgress = e => {
 					queue.emit(EVENT_UPLOAD_PROGRESS, e.loaded, e.total)
 				}
+				const uploader = uploadFile(ctx.audioBlob, ctx.uploadUrl, handleProgress)
 				return {
-					promise: uploadFile(ctx.audioBlob, ctx.uploadUrl, handleProgress)
+					promise: uploader.promise
 						.then(() => ctx)
 						.catch(e => {
 							throw new UploadError(e.message)
 						}),
+					cancel: () => uploader.cancel(),
 				}
 			},
 		},
