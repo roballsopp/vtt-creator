@@ -20,7 +20,7 @@ import {
 
 chai.use(spies)
 
-describe.only('JobRunner', function() {
+describe('JobRunner', function() {
 	describe('when a job is started, and audio is successfully extracted', function() {
 		beforeEach(function(done) {
 			this.apolloEvents = new EventEmitter()

@@ -15,7 +15,7 @@ module.exports = config => {
 			'./test/webpack-test-entry.js': ['webpack'],
 		},
 		webpack: {
-			mode: 'development',
+			mode: 'production',
 			devtool: 'eval-source-map',
 			// output not necessary, webpack does it all in-memory
 			module: {

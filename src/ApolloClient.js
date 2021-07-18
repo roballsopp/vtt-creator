@@ -1,5 +1,6 @@
 import {ApolloClient, ApolloLink, createHttpLink, InMemoryCache, from, Observable} from '@apollo/client'
-import {ApiURL, cognitoUserPool} from './config'
+import {cognitoUserPool} from './cognito'
+import {ApiURL} from './config'
 import {UnauthorizedError} from './errors'
 
 const httpLink = createHttpLink({
