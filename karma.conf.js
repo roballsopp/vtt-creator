@@ -1,11 +1,11 @@
-const path = require('path');
-const process = require('process');
-const { DefinePlugin } = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const chromium = require('chromium');
+const path = require('path')
+const process = require('process')
+const {DefinePlugin} = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const chromium = require('chromium')
 
-process.env.CHROME_BIN = chromium.path;
-const STATIC_FILES_DIR = path.resolve(__dirname, 'public');
+process.env.CHROME_BIN = chromium.path
+const STATIC_FILES_DIR = path.resolve(__dirname, 'public')
 
 module.exports = config => {
 	config.set({
@@ -16,6 +16,7 @@ module.exports = config => {
 		},
 		webpack: {
 			mode: 'production',
+			devtool: 'eval-source-map',
 			// output not necessary, webpack does it all in-memory
 			module: {
 				rules: [
@@ -25,7 +26,7 @@ module.exports = config => {
 						exclude: /(node_modules)/,
 					},
 					{
-						test: /\.(png|svg|jpg|gif)$/,
+						test: /\.(png|svg|jpg|gif|wav)$/,
 						loader: 'file-loader',
 					},
 				],
@@ -38,6 +39,7 @@ module.exports = config => {
 					SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN),
 					COGNITO_CLIENT_ID: JSON.stringify(process.env.COGNITO_CLIENT_ID),
 					COGNITO_DOMAIN: JSON.stringify(process.env.COGNITO_DOMAIN),
+					COGNITO_USER_POOL_ID: JSON.stringify(process.env.COGNITO_USER_POOL_ID),
 					DEBUG: process.env.DEBUG,
 					GA_PRODUCT: JSON.stringify(process.env.GA_PRODUCT),
 					PAYPAL_CLIENT_ID: JSON.stringify(process.env.PAYPAL_CLIENT_ID),
@@ -66,5 +68,5 @@ module.exports = config => {
 		},
 		plugins: ['karma-chrome-launcher', 'karma-webpack', 'karma-mocha', 'karma-mocha-reporter', 'karma-chai'],
 		concurrency: Infinity,
-	});
-};
+	})
+}

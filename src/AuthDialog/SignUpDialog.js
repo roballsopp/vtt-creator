@@ -1,60 +1,60 @@
-import React from 'react';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import TextField from '@material-ui/core/TextField';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
-import CloseIcon from '@material-ui/icons/Close';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
-import { styled } from '@material-ui/styles';
-import { useAuthDialog } from './auth-dialog-context';
-import usePasswordValidation from './usePasswordValidation';
-import { Button } from '../common';
-import ValidationText from './ValidationText';
+import React from 'react'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import Grid from '@material-ui/core/Grid'
+import IconButton from '@material-ui/core/IconButton'
+import InputAdornment from '@material-ui/core/InputAdornment'
+import TextField from '@material-ui/core/TextField'
+import Tooltip from '@material-ui/core/Tooltip'
+import Typography from '@material-ui/core/Typography'
+import CloseIcon from '@material-ui/icons/Close'
+import VisibilityIcon from '@material-ui/icons/Visibility'
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff'
+import {styled} from '@material-ui/styles'
+import {useAuthDialog} from './auth-dialog-context'
+import usePasswordValidation from './usePasswordValidation'
+import {Button} from '../common'
+import ValidationText from './ValidationText'
 
 const Title = styled(DialogTitle)({
 	display: 'flex',
 	justifyContent: 'space-between',
 	alignItems: 'center',
-});
+})
 
-SignUpDialog.propTypes = {};
+SignUpDialog.propTypes = {}
 
 export default function SignUpDialog() {
-	const [email, setEmail] = React.useState('');
-	const [password, setPassword] = React.useState('');
-	const [showPassword, setShowPassword] = React.useState(false);
-	const [loading, setLoading] = React.useState(false);
-	const [error, setError] = React.useState('');
+	const [email, setEmail] = React.useState('')
+	const [password, setPassword] = React.useState('')
+	const [showPassword, setShowPassword] = React.useState(false)
+	const [loading, setLoading] = React.useState(false)
+	const [error, setError] = React.useState('')
 
-	const { signup, closeDialog } = useAuthDialog();
+	const {signup, closeDialog} = useAuthDialog()
 
-	const passwordValidation = usePasswordValidation(password);
+	const passwordValidation = usePasswordValidation(password)
 
 	const handleChangeEmail = e => {
-		setEmail(e.target.value);
-	};
+		setEmail(e.target.value)
+	}
 
 	const handleChangePassword = e => {
-		setPassword(e.target.value);
-	};
+		setPassword(e.target.value)
+	}
 
 	const handleToggleShowPassword = () => {
-		setShowPassword(s => !s);
-	};
+		setShowPassword(s => !s)
+	}
 
 	const handleSignUp = () => {
-		setLoading(true);
+		setLoading(true)
 		signup(email, password).catch(err => {
-			setLoading(false);
-			setError(err.message);
-		});
-	};
+			setLoading(false)
+			setError(err.message)
+		})
+	}
 
 	return (
 		<React.Fragment>
@@ -138,5 +138,5 @@ export default function SignUpDialog() {
 				)}
 			</DialogActions>
 		</React.Fragment>
-	);
+	)
 }

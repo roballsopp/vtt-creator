@@ -1,10 +1,10 @@
-import * as React from 'react';
-import { makeStyles } from '@material-ui/styles';
-import { PlayingProvider } from '../common/video/playing-context';
-import VideoControls from '../common/video/video-controls.component';
-import VttTimeline from '../vtt-timeline';
-import { OverlayProvider, VolumeProvider, SeekingProvider, useVideoDom } from '../common/video';
-import Video from './video.component';
+import * as React from 'react'
+import {makeStyles} from '@material-ui/styles'
+import {PlayingProvider} from '../common/video/playing-context'
+import VideoControls from '../common/video/video-controls.component'
+import VttTimeline from '../vtt-timeline'
+import {OverlayProvider, VolumeProvider, SeekingProvider, useVideoDom} from '../common/video'
+import Video from './video.component'
 
 const useStyles = makeStyles({
 	root: {
@@ -27,11 +27,11 @@ const useStyles = makeStyles({
 		maxHeight: 300,
 		minHeight: 100,
 	},
-});
+})
 
 export default function Player() {
-	const classes = useStyles();
-	const { onVideoContainerRef } = useVideoDom();
+	const classes = useStyles()
+	const {onVideoContainerRef} = useVideoDom()
 
 	return (
 		<PlayingProvider>
@@ -51,5 +51,5 @@ export default function Player() {
 				</SeekingProvider>
 			</VolumeProvider>
 		</PlayingProvider>
-	);
+	)
 }

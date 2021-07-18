@@ -1,31 +1,31 @@
-import * as React from 'react';
-import * as PropTypes from 'prop-types';
-import { getVTTFromCues } from '../services/vtt.service';
-import { useCues } from '../common';
+import * as React from 'react'
+import * as PropTypes from 'prop-types'
+import {getVTTFromCues} from '../services/vtt.service'
+import {useCues} from '../common'
 
 VttTrack.propTypes = {
 	srcLang: PropTypes.string,
 	label: PropTypes.string,
-};
+}
 
 VttTrack.defaultProps = {
 	srcLang: 'en',
 	label: 'English',
-};
+}
 
-export default function VttTrack({ srcLang, label }) {
-	const [captionSrc, setCaptionSrc] = React.useState();
+export default function VttTrack({srcLang, label}) {
+	const [captionSrc, setCaptionSrc] = React.useState()
 
-	const { cues } = useCues();
+	const {cues} = useCues()
 
 	React.useEffect(() => {
-		const vttBlob = getVTTFromCues(cues);
-		const vttBlobUrl = URL.createObjectURL(vttBlob);
+		const vttBlob = getVTTFromCues(cues)
+		const vttBlobUrl = URL.createObjectURL(vttBlob)
 		setCaptionSrc(oldUrl => {
-			if (oldUrl) URL.revokeObjectURL(oldUrl);
-			return vttBlobUrl;
-		});
-	}, [cues]);
+			if (oldUrl) URL.revokeObjectURL(oldUrl)
+			return vttBlobUrl
+		})
+	}, [cues])
 
-	return <track src={captionSrc} default kind="subtitles" srcLang={srcLang} label={label} />;
+	return <track src={captionSrc} default kind="subtitles" srcLang={srcLang} label={label} />
 }

@@ -1,39 +1,39 @@
-import * as React from 'react';
-import * as PropTypes from 'prop-types';
-import { makeStyles, useTheme } from '@material-ui/styles';
-import { useZoom } from './zoom-container.component';
-import { formatSeconds } from '../services/vtt.service';
+import * as React from 'react'
+import * as PropTypes from 'prop-types'
+import {makeStyles, useTheme} from '@material-ui/styles'
+import {useZoom} from './zoom-container.component'
+import {formatSeconds} from '../services/vtt.service'
 
 const useStyles = makeStyles({
 	root: {
 		display: 'flex',
 	},
-});
+})
 
 TimeTicks.propTypes = {
 	svgSize: PropTypes.number,
 	height: PropTypes.number,
-};
+}
 
 TimeTicks.defaultProps = {
 	svgSize: 5000,
 	height: 20,
-};
+}
 
-export default function TimeTicks({ height, svgSize }) {
-	const classes = useStyles();
-	const { pixelsPerSec, zoomContainerWidth } = useZoom();
+export default function TimeTicks({height, svgSize}) {
+	const classes = useStyles()
+	const {pixelsPerSec, zoomContainerWidth} = useZoom()
 
 	// keep svgs to a reasonable size
-	const numSvgs = Math.floor(zoomContainerWidth / svgSize);
-	const numTicks = Math.ceil(svgSize / pixelsPerSec);
+	const numSvgs = Math.floor(zoomContainerWidth / svgSize)
+	const numTicks = Math.ceil(svgSize / pixelsPerSec)
 
-	const svgs = [];
-	let elapsedPixels = 0;
+	const svgs = []
+	let elapsedPixels = 0
 
 	for (let i = 0; i < numSvgs; i++) {
-		const tickOffset = -(elapsedPixels % pixelsPerSec);
-		const startTickValue = numTicks * i;
+		const tickOffset = -(elapsedPixels % pixelsPerSec)
+		const startTickValue = numTicks * i
 		svgs.push(
 			<SvgSegment
 				key={i}
@@ -43,15 +43,15 @@ export default function TimeTicks({ height, svgSize }) {
 				tickOffset={tickOffset}
 				pixelsPerTick={pixelsPerSec}
 			/>
-		);
-		elapsedPixels += svgSize;
+		)
+		elapsedPixels += svgSize
 	}
 
-	const lastSvgSize = zoomContainerWidth % svgSize;
+	const lastSvgSize = zoomContainerWidth % svgSize
 
 	if (lastSvgSize) {
-		const tickOffset = -(elapsedPixels % pixelsPerSec);
-		const startTickValue = numTicks * numSvgs;
+		const tickOffset = -(elapsedPixels % pixelsPerSec)
+		const startTickValue = numTicks * numSvgs
 		svgs.push(
 			<SvgSegment
 				key="final"
@@ -61,21 +61,21 @@ export default function TimeTicks({ height, svgSize }) {
 				tickOffset={tickOffset}
 				pixelsPerTick={pixelsPerSec}
 			/>
-		);
+		)
 	}
 
-	return <div className={classes.root}>{svgs}</div>;
+	return <div className={classes.root}>{svgs}</div>
 }
 
-function SvgSegment({ width, height, startTickValue, tickOffset, pixelsPerTick, ...props }) {
-	const theme = useTheme();
+function SvgSegment({width, height, startTickValue, tickOffset, pixelsPerTick, ...props}) {
+	const theme = useTheme()
 	// one tick per second, and add one so it overlaps with the starting tick of the next svg
-	const numTicks = Math.ceil(width / pixelsPerTick) + 1;
-	const ticks = [];
+	const numTicks = Math.ceil(width / pixelsPerTick) + 1
+	const ticks = []
 
 	for (let i = 0; i < numTicks; i++) {
-		const x = tickOffset + i * pixelsPerTick;
-		ticks.push(<Tick key={i} x={x} height={height} text={formatSeconds(i + startTickValue)} />);
+		const x = tickOffset + i * pixelsPerTick
+		ticks.push(<Tick key={i} x={x} height={height} text={formatSeconds(i + startTickValue)} />)
 	}
 
 	return (
@@ -83,7 +83,7 @@ function SvgSegment({ width, height, startTickValue, tickOffset, pixelsPerTick, 
 			<rect width="100%" height="100%" fill={theme.palette.primary.main} />
 			{ticks}
 		</svg>
-	);
+	)
 }
 
 Tick.propTypes = {
@@ -91,15 +91,15 @@ Tick.propTypes = {
 	height: PropTypes.number,
 	text: PropTypes.string,
 	fontSize: PropTypes.number,
-};
+}
 
 Tick.defaultProps = {
 	height: 20,
 	fontSize: 12,
-};
+}
 
-function Tick({ x, height, text, fontSize }) {
-	const textY = (height + fontSize) / 2;
+function Tick({x, height, text, fontSize}) {
+	const textY = (height + fontSize) / 2
 	return (
 		<React.Fragment>
 			<line x1={x} x2={x} y1="0" y2={height} stroke="white" strokeWidth="2" />
@@ -107,5 +107,5 @@ function Tick({ x, height, text, fontSize }) {
 				{text}
 			</text>
 		</React.Fragment>
-	);
+	)
 }

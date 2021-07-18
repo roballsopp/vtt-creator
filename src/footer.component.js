@@ -1,9 +1,9 @@
-import * as React from 'react';
-import Link from '@material-ui/core/Link';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/styles';
-import { AccountButton } from './account';
+import * as React from 'react'
+import Link from '@material-ui/core/Link'
+import Paper from '@material-ui/core/Paper'
+import Typography from '@material-ui/core/Typography'
+import {makeStyles} from '@material-ui/styles'
+import {AccountButton} from './account'
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -39,10 +39,10 @@ const useStyles = makeStyles(theme => ({
 		width: 20,
 		height: 28,
 	},
-}));
+}))
 
 export default function Footer() {
-	const classes = useStyles();
+	const classes = useStyles()
 
 	return (
 		<Paper square className={classes.root} elevation={8}>
@@ -62,5 +62,5 @@ export default function Footer() {
 				<AccountButton />
 			</div>
 		</Paper>
-	);
+	)
 }

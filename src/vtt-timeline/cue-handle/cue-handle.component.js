@@ -1,15 +1,15 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import clsx from 'clsx';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
-import CloseIcon from '@material-ui/icons/Close';
-import { makeStyles } from '@material-ui/styles';
-import CueHandleLeft from './cue-handle-left.component';
-import CueHandleRight from './cue-handle-right.component';
-import CueHandleCenter from './cue-handle-center.component';
-import { useZoom } from '../zoom-container.component';
+import React from 'react'
+import PropTypes from 'prop-types'
+import clsx from 'clsx'
+import IconButton from '@material-ui/core/IconButton'
+import Tooltip from '@material-ui/core/Tooltip'
+import Typography from '@material-ui/core/Typography'
+import CloseIcon from '@material-ui/icons/Close'
+import {makeStyles} from '@material-ui/styles'
+import CueHandleLeft from './cue-handle-left.component'
+import CueHandleRight from './cue-handle-right.component'
+import CueHandleCenter from './cue-handle-center.component'
+import {useZoom} from '../zoom-container.component'
 
 const useStyles = makeStyles(theme => ({
 	cue: {
@@ -57,7 +57,7 @@ const useStyles = makeStyles(theme => ({
 		top: theme.spacing(2),
 		right: theme.spacing(2),
 	},
-}));
+}))
 
 CueHandle.propTypes = {
 	cue: PropTypes.shape({
@@ -68,55 +68,55 @@ CueHandle.propTypes = {
 	}).isRequired,
 	onChangeCueTiming: PropTypes.func.isRequired,
 	onRemoveCue: PropTypes.func.isRequired,
-};
+}
 
-function CueHandle({ cue, onChangeCueTiming, onRemoveCue }) {
-	const [pos, setPos] = React.useState({ left: 0 });
-	const { pixelsPerSec } = useZoom();
-	const classes = useStyles();
+function CueHandle({cue, onChangeCueTiming, onRemoveCue}) {
+	const [pos, setPos] = React.useState({left: 0})
+	const {pixelsPerSec} = useZoom()
+	const classes = useStyles()
 
 	React.useEffect(() => {
 		if (Number.isFinite(pixelsPerSec)) {
-			const startPos = cue.startTime * pixelsPerSec;
-			const width = (cue.endTime - cue.startTime) * pixelsPerSec;
+			const startPos = cue.startTime * pixelsPerSec
+			const width = (cue.endTime - cue.startTime) * pixelsPerSec
 			setPos({
 				left: Math.round(startPos),
 				width,
-			});
+			})
 		}
-	}, [pixelsPerSec, cue.startTime, cue.endTime]);
+	}, [pixelsPerSec, cue.startTime, cue.endTime])
 
 	const onChangeLeft = React.useCallback(delta => {
 		setPos(p => {
-			const left = p.left + delta;
-			const width = p.width - delta;
-			return { left: left < 0 ? 0 : left, width };
-		});
-	}, []);
+			const left = p.left + delta
+			const width = p.width - delta
+			return {left: left < 0 ? 0 : left, width}
+		})
+	}, [])
 
 	const onChangeRight = React.useCallback(delta => {
-		setPos(p => ({ ...p, width: p.width + delta }));
-	}, []);
+		setPos(p => ({...p, width: p.width + delta}))
+	}, [])
 
 	const onSlideCue = React.useCallback(delta => {
 		setPos(p => {
-			const left = p.left + delta;
+			const left = p.left + delta
 
 			if (left < 0) {
-				return { ...p, left: 0 };
+				return {...p, left: 0}
 			}
 
-			return { ...p, left };
-		});
-	}, []);
+			return {...p, left}
+		})
+	}, [])
 
 	const handleRemoveCue = React.useCallback(
 		e => {
-			e.stopPropagation();
-			onRemoveCue(cue.id);
+			e.stopPropagation()
+			onRemoveCue(cue.id)
 		},
 		[cue.id, onRemoveCue]
-	);
+	)
 
 	return (
 		<div className={classes.cue} style={pos}>
@@ -153,7 +153,7 @@ function CueHandle({ cue, onChangeCueTiming, onRemoveCue }) {
 				</Tooltip>
 			</div>
 		</div>
-	);
+	)
 }
 
-export default React.memo(CueHandle);
+export default React.memo(CueHandle)

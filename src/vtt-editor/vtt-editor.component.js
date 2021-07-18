@@ -1,14 +1,14 @@
-import * as React from 'react';
-import Divider from '@material-ui/core/Divider';
-import FabButton from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
-import Tooltip from '@material-ui/core/Tooltip';
-import { makeStyles } from '@material-ui/styles';
-import { List, Loader, useCues } from '../common';
-import CueEditor from './cue-editor.component';
-import { AutoScrollProvider } from './auto-scroll.context';
-import AutoScrollItem from './auto-scroll-item.component';
-import EmptyState from './EmptyState';
+import * as React from 'react'
+import Divider from '@material-ui/core/Divider'
+import FabButton from '@material-ui/core/Fab'
+import AddIcon from '@material-ui/icons/Add'
+import Tooltip from '@material-ui/core/Tooltip'
+import {makeStyles} from '@material-ui/styles'
+import {List, Loader, useCues} from '../common'
+import CueEditor from './cue-editor.component'
+import {AutoScrollProvider} from './auto-scroll.context'
+import AutoScrollItem from './auto-scroll-item.component'
+import EmptyState from './EmptyState'
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -28,13 +28,13 @@ const useStyles = makeStyles(theme => ({
 		bottom: theme.spacing(4),
 		right: theme.spacing(4),
 	},
-}));
+}))
 
-VTTEditor.propTypes = {};
+VTTEditor.propTypes = {}
 
 export default function VTTEditor() {
-	const classes = useStyles();
-	const { cues, loading, addCue, removeCue, changeCueEnd, changeCueStart, changeCueText, changeCueTiming } = useCues();
+	const classes = useStyles()
+	const {cues, loading, addCue, removeCue, changeCueEnd, changeCueStart, changeCueText, changeCueTiming} = useCues()
 
 	return (
 		<div className={classes.root}>
@@ -70,5 +70,5 @@ export default function VTTEditor() {
 				</FabButton>
 			</Tooltip>
 		</div>
-	);
+	)
 }

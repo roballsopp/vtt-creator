@@ -1,13 +1,13 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
-import TextField from '@material-ui/core/TextField';
-import Tooltip from '@material-ui/core/Tooltip';
-import { makeStyles } from '@material-ui/styles';
-import debounce from 'lodash/debounce';
-import { useKeyboardControl } from '../common/video';
-import TimingInput from './timing-input.component';
+import PropTypes from 'prop-types'
+import React from 'react'
+import IconButton from '@material-ui/core/IconButton'
+import CloseIcon from '@material-ui/icons/Close'
+import TextField from '@material-ui/core/TextField'
+import Tooltip from '@material-ui/core/Tooltip'
+import {makeStyles} from '@material-ui/styles'
+import debounce from 'lodash/debounce'
+import {useKeyboardControl} from '../common/video'
+import TimingInput from './timing-input.component'
 
 const useStyles = makeStyles({
 	header: {
@@ -24,7 +24,7 @@ const useStyles = makeStyles({
 		display: 'flex',
 		alignItems: 'center',
 	},
-});
+})
 
 CueEditor.propTypes = {
 	cue: PropTypes.shape({
@@ -37,45 +37,45 @@ CueEditor.propTypes = {
 	onChangeCueEnd: PropTypes.func.isRequired,
 	onChangeCueStart: PropTypes.func.isRequired,
 	onChangeCueText: PropTypes.func.isRequired,
-};
+}
 
-function CueEditor({ cue, onRemoveCue, onChangeCueEnd, onChangeCueStart, onChangeCueText }) {
-	const classes = useStyles();
-	const captionInputKeyCtrl = useKeyboardControl();
-	const startInputKeyCtrl = useKeyboardControl();
-	const durInputKeyCtrl = useKeyboardControl();
-	const endInputKeyCtrl = useKeyboardControl();
-	const [text, setText] = React.useState(cue.text);
+function CueEditor({cue, onRemoveCue, onChangeCueEnd, onChangeCueStart, onChangeCueText}) {
+	const classes = useStyles()
+	const captionInputKeyCtrl = useKeyboardControl()
+	const startInputKeyCtrl = useKeyboardControl()
+	const durInputKeyCtrl = useKeyboardControl()
+	const endInputKeyCtrl = useKeyboardControl()
+	const [text, setText] = React.useState(cue.text)
 
-	const debouncedOnChangeText = React.useCallback(debounce(onChangeCueText, 400), [onChangeCueText]);
+	const debouncedOnChangeText = React.useCallback(debounce(onChangeCueText, 400), [onChangeCueText])
 
 	React.useEffect(() => {
-		setText(cue.text);
+		setText(cue.text)
 		return () => {
-			debouncedOnChangeText.flush();
-		};
-	}, [debouncedOnChangeText, cue.text]);
+			debouncedOnChangeText.flush()
+		}
+	}, [debouncedOnChangeText, cue.text])
 
 	const onChangeText = e => {
-		setText(e.target.value);
-		debouncedOnChangeText(cue.id, e.target.value);
-	};
+		setText(e.target.value)
+		debouncedOnChangeText(cue.id, e.target.value)
+	}
 
 	const onChangeStartTime = secs => {
-		onChangeCueStart(cue.id, Number(secs));
-	};
+		onChangeCueStart(cue.id, Number(secs))
+	}
 
 	const onChangeEndTime = secs => {
-		onChangeCueEnd(cue.id, Number(secs));
-	};
+		onChangeCueEnd(cue.id, Number(secs))
+	}
 
 	const onChangeTimeSpan = secs => {
-		onChangeCueEnd(cue.id, cue.startTime + Number(secs));
-	};
+		onChangeCueEnd(cue.id, cue.startTime + Number(secs))
+	}
 
 	const handleRemoveCue = () => {
-		onRemoveCue(cue.id);
-	};
+		onRemoveCue(cue.id)
+	}
 
 	return (
 		<div>
@@ -127,14 +127,14 @@ function CueEditor({ cue, onRemoveCue, onChangeCueEnd, onChangeCueStart, onChang
 					onChange={onChangeText}
 					onFocus={captionInputKeyCtrl.onFocus}
 					onBlur={() => {
-						captionInputKeyCtrl.onBlur();
-						debouncedOnChangeText.flush();
+						captionInputKeyCtrl.onBlur()
+						debouncedOnChangeText.flush()
 					}}
 					placeholder="Enter your caption here..."
 				/>
 			</div>
 		</div>
-	);
+	)
 }
 
-export default React.memo(CueEditor);
+export default React.memo(CueEditor)

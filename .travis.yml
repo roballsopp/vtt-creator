@@ -1,14 +1,14 @@
 language: node_js
 node_js:
-  - "10"
+  - "14"
 addons:
   chrome: stable
 install:
-  - yarn
+  - npm install
 jobs:
   include:
     - stage: test
       name: "Lint"
-      script: yarn lint
-    - script: yarn test-ci
+      script: npm run lint
+    - script: npm run test-ci
       name: "Test"

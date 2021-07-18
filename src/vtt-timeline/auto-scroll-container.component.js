@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import clsx from 'clsx';
-import { makeStyles } from '@material-ui/styles';
-import { usePlayTimeEvent } from '../common/video';
+import React from 'react'
+import PropTypes from 'prop-types'
+import clsx from 'clsx'
+import {makeStyles} from '@material-ui/styles'
+import {usePlayTimeEvent} from '../common/video'
 
 const useStyles = makeStyles({
 	root: {
@@ -13,32 +13,32 @@ const useStyles = makeStyles({
 		overflowX: 'scroll',
 		scrollBehavior: 'smooth',
 	},
-});
+})
 
 AutoScrollContainer.propTypes = {
 	pixelsPerSec: PropTypes.number.isRequired,
 	horizontal: PropTypes.bool,
 	children: PropTypes.node.isRequired,
 	className: PropTypes.string,
-};
+}
 
-export default function AutoScrollContainer({ pixelsPerSec, horizontal, children, className, ...props }) {
-	const classes = useStyles();
+export default function AutoScrollContainer({pixelsPerSec, horizontal, children, className, ...props}) {
+	const classes = useStyles()
 
-	const scrollContainerRef = React.useRef();
+	const scrollContainerRef = React.useRef()
 
 	usePlayTimeEvent(
 		React.useCallback(
 			currentTime => {
-				const scrollPixels = currentTime && pixelsPerSec ? pixelsPerSec * currentTime : 0;
+				const scrollPixels = currentTime && pixelsPerSec ? pixelsPerSec * currentTime : 0
 				if (scrollContainerRef.current) {
-					if (horizontal) scrollContainerRef.current.scrollLeft = scrollPixels;
-					else scrollContainerRef.current.scrollTop = scrollPixels;
+					if (horizontal) scrollContainerRef.current.scrollLeft = scrollPixels
+					else scrollContainerRef.current.scrollTop = scrollPixels
 				}
 			},
 			[horizontal, pixelsPerSec]
 		)
-	);
+	)
 
 	return (
 		<div
@@ -53,5 +53,5 @@ export default function AutoScrollContainer({ pixelsPerSec, horizontal, children
 			)}>
 			{children}
 		</div>
-	);
+	)
 }

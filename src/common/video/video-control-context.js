@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { useVideoDom } from './video-dom.context';
+import React from 'react'
+import PropTypes from 'prop-types'
+import {useVideoDom} from './video-dom.context'
 
 const VideoControlContext = React.createContext({
 	togglePlay: () => {},
@@ -9,19 +9,19 @@ const VideoControlContext = React.createContext({
 	setVolume: () => {},
 	toggleMute: () => {},
 	toggleCaptions: () => {},
-});
+})
 
 VideoControlProvider.propTypes = {
 	children: PropTypes.node.isRequired,
-};
+}
 
 // This provides access to tell the video element how to behave
 //  For performance reasons, this context should only update when videoRef changes.
 //  Don't put video state in here, like `seeking` or `paused`, since that will trigger
 //  possibly unwanted state updates in users of this context
-export function VideoControlProvider({ children }) {
-	const { videoRef } = useVideoDom();
-	const playPromiseRef = React.useRef(Promise.resolve());
+export function VideoControlProvider({children}) {
+	const {videoRef} = useVideoDom()
+	const playPromiseRef = React.useRef(Promise.resolve())
 
 	return (
 		<VideoControlContext.Provider
@@ -30,31 +30,31 @@ export function VideoControlProvider({ children }) {
 					// play() method is actually asynchronous and you'll get fun error messages if you try to pause before play has resolved:
 					// https://developers.google.com/web/updates/2017/06/play-request-was-interrupted
 					togglePlay: () => {
-						if (!videoRef) return;
+						if (!videoRef) return
 						return playPromiseRef.current.then(() => {
-							if (videoRef.paused || videoRef.ended) return videoRef.play();
-							else videoRef.pause();
-						});
+							if (videoRef.paused || videoRef.ended) return videoRef.play()
+							else videoRef.pause()
+						})
 					},
 					seekVideo: newTime => {
 						if (videoRef) {
-							videoRef.currentTime = newTime;
+							videoRef.currentTime = newTime
 						}
 					},
 					nudgeVideo: delta => {
 						if (videoRef) {
-							videoRef.currentTime = Math.min(Math.max(videoRef.currentTime + delta, 0), videoRef.duration);
+							videoRef.currentTime = Math.min(Math.max(videoRef.currentTime + delta, 0), videoRef.duration)
 						}
 					},
 					setVolume: volume => {
-						if (videoRef) videoRef.volume = volume;
+						if (videoRef) videoRef.volume = volume
 					},
 					toggleMute: () => {
-						if (videoRef) videoRef.muted = !videoRef.muted;
+						if (videoRef) videoRef.muted = !videoRef.muted
 					},
 					toggleCaptions: () => {
 						if (videoRef) {
-							videoRef.textTracks[0].mode = videoRef.textTracks[0].mode === 'showing' ? 'hidden' : 'showing';
+							videoRef.textTracks[0].mode = videoRef.textTracks[0].mode === 'showing' ? 'hidden' : 'showing'
 						}
 					},
 				}),
@@ -62,9 +62,9 @@ export function VideoControlProvider({ children }) {
 			)}>
 			{children}
 		</VideoControlContext.Provider>
-	);
+	)
 }
 
 export function useVideoControl() {
-	return React.useContext(VideoControlContext);
+	return React.useContext(VideoControlContext)
 }

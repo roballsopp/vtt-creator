@@ -1,14 +1,14 @@
-import EmailIcon from '@material-ui/icons/Email';
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import { gql } from '@apollo/client';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/styles';
-import { handleError } from '../services/error-handler.service';
-import PaypalButtons from './PaypalButtons';
-import DollarsInput from './DollarsInput';
+import EmailIcon from '@material-ui/icons/Email'
+import * as React from 'react'
+import PropTypes from 'prop-types'
+import {gql} from '@apollo/client'
+import Button from '@material-ui/core/Button'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import Typography from '@material-ui/core/Typography'
+import {makeStyles} from '@material-ui/styles'
+import {handleError} from '../services/error-handler.service'
+import PaypalButtons from './PaypalButtons'
+import DollarsInput from './DollarsInput'
 
 const useStyles = makeStyles(theme => ({
 	loader: {
@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
 	spinner: {
 		marginRight: theme.spacing(4),
 	},
-}));
+}))
 
 AddCreditInput.fragments = {
 	user: gql`
@@ -31,7 +31,7 @@ AddCreditInput.fragments = {
 			credit
 		}
 	`,
-};
+}
 
 AddCreditInput.propTypes = {
 	user: PropTypes.shape({
@@ -42,42 +42,42 @@ AddCreditInput.propTypes = {
 	defaultValue: PropTypes.string,
 	onApproved: PropTypes.func,
 	onError: PropTypes.func,
-};
+}
 
-export default function AddCreditInput({ user, defaultValue, onApproved, onError }) {
-	const [purchaseAmt, setPurchaseAmt] = React.useState(defaultValue || '');
-	const [paypalError, setPaypalError] = React.useState(false);
-	const [inputErr, setInputError] = React.useState(false);
-	const [awaitingApproval, setAwaitingApproval] = React.useState(false);
+export default function AddCreditInput({user, defaultValue, onApproved, onError}) {
+	const [purchaseAmt, setPurchaseAmt] = React.useState(defaultValue || '')
+	const [paypalError, setPaypalError] = React.useState(false)
+	const [inputErr, setInputError] = React.useState(false)
+	const [awaitingApproval, setAwaitingApproval] = React.useState(false)
 
-	const classes = useStyles();
+	const classes = useStyles()
 
 	const handlePaypalError = err => {
-		setAwaitingApproval(false);
-		setPaypalError(true);
-		handleError(err);
-		onError(err);
-	};
+		setAwaitingApproval(false)
+		setPaypalError(true)
+		handleError(err)
+		onError(err)
+	}
 
 	const handleChangePurchaseAmt = amt => {
-		setPurchaseAmt(amt);
-		const amtNum = Number(amt);
-		setInputError(Number.isNaN(amtNum) || amtNum < 1);
-	};
+		setPurchaseAmt(amt)
+		const amtNum = Number(amt)
+		setInputError(Number.isNaN(amtNum) || amtNum < 1)
+	}
 
 	const handleApproveStart = () => {
-		setAwaitingApproval(true);
-	};
+		setAwaitingApproval(true)
+	}
 
 	const handleApproved = () => {
-		setAwaitingApproval(false);
-		if (onApproved) onApproved();
-	};
+		setAwaitingApproval(false)
+		if (onApproved) onApproved()
+	}
 
 	if (paypalError) {
-		const subject = encodeURIComponent(`Payment Error - User: ${user.email}`);
-		const body = encodeURIComponent(`\n\nError Info\nAccount Email: ${user.email}\nDate: ${new Date().toISOString()}`);
-		const mailto = `mailto:vttcreator@gmail.com?subject=${subject}&body=${body}`;
+		const subject = encodeURIComponent(`Payment Error - User: ${user.email}`)
+		const body = encodeURIComponent(`\n\nError Info\nAccount Email: ${user.email}\nDate: ${new Date().toISOString()}`)
+		const mailto = `mailto:vttcreator@gmail.com?subject=${subject}&body=${body}`
 		return (
 			<React.Fragment>
 				<Typography variant="subtitle2" color="error" gutterBottom>
@@ -87,7 +87,7 @@ export default function AddCreditInput({ user, defaultValue, onApproved, onError
 					Report Issue
 				</Button>
 			</React.Fragment>
-		);
+		)
 	}
 
 	return (
@@ -112,5 +112,5 @@ export default function AddCreditInput({ user, defaultValue, onApproved, onError
 				onApproved={handleApproved}
 			/>
 		</React.Fragment>
-	);
+	)
 }

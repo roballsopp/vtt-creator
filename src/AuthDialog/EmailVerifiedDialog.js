@@ -1,29 +1,29 @@
-import React from 'react';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import CloseIcon from '@material-ui/icons/Close';
-import { styled } from '@material-ui/styles';
-import { Button } from '../common';
-import { useAuthDialog } from './auth-dialog-context';
+import React from 'react'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import Grid from '@material-ui/core/Grid'
+import IconButton from '@material-ui/core/IconButton'
+import Typography from '@material-ui/core/Typography'
+import CloseIcon from '@material-ui/icons/Close'
+import {styled} from '@material-ui/styles'
+import {Button} from '../common'
+import {useAuthDialog} from './auth-dialog-context'
 
 const Title = styled(DialogTitle)({
 	display: 'flex',
 	justifyContent: 'space-between',
 	alignItems: 'center',
-});
+})
 
-EmailVerifiedDialog.propTypes = {};
+EmailVerifiedDialog.propTypes = {}
 
 export default function EmailVerifiedDialog() {
-	const { openLoginDialog, closeDialog } = useAuthDialog();
+	const {openLoginDialog, closeDialog} = useAuthDialog()
 
 	const handleGoToLogin = () => {
-		openLoginDialog();
-	};
+		openLoginDialog()
+	}
 
 	return (
 		<React.Fragment>
@@ -46,5 +46,5 @@ export default function EmailVerifiedDialog() {
 				</Button>
 			</DialogActions>
 		</React.Fragment>
-	);
+	)
 }

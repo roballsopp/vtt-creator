@@ -1,7 +1,7 @@
-import ExtractFromVideoButton from './ExtractFromVideoButton';
-import ExtractFromVideoMenuItem from './ExtractFromVideoMenuItem';
-import { ExtractFromVideoProvider, useExtractFromVideo } from './ExtractFromVideoContext';
-import ExtractFromVideoDialogs from './ExtractFromVideoDialogs';
+import ExtractFromVideoButton from './ExtractFromVideoButton'
+import ExtractFromVideoMenuItem from './ExtractFromVideoMenuItem'
+import {ExtractFromVideoProvider, useExtractFromVideo} from './ExtractFromVideoContext'
+import ExtractFromVideoDialogs from './ExtractFromVideoDialogs'
 
 export {
 	ExtractFromVideoButton,
@@ -9,4 +9,4 @@ export {
 	ExtractFromVideoDialogs,
 	ExtractFromVideoProvider,
 	useExtractFromVideo,
-};
+}

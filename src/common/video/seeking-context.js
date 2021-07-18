@@ -1,38 +1,38 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { useVideoDom } from './video-dom.context';
+import React from 'react'
+import PropTypes from 'prop-types'
+import {useVideoDom} from './video-dom.context'
 
 const SeekingContext = React.createContext({
 	seeking: false,
-});
+})
 
 SeekingProvider.propTypes = {
 	children: PropTypes.node.isRequired,
-};
+}
 
-export function SeekingProvider({ children }) {
-	const [seeking, setSeeking] = React.useState(false);
-	const { videoRef } = useVideoDom();
+export function SeekingProvider({children}) {
+	const [seeking, setSeeking] = React.useState(false)
+	const {videoRef} = useVideoDom()
 
 	React.useEffect(() => {
-		if (!videoRef) return;
+		if (!videoRef) return
 
 		const handleSeeking = () => {
-			setSeeking(true);
-		};
+			setSeeking(true)
+		}
 
 		const handleSeeked = () => {
-			setSeeking(false);
-		};
+			setSeeking(false)
+		}
 
-		videoRef.addEventListener('seeking', handleSeeking);
-		videoRef.addEventListener('seeked', handleSeeked);
+		videoRef.addEventListener('seeking', handleSeeking)
+		videoRef.addEventListener('seeked', handleSeeked)
 
 		return () => {
-			videoRef.removeEventListener('seeking', handleSeeking);
-			videoRef.addEventListener('seeked', handleSeeked);
-		};
-	}, [videoRef]);
+			videoRef.removeEventListener('seeking', handleSeeking)
+			videoRef.addEventListener('seeked', handleSeeked)
+		}
+	}, [videoRef])
 
 	return (
 		<SeekingContext.Provider
@@ -44,9 +44,9 @@ export function SeekingProvider({ children }) {
 			)}>
 			{children}
 		</SeekingContext.Provider>
-	);
+	)
 }
 
 export function useSeeking() {
-	return React.useContext(SeekingContext);
+	return React.useContext(SeekingContext)
 }

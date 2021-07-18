@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 export const AuthDialogContext = React.createContext({
 	openLoginDialog: () => {},
@@ -16,8 +16,8 @@ export const AuthDialogContext = React.createContext({
 	resetPassword: () => {},
 	closeDialog: () => {},
 	authDialogEvents: {},
-});
+})
 
 export function useAuthDialog() {
-	return React.useContext(AuthDialogContext);
+	return React.useContext(AuthDialogContext)
 }

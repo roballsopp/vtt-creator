@@ -1,14 +1,14 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/styles';
-import { useFileSelector, useToast, useVideoFile, Button } from '../common';
-import { Video as BaseVideo } from '../common/video';
-import VideoOptionsMenu from './video-options-menu.component';
-import VttTrack from './vtt-track.component';
-import { getSupportedVideoFileExtensions } from '../services/av.service';
+import React from 'react'
+import PropTypes from 'prop-types'
+import Typography from '@material-ui/core/Typography'
+import {makeStyles} from '@material-ui/styles'
+import {useFileSelector, useToast, useVideoFile, Button} from '../common'
+import {Video as BaseVideo} from '../common/video'
+import VideoOptionsMenu from './video-options-menu.component'
+import VttTrack from './vtt-track.component'
+import {getSupportedVideoFileExtensions} from '../services/av.service'
 
-const ACCEPT = getSupportedVideoFileExtensions().join(',');
+const ACCEPT = getSupportedVideoFileExtensions().join(',')
 
 const useStyles = makeStyles(theme => ({
 	loaderRoot: {
@@ -24,34 +24,34 @@ const useStyles = makeStyles(theme => ({
 	actionGutter: {
 		marginBottom: theme.spacing(4),
 	},
-}));
+}))
 
 Video.propTypes = {
 	className: PropTypes.any,
-};
+}
 
-export default function Video({ className }) {
-	const [src, setSrc] = React.useState();
-	const classes = useStyles();
-	const toast = useToast();
-	const { onVideoFile } = useVideoFile();
+export default function Video({className}) {
+	const [src, setSrc] = React.useState()
+	const classes = useStyles()
+	const toast = useToast()
+	const {onVideoFile} = useVideoFile()
 
 	const onFilesSelected = React.useCallback(
 		e => {
-			const [file] = e.target.files;
-			onVideoFile(file);
-			if (src) URL.revokeObjectURL(src);
-			const localUrl = URL.createObjectURL(file);
-			setSrc(localUrl);
+			const [file] = e.target.files
+			onVideoFile(file)
+			if (src) URL.revokeObjectURL(src)
+			const localUrl = URL.createObjectURL(file)
+			setSrc(localUrl)
 		},
 		[src, onVideoFile]
-	);
+	)
 
 	const onFileSizeExceeded = React.useCallback(() => {
-		toast.error('The file you have selected is too large.');
-	}, [toast]);
+		toast.error('The file you have selected is too large.')
+	}, [toast])
 
-	const openFileSelector = useFileSelector({ accept: ACCEPT, onFilesSelected, onFileSizeExceeded });
+	const openFileSelector = useFileSelector({accept: ACCEPT, onFilesSelected, onFileSizeExceeded})
 
 	if (!src) {
 		return (
@@ -65,12 +65,12 @@ export default function Video({ className }) {
 					</Button>
 				</div>
 			</div>
-		);
+		)
 	}
 
 	return (
 		<BaseVideo src={src} className={className} topElement={<VideoOptionsMenu onFilesSelected={onFilesSelected} />}>
 			<VttTrack />
 		</BaseVideo>
-	);
+	)
 }

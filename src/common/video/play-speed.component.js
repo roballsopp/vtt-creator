@@ -1,30 +1,30 @@
-import React from 'react';
-import IconButton from '@material-ui/core/IconButton';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import SpeedIcon from '@material-ui/icons/Speed';
-import Tooltip from '@material-ui/core/Tooltip';
-import { useVideoDom } from './video-dom.context';
+import React from 'react'
+import IconButton from '@material-ui/core/IconButton'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+import SpeedIcon from '@material-ui/icons/Speed'
+import Tooltip from '@material-ui/core/Tooltip'
+import {useVideoDom} from './video-dom.context'
 
-export default function PlaySpeed({ disabled, className }) {
-	const [anchorEl, setAnchorEl] = React.useState(null);
-	const [speed, setSpeed] = React.useState(1);
+export default function PlaySpeed({disabled, className}) {
+	const [anchorEl, setAnchorEl] = React.useState(null)
+	const [speed, setSpeed] = React.useState(1)
 
-	const { videoRef } = useVideoDom();
+	const {videoRef} = useVideoDom()
 
 	const handleOpenMenu = e => {
-		setAnchorEl(e.currentTarget);
-	};
+		setAnchorEl(e.currentTarget)
+	}
 
 	const handleSelectSpeed = speed => () => {
-		setSpeed(speed);
-		videoRef.playbackRate = speed;
-		setAnchorEl(null);
-	};
+		setSpeed(speed)
+		videoRef.playbackRate = speed
+		setAnchorEl(null)
+	}
 
 	const handleCloseMenu = () => {
-		setAnchorEl(null);
-	};
+		setAnchorEl(null)
+	}
 
 	return (
 		<React.Fragment>
@@ -62,5 +62,5 @@ export default function PlaySpeed({ disabled, className }) {
 				</MenuItem>
 			</Menu>
 		</React.Fragment>
-	);
+	)
 }

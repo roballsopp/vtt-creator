@@ -1,7 +1,7 @@
-import ExtendableError from './ExtendableError';
+import ExtendableError from './ExtendableError'
 export default class UnauthorizedError extends ExtendableError {
 	constructor(m = 'Unauthorized') {
-		super(m);
-		this.name = 'UnauthorizedError';
+		super(m)
+		this.name = 'UnauthorizedError'
 	}
 }

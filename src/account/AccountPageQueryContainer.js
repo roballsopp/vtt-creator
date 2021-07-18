@@ -1,10 +1,10 @@
-import { makeStyles } from '@material-ui/styles';
-import React from 'react';
-import { gql, useQuery } from '@apollo/client';
-import { useAuthDialog } from '../AuthDialog';
-import Loader from '../common/loader.component';
-import { UnauthorizedError } from '../errors';
-import AccountPage from './AccountPage';
+import {makeStyles} from '@material-ui/styles'
+import React from 'react'
+import {gql, useQuery} from '@apollo/client'
+import {useAuthDialog} from '../AuthDialog'
+import Loader from '../common/loader.component'
+import {UnauthorizedError} from '../errors'
+import AccountPage from './AccountPage'
 
 const useStyles = makeStyles(() => ({
 	root: {
@@ -14,13 +14,13 @@ const useStyles = makeStyles(() => ({
 		minHeight: 0,
 		minWidth: 0,
 	},
-}));
+}))
 
 export default function AccountPageQueryContainer() {
-	const classes = useStyles();
-	const { openLoginDialog } = useAuthDialog();
+	const classes = useStyles()
+	const {openLoginDialog} = useAuthDialog()
 
-	const { loading, data, error } = useQuery(
+	const {loading, data, error} = useQuery(
 		gql`
 			query getUser {
 				self {
@@ -32,19 +32,19 @@ export default function AccountPageQueryContainer() {
 		{
 			onError: error => {
 				if (error.networkError instanceof UnauthorizedError) {
-					openLoginDialog();
+					openLoginDialog()
 				}
 			},
 		}
-	);
+	)
 
 	if (loading || error) {
 		return (
 			<main className={classes.root}>
 				<Loader />
 			</main>
-		);
+		)
 	}
 
-	return <AccountPage user={data.self} />;
+	return <AccountPage user={data.self} />
 }
