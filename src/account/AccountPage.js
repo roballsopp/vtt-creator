@@ -13,6 +13,7 @@ import {useAuthDialog} from '../AuthDialog'
 import AddCreditInput from './AddCreditInput'
 import {VC as VCIcon} from '../common/icons'
 import {TranscriptionCost} from '../config'
+import JobHistoryTable from './JobHistoryTableQueryContainer'
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -118,6 +119,12 @@ export default function AccountPage({user}) {
 						<Box width={400} p={4} className={classes.addCreditSection}>
 							<AddCreditInput user={user} />
 						</Box>
+					</Grid>
+					<Grid item container xs={12}>
+						<Box>
+							<Typography variant="h6">Cue Extraction History</Typography>
+						</Box>
+						<JobHistoryTable />
 					</Grid>
 				</Grid>
 			</div>
