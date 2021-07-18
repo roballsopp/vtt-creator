@@ -56,7 +56,11 @@ describe('JobRunner', function() {
 				this.doneEvents.push(result)
 			})
 			// start assertions at the first graphql call, which should be to get an upload url
-			this.apolloEvents.once('op', () => done())
+			this.runner.once(EVENT_ERROR, done)
+			this.apolloEvents.once('op', () => {
+				this.runner.off(EVENT_ERROR, done)
+				done()
+			})
 			getTestFile()
 				.then(videoFile => {
 					this.jobPromise = this.runner.run({
