@@ -29,6 +29,7 @@ import {
 	EVENT_UPLOAD_PROGRESS,
 	ExtractionError,
 	getJobRunner,
+	JOB_STATE_CANCELLING,
 	JOB_STATE_EXTRACTING,
 	JOB_STATE_FAILED,
 	JOB_STATE_TRANSCRIBING,
@@ -67,6 +68,7 @@ export default function CueExtractionDialog({open, onRequestClose, onExtractComp
 	// there is a brief moment during the call to initTranscription when closing the modal allows a transcription
 	//   to continue. cancelDisabled is true during that time so we can prevent this state
 	const [cancelDisabled, setCancelDisabled] = React.useState(false)
+	const [cancelling, setCancelling] = React.useState(false)
 	const [progressBytes, setProgressBytes] = React.useState(0)
 	const [totalBytes, setTotalBytes] = React.useState(0)
 	const [uploadState, setUploadState] = React.useState()
@@ -80,10 +82,17 @@ export default function CueExtractionDialog({open, onRequestClose, onExtractComp
 			if (['backdropClick', 'escapeKeyDown'].includes(reason)) {
 				return
 			}
-			if (jobRunnerRef.current) {
-				jobRunnerRef.current.cancel().catch(handleError)
+
+			if (!jobRunnerRef.current?.inProgress) {
+				return onRequestClose(e)
 			}
-			onRequestClose(e)
+
+			jobRunnerRef.current
+				.cancel()
+				.then(() => {
+					onRequestClose(e)
+				})
+				.catch(handleError)
 		},
 		[onRequestClose]
 	)
@@ -96,9 +105,13 @@ export default function CueExtractionDialog({open, onRequestClose, onExtractComp
 				return setUploadState(UPLOAD_STATE_UPLOADING)
 			case JOB_STATE_TRANSCRIBING:
 				return setUploadState(UPLOAD_STATE_PROCESSING)
+			case JOB_STATE_CANCELLING:
+				return setCancelling(true)
 			case JOB_STATE_FAILED:
+				setCancelling(false)
 				return setUploadState(UPLOAD_STATE_FAILED)
 			default:
+				setCancelling(false)
 				return setUploadState(UPLOAD_STATE_COMPLETED)
 		}
 	}, [])
@@ -152,7 +165,10 @@ export default function CueExtractionDialog({open, onRequestClose, onExtractComp
 			jobRunnerRef.current.off(EVENT_UPLOAD_PROGRESS, handleUploadProgress)
 			jobRunnerRef.current.off(EVENT_CANCEL_DISABLED, setCancelDisabled)
 			jobRunnerRef.current.off(EVENT_DONE, handleTranscriptionDone)
-			jobRunnerRef.current.cancel().catch(handleError)
+
+			if (jobRunnerRef.current.inProgress) {
+				jobRunnerRef.current.cancel().catch(handleError)
+			}
 		}
 	}, [handleJobError, handleJobStateUpdate, handleTranscriptionDone, handleUploadProgress])
 
@@ -197,7 +213,12 @@ export default function CueExtractionDialog({open, onRequestClose, onExtractComp
 				{!jobRunnerRef.current?.inProgress && <LanguageSelector value={languageCode} onChange={setLanguageCode} />}
 			</DialogContent>
 			<DialogActions>
-				<Button name="Extract Cues Cancel" onClick={handleRequestClose} color="primary" disabled={cancelDisabled}>
+				<Button
+					name="Extract Cues Cancel"
+					loading={cancelling}
+					onClick={handleRequestClose}
+					color="primary"
+					disabled={cancelDisabled}>
 					Cancel
 				</Button>
 				<Button

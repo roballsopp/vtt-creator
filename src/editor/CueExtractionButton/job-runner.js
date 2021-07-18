@@ -332,6 +332,7 @@ class TaskQueue extends EventEmitter {
 			this.emit(EVENT_JOB_STATE, JOB_STATE_CANCELLING)
 			if (this._currentTask?.cancel) await this._currentTask.cancel()
 			await this._currentTask.promise
+			this.inProgress = false
 			this.emit(EVENT_JOB_STATE, JOB_STATE_CANCELLED)
 		}
 	}
