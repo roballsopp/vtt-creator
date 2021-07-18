@@ -17,12 +17,28 @@ import UploadProgress, {
 	UPLOAD_STATE_FAILED,
 } from './upload-progress.component'
 import LanguageSelector from './LanguageSelector'
-import useApiHelper from './useApiHelper'
-import {getAudioBlobFromVideo} from '../../services/av.service'
 import {handleError} from '../../services/error-handler.service'
 import {uploadFile} from '../../services/rest-api.service'
 import {useToast, Button, useVideoFile} from '../../common'
 import {useDuration} from '../../common/video'
+import {
+	EVENT_CANCEL_DISABLED,
+	EVENT_DONE,
+	EVENT_ERROR,
+	EVENT_JOB_STATE,
+	EVENT_UPLOAD_PROGRESS,
+	ExtractionError,
+	getJobRunner,
+	JOB_STATE_EXTRACTING,
+	JOB_STATE_FAILED,
+	JOB_STATE_TRANSCRIBING,
+	JOB_STATE_UPLOADING,
+	JobError,
+	JobStartError,
+	UploadError,
+	UploadUrlError,
+} from './job-runner'
+import {useApolloClient} from '@apollo/client'
 
 const Title = styled(DialogTitle)({
 	display: 'flex',
@@ -45,9 +61,10 @@ CueExtractionDialog.propTypes = {
 export default function CueExtractionDialog({open, onRequestClose, onExtractComplete}) {
 	const {videoFile} = useVideoFile()
 	const {duration} = useDuration()
+	const apolloClient = useApolloClient()
 	const cost = GetTotalCost(duration)
 	const classes = useStyles()
-	const [extracting, setExtracting] = React.useState(false)
+	const [inProgress, setInProgress] = React.useState(false)
 	// there is a brief moment during the call to initTranscription when closing the modal allows a transcription
 	//   to continue. cancelDisabled is true during that time so we can prevent this state
 	const [cancelDisabled, setCancelDisabled] = React.useState(false)
@@ -55,99 +72,108 @@ export default function CueExtractionDialog({open, onRequestClose, onExtractComp
 	const [totalBytes, setTotalBytes] = React.useState(0)
 	const [uploadState, setUploadState] = React.useState()
 	const [languageCode, setLanguageCode] = React.useState('en-US')
-	const jobIdRef = React.useRef('')
-	const transcriptionPollRef = React.useRef(null)
+	const jobRunnerRef = React.useRef(null)
 
 	const toast = useToast()
-	const {getUploadUrl, initTranscription, pollTranscriptionJob, cancelTranscription} = useApiHelper()
 
-	const handleRequestClose = (e, reason) => {
-		if (['backdropClick', 'escapeKeyDown'].includes(reason)) {
-			return
+	const handleRequestClose = React.useCallback(
+		(e, reason) => {
+			if (['backdropClick', 'escapeKeyDown'].includes(reason)) {
+				return
+			}
+			if (jobRunnerRef.current) {
+				jobRunnerRef.current.cancel().catch(handleError)
+			}
+			onRequestClose(e)
+			setInProgress(false)
+		},
+		[onRequestClose]
+	)
+
+	const handleJobStateUpdate = React.useCallback(state => {
+		switch (state) {
+			case JOB_STATE_EXTRACTING:
+				return setUploadState(UPLOAD_STATE_EXTRACTING)
+			case JOB_STATE_UPLOADING:
+				return setUploadState(UPLOAD_STATE_UPLOADING)
+			case JOB_STATE_TRANSCRIBING:
+				return setUploadState(UPLOAD_STATE_PROCESSING)
+			case JOB_STATE_FAILED:
+				return setUploadState(UPLOAD_STATE_FAILED)
+			default:
+				return setUploadState(UPLOAD_STATE_COMPLETED)
 		}
+	}, [])
 
-		if (uploadState === UPLOAD_STATE_PROCESSING && jobIdRef.current) {
-			transcriptionPollRef.current.cancel()
-			cancelTranscription(jobIdRef.current)
-				.then(() => {
-					jobIdRef.current = ''
-				})
-				.catch(handleError)
-		}
-		transcriptionPollRef.current = null
-		onRequestClose(e)
-	}
-
-	const extractCuesFromVideo = async e => {
-		setExtracting(true)
-		setCancelDisabled(false)
-		try {
-			setUploadState(UPLOAD_STATE_EXTRACTING)
-			let audioBlob
-			try {
-				audioBlob = await getAudioBlobFromVideo(videoFile)
-			} catch (e) {
-				toast.error('Unable to read audio from video file.')
-				throw e
+	const handleJobError = React.useCallback(
+		e => {
+			handleError(e)
+			if (e instanceof ExtractionError) {
+				return toast.error('Unable to read audio from video file.')
 			}
-
-			setUploadState(UPLOAD_STATE_UPLOADING)
-			let filename, url
-			try {
-				;({filename, url} = await getUploadUrl())
-			} catch (e) {
-				toast.error('Unable to start upload. Please try again.')
-				throw e
+			if (e instanceof UploadUrlError) {
+				return toast.error('Unable to start upload. Please try again.')
 			}
-
-			try {
-				await uploadFile(audioBlob, url, e => {
-					setProgressBytes(e.loaded)
-					setTotalBytes(e.total)
-				})
-			} catch (e) {
-				toast.error('Upload failed. Please try again.')
-				throw e
+			if (e instanceof UploadError) {
+				return toast.error('Upload failed. Please try again.')
 			}
-
-			setUploadState(UPLOAD_STATE_PROCESSING)
-			setCancelDisabled(true)
-			try {
-				const {job} = await initTranscription(filename, languageCode)
-				jobIdRef.current = job.id
-				setCancelDisabled(false)
-				recordS2TEvent(duration)
-			} catch (e) {
-				toast.error('Unable to start transcription. Please try again.')
-				throw e
+			if (e instanceof JobStartError) {
+				return toast.error('Unable to start transcription. Please try again.')
 			}
-
-			let transcript
-			try {
-				transcriptionPollRef.current = pollTranscriptionJob(jobIdRef.current, 2000)
-				transcript = await transcriptionPollRef.current.promise
-			} catch (e) {
-				toast.error('Transcription failed. Please try again.')
-				throw e
+			if (e instanceof JobError) {
+				return toast.error('Transcription failed. Please try again.')
 			}
+		},
+		[toast]
+	)
 
-			setUploadState(UPLOAD_STATE_COMPLETED)
+	const handleUploadProgress = React.useCallback((loaded, total) => {
+		setProgressBytes(loaded)
+		setTotalBytes(total)
+	}, [])
 
+	const handleTranscriptionDone = React.useCallback(
+		transcript => {
 			if (!transcript) {
 				toast.error('Unable to find any transcribable speech.')
-				throw new Error('Unable to find any transcribable speech.')
+				return handleError(new Error('Unable to find any transcribable speech.'))
 			}
 
 			onExtractComplete(transcript)
 			toast.success('Extraction successful!')
-			onRequestClose(e)
-		} catch (err) {
-			setUploadState(UPLOAD_STATE_FAILED)
-			setCancelDisabled(false)
-			handleError(err)
-		}
+			onRequestClose()
+		},
+		[onExtractComplete, onRequestClose, toast]
+	)
 
-		setExtracting(false)
+	React.useEffect(() => {
+		return () => {
+			if (!jobRunnerRef.current) return
+			jobRunnerRef.current.off(EVENT_JOB_STATE, handleJobStateUpdate)
+			jobRunnerRef.current.off(EVENT_ERROR, handleJobError)
+			jobRunnerRef.current.off(EVENT_UPLOAD_PROGRESS, handleUploadProgress)
+			jobRunnerRef.current.off(EVENT_CANCEL_DISABLED, setCancelDisabled)
+			jobRunnerRef.current.off(EVENT_DONE, handleTranscriptionDone)
+			jobRunnerRef.current.cancel().catch(handleError)
+		}
+	}, [handleJobError, handleJobStateUpdate, handleTranscriptionDone, handleUploadProgress])
+
+	const extractCuesFromVideo = async () => {
+		const runner = getJobRunner(apolloClient, uploadFile)
+		jobRunnerRef.current = runner
+
+		runner.on(EVENT_JOB_STATE, handleJobStateUpdate)
+		runner.on(EVENT_ERROR, handleJobError)
+		runner.on(EVENT_UPLOAD_PROGRESS, handleUploadProgress)
+		runner.on(EVENT_CANCEL_DISABLED, setCancelDisabled)
+		runner.on(EVENT_DONE, handleTranscriptionDone)
+
+		await runner.run({
+			videoFile,
+			duration,
+			languageCode,
+			pollInterval: 2000,
+		})
 	}
 
 	return (
@@ -167,10 +193,10 @@ export default function CueExtractionDialog({open, onRequestClose, onExtractComp
 						and do not close this window until your transcription completes.
 					</Typography>
 				</div>
-				{extracting && (
+				{inProgress && (
 					<UploadProgress progressBytes={progressBytes} totalBytes={totalBytes} uploadState={uploadState} />
 				)}
-				{!extracting && <LanguageSelector value={languageCode} onChange={setLanguageCode} />}
+				{!inProgress && <LanguageSelector value={languageCode} onChange={setLanguageCode} />}
 			</DialogContent>
 			<DialogActions>
 				<Button name="Extract Cues Cancel" onClick={handleRequestClose} color="primary" disabled={cancelDisabled}>
@@ -181,18 +207,10 @@ export default function CueExtractionDialog({open, onRequestClose, onExtractComp
 					onClick={extractCuesFromVideo}
 					color="primary"
 					variant="contained"
-					disabled={extracting}>
+					disabled={inProgress}>
 					Extract cues
 				</Button>
 			</DialogActions>
 		</Dialog>
 	)
-}
-
-function recordS2TEvent(videoDuration) {
-	const minutes = Math.round((videoDuration || 0) / 60) + ''
-	window.gtag('event', `video_length_${minutes.padStart(2, '0')}`, {
-		event_category: 'speech_to_text',
-		value: videoDuration,
-	})
 }

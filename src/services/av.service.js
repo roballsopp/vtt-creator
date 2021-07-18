@@ -30,7 +30,8 @@ export const getAudioBlobFromVideo = async file => {
 
 					offlineCtx.startRendering()
 				},
-				resp => reject(resp.err)
+				// TODO: the resp object here appears to _be_ the error, despite the mdn example using resp.err. checking both for now...
+				resp => reject(resp.err || resp)
 			)
 		})
 

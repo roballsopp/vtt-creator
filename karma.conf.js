@@ -15,7 +15,8 @@ module.exports = config => {
 			'./test/webpack-test-entry.js': ['webpack'],
 		},
 		webpack: {
-			mode: 'production',
+			mode: 'development',
+			devtool: 'eval-source-map',
 			// output not necessary, webpack does it all in-memory
 			module: {
 				rules: [
@@ -25,7 +26,7 @@ module.exports = config => {
 						exclude: /(node_modules)/,
 					},
 					{
-						test: /\.(png|svg|jpg|gif)$/,
+						test: /\.(png|svg|jpg|gif|wav)$/,
 						loader: 'file-loader',
 					},
 				],
@@ -38,6 +39,7 @@ module.exports = config => {
 					SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN),
 					COGNITO_CLIENT_ID: JSON.stringify(process.env.COGNITO_CLIENT_ID),
 					COGNITO_DOMAIN: JSON.stringify(process.env.COGNITO_DOMAIN),
+					COGNITO_USER_POOL_ID: JSON.stringify(process.env.COGNITO_USER_POOL_ID),
 					DEBUG: process.env.DEBUG,
 					GA_PRODUCT: JSON.stringify(process.env.GA_PRODUCT),
 					PAYPAL_CLIENT_ID: JSON.stringify(process.env.PAYPAL_CLIENT_ID),
