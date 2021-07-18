@@ -45,7 +45,7 @@ export default function Footer() {
 	const classes = useStyles()
 
 	return (
-		<Paper square className={classes.root} elevation={8}>
+		<Paper square className={classes.root} elevation={8} component="footer">
 			<div className={classes.leftSection} />
 			<div className={classes.centerSection}>
 				<Typography color="inherit" variant="subtitle2">
