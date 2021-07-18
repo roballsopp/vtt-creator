@@ -64,7 +64,6 @@ export default function CueExtractionDialog({open, onRequestClose, onExtractComp
 	const apolloClient = useApolloClient()
 	const cost = GetTotalCost(duration)
 	const classes = useStyles()
-	const [inProgress, setInProgress] = React.useState(false)
 	// there is a brief moment during the call to initTranscription when closing the modal allows a transcription
 	//   to continue. cancelDisabled is true during that time so we can prevent this state
 	const [cancelDisabled, setCancelDisabled] = React.useState(false)
@@ -85,7 +84,6 @@ export default function CueExtractionDialog({open, onRequestClose, onExtractComp
 				jobRunnerRef.current.cancel().catch(handleError)
 			}
 			onRequestClose(e)
-			setInProgress(false)
 		},
 		[onRequestClose]
 	)
@@ -133,7 +131,7 @@ export default function CueExtractionDialog({open, onRequestClose, onExtractComp
 	}, [])
 
 	const handleTranscriptionDone = React.useCallback(
-		transcript => {
+		({transcript}) => {
 			if (!transcript) {
 				toast.error('Unable to find any transcribable speech.')
 				return handleError(new Error('Unable to find any transcribable speech.'))
@@ -193,10 +191,10 @@ export default function CueExtractionDialog({open, onRequestClose, onExtractComp
 						and do not close this window until your transcription completes.
 					</Typography>
 				</div>
-				{inProgress && (
+				{jobRunnerRef.current?.inProgress && (
 					<UploadProgress progressBytes={progressBytes} totalBytes={totalBytes} uploadState={uploadState} />
 				)}
-				{!inProgress && <LanguageSelector value={languageCode} onChange={setLanguageCode} />}
+				{!jobRunnerRef.current?.inProgress && <LanguageSelector value={languageCode} onChange={setLanguageCode} />}
 			</DialogContent>
 			<DialogActions>
 				<Button name="Extract Cues Cancel" onClick={handleRequestClose} color="primary" disabled={cancelDisabled}>
@@ -207,7 +205,7 @@ export default function CueExtractionDialog({open, onRequestClose, onExtractComp
 					onClick={extractCuesFromVideo}
 					color="primary"
 					variant="contained"
-					disabled={inProgress}>
+					disabled={jobRunnerRef.current?.inProgress}>
 					Extract cues
 				</Button>
 			</DialogActions>

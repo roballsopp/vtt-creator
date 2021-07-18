@@ -76,7 +76,7 @@ function getMessageFromUploadState(uploadState) {
 		case UPLOAD_STATE_COMPLETED:
 			return 'Done!'
 		default:
-			throw new Error('Unsupported progress state.')
+			throw new Error(`Unsupported progress state: ${uploadState}`)
 	}
 }
 
