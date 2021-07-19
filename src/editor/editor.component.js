@@ -22,6 +22,13 @@ import VttMenu from './vtt-menu.component'
 const useStyles = makeStyles({
 	root: {
 		display: 'flex',
+		flexDirection: 'column',
+		height: '100%',
+		minHeight: 0,
+		minWidth: 0,
+	},
+	main: {
+		display: 'flex',
 		flex: 1,
 		minHeight: 0,
 		minWidth: 0,
@@ -52,26 +59,29 @@ export default function Editor() {
 								<KeyboardControlProvider>
 									<CuesProvider>
 										<CuesFromFileProvider>
-											<main className={classes.root}>
-												<Paper square className={classes.drawer}>
-													<ExtractFromVideoProvider>
-														<AppBar position="static" color="primary">
-															<Toolbar>
-																<VCIcon fontSize="large" edge="start" style={{marginRight: 8}} />
-																<Typography variant="h6" color="inherit" style={{flexGrow: 1}}>
-																	VTT Creator
-																</Typography>
-																<VttMenu />
-															</Toolbar>
-														</AppBar>
-														<VTTEditor />
-														<ExtractFromVideoDialogs />
-													</ExtractFromVideoProvider>
-												</Paper>
-												<div className={classes.player}>
-													<Player />
-												</div>
-											</main>
+											<div className={classes.root}>
+												<main className={classes.main}>
+													<Paper square className={classes.drawer}>
+														<ExtractFromVideoProvider>
+															<AppBar position="static" color="primary">
+																<Toolbar>
+																	<VCIcon fontSize="large" edge="start" style={{marginRight: 8}} />
+																	<Typography variant="h6" color="inherit" style={{flexGrow: 1}}>
+																		VTT Creator
+																	</Typography>
+																	<VttMenu />
+																</Toolbar>
+															</AppBar>
+															<VTTEditor />
+															<ExtractFromVideoDialogs />
+														</ExtractFromVideoProvider>
+													</Paper>
+													<div className={classes.player}>
+														<Player />
+													</div>
+												</main>
+												<Footer />
+											</div>
 										</CuesFromFileProvider>
 									</CuesProvider>
 								</KeyboardControlProvider>
@@ -80,7 +90,6 @@ export default function Editor() {
 					</PlayTimeProvider>
 				</VideoDomProvider>
 			</VideoFileProvider>
-			<Footer />
 		</React.Fragment>
 	)
 }

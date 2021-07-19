@@ -3,6 +3,7 @@ import {gql} from '@apollo/client'
 import ExtendableError from '../../errors/ExtendableError'
 import {SpeechToTextJobTimeout} from '../../config'
 import {getAudioBlobFromVideo} from '../../services/av.service'
+import {appendNewJob} from '../../account/job-history-gql'
 
 export class ExtractionError extends ExtendableError {
 	constructor(m = 'Failed to extract audio') {
@@ -90,6 +91,9 @@ export function getJobRunner(apolloClient, uploadFile) {
 				}
 			`,
 			variables: {filename, languageCode},
+			update(cache, {data: {beginTranscription}}) {
+				appendNewJob(cache, beginTranscription?.job)
+			},
 		})
 		return beginTranscription
 	}
