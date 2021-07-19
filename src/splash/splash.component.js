@@ -15,6 +15,15 @@ const useStyles = makeStyles({
 	root: {
 		display: 'flex',
 		flexDirection: 'column',
+		position: 'absolute',
+		top: 0,
+		right: 0,
+		bottom: 0,
+		left: 0,
+	},
+	main: {
+		display: 'flex',
+		flexDirection: 'column',
 		flex: 1,
 		alignItems: 'center',
 	},
@@ -86,8 +95,8 @@ export default function Splash() {
 	const history = useHistory()
 
 	return (
-		<React.Fragment>
-			<main className={classes.root}>
+		<div className={classes.root}>
+			<main className={classes.main}>
 				<div className={classes.banner}>
 					<div className={classes.title}>
 						<VCIcon className={classes.titleIcon} />
@@ -131,6 +140,6 @@ export default function Splash() {
 				</div>
 			</main>
 			<Footer />
-		</React.Fragment>
+		</div>
 	)
 }
