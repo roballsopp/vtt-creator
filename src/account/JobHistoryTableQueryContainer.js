@@ -1,8 +1,9 @@
 import React from 'react'
-import {gql, useQuery} from '@apollo/client'
-import TablePagination from '@material-ui/core/TablePagination'
+import {useQuery} from '@apollo/client'
+import {Box, LinearProgress, TablePagination} from '@material-ui/core'
 import JobHistoryTable from './JobHistoryTable'
 import {handleError} from '../services/error-handler.service'
+import {JobHistoryTableGetJobsQuery} from './job-history-gql'
 
 export default function JobHistoryTableQueryContainer() {
 	const [pageSize, setPageSize] = React.useState(10)
@@ -17,33 +18,20 @@ export default function JobHistoryTableQueryContainer() {
 		setPage(0)
 	}
 
-	const {data, previousData} = useQuery(
-		gql`
-			query JobHistoryTableGetJobs($offset: Int!, $limit: Int!) {
-				transcriptionJobs {
-					nodes(offset: $offset, limit: $limit) {
-						...JobHistoryTable_jobs
-					}
-					totalCount
-				}
-			}
-			${JobHistoryTable.fragments.jobs}
-		`,
-		{
-			variables: {
-				offset: page * pageSize,
-				limit: pageSize,
-			},
-			onError: err => handleError(err),
-		}
-	)
+	const {loading, data, previousData} = useQuery(JobHistoryTableGetJobsQuery, {
+		variables: {
+			offset: page * pageSize,
+			limit: pageSize,
+		},
+		onError: err => handleError(err),
+	})
 
 	const jobConn = data?.transcriptionJobs || previousData?.transcriptionJobs
 	const jobs = React.useMemo(() => jobConn?.nodes || [], [jobConn])
 	const totalCount = React.useMemo(() => jobConn?.totalCount || 0, [jobConn])
 
 	return (
-		<React.Fragment>
+		<Box position="relative">
 			<JobHistoryTable jobs={jobs} />
 			<TablePagination
 				component="div"
@@ -53,6 +41,11 @@ export default function JobHistoryTableQueryContainer() {
 				onPageChange={handleChangePage}
 				onRowsPerPageChange={handleChangeRowsPerPage}
 			/>
-		</React.Fragment>
+			{loading && (
+				<Box position="absolute" bottom={0} left={0} right={0}>
+					<LinearProgress />
+				</Box>
+			)}
+		</Box>
 	)
 }

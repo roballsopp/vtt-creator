@@ -1,21 +1,12 @@
 import * as React from 'react'
 import PropTypes from 'prop-types'
-import {gql} from '@apollo/client'
 import {format} from 'date-fns'
 import {Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography} from '@material-ui/core'
 import StatusBubble from './StatusBubble'
+import {JobHistoryTable_jobs_fragment} from './job-history-gql'
 
 JobHistoryTable.fragments = {
-	jobs: gql`
-		fragment JobHistoryTable_jobs on TranscriptionJob {
-			id
-			cost
-			fileDuration
-			language
-			state
-			createdAt
-		}
-	`,
+	jobs: JobHistoryTable_jobs_fragment,
 }
 
 JobHistoryTable.propTypes = {

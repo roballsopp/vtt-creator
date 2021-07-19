@@ -88,7 +88,7 @@ export default function AccountPage({user}) {
 						<AddCreditInput user={user} />
 					</Box>
 				</Grid>
-				<Grid item container xs={12}>
+				<Grid item container xs={12} direction="column">
 					<Box>
 						<Typography variant="h6">Cue Extraction History</Typography>
 					</Box>
