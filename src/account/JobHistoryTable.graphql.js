@@ -1,6 +1,6 @@
 import {gql} from '@apollo/client'
 
-export const JobHistoryTable_jobs_fragment = gql`
+export const JobHistoryTable_jobsFragment = gql`
 	fragment JobHistoryTable_jobs on TranscriptionJob {
 		id
 		cost
@@ -20,7 +20,7 @@ export const JobHistoryTableGetJobsQuery = gql`
 			totalCount
 		}
 	}
-	${JobHistoryTable_jobs_fragment}
+	${JobHistoryTable_jobsFragment}
 `
 
 export function appendNewJob(cache, job) {

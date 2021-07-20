@@ -2,12 +2,12 @@ import React from 'react'
 import EventEmitter from 'events'
 import PropTypes from 'prop-types'
 import * as Sentry from '@sentry/browser'
-import {useApolloClient} from '@apollo/client'
+import {gql, useApolloClient} from '@apollo/client'
 import qs from 'qs'
 import {AuthenticationDetails, CognitoUser} from 'amazon-cognito-identity-js'
 import Dialog from '@material-ui/core/Dialog'
-import {useUser} from '../common'
 import {cognitoUserPool} from '../cognito'
+import {ExtractFromVideoContext_userFragment} from '../editor/CueExtractionButton/ExtractFromVideoContext.graphql'
 import {handleError} from '../services/error-handler.service'
 import LoginDialog from './LoginDialog'
 import ForgotPasswordDialog from './ForgotPasswordDialog'
@@ -15,7 +15,6 @@ import PasswordResetDialog from './PasswordResetDialog'
 import SignUpDialog from './SignUpDialog'
 import VerifyEmailDialog from './VerifyEmailDialog'
 import EmailVerifiedDialog from './EmailVerifiedDialog'
-import LoadingUserDialog from './LoadingUserDialog'
 import {AuthDialogContext} from './auth-dialog-context'
 
 AuthDialogProvider.propTypes = {
@@ -25,7 +24,6 @@ AuthDialogProvider.propTypes = {
 export function AuthDialogProvider({children}) {
 	const apolloClient = useApolloClient()
 	const params = useQueryParams()
-	const {setUser, userEvents} = useUser()
 	const [viewId, setViewId] = React.useState(params.authDialog || '')
 	const [email, setEmail] = React.useState(params.email || '')
 	const authEventsRef = React.useRef(new EventEmitter())
@@ -77,33 +75,35 @@ export function AuthDialogProvider({children}) {
 				const cognitoUser = new CognitoUser({Username: email, Pool: cognitoUserPool})
 				cognitoUser.authenticateUser(new AuthenticationDetails({Username: email, Password: password}), {
 					onSuccess: function() {
-						cognitoUser.getUserData((err, data) => {
-							if (err) {
+						// TODO: spread fragments here
+						apolloClient
+							.query({
+								fetchPolicy: 'network-only',
+								query: gql`
+									query getUserAfterLoginQuery {
+										self {
+											id
+											email
+											credit
+											creditMinutes
+											unlimitedUsage
+											...ExtractFromVideoContext_user
+										}
+									}
+									${ExtractFromVideoContext_userFragment}
+								`,
+							})
+							.then(({data: {self}}) => {
+								Sentry.setUser(self)
+								authEventsRef.current.emit('login')
+								resolve()
+								handleCloseDialog()
+							})
+							.catch(err => {
 								authEventsRef.current.emit('login-fail', err)
 								handleError(err)
 								return reject(err)
-							}
-
-							const user = data.UserAttributes.reduce((user, att) => {
-								user[att.Name] = att.Value
-								return user
-							}, {})
-
-							const graphUser = {
-								id: user.sub,
-								email: user.email,
-								credit: Number(user['custom:credit'] || 0),
-								unlimitedUsage: user['custom:unlimited_usage'] === 'true',
-							}
-
-							Sentry.setUser(graphUser)
-
-							setUser(graphUser)
-
-							authEventsRef.current.emit('login')
-							resolve()
-							handleCloseDialog()
-						})
+							})
 					},
 					onFailure: _err => {
 						// it seems this could be a non-Error object only sometimes...
@@ -115,7 +115,7 @@ export function AuthDialogProvider({children}) {
 				})
 			})
 		},
-		[setUser, handleCloseDialog]
+		[apolloClient, handleCloseDialog]
 	)
 
 	const handleLogout = React.useCallback(() => {
@@ -223,16 +223,10 @@ export function AuthDialogProvider({children}) {
 	)
 
 	const handleExited = React.useCallback(() => {
+		// if the user just logged in and the dialog is now exiting, the extraction work flow
+		//   relies on this event being fired after the apollo cache has the new user data
 		authEventsRef.current.emit('exited')
 	}, [])
-
-	React.useEffect(() => {
-		const handleUserLoaded = () => handleCloseDialog()
-		userEvents.on('loaded', handleUserLoaded)
-		return () => {
-			userEvents.off('loaded', handleUserLoaded)
-		}
-	}, [userEvents, handleCloseDialog])
 
 	return (
 		<AuthDialogContext.Provider
@@ -270,8 +264,6 @@ export function AuthDialogProvider({children}) {
 }
 
 function AuthView({viewId, loginMessage}) {
-	const {loading} = useUser()
-	if (loading) return <LoadingUserDialog />
 	if (viewId === 'LOGIN') return <LoginDialog errorMessage={loginMessage} />
 	if (viewId === 'FORGOT_PWD') return <ForgotPasswordDialog />
 	if (viewId === 'RESET_PWD') return <PasswordResetDialog />

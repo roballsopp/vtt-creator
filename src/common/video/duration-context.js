@@ -17,9 +17,6 @@ export function DurationProvider({children}) {
 	React.useEffect(() => {
 		if (!videoRef) return
 
-		// TODO: figure out why this is necessary. components unmounting and resetting state above to 0?
-		setDuration(videoRef.duration)
-
 		const onDurationChange = () => {
 			setDuration(videoRef.duration)
 		}

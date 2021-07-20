@@ -11,5 +11,3 @@ export const GAProduct = GA_PRODUCT
 export const PaypalClientId = PAYPAL_CLIENT_ID
 
 export const TranscriptionCost = 0.15 // $0.15 per minute
-
-export const GetTotalCost = duration => Math.ceil((duration / 60) * TranscriptionCost * 100) / 100

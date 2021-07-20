@@ -1,13 +1,18 @@
 import React from 'react'
 import EventEmitter from 'events'
 import PropTypes from 'prop-types'
-import {GetTotalCost, TranscriptionCost} from '../../config'
-import {useCues, useUser} from '../../common'
+import {gql, useQuery} from '@apollo/client'
+import {ExtractFromVideoContext_userFragment} from './ExtractFromVideoContext.graphql'
+import {TranscriptionCost} from '../../config'
+import {useCues} from '../../common'
 import {useDuration} from '../../common/video'
 import {getCuesFromWords} from '../../services/vtt.service'
 import {useAuthDialog} from '../../AuthDialog'
 
 const ExtractFromVideoContext = React.createContext({
+	loading: true,
+	user: null,
+	transcriptionCost: null,
 	creditDialogOpen: false,
 	cueExtractionDialogOpen: false,
 	notSupportedDialogOpen: false,
@@ -29,49 +34,58 @@ export function ExtractFromVideoProvider({children}) {
 	const {setCues, setCuesLoading} = useCues()
 	const {openLoginDialog, authDialogEvents} = useAuthDialog()
 	const {duration} = useDuration()
-	const {user} = useUser()
 	const extractDialogEvents = React.useRef(new EventEmitter())
-	const cost = GetTotalCost(duration)
+	const queryDataRef = React.useRef()
 
 	const [cueExtractionDialogOpen, setCueExtractionDialogOpen] = React.useState(false)
 	const [creditDialogOpen, setCreditDialogOpen] = React.useState(false)
 	const [notSupportedDialogOpen, setNotSupportedDialogOpen] = React.useState(false)
-	const [awaitingLogin, setAwaitingLogin] = React.useState(false)
 	const creditDialogPaid = React.useRef(false)
 
-	const openLoginPrompt = React.useCallback(() => {
-		setAwaitingLogin(true)
-		return openLoginDialog(
-			`Automatic caption extraction costs $${TranscriptionCost.toFixed(
-				2
-			)} per minute of video and requires an account. Please login or sign up below.`
-		)
-	}, [openLoginDialog])
+	const {loading, data} = useQuery(
+		gql`
+			query ExtractFromVideoContextGetCost($duration: Float!) {
+				self {
+					...ExtractFromVideoContext_user
+				}
+				transcriptionCost(duration: $duration)
+			}
+			${ExtractFromVideoContext_userFragment}
+		`,
+		{
+			variables: {duration},
+		}
+	)
+
+	queryDataRef.current = data
 
 	const handleCueExtractionDialogOpen = React.useCallback(() => {
 		extractDialogEvents.current.emit('opening')
 
 		if (!window.AudioContext) return setNotSupportedDialogOpen(true)
 
-		if (!user) return openLoginPrompt()
+		// if error getting cost, we aren't logged in
+		if (!queryDataRef.current) {
+			authDialogEvents.once('exited', () => {
+				// if the query succeeded at some point during the time the login
+				//   dialog was open, we probably logged in and we can try again
+				if (queryDataRef.current) handleCueExtractionDialogOpen()
+			})
+			return openLoginDialog(
+				`Automatic caption extraction costs $${TranscriptionCost.toFixed(
+					2
+				)} per minute of video and requires an account. Please login or sign up below.`
+			)
+		}
 
-		if (cost > user.credit && !user.unlimitedUsage) {
+		const {self, transcriptionCost} = queryDataRef.current
+
+		if (transcriptionCost > self.credit && !self.unlimitedUsage) {
 			return setCreditDialogOpen(true)
 		}
 
 		setCueExtractionDialogOpen(true)
-	}, [cost, user, openLoginPrompt])
-
-	React.useEffect(() => {
-		const handleLoginExited = () => {
-			if (awaitingLogin && user) handleCueExtractionDialogOpen()
-			setAwaitingLogin(false)
-		}
-		authDialogEvents.on('exited', handleLoginExited)
-		return () => {
-			authDialogEvents.off('exited', handleLoginExited)
-		}
-	}, [user, awaitingLogin, authDialogEvents, handleCueExtractionDialogOpen])
+	}, [openLoginDialog, authDialogEvents])
 
 	const handleCueExtractionDialogClose = () => {
 		setCueExtractionDialogOpen(false)
@@ -107,6 +121,9 @@ export function ExtractFromVideoProvider({children}) {
 	return (
 		<ExtractFromVideoContext.Provider
 			value={{
+				loading,
+				transcriptionCost: data?.transcriptionCost,
+				user: data?.self,
 				extractDialogEvents: extractDialogEvents.current,
 				creditDialogOpen,
 				cueExtractionDialogOpen,

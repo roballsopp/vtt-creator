@@ -1,14 +1,14 @@
 import EmailIcon from '@material-ui/icons/Email'
 import * as React from 'react'
 import PropTypes from 'prop-types'
-import {gql} from '@apollo/client'
 import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Typography from '@material-ui/core/Typography'
 import {makeStyles} from '@material-ui/styles'
-import {handleError} from '../services/error-handler.service'
+import {handleError} from '../../services/error-handler.service'
 import PaypalButtons from './PaypalButtons'
 import DollarsInput from './DollarsInput'
+import {AddCreditInput_userFragment} from './AddCreditInput.graphql'
 
 const useStyles = makeStyles(theme => ({
 	loader: {
@@ -24,13 +24,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 AddCreditInput.fragments = {
-	user: gql`
-		fragment AddCreditInputUser on User {
-			id
-			email
-			credit
-		}
-	`,
+	user: AddCreditInput_userFragment,
 }
 
 AddCreditInput.propTypes = {

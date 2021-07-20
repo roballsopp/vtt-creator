@@ -3,7 +3,7 @@ import {useQuery} from '@apollo/client'
 import {Box, LinearProgress, TablePagination} from '@material-ui/core'
 import JobHistoryTable from './JobHistoryTable'
 import {handleError} from '../services/error-handler.service'
-import {JobHistoryTableGetJobsQuery} from './job-history-gql'
+import {JobHistoryTableGetJobsQuery} from './JobHistoryTable.graphql'
 
 export default function JobHistoryTableQueryContainer() {
 	const [pageSize, setPageSize] = React.useState(10)

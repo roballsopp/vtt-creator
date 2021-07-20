@@ -1,12 +1,11 @@
 import * as React from 'react'
-import Button from '@material-ui/core/Button'
 import Tooltip from '@material-ui/core/Tooltip'
-import {useVideoFile} from '../../common'
+import {useVideoFile, Button} from '../../common'
 import {useExtractFromVideo} from './ExtractFromVideoContext'
 
 export default function ExtractFromVideoButton(buttonProps) {
 	const {videoFile} = useVideoFile()
-	const {handleCueExtractionDialogOpen} = useExtractFromVideo()
+	const {loading, handleCueExtractionDialogOpen} = useExtractFromVideo()
 
 	if (!videoFile) {
 		// span needed here because tooltips don't activate on disabled elements: https://material-ui.com/components/tooltips/#disabled-elements
@@ -22,7 +21,7 @@ export default function ExtractFromVideoButton(buttonProps) {
 	}
 
 	return (
-		<Button {...buttonProps} onClick={handleCueExtractionDialogOpen}>
+		<Button {...buttonProps} loading={loading} onClick={handleCueExtractionDialogOpen}>
 			Extract from video
 		</Button>
 	)

@@ -6,7 +6,6 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Typography from '@material-ui/core/Typography'
 import {styled, makeStyles} from '@material-ui/styles'
-import {GetTotalCost} from '../../config'
 import UploadProgress, {
 	UPLOAD_STATE_COMPLETED,
 	UPLOAD_STATE_EXTRACTING,
@@ -52,16 +51,16 @@ const useStyles = makeStyles(theme => ({
 }))
 
 CueExtractionDialog.propTypes = {
+	transcriptionCost: PropTypes.number.isRequired,
 	open: PropTypes.bool,
 	onRequestClose: PropTypes.func.isRequired,
 	onExtractComplete: PropTypes.func.isRequired,
 }
 
-export default function CueExtractionDialog({open, onRequestClose, onExtractComplete}) {
+export default function CueExtractionDialog({transcriptionCost, open, onRequestClose, onExtractComplete}) {
 	const {videoFile} = useVideoFile()
 	const {duration} = useDuration()
 	const apolloClient = useApolloClient()
-	const cost = GetTotalCost(duration)
 	const classes = useStyles()
 	// there is a brief moment during the call to initTranscription when closing the modal allows a transcription
 	//   to continue. cancelDisabled is true during that time so we can prevent this state
@@ -95,27 +94,38 @@ export default function CueExtractionDialog({open, onRequestClose, onExtractComp
 		[onRequestClose]
 	)
 
-	const handleJobStateUpdate = React.useCallback(state => {
-		switch (state) {
-			case JOB_STATE_EXTRACTING:
-				return setUploadState(UPLOAD_STATE_EXTRACTING)
-			case JOB_STATE_UPLOADING:
-				return setUploadState(UPLOAD_STATE_UPLOADING)
-			case JOB_STATE_TRANSCRIBING:
-				return setUploadState(UPLOAD_STATE_PROCESSING)
-			case JOB_STATE_CANCELLING:
-				return setCancelling(true)
-			case JOB_STATE_FAILED:
-				setCancelling(false)
-				return setUploadState(UPLOAD_STATE_FAILED)
-			default:
-				setCancelling(false)
-				return setUploadState(UPLOAD_STATE_COMPLETED)
+	React.useEffect(() => {
+		return () => {
+			if (jobRunnerRef.current?.inProgress) {
+				jobRunnerRef.current.cancel().catch(handleError)
+			}
 		}
 	}, [])
 
-	const handleJobError = React.useCallback(
-		e => {
+	const extractCuesFromVideo = async () => {
+		const runner = getJobRunner(apolloClient, uploadFile)
+		jobRunnerRef.current = runner
+
+		function handleJobStateUpdate(state) {
+			switch (state) {
+				case JOB_STATE_EXTRACTING:
+					return setUploadState(UPLOAD_STATE_EXTRACTING)
+				case JOB_STATE_UPLOADING:
+					return setUploadState(UPLOAD_STATE_UPLOADING)
+				case JOB_STATE_TRANSCRIBING:
+					return setUploadState(UPLOAD_STATE_PROCESSING)
+				case JOB_STATE_CANCELLING:
+					return setCancelling(true)
+				case JOB_STATE_FAILED:
+					setCancelling(false)
+					return setUploadState(UPLOAD_STATE_FAILED)
+				default:
+					setCancelling(false)
+					return setUploadState(UPLOAD_STATE_COMPLETED)
+			}
+		}
+
+		function handleJobError(e) {
 			handleError(e)
 			if (e instanceof ExtractionError) {
 				return toast.error('Unable to read audio from video file.')
@@ -132,60 +142,40 @@ export default function CueExtractionDialog({open, onRequestClose, onExtractComp
 			if (e instanceof JobError) {
 				return toast.error('Transcription failed. Please try again.')
 			}
-		},
-		[toast]
-	)
+		}
 
-	const handleUploadProgress = React.useCallback((loaded, total) => {
-		setProgressBytes(loaded)
-		setTotalBytes(total)
-	}, [])
+		function handleUploadProgress(loaded, total) {
+			setProgressBytes(loaded)
+			setTotalBytes(total)
+		}
 
-	const handleTranscriptionDone = React.useCallback(
-		({transcript}) => {
+		function handleJobDone({transcript}) {
 			if (!transcript) {
-				toast.error('Unable to find any transcribable speech.')
-				return handleError(new Error('Unable to find any transcribable speech.'))
+				toast.error('The transcription completed, but no speech in the chosen language was found')
+				return handleError(new Error('unable to find any transcribable speech'))
 			}
 
 			onExtractComplete(transcript)
 			toast.success('Extraction successful!')
 			onRequestClose()
-		},
-		[onExtractComplete, onRequestClose, toast]
-	)
-
-	React.useEffect(() => {
-		return () => {
-			if (!jobRunnerRef.current) return
-			jobRunnerRef.current.off(EVENT_JOB_STATE, handleJobStateUpdate)
-			jobRunnerRef.current.off(EVENT_ERROR, handleJobError)
-			jobRunnerRef.current.off(EVENT_UPLOAD_PROGRESS, handleUploadProgress)
-			jobRunnerRef.current.off(EVENT_CANCEL_DISABLED, setCancelDisabled)
-			jobRunnerRef.current.off(EVENT_DONE, handleTranscriptionDone)
-
-			if (jobRunnerRef.current.inProgress) {
-				jobRunnerRef.current.cancel().catch(handleError)
-			}
 		}
-	}, [handleJobError, handleJobStateUpdate, handleTranscriptionDone, handleUploadProgress])
-
-	const extractCuesFromVideo = async () => {
-		const runner = getJobRunner(apolloClient, uploadFile)
-		jobRunnerRef.current = runner
 
 		runner.on(EVENT_JOB_STATE, handleJobStateUpdate)
 		runner.on(EVENT_ERROR, handleJobError)
 		runner.on(EVENT_UPLOAD_PROGRESS, handleUploadProgress)
 		runner.on(EVENT_CANCEL_DISABLED, setCancelDisabled)
-		runner.on(EVENT_DONE, handleTranscriptionDone)
+		runner.once(EVENT_DONE, handleJobDone)
 
-		await runner.run({
-			videoFile,
-			duration,
-			languageCode,
-			pollInterval: 2000,
-		})
+		try {
+			await runner.run({
+				videoFile,
+				duration,
+				languageCode,
+				pollInterval: 2000,
+			})
+		} finally {
+			runner.removeAllListeners()
+		}
 	}
 
 	return (
@@ -195,7 +185,7 @@ export default function CueExtractionDialog({open, onRequestClose, onExtractComp
 			</Title>
 			<DialogContent>
 				<div className={classes.priceInfo}>
-					<Typography gutterBottom>Transcription cost: (${cost.toFixed(2)})</Typography>
+					<Typography gutterBottom>Transcription cost: (${transcriptionCost.toFixed(2)})</Typography>
 					<Typography variant="caption">
 						The cost of this transcription will be deducted from your credit balance only if it completes successfully.
 						It can take up to 20 minutes to complete the transcription process for an hour long video. Please be patient
