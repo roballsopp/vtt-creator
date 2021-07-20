@@ -1,5 +1,5 @@
 import {gql} from '@apollo/client'
-import CreditDialog from './CreditDialog'
+import {CreditDialog_userFragment} from './CreditDialog.graphql'
 
 export const ExtractFromVideoContext_userFragment = gql`
 	fragment ExtractFromVideoContext_user on User {
@@ -8,5 +8,5 @@ export const ExtractFromVideoContext_userFragment = gql`
 		unlimitedUsage
 		...CreditDialogUser
 	}
-	${CreditDialog.fragments.user}
+	${CreditDialog_userFragment}
 `

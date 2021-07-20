@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {gql} from '@apollo/client'
 import IconButton from '@material-ui/core/IconButton'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -11,6 +10,7 @@ import CloseIcon from '@material-ui/icons/Close'
 import {styled} from '@material-ui/styles'
 import AddCreditInput from '../../account/AddCreditInput'
 import {Button} from '../../common'
+import {CreditDialog_userFragment} from './CreditDialog.graphql'
 
 const Title = styled(DialogTitle)({
 	display: 'flex',
@@ -19,14 +19,7 @@ const Title = styled(DialogTitle)({
 })
 
 CreditDialog.fragments = {
-	user: gql`
-		fragment CreditDialogUser on User {
-			id
-			credit
-			...AddCreditInput_user
-		}
-		${AddCreditInput.fragments.user}
-	`,
+	user: CreditDialog_userFragment,
 }
 
 CreditDialog.propTypes = {
