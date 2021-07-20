@@ -22,10 +22,11 @@ export default function AccountPageQueryContainer() {
 
 	const {loading, data, error} = useQuery(
 		gql`
-			query getUser {
+			query AccountPageGetUser {
 				self {
-					...AccountPageUser
+					...AccountPage_user
 				}
+				transcriptionRate
 			}
 			${AccountPage.fragments.user}
 		`,
@@ -46,5 +47,5 @@ export default function AccountPageQueryContainer() {
 		)
 	}
 
-	return <AccountPage user={data.self} />
+	return <AccountPage user={data.self} transcriptionRate={data.transcriptionRate} />
 }

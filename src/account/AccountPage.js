@@ -1,7 +1,6 @@
 import * as React from 'react'
 import {useHistory} from 'react-router-dom'
 import PropTypes from 'prop-types'
-import {gql} from '@apollo/client'
 import Box from '@material-ui/core/Box'
 import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
@@ -10,8 +9,8 @@ import {makeStyles} from '@material-ui/styles'
 import {useAuthDialog} from '../AuthDialog'
 import AddCreditInput from './AddCreditInput'
 import PageContainer from '../common/PageContainer'
-import {TranscriptionCost} from '../config'
 import JobHistoryTable from './JobHistoryTableQueryContainer'
+import {AccountPage_userFragment} from './AccountPage.graphql'
 
 const useStyles = makeStyles(theme => ({
 	addCreditSection: {
@@ -20,16 +19,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 AccountPage.fragments = {
-	user: gql`
-		fragment AccountPageUser on User {
-			id
-			email
-			credit
-			unlimitedUsage
-			...AddCreditInputUser
-		}
-		${AddCreditInput.fragments.user}
-	`,
+	user: AccountPage_userFragment,
 }
 
 AccountPage.propTypes = {
@@ -37,11 +27,13 @@ AccountPage.propTypes = {
 		id: PropTypes.string.isRequired,
 		email: PropTypes.string.isRequired,
 		credit: PropTypes.number.isRequired,
+		creditMinutes: PropTypes.number.isRequired,
 		unlimitedUsage: PropTypes.bool,
 	}).isRequired,
+	transcriptionRate: PropTypes.number.isRequired,
 }
 
-export default function AccountPage({user}) {
+export default function AccountPage({user, transcriptionRate}) {
 	const {logout} = useAuthDialog()
 	const classes = useStyles()
 	const history = useHistory()
@@ -74,10 +66,10 @@ export default function AccountPage({user}) {
 								<Typography variant="h6" gutterBottom>
 									{user.unlimitedUsage && 'Credit: Unlimited'}
 									{!user.unlimitedUsage &&
-										`Credit: $${user.credit.toFixed(2)} (${(user.credit / TranscriptionCost).toFixed(1)} minutes)`}
+										`Credit: $${user.credit.toFixed(2)} (${user.creditMinutes.toFixed(1)} minutes)`}
 								</Typography>
 								<Typography>
-									Extracting video captions automatically costs ${TranscriptionCost.toFixed(2)} per minute of video.
+									Extracting video captions automatically costs ${transcriptionRate.toFixed(2)} per minute of video.
 									More credit can be added to the right. Just enter how much credit you want to add, and click the
 									button for your preferred payment method.
 								</Typography>

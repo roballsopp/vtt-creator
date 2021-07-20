@@ -2,6 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import {useApolloClient, gql} from '@apollo/client'
+import {AddCreditInput_userFragment} from './AddCreditInput.graphql'
+import {AccountPage_userFragment} from '../AccountPage.graphql'
 
 const PayPalButton = paypal.Buttons.driver('react', {React, ReactDOM})
 
@@ -13,14 +15,16 @@ const CREATE_PAYPAL_ORDER_MUTATION = gql`
 	}
 `
 
+// TODO: use the account page and credit input fragments here. its a dep cycle so will have to extract
 const APPLY_PAYPAL_CREDIT_MUTATION = gql`
 	mutation applyPaypalCredit($orderId: String!) {
 		applyCreditFromPaypal(orderId: $orderId) {
-			id
-			email
-			credit
+			...AddCreditInput_user
+			...AccountPage_user
 		}
 	}
+	${AddCreditInput_userFragment}
+	${AccountPage_userFragment}
 `
 
 PaypalButtons.propTypes = {
@@ -64,10 +68,7 @@ export default function PaypalButtons({purchaseAmt, disabled, onApprove, onAppro
 		onApprove()
 		return apolloClient
 			.mutate({mutation: APPLY_PAYPAL_CREDIT_MUTATION, variables: {orderId: data.orderID}})
-			.then(result => {
-				onApproved(result)
-				return result
-			})
+			.then(onApproved)
 			.catch(err => {
 				// this is an apollo error, and it would be nice if parents don't need to figure that out
 				throw err.networkError || err.graphQLErrors || err

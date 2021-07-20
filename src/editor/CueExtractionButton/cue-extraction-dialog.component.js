@@ -6,7 +6,6 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Typography from '@material-ui/core/Typography'
 import {styled, makeStyles} from '@material-ui/styles'
-import {GetTotalCost} from '../../config'
 import UploadProgress, {
 	UPLOAD_STATE_COMPLETED,
 	UPLOAD_STATE_EXTRACTING,
@@ -52,16 +51,16 @@ const useStyles = makeStyles(theme => ({
 }))
 
 CueExtractionDialog.propTypes = {
+	transcriptionCost: PropTypes.number.isRequired,
 	open: PropTypes.bool,
 	onRequestClose: PropTypes.func.isRequired,
 	onExtractComplete: PropTypes.func.isRequired,
 }
 
-export default function CueExtractionDialog({open, onRequestClose, onExtractComplete}) {
+export default function CueExtractionDialog({transcriptionCost, open, onRequestClose, onExtractComplete}) {
 	const {videoFile} = useVideoFile()
 	const {duration} = useDuration()
 	const apolloClient = useApolloClient()
-	const cost = GetTotalCost(duration)
 	const classes = useStyles()
 	// there is a brief moment during the call to initTranscription when closing the modal allows a transcription
 	//   to continue. cancelDisabled is true during that time so we can prevent this state
@@ -195,7 +194,7 @@ export default function CueExtractionDialog({open, onRequestClose, onExtractComp
 			</Title>
 			<DialogContent>
 				<div className={classes.priceInfo}>
-					<Typography gutterBottom>Transcription cost: (${cost.toFixed(2)})</Typography>
+					<Typography gutterBottom>Transcription cost: (${transcriptionCost.toFixed(2)})</Typography>
 					<Typography variant="caption">
 						The cost of this transcription will be deducted from your credit balance only if it completes successfully.
 						It can take up to 20 minutes to complete the transcription process for an hour long video. Please be patient

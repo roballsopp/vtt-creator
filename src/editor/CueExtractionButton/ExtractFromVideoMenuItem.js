@@ -7,7 +7,7 @@ import {useExtractFromVideo} from './ExtractFromVideoContext'
 
 export default function ExtractFromVideoMenuItem({classes}) {
 	const {videoFile} = useVideoFile()
-	const {handleCueExtractionDialogOpen} = useExtractFromVideo()
+	const {handleCueExtractionDialogOpen, loading} = useExtractFromVideo()
 	const [buttonEl, setButtonEl] = React.useState()
 
 	if (!videoFile) {
@@ -17,6 +17,19 @@ export default function ExtractFromVideoMenuItem({classes}) {
 				title="Select a video in the pane to the right to use this feature"
 				placement="right"
 				PopperProps={{anchorEl: buttonEl}}>
+				<span>
+					<MenuItem disabled ref={setButtonEl}>
+						<VoiceChatIcon className={classes.menuIcon} />
+						Extract from video...
+					</MenuItem>
+				</span>
+			</Tooltip>
+		)
+	}
+
+	if (loading) {
+		return (
+			<Tooltip title="Please wait..." placement="right" PopperProps={{anchorEl: buttonEl}}>
 				<span>
 					<MenuItem disabled ref={setButtonEl}>
 						<VoiceChatIcon className={classes.menuIcon} />

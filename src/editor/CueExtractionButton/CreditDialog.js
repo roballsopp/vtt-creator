@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import {gql} from '@apollo/client'
 import IconButton from '@material-ui/core/IconButton'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -8,10 +9,8 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import Typography from '@material-ui/core/Typography'
 import CloseIcon from '@material-ui/icons/Close'
 import {styled} from '@material-ui/styles'
-import {AddCreditInput} from '../../account'
+import AddCreditInput from '../../account/AddCreditInput'
 import {Button} from '../../common'
-import {useDuration} from '../../common/video'
-import {GetTotalCost} from '../../config'
 
 const Title = styled(DialogTitle)({
 	display: 'flex',
@@ -19,22 +18,30 @@ const Title = styled(DialogTitle)({
 	alignItems: 'center',
 })
 
+CreditDialog.fragments = {
+	user: gql`
+		fragment CreditDialogUser on User {
+			id
+			credit
+			...AddCreditInput_user
+		}
+		${AddCreditInput.fragments.user}
+	`,
+}
+
 CreditDialog.propTypes = {
 	user: PropTypes.shape({
-		id: PropTypes.string.isRequired,
 		credit: PropTypes.number.isRequired,
-		unlimitedUsage: PropTypes.bool,
 	}).isRequired,
+	transcriptionCost: PropTypes.number.isRequired,
 	open: PropTypes.bool,
 	onPaid: PropTypes.func.isRequired,
 	onClose: PropTypes.func.isRequired,
 	onExited: PropTypes.func.isRequired,
 }
 
-export default function CreditDialog({user, open, onClose, onPaid, onExited}) {
-	const {duration} = useDuration()
-	const cost = GetTotalCost(duration)
-	const defaultValue = Math.max(cost - user.credit, 1).toFixed(2)
+export default function CreditDialog({user, transcriptionCost, open, onClose, onPaid, onExited}) {
+	const defaultValue = Math.max(transcriptionCost - user.credit, 1).toFixed(2)
 
 	function handleClose(e, reason) {
 		if (['backdropClick', 'escapeKeyDown'].includes(reason)) {
@@ -62,7 +69,7 @@ export default function CreditDialog({user, open, onClose, onPaid, onExited}) {
 					Remaining credit: ${user.credit.toFixed(2)}
 				</Typography>
 				<Typography paragraph color="error">
-					Transcription cost ${cost.toFixed(2)}
+					Transcription cost ${transcriptionCost.toFixed(2)}
 				</Typography>
 				<Typography paragraph>
 					Specify a USD amount to add to your account below and pay with paypal. Any amount you add beyond the cost of
