@@ -3,7 +3,9 @@ import {gql} from '@apollo/client'
 import ExtendableError from '../../errors/ExtendableError'
 import {SpeechToTextJobTimeout} from '../../config'
 import {getAudioBlobFromVideo} from '../../services/av.service'
-import {appendNewJob} from '../../account/job-history-gql'
+import {appendNewJob, JobHistoryTable_jobsFragment} from '../../account/JobHistoryTable.graphql'
+import {AccountPage_userFragment} from '../../account/AccountPage.graphql'
+import {ExtractFromVideoContext_userFragment} from './ExtractFromVideoContext.graphql'
 
 export class ExtractionError extends ExtendableError {
 	constructor(m = 'Failed to extract audio') {
@@ -82,13 +84,12 @@ export function getJobRunner(apolloClient, uploadFile) {
 					beginTranscription(filename: $filename, languageCode: $languageCode) {
 						job {
 							id
-							user {
-								id
-							}
 							state
+							...JobHistoryTable_jobs
 						}
 					}
 				}
+				${JobHistoryTable_jobsFragment}
 			`,
 			variables: {filename, languageCode},
 			update(cache, {data: {beginTranscription}}) {
@@ -108,6 +109,11 @@ export function getJobRunner(apolloClient, uploadFile) {
 					fetchPolicy: 'network-only',
 					query: gql`
 						query getTranscriptionJob($jobId: String!) {
+							self {
+								# the user fragments are spread here to update the user's credit after a job completes
+								...AccountPage_user
+								...ExtractFromVideoContext_user
+							}
 							transcriptionJob(jobId: $jobId) {
 								id
 								state
@@ -118,8 +124,12 @@ export function getJobRunner(apolloClient, uploadFile) {
 										word
 									}
 								}
+								...JobHistoryTable_jobs
 							}
 						}
+						${JobHistoryTable_jobsFragment}
+						${ExtractFromVideoContext_userFragment}
+						${AccountPage_userFragment}
 					`,
 					variables: {jobId},
 				})
@@ -188,9 +198,11 @@ export function getJobRunner(apolloClient, uploadFile) {
 						job {
 							id
 							state
+							...JobHistoryTable_jobs
 						}
 					}
 				}
+				${JobHistoryTable_jobsFragment}
 			`,
 			variables: {jobId},
 		})

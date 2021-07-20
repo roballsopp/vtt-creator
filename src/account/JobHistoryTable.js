@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 import {format} from 'date-fns'
 import {Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography} from '@material-ui/core'
 import StatusBubble from './StatusBubble'
-import {JobHistoryTable_jobs_fragment} from './job-history-gql'
+import {JobHistoryTable_jobsFragment} from './JobHistoryTable.graphql'
 
 JobHistoryTable.fragments = {
-	jobs: JobHistoryTable_jobs_fragment,
+	jobs: JobHistoryTable_jobsFragment,
 }
 
 JobHistoryTable.propTypes = {
