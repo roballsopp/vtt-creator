@@ -19,20 +19,6 @@ import {getVTTFromCues} from '../services/vtt.service'
 import {getSRTFromCues} from '../services/srt.service'
 
 const useStyles = makeStyles({
-	root: {
-		display: 'flex',
-		height: '100%',
-	},
-	drawer: {
-		zIndex: 2,
-		display: 'flex',
-		flexDirection: 'column',
-		height: '100%',
-	},
-	main: {
-		padding: 8,
-		flex: 1,
-	},
 	menuIcon: {
 		marginRight: 16,
 	},
