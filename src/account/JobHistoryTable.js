@@ -4,6 +4,7 @@ import {format} from 'date-fns'
 import {Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography} from '@material-ui/core'
 import StatusBubble from './StatusBubble'
 import {JobHistoryTable_jobsFragment} from './JobHistoryTable.graphql'
+import JobActionMenu from './JobActionMenu'
 
 JobHistoryTable.fragments = {
 	jobs: JobHistoryTable_jobsFragment,
@@ -32,8 +33,9 @@ export default function JobHistoryTable({jobs}) {
 						<TableCell>Status</TableCell>
 						<TableCell align="right">Job Cost</TableCell>
 						<TableCell align="right">Audio Duration (minutes)</TableCell>
+						<TableCell align="center">Audio Language</TableCell>
 						<TableCell align="center" padding="none">
-							Audio Language
+							Actions
 						</TableCell>
 					</TableRow>
 				</TableHead>
@@ -50,8 +52,9 @@ export default function JobHistoryTable({jobs}) {
 								</TableCell>
 								<TableCell align="right">${job.cost.toFixed(2)}</TableCell>
 								<TableCell align="right">{(job.fileDuration / 60).toFixed(1)}</TableCell>
+								<TableCell align="center">{job.language}</TableCell>
 								<TableCell align="center" padding="none">
-									{job.language}
+									<JobActionMenu job={job} />
 								</TableCell>
 							</TableRow>
 						)

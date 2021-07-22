@@ -1,5 +1,16 @@
 import {gql} from '@apollo/client'
 
+export const JobActionMenu_jobFragment = gql`
+	fragment JobActionMenu_job on TranscriptionJob {
+		id
+		downloadAvailable
+		transcriptDownloadLinkRaw
+		transcriptDownloadLinkVTT
+		transcriptDownloadLinkSRT
+		createdAt
+	}
+`
+
 export const JobHistoryTable_jobsFragment = gql`
 	fragment JobHistoryTable_jobs on TranscriptionJob {
 		id
@@ -8,7 +19,9 @@ export const JobHistoryTable_jobsFragment = gql`
 		language
 		state
 		createdAt
+		...JobActionMenu_job
 	}
+	${JobActionMenu_jobFragment}
 `
 
 export const JobHistoryTableGetJobsQuery = gql`

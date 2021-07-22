@@ -82,7 +82,13 @@ export default function AccountPage({user, transcriptionRate}) {
 				</Grid>
 				<Grid item container xs={12} direction="column">
 					<Box>
-						<Typography variant="h6">Cue Extraction History</Typography>
+						<Typography variant="h6" gutterBottom>
+							Cue Extraction History
+						</Typography>
+						<Typography paragraph>
+							Cue extraction results are available for download from the Actions menus below for 10 days after the
+							extraction job is completed.
+						</Typography>
 					</Box>
 					<JobHistoryTable />
 				</Grid>
