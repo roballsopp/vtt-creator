@@ -6,6 +6,7 @@ export const JobActionMenu_jobFragment = gql`
 		downloadAvailable
 		transcriptDownloadLinkRaw
 		transcriptDownloadLinkVTT
+		transcriptDownloadLinkSRT
 		createdAt
 	}
 `

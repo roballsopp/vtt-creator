@@ -27,6 +27,7 @@ JobActionMenu.propTypes = {
 		downloadAvailable: PropTypes.bool.isRequired,
 		transcriptDownloadLinkRaw: PropTypes.string,
 		transcriptDownloadLinkVTT: PropTypes.string,
+		transcriptDownloadLinkSRT: PropTypes.string,
 		createdAt: PropTypes.string.isRequired,
 	}).isRequired,
 }
@@ -35,7 +36,7 @@ export default function JobActionMenu({job}) {
 	const classes = useStyles()
 	const [optionsMenuAnchorEl, setOptionsMenuAnchorEl] = React.useState(null)
 
-	const handleDownloadTranscript = (downloadPath, fileName) => {
+	const handleDownloadTranscript = downloadPath => {
 		setOptionsMenuAnchorEl(null)
 
 		const cognitoUser = cognitoUserPool.getCurrentUser()
@@ -46,7 +47,7 @@ export default function JobActionMenu({job}) {
 			}
 			const token = session.getIdToken().getJwtToken()
 			const url = new URL(downloadPath, ApiURL)
-			download(`${url.href}?token=${token}`, fileName)
+			download(`${url.href}?token=${token}`)
 		})
 	}
 
@@ -68,13 +69,18 @@ export default function JobActionMenu({job}) {
 			<Menu anchorEl={optionsMenuAnchorEl} open={!!optionsMenuAnchorEl} onClose={onCloseOptionsMenu}>
 				<MenuItem
 					disabled={!job.downloadAvailable}
-					onClick={() => handleDownloadTranscript(job.transcriptDownloadLinkRaw, `${job.id}.json`)}>
+					onClick={() => handleDownloadTranscript(job.transcriptDownloadLinkRaw)}>
 					Download raw transcript
 				</MenuItem>
 				<MenuItem
 					disabled={!job.downloadAvailable}
-					onClick={() => handleDownloadTranscript(job.transcriptDownloadLinkVTT, `${job.id}.vtt`)}>
+					onClick={() => handleDownloadTranscript(job.transcriptDownloadLinkVTT)}>
 					Download transcript as VTT file
+				</MenuItem>
+				<MenuItem
+					disabled={!job.downloadAvailable}
+					onClick={() => handleDownloadTranscript(job.transcriptDownloadLinkSRT)}>
+					Download transcript as SRT file
 				</MenuItem>
 			</Menu>
 		</React.Fragment>
