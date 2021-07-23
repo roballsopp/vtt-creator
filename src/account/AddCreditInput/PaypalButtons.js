@@ -18,9 +18,12 @@ const CREATE_PAYPAL_ORDER_MUTATION = gql`
 // TODO: use the account page and credit input fragments here. its a dep cycle so will have to extract
 const APPLY_PAYPAL_CREDIT_MUTATION = gql`
 	mutation applyPaypalCredit($orderId: String!) {
-		applyCreditFromPaypal(orderId: $orderId) {
-			...AddCreditInput_user
-			...AccountPage_user
+		capturePaypalOrder(orderId: $orderId) {
+			user {
+				...AddCreditInput_user
+				...AccountPage_user
+			}
+			paypalErrorCode
 		}
 	}
 	${AddCreditInput_userFragment}
@@ -68,7 +71,7 @@ export default function PaypalButtons({purchaseAmt, disabled, onApprove, onAppro
 		onApprove()
 		return apolloClient
 			.mutate({mutation: APPLY_PAYPAL_CREDIT_MUTATION, variables: {orderId: data.orderID}})
-			.then(onApproved)
+			.then(r => onApproved(r.data.capturePaypalOrder))
 			.catch(err => {
 				// this is an apollo error, and it would be nice if parents don't need to figure that out
 				throw err.networkError || err.graphQLErrors || err

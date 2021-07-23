@@ -1,9 +1,7 @@
-import EmailIcon from '@material-ui/icons/Email'
 import * as React from 'react'
 import PropTypes from 'prop-types'
-import Button from '@material-ui/core/Button'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import Typography from '@material-ui/core/Typography'
+import {Box, Button, CircularProgress, Typography} from '@material-ui/core'
+import EmailIcon from '@material-ui/icons/Email'
 import {makeStyles} from '@material-ui/styles'
 import {handleError} from '../../services/error-handler.service'
 import PaypalButtons from './PaypalButtons'
@@ -41,6 +39,7 @@ AddCreditInput.propTypes = {
 export default function AddCreditInput({user, defaultValue, onApproved, onError}) {
 	const [purchaseAmt, setPurchaseAmt] = React.useState(defaultValue || '')
 	const [paypalError, setPaypalError] = React.useState(false)
+	const [cardError, setCardError] = React.useState(false)
 	const [inputErr, setInputError] = React.useState(false)
 	const [awaitingApproval, setAwaitingApproval] = React.useState(false)
 
@@ -60,32 +59,42 @@ export default function AddCreditInput({user, defaultValue, onApproved, onError}
 	}
 
 	const handleApproveStart = () => {
+		setPaypalError(false)
+		setCardError(false)
 		setAwaitingApproval(true)
 	}
 
-	const handleApproved = () => {
+	const handleApproved = data => {
 		setAwaitingApproval(false)
-		if (onApproved) onApproved()
-	}
-
-	if (paypalError) {
-		const subject = encodeURIComponent(`Payment Error - User: ${user.email}`)
-		const body = encodeURIComponent(`\n\nError Info\nAccount Email: ${user.email}\nDate: ${new Date().toISOString()}`)
-		const mailto = `mailto:vttcreator@gmail.com?subject=${subject}&body=${body}`
-		return (
-			<React.Fragment>
-				<Typography variant="subtitle2" color="error" gutterBottom>
-					There was an error accepting your payment. Please send us an email so we can take a look and fix any issues.
-				</Typography>
-				<Button href={mailto} variant="contained" color="primary" startIcon={<EmailIcon />}>
-					Report Issue
-				</Button>
-			</React.Fragment>
-		)
+		if (!data.paypalErrorCode) {
+			onApproved?.()
+		} else {
+			switch (data.paypalErrorCode) {
+				case 'INSTRUMENT_DECLINED':
+					return setCardError(true)
+				default:
+					return setPaypalError(true)
+			}
+		}
 	}
 
 	return (
 		<React.Fragment>
+			{paypalError && (
+				<Box mb={4}>
+					<Typography variant="subtitle2" color="error" paragraph>
+						There was an error accepting your payment. Please send us an email so we can take a look and fix any issues.
+					</Typography>
+					<Button href={getMailTo(user)} variant="contained" color="primary" startIcon={<EmailIcon />}>
+						Report Issue
+					</Button>
+				</Box>
+			)}
+			{cardError && (
+				<Typography variant="subtitle2" color="error" paragraph>
+					Your payment was declined. Please select another form of payment.
+				</Typography>
+			)}
 			<Typography variant="subtitle2" gutterBottom>
 				Add Credit:
 			</Typography>
@@ -107,4 +116,10 @@ export default function AddCreditInput({user, defaultValue, onApproved, onError}
 			/>
 		</React.Fragment>
 	)
+}
+
+function getMailTo(user) {
+	const subject = encodeURIComponent(`Payment Error - User: ${user.email}`)
+	const body = encodeURIComponent(`\n\nError Info\nAccount Email: ${user.email}\nDate: ${new Date().toISOString()}`)
+	return `mailto:vttcreator@gmail.com?subject=${subject}&body=${body}`
 }
