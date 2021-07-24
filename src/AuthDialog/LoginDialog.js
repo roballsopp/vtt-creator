@@ -16,6 +16,7 @@ import VisibilityOffIcon from '@material-ui/icons/VisibilityOff'
 import {styled, makeStyles} from '@material-ui/styles'
 import {useAuthDialog} from './auth-dialog-context'
 import {Button} from '../common'
+import {UserNotConfirmedError} from './errors'
 
 const Title = styled(DialogTitle)({
 	display: 'flex',
@@ -62,9 +63,11 @@ export default function LoginDialog({errorMessage}) {
 
 	const handleLogin = () => {
 		setLoading(true)
-		login(email, password).catch(() => {
+		login(email, password).catch(err => {
 			setLoading(false)
-			setError('Incorrect username or password. Please try again.')
+			if (err instanceof UserNotConfirmedError)
+				setError('Email not confirmed. Check your inbox for a verification link.')
+			else setError('Incorrect username or password. Please try again.')
 		})
 	}
 

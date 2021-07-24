@@ -1,16 +1,18 @@
 import React from 'react'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import Grid from '@material-ui/core/Grid'
-import IconButton from '@material-ui/core/IconButton'
-import Link from '@material-ui/core/Link'
-import TextField from '@material-ui/core/TextField'
-import Tooltip from '@material-ui/core/Tooltip'
-import Typography from '@material-ui/core/Typography'
+import {
+	Box,
+	Button,
+	CircularProgress,
+	DialogActions,
+	DialogContent,
+	DialogTitle,
+	Grid,
+	IconButton,
+	Link,
+	Typography,
+} from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import {makeStyles, styled} from '@material-ui/styles'
-import {Button} from '../common'
 import {useAuthDialog} from './auth-dialog-context'
 
 const Title = styled(DialogTitle)({
@@ -31,37 +33,22 @@ const useStyles = makeStyles({
 VerifyEmailDialog.propTypes = {}
 
 export default function VerifyEmailDialog() {
-	const [code, setCode] = React.useState('')
-	const [error, setError] = React.useState(false)
-	const [codeSent, setCodeSent] = React.useState(false)
-	const [loading, setLoading] = React.useState(false)
+	const [error, setError] = React.useState('')
+	const [resending, setResending] = React.useState(false)
 	const classes = useStyles()
 
-	const {verifyEmail, resendCode, closeDialog} = useAuthDialog()
-
-	const handleChangeCode = e => {
-		setCode(e.target.value)
-	}
-
-	const handleVerification = () => {
-		setLoading(true)
-		verifyEmail(code).catch(err => {
-			setLoading(false)
-			setError(err.message)
-			setCodeSent(false)
-		})
-	}
+	const {resendCode, closeDialog, openLoginDialog} = useAuthDialog()
 
 	const handleResendCode = () => {
+		setResending(true)
 		resendCode()
 			.then(() => {
-				setCodeSent(true)
-				setError(false)
+				setError('')
 			})
 			.catch(err => {
 				setError(err.message)
-				setCodeSent(false)
 			})
+			.finally(() => setResending(false))
 	}
 
 	return (
@@ -79,28 +66,31 @@ export default function VerifyEmailDialog() {
 							<Typography color="error">{error}</Typography>
 						</Grid>
 					)}
-					{codeSent && (
+					{resending && (
+						<Grid item>
+							<Box display="flex" alignItems="center">
+								<Box mr={4}>
+									<CircularProgress />
+								</Box>
+								<Typography>Sending you a new verification link...</Typography>
+							</Box>
+						</Grid>
+					)}
+					{!resending && (
 						<Grid item>
 							<Typography className={classes.goodMessage}>
-								We just sent your verification code. Check your inbox!
+								We just sent a verification link to your email. Check your inbox!
 							</Typography>
 						</Grid>
 					)}
 					<Grid item>
-						<Typography>Enter your verification code below.</Typography>
-					</Grid>
-					<Grid item>
-						<TextField
-							variant="outlined"
-							label="Verification Code"
-							value={code}
-							fullWidth
-							onChange={handleChangeCode}
-						/>
+						<Typography>
+							Once you&apos;re verified, proceed to login by clicking &ldquo;Take me to Login&rdquo; below.
+						</Typography>
 					</Grid>
 					<Grid item>
 						<Typography align="center">
-							Didn&apos;t receive a code?{' '}
+							Didn&apos;t receive a link?{' '}
 							<Link className={classes.link} onClick={handleResendCode}>
 								Resend it
 							</Link>
@@ -112,20 +102,9 @@ export default function VerifyEmailDialog() {
 				<Button onClick={closeDialog} color="primary">
 					Cancel
 				</Button>
-				{!code && (
-					<Tooltip title="Please enter your verification code.">
-						<span>
-							<Button color="secondary" variant="contained" disabled>
-								Verify Email
-							</Button>
-						</span>
-					</Tooltip>
-				)}
-				{code && (
-					<Button color="secondary" variant="contained" loading={loading} onClick={handleVerification}>
-						Verify Email
-					</Button>
-				)}
+				<Button color="secondary" variant="contained" onClick={() => openLoginDialog()}>
+					Take me to Login
+				</Button>
 			</DialogActions>
 		</React.Fragment>
 	)
