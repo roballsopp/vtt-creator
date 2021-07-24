@@ -61,7 +61,7 @@ export default function VTTMenu() {
 		setClearCuesDialogOpen(false)
 	}
 
-	const onVTTFileSelected = React.useCallback(
+	const onFileSelected = React.useCallback(
 		e => {
 			onCloseOptionsMenu()
 			loadCuesFromFile(e.target.files[0])
@@ -76,7 +76,7 @@ export default function VTTMenu() {
 		}
 	}, [extractDialogEvents])
 
-	const openFileSelector = useFileSelector({accept: '.vtt', onFilesSelected: onVTTFileSelected})
+	const openFileSelector = useFileSelector({accept: '.vtt,.srt', onFilesSelected: onFileSelected})
 
 	return (
 		<React.Fragment>
@@ -88,7 +88,7 @@ export default function VTTMenu() {
 			<Menu anchorEl={optionsMenuAnchorEl} open={!!optionsMenuAnchorEl} onClose={onCloseOptionsMenu}>
 				<MenuItem onClick={openFileSelector}>
 					<CloudUploadIcon className={classes.menuIcon} />
-					Load from VTT file...
+					Load from VTT or SRT file...
 				</MenuItem>
 				<ExtractFromVideoMenuItem classes={{menuIcon: classes.menuIcon}} />
 				<MenuItem onClick={onDownloadVTT}>
