@@ -3,7 +3,7 @@ import {
 	getCuesFromWords,
 	getVTTFromCues,
 	getCuesFromVTT,
-	EmptyFileError,
+	EmptyVTTFileError,
 	MalformedVTTTimestampError,
 	MalformedVTTSignatureError,
 } from './vtt.service'
@@ -149,7 +149,7 @@ describe('vtt.service', function() {
 						done(new Error('Expected an error to be thrown'))
 					})
 					.catch(e => {
-						chai.expect(e).to.be.an.instanceof(EmptyFileError)
+						chai.expect(e).to.be.an.instanceof(EmptyVTTFileError)
 						done()
 					})
 			})

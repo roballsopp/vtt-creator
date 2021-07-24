@@ -10,11 +10,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {handleError} from '../services/error-handler.service'
 import {
-	EmptyFileError,
 	getCuesFromVTT,
+	EmptyVTTFileError,
 	MalformedVTTSignatureError,
 	MalformedVTTTimestampError,
 } from '../services/vtt.service'
+import {getCuesFromSRT, EmptySRTFileError, MalformedSRTTimestampError} from '../services/srt.service'
+import {ExtendableError} from '../errors'
 import Button from './button.component'
 import {useCues} from './cue-context'
 import {useToast} from './toast-context'
@@ -33,7 +35,7 @@ const useStyles = makeStyles(theme => ({
 		whiteSpace: 'pre',
 		padding: theme.spacing(2),
 		backgroundColor: theme.palette.grey[900],
-		margin: theme.spacing(0, 6),
+		margin: theme.spacing(0, 6, 6, 4),
 	},
 	monoSpaced: {
 		fontFamily: 'monospace',
@@ -55,16 +57,21 @@ export function CuesFromFileProvider({children}) {
 	const {setCues, setCuesLoading} = useCues()
 	const toast = useToast()
 	const [malformedVTTDialogState, setMalformedVTTDialogState] = React.useState({message: '', open: false})
+	const [malformedSRTDialogState, setMalformedSRTDialogState] = React.useState({message: '', open: false})
 
 	const loadCuesFromFile = React.useCallback(
 		async file => {
 			setCuesLoading(true)
 			try {
-				const newCues = await getCuesFromVTT(file)
+				const newCues = await loadByExtension(file)
 				setCues(newCues) // check if VTT files require ordering
 			} catch (e) {
-				if (e instanceof EmptyFileError) {
+				if (e instanceof EmptyVTTFileError) {
 					toast.error('This VTT file appears to be empty.')
+				} else if (e instanceof EmptySRTFileError) {
+					toast.error('This SRT file appears to be empty.')
+				} else if (e instanceof UnsupportedExtensionError) {
+					toast.error('Please choose a file with either a .srt or .vtt extension')
 				} else if (e instanceof MalformedVTTTimestampError) {
 					setMalformedVTTDialogState({
 						open: true,
@@ -74,6 +81,11 @@ export function CuesFromFileProvider({children}) {
 					setMalformedVTTDialogState({
 						open: true,
 						message: `Couldn't extract cues due to a missing or invalid "WEBVTT" header.`,
+					})
+				} else if (e instanceof MalformedSRTTimestampError) {
+					setMalformedSRTDialogState({
+						open: true,
+						message: `Couldn't extract cues due to a malformed SRT timestamp: "${e.badTimeStamp}"`,
 					})
 				} else {
 					handleError(e)
@@ -85,11 +97,18 @@ export function CuesFromFileProvider({children}) {
 		[setCues, setCuesLoading, toast]
 	)
 
-	const handleMalformedDialogClose = (e, reason) => {
+	const handleMalformedVTTDialogClose = (e, reason) => {
 		if (['backdropClick', 'escapeKeyDown'].includes(reason)) {
 			return
 		}
 		setMalformedVTTDialogState({open: false, message: ''})
+	}
+
+	const handleMalformedSRTDialogClose = (e, reason) => {
+		if (['backdropClick', 'escapeKeyDown'].includes(reason)) {
+			return
+		}
+		setMalformedSRTDialogState({open: false, message: ''})
 	}
 
 	return (
@@ -99,11 +118,11 @@ export function CuesFromFileProvider({children}) {
 				maxWidth="md"
 				fullWidth
 				open={malformedVTTDialogState.open}
-				onClose={handleMalformedDialogClose}
+				onClose={handleMalformedVTTDialogClose}
 				aria-labelledby="extract-dialog-title">
 				<Title id="extract-dialog-title" disableTypography>
 					<Typography variant="h6">Malformed VTT File</Typography>
-					<IconButton aria-label="Close" edge="end" onClick={handleMalformedDialogClose}>
+					<IconButton aria-label="Close" edge="end" onClick={handleMalformedVTTDialogClose}>
 						<CloseIcon />
 					</IconButton>
 				</Title>
@@ -122,9 +141,7 @@ export function CuesFromFileProvider({children}) {
 					<Typography paragraph>
 						Also make sure each timestamp conforms to the correct format. VTT timestamps should have the form{' '}
 						<span className={classes.monoSpaced}>00:00.000</span> or{' '}
-						<span className={classes.monoSpaced}>00:00:00.000</span>. If a comma appears in the timestamp (
-						<span className={classes.monoSpaced}>00:00:00,000</span>), you may be attempting to load an SRT file, which
-						is similar, but doesn&apos;t have the same format as a VTT file.
+						<span className={classes.monoSpaced}>00:00:00.000</span>.
 					</Typography>
 					<Typography paragraph gutterBottom>
 						Here is an example of what a simple VTT file should look like:
@@ -144,7 +161,63 @@ export function CuesFromFileProvider({children}) {
 				</div>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={handleMalformedDialogClose} variant="contained" color="secondary">
+					<Button onClick={handleMalformedVTTDialogClose} variant="contained" color="secondary">
+						Got it!
+					</Button>
+				</DialogActions>
+			</Dialog>
+			<Dialog
+				maxWidth="md"
+				fullWidth
+				open={malformedSRTDialogState.open}
+				onClose={handleMalformedSRTDialogClose}
+				aria-labelledby="extract-dialog-title">
+				<Title id="extract-dialog-title" disableTypography>
+					<Typography variant="h6">Malformed SRT File</Typography>
+					<IconButton aria-label="Close" edge="end" onClick={handleMalformedSRTDialogClose}>
+						<CloseIcon />
+					</IconButton>
+				</Title>
+				<DialogContent>
+					<Typography variant="h6" paragraph color="error">
+						{malformedSRTDialogState.message}
+					</Typography>
+					<Typography paragraph>
+						SRT files are normal text files that must adhere to a specific format. You can check to see whats wrong with
+						your file using a simple text editor (like notepad, but not Microsoft Word).
+					</Typography>
+					<Typography paragraph>Make sure the first line of each cue is a number:</Typography>
+					<div className={classes.code}>
+						1<br />
+						00:00:11,000 --&gt; 00:00:13,000
+						<br />
+						We are in New York City
+					</div>
+					<Typography paragraph>
+						The second line of each cue should have a start and end timestamp in the correct format. SRT timestamps
+						should have the form: <span className={classes.monoSpaced}>HH:MM:SS,MMM</span>.
+						<Typography paragraph>Note the comma between the seconds and milliseconds places.</Typography>
+					</Typography>
+					<Typography paragraph gutterBottom>
+						Here is an example of what a simple SRT file should look like:
+					</Typography>
+					{/*prettier-ignore*/}
+					<div className={classes.code}>
+						1<br />
+						00:00:11,020 --&gt; 00:00:13,110<br />
+						We are in New York City<br />
+						<br />
+						2<br />
+						00:00:13,110 --&gt; 00:00:16,562<br />
+						We’re actually at the Lucern Hotel, just down the street<br />
+						<br />
+						3<br />
+						00:00:16,562 --&gt; 00:00:18,954<br />
+						from the American Museum of Natural History
+					</div>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={handleMalformedSRTDialogClose} variant="contained" color="secondary">
 						Got it!
 					</Button>
 				</DialogActions>
@@ -155,4 +228,24 @@ export function CuesFromFileProvider({children}) {
 
 export function useCueFromFileLoader() {
 	return React.useContext(CuesFromFileContext)
+}
+
+export class UnsupportedExtensionError extends ExtendableError {
+	constructor(ext, m = 'Unsupported extension') {
+		super(m)
+		this.name = 'UnsupportedExtensionError'
+		this.ext = ext
+	}
+}
+
+function loadByExtension(file) {
+	const ext = file.name.split('.').pop()
+	switch (ext) {
+		case 'vtt':
+			return getCuesFromVTT(file)
+		case 'srt':
+			return getCuesFromSRT(file)
+		default:
+			return Promise.reject(new UnsupportedExtensionError(ext, `Unsupported extension ${ext}`))
+	}
 }

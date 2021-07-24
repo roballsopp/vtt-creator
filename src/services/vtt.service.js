@@ -1,10 +1,10 @@
 import {WebVTT} from 'vtt.js'
 import {ExtendableError} from '../errors'
 
-export class EmptyFileError extends ExtendableError {
-	constructor(m = 'Empty file') {
+export class EmptyVTTFileError extends ExtendableError {
+	constructor(m = 'Empty VTT file') {
 		super(m)
-		this.name = 'EmptyFileError'
+		this.name = 'EmptyVTTFileError'
 	}
 }
 
@@ -17,7 +17,7 @@ export class MalformedVTTSignatureError extends ExtendableError {
 
 export class MalformedVTTTimestampError extends ExtendableError {
 	constructor(badTimeStamp, m = 'Malformed VTT timestamp') {
-		super(m)
+		super(`${m} - ${badTimeStamp}`)
 		this.name = 'MalformedVTTTimestampError'
 		this.badTimeStamp = badTimeStamp
 	}
@@ -128,11 +128,11 @@ export function getCuesFromVTT(file) {
 
 		reader.addEventListener('error', () => {
 			reader.abort()
-			reject(new Error('An error occurred while reading the file.'))
+			reject(new Error('An error occurred while reading the VTT file.'))
 		})
 
 		reader.addEventListener('load', async () => {
-			if (!reader.result) return reject(new EmptyFileError('Empty VTT file'))
+			if (!reader.result) return reject(new EmptyVTTFileError('Empty VTT file'))
 			const cues = []
 			const parser = new WebVTT.Parser(window, WebVTT.StringDecoder())
 			parser.oncue = c => cues.push(c)
