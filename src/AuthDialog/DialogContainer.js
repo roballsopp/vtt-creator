@@ -16,6 +16,7 @@ import SignUpDialog from './SignUpDialog'
 import VerifyEmailDialog from './VerifyEmailDialog'
 import EmailVerifiedDialog from './EmailVerifiedDialog'
 import {AuthDialogContext} from './auth-dialog-context'
+import {getErrorFromCognitoError} from './errors'
 
 AuthDialogProvider.propTypes = {
 	children: PropTypes.node.isRequired,
@@ -95,20 +96,16 @@ export function AuthDialogProvider({children}) {
 							})
 							.then(({data: {self}}) => {
 								Sentry.setUser(self)
-								authEventsRef.current.emit('login')
 								resolve()
 								handleCloseDialog()
 							})
 							.catch(err => {
-								authEventsRef.current.emit('login-fail', err)
 								handleError(err)
 								return reject(err)
 							})
 					},
-					onFailure: _err => {
-						// it seems this could be a non-Error object only sometimes...
-						const error = _err instanceof Error ? _err : new Error(_err.message)
-						authEventsRef.current.emit('login-fail', error)
+					onFailure: err => {
+						const error = getErrorFromCognitoError(err)
 						handleError(error)
 						reject(error)
 					},
@@ -128,7 +125,6 @@ export function AuthDialogProvider({children}) {
 			apolloClient
 				.resetStore()
 				.then(() => {
-					authEventsRef.current.emit('logout')
 					resolve()
 					handleCloseDialog()
 				})
@@ -141,9 +137,9 @@ export function AuthDialogProvider({children}) {
 			return new Promise((resolve, reject) => {
 				cognitoUserPool.signUp(email, password, [], null, (err, result) => {
 					if (err) {
-						authEventsRef.current.emit('signup-fail', err)
-						handleError(err)
-						return reject(err)
+						const error = getErrorFromCognitoError(err)
+						handleError(error)
+						return reject(error)
 					}
 					resolve(result.user)
 					handleOpenVerifyEmailDialog(result.user)
@@ -159,8 +155,9 @@ export function AuthDialogProvider({children}) {
 				const cognitoUser = new CognitoUser({Username: email, Pool: cognitoUserPool})
 				cognitoUser.confirmRegistration(code, false, function(err) {
 					if (err) {
-						handleError(err)
-						return reject(err)
+						const error = getErrorFromCognitoError(err)
+						handleError(error)
+						return reject(error)
 					}
 					resolve()
 					handleOpenEmailVerifiedDialog()
@@ -180,8 +177,9 @@ export function AuthDialogProvider({children}) {
 						handleOpenPasswordResetDialog(cognitoUser)
 					},
 					onFailure: function(err) {
-						handleError(err)
-						reject(err)
+						const error = getErrorFromCognitoError(err)
+						handleError(error)
+						reject(error)
 					},
 				})
 			})
@@ -190,12 +188,15 @@ export function AuthDialogProvider({children}) {
 	)
 
 	const handleResendCode = React.useCallback(() => {
+		// only reason this might happen is if someone navigated directly to the verify email dialog with ?authDialog=VERIFY_EMAIL
+		if (!email) return Promise.reject(new Error('No email found. Please sign up first.'))
 		return new Promise((resolve, reject) => {
 			const cognitoUser = new CognitoUser({Username: email, Pool: cognitoUserPool})
 			cognitoUser.resendConfirmationCode(function(err) {
 				if (err) {
-					handleError(err)
-					return reject(err)
+					const error = getErrorFromCognitoError(err)
+					handleError(error)
+					return reject(error)
 				}
 				resolve()
 			})
@@ -212,9 +213,9 @@ export function AuthDialogProvider({children}) {
 						handleOpenLoginDialog()
 					},
 					onFailure(err) {
-						reject(err)
-						authEventsRef.current.emit('password-reset-fail', err)
-						handleError(err)
+						const error = getErrorFromCognitoError(err)
+						reject(error)
+						handleError(error)
 					},
 				})
 			})
