@@ -23,10 +23,6 @@ const useStyles = makeStyles({
 		//   div that makes a scrollbar appear if we don't tell trackRoot its allowed to shrink as far as it wants
 		minHeight: 0,
 	},
-	audioTrack: {
-		zIndex: 1,
-		height: '100%',
-	},
 	cueTrack: {
 		zIndex: 2,
 		position: 'absolute',
@@ -48,15 +44,12 @@ export default function VttTimeline() {
 	const classes = useStyles()
 
 	return (
-		<ZoomContainer>
+		<ZoomContainer underlay={<AudioTrack />}>
 			<div className={classes.root}>
 				<div className={classes.ticks}>
 					<TimeTicks />
 				</div>
 				<div className={classes.trackRoot}>
-					<div className={classes.audioTrack}>
-						<AudioTrack />
-					</div>
 					<div className={classes.cueTrack}>
 						<CueTrack />
 					</div>
