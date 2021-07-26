@@ -1,4 +1,5 @@
 import React from 'react'
+import EventEmitter from 'events'
 import PropTypes from 'prop-types'
 import Fab from '@material-ui/core/Fab'
 import Tooltip from '@material-ui/core/Tooltip'
@@ -34,16 +35,25 @@ const useStyles = makeStyles(theme => ({
 	zoomButtonMargin: {
 		marginRight: theme.spacing(1),
 	},
+	underlay: {
+		position: 'absolute',
+		top: 0,
+		left: 0,
+		right: 0,
+		bottom: 0,
+	},
 }))
 
 const ZoomContext = React.createContext({pixelsPerSec: 200, zoomContainerWidth: 12000})
 
 ZoomContainer.propTypes = {
 	children: PropTypes.node.isRequired,
+	underlay: PropTypes.node,
 }
 
-export default function ZoomContainer({children}) {
+export default function ZoomContainer({children, underlay}) {
 	const classes = useStyles()
+	const zoomEvents = React.useMemo(() => new EventEmitter(), [])
 	const [pixelsPerSec, setPixelsPerSec] = React.useState(200)
 	const {duration} = usePlayerDuration()
 
@@ -62,11 +72,26 @@ export default function ZoomContainer({children}) {
 		setPixelsPerSec(p => p / 1.25)
 	}
 
-	const zoomContext = React.useMemo(() => ({pixelsPerSec, zoomContainerWidth}), [pixelsPerSec, zoomContainerWidth])
+	const handleScroll = e => {
+		zoomEvents.emit('scroll', e)
+	}
+
+	const zoomContext = React.useMemo(() => ({pixelsPerSec, zoomContainerWidth, zoomEvents}), [
+		zoomEvents,
+		pixelsPerSec,
+		zoomContainerWidth,
+	])
 
 	return (
 		<div className={classes.root}>
-			<AutoScrollContainer horizontal pixelsPerSec={pixelsPerSec} className={classes.scrollContainer}>
+			<div className={classes.underlay}>
+				<ZoomContext.Provider value={zoomContext}>{underlay}</ZoomContext.Provider>
+			</div>
+			<AutoScrollContainer
+				horizontal
+				pixelsPerSec={pixelsPerSec}
+				onScroll={handleScroll}
+				className={classes.scrollContainer}>
 				<div className={classes.content} style={{width: zoomContainerWidth}}>
 					<ZoomContext.Provider value={zoomContext}>{children}</ZoomContext.Provider>
 				</div>

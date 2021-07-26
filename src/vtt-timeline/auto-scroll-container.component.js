@@ -18,11 +18,12 @@ const useStyles = makeStyles({
 AutoScrollContainer.propTypes = {
 	pixelsPerSec: PropTypes.number.isRequired,
 	horizontal: PropTypes.bool,
+	onScroll: PropTypes.func.isRequired,
 	children: PropTypes.node.isRequired,
 	className: PropTypes.string,
 }
 
-export default function AutoScrollContainer({pixelsPerSec, horizontal, children, className, ...props}) {
+export default function AutoScrollContainer({pixelsPerSec, horizontal, onScroll, children, className, ...props}) {
 	const classes = useStyles()
 
 	const scrollContainerRef = React.useRef()
@@ -44,6 +45,7 @@ export default function AutoScrollContainer({pixelsPerSec, horizontal, children,
 		<div
 			{...props}
 			ref={scrollContainerRef}
+			onScroll={onScroll}
 			className={clsx(
 				{
 					[classes.root]: !horizontal,

@@ -39,6 +39,25 @@ export const getAudioBlobFromVideo = async file => {
 	})
 }
 
+export const getAudioBufferFromVideo = async file => {
+	return new Promise((resolve, reject) => {
+		const reader = new FileReader()
+
+		reader.addEventListener('load', () => {
+			const decodeCtx = new AudioContext({sampleRate: SAMPLE_RATE})
+			// using callback style for safari compatibility
+			decodeCtx.decodeAudioData(
+				reader.result,
+				buf => resolve(buf),
+				// TODO: the resp object here appears to _be_ the error, despite the mdn example using resp.err. checking both for now...
+				resp => reject(resp.err || resp)
+			)
+		})
+
+		reader.readAsArrayBuffer(file)
+	})
+}
+
 export const getSupportedVideoFileExtensions = () => {
 	const video = document.createElement('video')
 
