@@ -32,14 +32,19 @@ export default function AudioTrack() {
 	const scrollRef = React.useRef(0)
 	const pixPerSecRef = React.useRef(pixelsPerSec)
 
-	const draw = React.useCallback(() => {
-		if (!audioBufferRef.current) return
+	const setCanvasBounds = React.useCallback(() => {
 		// we have to do this because the canvas's internal width and height are only set by the width and height attributes
 		//   added to the canvas element, which must be hard pixel values. since we need dynamic, we have to check the actual
-		//   width and height of the element each time we draw
+		//   width and height of the element each time the height and width change
 		const {width, height} = canvasRef.current.getBoundingClientRect()
 		canvasRef.current.width = width
 		canvasRef.current.height = height
+	}, [])
+
+	const draw = React.useCallback(() => {
+		if (!audioBufferRef.current) return
+
+		const {width, height} = canvasRef.current
 
 		const sampPerPix = audioBufferRef.current.sampleRate / pixPerSecRef.current
 
@@ -49,6 +54,8 @@ export default function AudioTrack() {
 		const getPeaks = peakCacheRef.current
 
 		let sample = scrollRef.current * sampPerPix
+		ctx.clearRect(0, 0, width, height)
+		ctx.beginPath()
 		for (let i = 0; i < width; i++) {
 			const [min, max] = getPeaks(Math.round(sample), Math.round(sample + sampPerPix))
 			// rounding to whole pixels avoids having the browser do anti-aliasing calculations
@@ -80,8 +87,11 @@ export default function AudioTrack() {
 			})
 	}, [draw, videoFile])
 
+	React.useEffect(() => setCanvasBounds(), [setCanvasBounds])
+
 	React.useEffect(() => {
 		const handleResize = () => {
+			setCanvasBounds()
 			throttledDraw()
 		}
 		const handleScroll = e => {
@@ -94,7 +104,7 @@ export default function AudioTrack() {
 			window.removeEventListener('resize', handleResize)
 			zoomEvents.off('scroll', handleScroll)
 		}
-	}, [zoomEvents, throttledDraw])
+	}, [zoomEvents, setCanvasBounds, throttledDraw])
 
 	React.useEffect(() => {
 		pixPerSecRef.current = pixelsPerSec
