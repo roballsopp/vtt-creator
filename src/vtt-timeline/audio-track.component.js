@@ -33,6 +33,7 @@ export default function AudioTrack() {
 	const pixPerSecRef = React.useRef(pixelsPerSec)
 
 	const setCanvasBounds = React.useCallback(() => {
+		if (!canvasRef.current) return
 		// we have to do this because the canvas's internal width and height are only set by the width and height attributes
 		//   added to the canvas element, which must be hard pixel values. since we need dynamic, we have to check the actual
 		//   width and height of the element each time the height and width change
@@ -42,7 +43,7 @@ export default function AudioTrack() {
 	}, [])
 
 	const draw = React.useCallback(() => {
-		if (!audioBufferRef.current) return
+		if (!audioBufferRef.current || !canvasRef.current) return
 
 		const {width, height} = canvasRef.current
 
