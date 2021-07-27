@@ -9,34 +9,35 @@ export const getAudioBlobFromVideo = async file => {
 		const reader = new FileReader()
 
 		reader.addEventListener('load', () => {
-			const decodeCtx = new AudioContext({sampleRate: SAMPLE_RATE})
-			// using callback style for safari compatibility
-			decodeCtx.decodeAudioData(
-				reader.result,
-				decodedBuffer => {
-					// TODO: all this garbage just to convert to mono...i think...improvements?
-					const offlineCtx = new OfflineAudioContext(1, decodedBuffer.length, SAMPLE_RATE)
-					const soundSource = offlineCtx.createBufferSource()
-
-					soundSource.buffer = decodedBuffer
-					soundSource.connect(offlineCtx.destination)
-					soundSource.start()
-
-					// using event style for safari compatibility
-					offlineCtx.addEventListener('complete', e => {
-						// use new Blob instead of new File for older edge compatibility: https://stackoverflow.com/a/43241922/2382483
-						resolve(new Blob([encodeWAV(e.renderedBuffer)], {type: 'audio/wav'}))
-					})
-
-					offlineCtx.startRendering()
-				},
+			new AudioContext({sampleRate: SAMPLE_RATE})
+				.decodeAudioData(reader.result)
+				.then(decodedBuffer => {
+					return convertAudioBufferToMono(decodedBuffer)
+				})
+				.then(monoBuffer => {
+					// use new Blob instead of new File for older edge compatibility: https://stackoverflow.com/a/43241922/2382483
+					return new Blob([encodeWAV(monoBuffer)], {type: 'audio/wav'})
+				})
+				.then(resolve)
 				// TODO: the resp object here appears to _be_ the error, despite the mdn example using resp.err. checking both for now...
-				resp => reject(resp.err || resp)
-			)
+				.catch(e => reject(e?.err || e || new Error('Unknown decoding error')))
 		})
+
+		reader.addEventListener('error', () => reject(reader.error))
 
 		reader.readAsArrayBuffer(file)
 	})
+}
+
+export async function convertAudioBufferToMono(buffer) {
+	const offlineCtx = new OfflineAudioContext(1, buffer.length, SAMPLE_RATE)
+
+	const soundSource = offlineCtx.createBufferSource()
+	soundSource.buffer = buffer
+	soundSource.connect(offlineCtx.destination)
+	soundSource.start()
+
+	return offlineCtx.startRendering()
 }
 
 export const getAudioBufferFromVideo = async file => {
@@ -44,15 +45,14 @@ export const getAudioBufferFromVideo = async file => {
 		const reader = new FileReader()
 
 		reader.addEventListener('load', () => {
-			const decodeCtx = new AudioContext({sampleRate: SAMPLE_RATE})
-			// using callback style for safari compatibility
-			decodeCtx.decodeAudioData(
-				reader.result,
-				buf => resolve(buf),
+			new AudioContext({sampleRate: SAMPLE_RATE})
+				.decodeAudioData(reader.result)
+				.then(resolve)
 				// TODO: the resp object here appears to _be_ the error, despite the mdn example using resp.err. checking both for now...
-				resp => reject(resp.err || resp)
-			)
+				.catch(e => reject(e?.err || e || new Error('Unknown decoding error')))
 		})
+
+		reader.addEventListener('error', () => reject(reader.error))
 
 		reader.readAsArrayBuffer(file)
 	})
