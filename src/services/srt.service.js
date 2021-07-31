@@ -82,8 +82,8 @@ export function getCuesFromSRT(file) {
 
 					const timestamps = lines[++l]
 					let [start, end] = timestamps.split('-->')
-					start = start.trim()
-					end = end.trim()
+					start = start?.trim()
+					end = end?.trim()
 					if (!start || !end) throw new MalformedSRTTimestampError(timestamps)
 
 					const text = []
