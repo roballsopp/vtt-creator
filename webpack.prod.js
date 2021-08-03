@@ -51,6 +51,7 @@ module.exports = {
 		}),
 	],
 	optimization: {
-		minimizer: [new TerserPlugin({include: /\.(js)$/, sourceMap: true})],
+		minimize: true,
+		minimizer: [new TerserPlugin({include: /\.(js)$/, parallel: true})],
 	},
 }
