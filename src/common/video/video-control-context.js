@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {useVideoDom} from './video-dom.context'
+import {useToast} from '../toast-context'
+import {handleError} from '../../services/error-handler.service'
 
 const VideoControlContext = React.createContext({
 	togglePlay: () => {},
@@ -22,6 +24,7 @@ VideoControlProvider.propTypes = {
 export function VideoControlProvider({children}) {
 	const {videoRef} = useVideoDom()
 	const playPromiseRef = React.useRef(Promise.resolve())
+	const toast = useToast()
 
 	return (
 		<VideoControlContext.Provider
@@ -31,10 +34,15 @@ export function VideoControlProvider({children}) {
 					// https://developers.google.com/web/updates/2017/06/play-request-was-interrupted
 					togglePlay: () => {
 						if (!videoRef) return
-						return playPromiseRef.current.then(() => {
-							if (videoRef.paused || videoRef.ended) return videoRef.play()
-							else videoRef.pause()
-						})
+						return playPromiseRef.current
+							.then(() => {
+								if (videoRef.paused || videoRef.ended) return videoRef.play()
+								else videoRef.pause()
+							})
+							.catch(err => {
+								handleError(err)
+								toast.error('Your browser is unable to play the video file you selected.')
+							})
 					},
 					seekVideo: newTime => {
 						if (videoRef) {
@@ -58,7 +66,7 @@ export function VideoControlProvider({children}) {
 						}
 					},
 				}),
-				[videoRef]
+				[toast, videoRef]
 			)}>
 			{children}
 		</VideoControlContext.Provider>

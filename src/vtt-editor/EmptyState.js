@@ -45,7 +45,7 @@ export default function EmptyState() {
 		[loadCuesFromFile]
 	)
 
-	const openFileSelector = useFileSelector({accept: '.vtt', onFilesSelected: onVTTFileSelected})
+	const openFileSelector = useFileSelector({accept: '.vtt,.srt', onFilesSelected: onVTTFileSelected})
 
 	return (
 		<div className={classes.root}>
@@ -56,11 +56,13 @@ export default function EmptyState() {
 				</Typography>
 			</div>
 			<div className={clsx(classes.actionGutter, classes.ie11Fix)}>
-				<Typography align="center">You can also load captions from an existing VTT file on your computer:</Typography>
+				<Typography align="center">
+					You can also load captions from an existing VTT or SRT file on your computer:
+				</Typography>
 			</div>
 			<div className={clsx(classes.gutterBottom, classes.ie11Fix)}>
 				<Button startIcon={<PublishIcon />} variant="contained" color="secondary" onClick={openFileSelector}>
-					Load from VTT file
+					Load from file
 				</Button>
 			</div>
 			<div className={clsx(classes.actionGutter, classes.ie11Fix)}>

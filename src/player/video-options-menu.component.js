@@ -7,9 +7,6 @@ import MenuItem from '@material-ui/core/MenuItem'
 import Tooltip from '@material-ui/core/Tooltip'
 import {useOverlay} from '../common/video'
 import useFileSelector from '../common/use-file-selector.hook'
-import {getSupportedVideoFileExtensions} from '../services/av.service'
-
-const ACCEPT = getSupportedVideoFileExtensions().join(',')
 
 VideoOptionsMenu.propTypes = {
 	onFilesSelected: PropTypes.func.isRequired,
@@ -34,7 +31,7 @@ export default function VideoOptionsMenu({onFilesSelected: outerOnFilesSelected}
 		outerOnFilesSelected(e)
 	}
 
-	const onOpenFileSelector = useFileSelector({accept: ACCEPT, onFilesSelected})
+	const onOpenFileSelector = useFileSelector({accept: 'video/*', onFilesSelected})
 
 	return (
 		<React.Fragment>

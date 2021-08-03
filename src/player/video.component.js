@@ -6,9 +6,6 @@ import {useFileSelector, useToast, useVideoFile, Button} from '../common'
 import {Video as BaseVideo} from '../common/video'
 import VideoOptionsMenu from './video-options-menu.component'
 import VttTrack from './vtt-track.component'
-import {getSupportedVideoFileExtensions} from '../services/av.service'
-
-const ACCEPT = getSupportedVideoFileExtensions().join(',')
 
 const useStyles = makeStyles(theme => ({
 	loaderRoot: {
@@ -51,7 +48,7 @@ export default function Video({className}) {
 		toast.error('The file you have selected is too large.')
 	}, [toast])
 
-	const openFileSelector = useFileSelector({accept: ACCEPT, onFilesSelected, onFileSizeExceeded})
+	const openFileSelector = useFileSelector({accept: 'video/*', onFilesSelected, onFileSizeExceeded})
 
 	if (!src) {
 		return (

@@ -1,6 +1,6 @@
 import EventEmitter from 'events'
 import {gql} from '@apollo/client'
-import ExtendableError from '../../errors/ExtendableError'
+import {ExtendableError} from '../../errors'
 import {SpeechToTextJobTimeout} from '../../config'
 import {getAudioBlobFromVideo} from '../../services/av.service'
 import {appendNewJob, JobHistoryTable_jobsFragment} from '../../account/JobHistoryTable.graphql'
