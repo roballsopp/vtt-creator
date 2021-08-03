@@ -29,7 +29,6 @@
     "core-js": "^3.4.7",
     "date-fns": "^2.22.1",
     "downloadjs": "^1.4.7",
-    "file-loader": "^6.2.0",
     "graphql": "^15.3.0",
     "history": "^4.10.1",
     "html-webpack-plugin": "^5.3.2",

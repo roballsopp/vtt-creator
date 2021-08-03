@@ -26,8 +26,8 @@ module.exports = config => {
 						exclude: /(node_modules)/,
 					},
 					{
-						test: /\.(png|svg|jpg|gif|wav)$/,
-						loader: 'file-loader',
+						test: /\.(png|svg|jpg|gif|wav|mp4)$/,
+						type: 'asset/resource',
 					},
 				],
 			},
