@@ -76,44 +76,67 @@ ToastProvider.propTypes = {
 }
 
 export function ToastProvider(props) {
-	const [options, setOptions] = React.useState({
-		vertical: 'bottom',
-		horizontal: 'center',
-	})
-	const [show, setShow] = React.useState(false)
-	const [snackBarConfig, setSnackBarConfig] = React.useState({variant: 'success'})
+	const toastQueue = React.useRef([])
+	const [toastState, setToastState] = React.useState({show: false, ContentProps: {variant: 'success', message: ''}})
 
-	const openSuccessToast = React.useCallback((message, options = {}) => {
-		setOptions(options)
-		setSnackBarConfig({message, variant: 'success'})
-		setShow(true)
+	const handleShowNext = React.useCallback(() => {
+		setToastState(s => {
+			// if were currently showing a toast, or if there are no more in the queue to show, do nothing
+			if (s.show || !toastQueue.current.length) return s
+			const next = toastQueue.current.shift()
+			return {
+				show: true,
+				ContentProps: {
+					variant: next.variant,
+					message: next.message,
+				},
+			}
+		})
 	}, [])
 
-	const openErrorToast = React.useCallback((message, options = {}) => {
-		setOptions(options)
-		setSnackBarConfig({message, variant: 'error'})
-		setShow(true)
-	}, [])
+	const pushSuccess = React.useCallback(
+		message => {
+			toastQueue.current = [...toastQueue.current, {message, variant: 'success'}]
+			handleShowNext()
+		},
+		[handleShowNext]
+	)
+
+	const pushError = React.useCallback(
+		message => {
+			toastQueue.current = [...toastQueue.current, {message, variant: 'error'}]
+			handleShowNext()
+		},
+		[handleShowNext]
+	)
+
+	const handleHideToast = (e, reason) => {
+		// we already provide a close button, and there is an issue where the snackbar is shown when the video play button
+		//   is clicked and errors, and then immediately hidden because the button click causes a clickaway event
+		if (reason === 'clickaway') return
+		setToastState(s => ({...s, show: false}))
+	}
 
 	return (
 		<ToastContext.Provider
 			value={React.useMemo(
 				() => ({
-					error: openErrorToast,
-					success: openSuccessToast,
+					error: pushError,
+					success: pushSuccess,
 				}),
-				[openErrorToast, openSuccessToast]
+				[pushError, pushSuccess]
 			)}>
 			{props.children}
 			<Snackbar
 				anchorOrigin={{
-					vertical: options.vertical || 'bottom',
-					horizontal: options.horizontal || 'center',
+					vertical: 'bottom',
+					horizontal: 'center',
 				}}
 				autoHideDuration={4000}
-				open={show}
-				onClose={() => setShow(false)}>
-				<SnackbarContent onClose={() => setShow(false)} {...snackBarConfig} />
+				open={toastState.show}
+				onClose={handleHideToast}
+				TransitionProps={{onExited: handleShowNext}}>
+				<SnackbarContent onClose={handleHideToast} {...toastState.ContentProps} />
 			</Snackbar>
 		</ToastContext.Provider>
 	)

@@ -2,7 +2,7 @@ import * as React from 'react'
 import throttle from 'lodash/throttle'
 import muiPinks from '@material-ui/core/colors/pink'
 import {makeStyles} from '@material-ui/styles'
-import {useVideoFile} from '../common'
+import {useToast, useVideoFile} from '../common'
 import {useZoom} from './zoom-container.component'
 import {getAudioBufferFromVideo} from '../services/av.service'
 import {handleError} from '../services/error-handler.service'
@@ -22,6 +22,7 @@ const useStyles = makeStyles({
 
 export default function AudioTrack() {
 	const classes = useStyles()
+	const toast = useToast()
 
 	const {videoFile} = useVideoFile()
 	const {pixelsPerSec, zoomEvents} = useZoom()
@@ -84,9 +85,10 @@ export default function AudioTrack() {
 				draw()
 			})
 			.catch(err => {
+				toast.error('Failed to draw waveform. Audio format not supported.')
 				handleError(err)
 			})
-	}, [draw, videoFile])
+	}, [draw, videoFile, toast])
 
 	React.useEffect(() => setCanvasBounds(), [setCanvasBounds])
 
