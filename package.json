@@ -62,7 +62,7 @@
     "karma-chrome-launcher": "^3.1.0",
     "karma-mocha": "^2.0.1",
     "karma-mocha-reporter": "^2.2.5",
-    "karma-webpack": "^4.0.2",
+    "karma-webpack": "^5.0.0",
     "mocha": "^6.1.4",
     "prettier": "^1.18.2",
     "webpack-dev-server": "^3.11.2"
