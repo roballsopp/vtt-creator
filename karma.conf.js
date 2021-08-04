@@ -9,7 +9,7 @@ const STATIC_FILES_DIR = path.resolve(__dirname, 'public')
 
 module.exports = config => {
 	config.set({
-		frameworks: ['mocha', 'chai'],
+		frameworks: ['webpack', 'mocha', 'chai'],
 		files: ['./test/webpack-test-entry.js'],
 		preprocessors: {
 			'./test/webpack-test-entry.js': ['webpack'],
@@ -26,8 +26,8 @@ module.exports = config => {
 						exclude: /(node_modules)/,
 					},
 					{
-						test: /\.(png|svg|jpg|gif|wav|mp4)$/,
-						type: 'asset/resource',
+						test: /\.(png|svg|jpg|gif|wav)$/,
+						type: 'asset/inline',
 					},
 				],
 			},
