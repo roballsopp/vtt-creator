@@ -78,6 +78,31 @@ export default new ApolloClient({
 					},
 				},
 			},
+			TranslationsConnection: {
+				fields: {
+					nodes: {
+						// Don't cache separate results based on any of this field's arguments.
+						keyArgs: false,
+						merge(existing, incoming, {args: {offset = 0}}) {
+							const merged = existing ? existing.slice(0) : []
+							for (let i = 0; i < incoming.length; ++i) {
+								merged[offset + i] = incoming[i]
+							}
+							return merged
+						},
+						read(existing, {args: {offset, limit}}) {
+							// no cached list, time to fetch the first page
+							if (!existing) return undefined
+							// get the page we want from the cache
+							const cachedPage = existing.slice(offset, offset + limit)
+							// if we have a cached list, but it doesn't have the the page we want now, so make a fetch
+							if (!cachedPage.length) return undefined
+							// we have a cached list, and there is at least some data in there from the page we want, just return that
+							return cachedPage
+						},
+					},
+				},
+			},
 		},
 	}),
 })

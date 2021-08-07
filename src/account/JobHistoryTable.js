@@ -61,7 +61,7 @@ export default function JobHistoryTable({jobs}) {
 					})}
 					{!jobs.length && (
 						<TableRow>
-							<TableCell colSpan={5}>
+							<TableCell colSpan={6}>
 								<Box height={100} display="flex" alignItems="center" justifyContent="center">
 									<Typography align="center">Looks like you haven&apos;t extracted any cues yet</Typography>
 								</Box>
