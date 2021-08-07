@@ -27,6 +27,7 @@ export default function AccountPageQueryContainer() {
 					...AccountPage_user
 				}
 				transcriptionRate
+				translationRate
 			}
 			${AccountPage.fragments.user}
 		`,
@@ -47,5 +48,7 @@ export default function AccountPageQueryContainer() {
 		)
 	}
 
-	return <AccountPage user={data.self} transcriptionRate={data.transcriptionRate} />
+	return (
+		<AccountPage user={data.self} transcriptionRate={data.transcriptionRate} translationRate={data.translationRate} />
+	)
 }
