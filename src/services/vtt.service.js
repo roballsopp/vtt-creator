@@ -77,7 +77,7 @@ function joinWords(wordsList, from, to) {
 }
 
 // type CueList = Array<VTTCue>;
-export function getVTTFromCues(cueList, title = 'Some title') {
+export function getVTTFromCues(cueList, title = 'Made with VTT Creator') {
 	const vttParts = cueList.map(nextCue => {
 		const start = formatSeconds(nextCue.startTime)
 		const end = formatSeconds(nextCue.endTime)
