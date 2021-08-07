@@ -32,9 +32,10 @@ AccountPage.propTypes = {
 		unlimitedUsage: PropTypes.bool,
 	}).isRequired,
 	transcriptionRate: PropTypes.number.isRequired,
+	translationRate: PropTypes.number.isRequired,
 }
 
-export default function AccountPage({user, transcriptionRate}) {
+export default function AccountPage({user, transcriptionRate, translationRate}) {
 	const {logout} = useAuthDialog()
 	const classes = useStyles()
 	const history = useHistory()
@@ -69,8 +70,19 @@ export default function AccountPage({user, transcriptionRate}) {
 									{!user.unlimitedUsage &&
 										`Credit: $${user.credit.toFixed(2)} (${user.creditMinutes.toFixed(1)} minutes)`}
 								</Typography>
+							</Grid>
+							<Grid item xs={12}>
 								<Typography>
 									Extracting video captions automatically costs ${transcriptionRate.toFixed(2)} per minute of video.
+								</Typography>
+							</Grid>
+							<Grid item xs={12}>
+								<Typography>
+									Translating captions costs ${(translationRate * 100).toFixed(2)} per 100 characters of text.
+								</Typography>
+							</Grid>
+							<Grid item xs={12}>
+								<Typography>
 									More credit can be added to the right. Just enter how much credit you want to add, and click the
 									button for your preferred payment method.
 								</Typography>
