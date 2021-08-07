@@ -13,7 +13,8 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import MoreIcon from '@material-ui/icons/MoreVert'
 import Tooltip from '@material-ui/core/Tooltip'
 import {makeStyles} from '@material-ui/styles'
-import {ExtractFromVideoMenuItem, useExtractFromVideo} from './CueExtractionButton'
+import {ExtractFromVideoMenuItem} from './CueExtractionButton'
+import {TranslateMenuItem} from './TranslateButton'
 import {useFileSelector, useCues, Button, useCueFromFileLoader} from '../common'
 import {getVTTFromCues} from '../services/vtt.service'
 import {getSRTFromCues} from '../services/srt.service'
@@ -28,7 +29,6 @@ export default function VTTMenu() {
 	const classes = useStyles()
 	const {cues, setCues} = useCues()
 	const {loadCuesFromFile} = useCueFromFileLoader()
-	const {extractDialogEvents} = useExtractFromVideo()
 
 	const [optionsMenuAnchorEl, setOptionsMenuAnchorEl] = React.useState(null)
 	const [clearCuesDialogOpen, setClearCuesDialogOpen] = React.useState(false)
@@ -69,13 +69,6 @@ export default function VTTMenu() {
 		[loadCuesFromFile]
 	)
 
-	React.useEffect(() => {
-		extractDialogEvents.on('opening', onCloseOptionsMenu)
-		return () => {
-			extractDialogEvents.off('opening', onCloseOptionsMenu)
-		}
-	}, [extractDialogEvents])
-
 	const openFileSelector = useFileSelector({accept: '.vtt,.srt', onFilesSelected: onFileSelected})
 
 	return (
@@ -90,7 +83,8 @@ export default function VTTMenu() {
 					<CloudUploadIcon className={classes.menuIcon} />
 					Load from VTT or SRT file...
 				</MenuItem>
-				<ExtractFromVideoMenuItem classes={{menuIcon: classes.menuIcon}} />
+				<ExtractFromVideoMenuItem classes={{menuIcon: classes.menuIcon}} onOpening={onCloseOptionsMenu} />
+				<TranslateMenuItem classes={{menuIcon: classes.menuIcon}} onOpening={onCloseOptionsMenu} />
 				<MenuItem onClick={onDownloadVTT}>
 					<CloudDownloadIcon className={classes.menuIcon} />
 					Save to VTT file...
