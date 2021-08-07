@@ -10,6 +10,7 @@ import {useAuthDialog} from '../AuthDialog'
 import AddCreditInput from './AddCreditInput'
 import PageContainer from '../common/PageContainer'
 import JobHistoryTable from './JobHistoryTableQueryContainer'
+import TranslationHistoryTable from './TranslationHistoryTableQueryContainer'
 import {AccountPage_userFragment} from './AccountPage.graphql'
 
 const useStyles = makeStyles(theme => ({
@@ -91,6 +92,18 @@ export default function AccountPage({user, transcriptionRate}) {
 						</Typography>
 					</Box>
 					<JobHistoryTable />
+				</Grid>
+				<Grid item container xs={12} direction="column">
+					<Box>
+						<Typography variant="h6" gutterBottom>
+							Translation History
+						</Typography>
+						<Typography paragraph>
+							Translation results are available for download from the Actions menus below for 10 days after the
+							translation is completed.
+						</Typography>
+					</Box>
+					<TranslationHistoryTable />
 				</Grid>
 			</Grid>
 		</PageContainer>

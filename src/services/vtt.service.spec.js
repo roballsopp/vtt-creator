@@ -10,8 +10,8 @@ import {
 
 const words = [
 	{startTime: 0, endTime: 0.7, word: 'The'},
-	{startTime: 0.7, endTime: 1.1, word: 'Volvo'},
-	{startTime: 1.1, endTime: 1.1, word: 'group'},
+	{startTime: 0.7, endTime: 1.1, word: 'ABC'},
+	{startTime: 1.1, endTime: 1.1, word: 'Company'},
 	{startTime: 1.1, endTime: 1.8, word: 'code'},
 	{startTime: 1.8, endTime: 1.8, word: 'of'},
 	{startTime: 1.8, endTime: 2.4, word: 'conduct'},
@@ -24,7 +24,7 @@ const words = [
 	{startTime: 4.2, endTime: 4.5, word: 'who'},
 	{startTime: 4.5, endTime: 4.8, word: 'works'},
 	{startTime: 4.8, endTime: 5, word: 'on'},
-	{startTime: 5, endTime: 5.5, word: "Volvo's"},
+	{startTime: 5, endTime: 5.5, word: "ABC's"},
 	{startTime: 5.5, endTime: 5.9, word: 'behalf.'},
 	{startTime: 5.9, endTime: 7.4, word: 'So,'},
 	{startTime: 7.4, endTime: 7.6, word: 'how'},
@@ -46,39 +46,39 @@ const words = [
 	{startTime: 11.9, endTime: 12.5, word: 'it?'},
 ]
 
-const VTTFile = `WEBVTT - Some title
+const VTTFile = `WEBVTT - Made with VTT Creator
 
 00:00.000 --> 00:03.700
-The Volvo group code of conduct is an important tool
+The ABC Company code of conduct is an important tool
 
 00:03.700 --> 00:07.800
-for anyone who works on Volvo's behalf. So, how do
+for anyone who works on ABC's behalf. So, how do you
 
-00:07.800 --> 00:10.900
-you use it first read through the whole document
+00:07.800 --> 00:11.400
+use it first read through the whole document to make
 
-00:10.900 --> 00:12.500
-to make sure you understand it?`
+00:11.400 --> 00:12.500
+sure you understand it?`
 
-const VTTFileWHours = `WEBVTT - Some title
+const VTTFileWHours = `WEBVTT - Made with VTT Creator
 
 00:00:00.000 --> 00:00:03.700
-The Volvo group code of conduct is an important tool
+The ABC Company code of conduct is an important tool
 
 00:00:03.700 --> 00:00:07.800
-for anyone who works on Volvo's behalf. So, how do
+for anyone who works on ABC's behalf. So, how do you
 
-00:00:07.800 --> 00:00:10.900
-you use it first read through the whole document
+00:00:07.800 --> 00:00:11.400
+use it first read through the whole document to make
 
-00:00:10.900 --> 00:00:12.500
-to make sure you understand it?`
+00:00:11.400 --> 00:00:12.500
+sure you understand it?`
 
 const cues = [
-	new VTTCue(0, 3.7, 'The Volvo group code of conduct is an important tool'),
-	new VTTCue(3.7, 7.8, "for anyone who works on Volvo's behalf. So, how do"),
-	new VTTCue(7.8, 10.9, 'you use it first read through the whole document'),
-	new VTTCue(10.9, 12.5, 'to make sure you understand it?'),
+	new VTTCue(0, 3.7, 'The ABC Company code of conduct is an important tool'),
+	new VTTCue(3.7, 7.8, "for anyone who works on ABC's behalf. So, how do you"),
+	new VTTCue(7.8, 11.4, 'use it first read through the whole document to make'),
+	new VTTCue(11.4, 12.5, 'sure you understand it?'),
 ]
 
 describe('vtt.service', function() {
@@ -157,10 +157,10 @@ describe('vtt.service', function() {
 
 		describe('when the file has a malformed timestamp', function() {
 			before(function() {
-				const VTTFile = `WEBVTT - Some title
+				const VTTFile = `WEBVTT - Made with VTT Creator
 
 				00:00:00,000 --> 00:00:03.700
-				The Volvo group code of conduct is an important tool`.replace('\t', '')
+				The ABC Company code of conduct is an important tool`.replace('\t', '')
 
 				this.vttBlob = new Blob([VTTFile], {type: 'text/vtt'})
 			})
@@ -180,10 +180,10 @@ describe('vtt.service', function() {
 
 		describe('when the file has a malformed header', function() {
 			before(function() {
-				const VTTFile = `WEBVT - Some title
+				const VTTFile = `WEBVT - Made with VTT Creator
 
 				00:00:00.000 --> 00:00:03.700
-				The Volvo group code of conduct is an important tool`.replace('\t', '')
+				The ABC Company code of conduct is an important tool`.replace('\t', '')
 
 				this.vttBlob = new Blob([VTTFile], {type: 'text/vtt'})
 			})

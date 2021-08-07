@@ -1,5 +1,4 @@
 import React from 'react'
-import EventEmitter from 'events'
 import PropTypes from 'prop-types'
 import {gql, useQuery} from '@apollo/client'
 import {ExtractFromVideoContext_userFragment} from './ExtractFromVideoContext.graphql'
@@ -23,7 +22,6 @@ const ExtractFromVideoContext = React.createContext({
 	handleCreditDialogExited: () => {},
 	handleCueExtractComplete: () => {},
 	handleNotSupportedDialogClose: () => {},
-	extractDialogEvents: {},
 })
 
 ExtractFromVideoProvider.propTypes = {
@@ -34,7 +32,6 @@ export function ExtractFromVideoProvider({children}) {
 	const {setCues, setCuesLoading} = useCues()
 	const {openLoginDialog, authDialogEvents} = useAuthDialog()
 	const {duration} = useDuration()
-	const extractDialogEvents = React.useRef(new EventEmitter())
 	const queryDataRef = React.useRef()
 
 	const [cueExtractionDialogOpen, setCueExtractionDialogOpen] = React.useState(false)
@@ -60,8 +57,6 @@ export function ExtractFromVideoProvider({children}) {
 	queryDataRef.current = data
 
 	const handleCueExtractionDialogOpen = React.useCallback(() => {
-		extractDialogEvents.current.emit('opening')
-
 		if (!window.AudioContext) return setNotSupportedDialogOpen(true)
 
 		// if error getting cost, we aren't logged in
@@ -124,7 +119,6 @@ export function ExtractFromVideoProvider({children}) {
 				loading,
 				transcriptionCost: data?.transcriptionCost,
 				user: data?.self,
-				extractDialogEvents: extractDialogEvents.current,
 				creditDialogOpen,
 				cueExtractionDialogOpen,
 				notSupportedDialogOpen,

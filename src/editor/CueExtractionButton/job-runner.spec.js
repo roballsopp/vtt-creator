@@ -41,7 +41,6 @@ describe('JobRunner', function() {
 			this.runner = getJobRunner(apolloClient, this.uploadFileSpy)
 
 			this.expectedLanguage = 'en-US'
-			// actually an audio file, but audiocontext doesn't care
 			this.jobStateEvents = []
 			this.cancelDisabledEvents = []
 			this.errorEvents = []
@@ -64,6 +63,7 @@ describe('JobRunner', function() {
 				this.runner.off(EVENT_ERROR, done)
 				done()
 			})
+			// actually an audio file, but audiocontext doesn't care
 			getTestFile()
 				.then(videoFile => {
 					this.jobPromise = this.runner.run({
