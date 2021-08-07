@@ -3,11 +3,11 @@ import {getSRTFromCues, getCuesFromSRT, MalformedSRTTimestampError} from './srt.
 
 const SRTFile = `1
 00:00:00,000 --> 00:00:03,700
-The Volvo group code of conduct is an important tool
+The ABC Company code of conduct is an important tool
 
 2
 00:00:03,700 --> 00:00:07,800
-for anyone who works on Volvo's behalf. So, how do
+for anyone who works on ABC's behalf. So, how do
 
 3
 00:00:07,800 --> 00:00:10,900
@@ -21,12 +21,12 @@ to make sure you understand it?`
 const SRTFileWExtraNewlinesAndSpaces = `
 1
 00:00:00,000	-->00:00:03,700
-The Volvo group code of conduct is an important tool
+The ABC Company code of conduct is an important tool
 	
 
 2
 00:00:03,700 -->  00:00:07,800 
-for anyone who works on Volvo's behalf. So, how do
+for anyone who works on ABC's behalf. So, how do
  
 3
 00:00:07,800--> 00:00:10,900
@@ -41,11 +41,11 @@ to make sure you understand it?
 
 const SRTFileBadTimestamp1 = `1
 00:00:00,000 --> 00:00:03700
-The Volvo group code of conduct is an important tool
+The ABC Company code of conduct is an important tool
 
 2
 00:00:03,700 --> 00:00:07,800
-for anyone who works on Volvo's behalf. So, how do
+for anyone who works on ABC's behalf. So, how do
 
 3
 00:00:07,800 --> 00:00:10,900
@@ -57,11 +57,11 @@ to make sure you understand it?`
 
 const SRTFileBadTimestamp2 = `1
 00:00:00,000 --> 00:0003,700
-The Volvo group code of conduct is an important tool
+The ABC Company code of conduct is an important tool
 
 2
 00:00:03,700 --> 00:00:07,800
-for anyone who works on Volvo's behalf. So, how do
+for anyone who works on ABC's behalf. So, how do
 
 3
 00:00:07,800 --> 00:00:10,900
@@ -73,11 +73,11 @@ to make sure you understand it?`
 
 const SRTFileBadTimestamp3 = `1
 00:00:00,000 --> 
-The Volvo group code of conduct is an important tool
+The ABC Company code of conduct is an important tool
 
 2
 00:00:03,700 --> 00:00:07,800
-for anyone who works on Volvo's behalf. So, how do
+for anyone who works on ABC's behalf. So, how do
 
 3
 00:00:07,800 --> 00:00:10,900
@@ -88,8 +88,8 @@ you use it first read through the whole document
 to make sure you understand it?`
 
 const cues = [
-	new VTTCue(0, 3.7, 'The Volvo group code of conduct is an important tool'),
-	new VTTCue(3.7, 7.8, "for anyone who works on Volvo's behalf. So, how do"),
+	new VTTCue(0, 3.7, 'The ABC Company code of conduct is an important tool'),
+	new VTTCue(3.7, 7.8, "for anyone who works on ABC's behalf. So, how do"),
 	new VTTCue(7.8, 10.9, 'you use it first read through the whole document'),
 	new VTTCue(10.9, 12.5, 'to make sure you understand it?'),
 ]
