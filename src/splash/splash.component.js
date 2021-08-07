@@ -1,6 +1,6 @@
 import React from 'react'
 import {useHistory} from 'react-router-dom'
-import {Box, Container, Grid, Typography} from '@material-ui/core'
+import {Box, Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import muiBlueGreys from '@material-ui/core/colors/blueGrey'
 import CloudUploadIcon from '@material-ui/icons/CloudUploadOutlined'
