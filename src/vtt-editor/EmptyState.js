@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
 		right: 0,
 		overflowY: 'scroll',
 		padding: theme.spacing(8),
-		'@media (min-height: 600px)': {
+		[theme.breakpoints.up('sm')]: {
 			display: 'flex',
 			alignItems: 'center',
 		},
