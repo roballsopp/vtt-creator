@@ -27,7 +27,7 @@ export default function ExtractFromVideoMenuItem({onOpening, classes}) {
 		// span needed here because tooltips don't activate on disabled elements: https://material-ui.com/components/tooltips/#disabled-elements
 		return (
 			<Tooltip
-				title="Select a video in the pane to the right to use this feature"
+				title="Select a video in the pane to the left to use this feature"
 				placement="right"
 				PopperProps={{anchorEl: buttonEl}}>
 				<span>

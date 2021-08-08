@@ -1,8 +1,5 @@
 import React from 'react'
-import AppBar from '@material-ui/core/AppBar'
-import Paper from '@material-ui/core/Paper'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
+import {AppBar, Hidden, Paper, Toolbar, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {CuesProvider, CuesFromFileProvider, VideoFileProvider} from '../common'
 import {VC as VCIcon} from '../common/icons'
@@ -34,7 +31,7 @@ const useStyles = makeStyles(theme => ({
 		minHeight: 0,
 		minWidth: 0,
 		[theme.breakpoints.down('sm')]: {
-			flexDirection: 'column-reverse',
+			flexDirection: 'column',
 		},
 	},
 	drawer: {
@@ -75,11 +72,11 @@ export default function Editor() {
 								<KeyboardControlProvider>
 									<CuesProvider>
 										<CuesFromFileProvider>
-											<div className={classes.root}>
-												<main className={classes.main}>
-													<Paper square className={classes.drawer}>
-														<ExtractFromVideoProvider>
-															<TranslationProvider>
+											<ExtractFromVideoProvider>
+												<TranslationProvider>
+													<div className={classes.root}>
+														<main className={classes.main}>
+															<Hidden smUp>
 																<AppBar position="static" color="primary">
 																	<Toolbar>
 																		<VCIcon fontSize="large" edge="start" style={{marginRight: 8}} />
@@ -89,18 +86,31 @@ export default function Editor() {
 																		<VttMenu />
 																	</Toolbar>
 																</AppBar>
+															</Hidden>
+															<div className={classes.player}>
+																<Player />
+															</div>
+															<div className={classes.drawer}>
+																<Hidden smDown>
+																	<AppBar position="static" color="primary">
+																		<Toolbar>
+																			<VCIcon fontSize="large" edge="start" style={{marginRight: 8}} />
+																			<Typography variant="h6" color="inherit" style={{flexGrow: 1}}>
+																				VTT Creator
+																			</Typography>
+																			<VttMenu />
+																		</Toolbar>
+																	</AppBar>
+																</Hidden>
 																<VTTEditor />
-																<ExtractFromVideoDialogs />
-																<TranslationDialogs />
-															</TranslationProvider>
-														</ExtractFromVideoProvider>
-													</Paper>
-													<div className={classes.player}>
-														<Player />
+															</div>
+														</main>
+														<Footer />
 													</div>
-												</main>
-												<Footer />
-											</div>
+													<ExtractFromVideoDialogs />
+													<TranslationDialogs />
+												</TranslationProvider>
+											</ExtractFromVideoProvider>
 										</CuesFromFileProvider>
 									</CuesProvider>
 								</KeyboardControlProvider>

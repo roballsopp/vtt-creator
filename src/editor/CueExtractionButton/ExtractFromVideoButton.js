@@ -10,7 +10,7 @@ export default function ExtractFromVideoButton(buttonProps) {
 	if (!videoFile) {
 		// span needed here because tooltips don't activate on disabled elements: https://material-ui.com/components/tooltips/#disabled-elements
 		return (
-			<Tooltip title="Select a video in the pane to the right to use this feature" placement="bottom">
+			<Tooltip title="Select a video in the pane to the left to use this feature" placement="bottom">
 				<div>
 					<Button {...buttonProps} disabled>
 						Extract from video
