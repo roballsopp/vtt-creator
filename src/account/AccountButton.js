@@ -1,9 +1,10 @@
 import * as React from 'react'
-import Typography from '@material-ui/core/Typography'
+import {gql, useQuery} from '@apollo/client'
+import {Hidden, IconButton, Menu, MenuItem, Tooltip, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
+import AccountIcon from '@material-ui/icons/AccountCircle'
 import {useAuthDialog} from '../AuthDialog'
 import {Button} from '../common'
-import {gql, useQuery} from '@apollo/client'
 
 const useStyles = makeStyles(theme => ({
 	or: {
@@ -24,11 +25,26 @@ export default function AccountButton() {
 
 	const classes = useStyles()
 
+	const [optionsMenuAnchorEl, setOptionsMenuAnchorEl] = React.useState(null)
+
+	const onCloseOptionsMenu = () => {
+		setOptionsMenuAnchorEl(null)
+	}
+
 	if (data || loading) {
 		return (
-			<Button name="Account" loading={loading} href="/account" color="secondary" variant="contained">
-				Account
-			</Button>
+			<React.Fragment>
+				<Hidden smUp>
+					<IconButton color="inherit" aria-label="Account" href="/account">
+						<AccountIcon />
+					</IconButton>
+				</Hidden>
+				<Hidden smDown>
+					<Button name="Account" loading={loading} href="/account" color="secondary" variant="contained">
+						Account
+					</Button>
+				</Hidden>
+			</React.Fragment>
 		)
 	}
 
@@ -44,13 +60,26 @@ export default function AccountButton() {
 
 	return (
 		<React.Fragment>
-			<Button color="secondary" variant="contained" onClick={handleLogin}>
-				Login
-			</Button>
-			<Typography className={classes.or}>OR</Typography>
-			<Button color="secondary" variant="contained" onClick={handleSignUp}>
-				Sign Up
-			</Button>
+			<Hidden smDown>
+				<Button color="secondary" variant="contained" onClick={handleLogin}>
+					Login
+				</Button>
+				<Typography className={classes.or}>OR</Typography>
+				<Button color="secondary" variant="contained" onClick={handleSignUp}>
+					Sign Up
+				</Button>
+			</Hidden>
+			<Hidden smUp>
+				<Tooltip title="Account Menu">
+					<IconButton color="inherit" aria-label="Account" onClick={e => setOptionsMenuAnchorEl(e.currentTarget)}>
+						<AccountIcon />
+					</IconButton>
+				</Tooltip>
+				<Menu anchorEl={optionsMenuAnchorEl} open={!!optionsMenuAnchorEl} onClose={onCloseOptionsMenu}>
+					<MenuItem onClick={handleLogin}>Login</MenuItem>
+					<MenuItem onClick={handleSignUp}>Sign Up</MenuItem>
+				</Menu>
+			</Hidden>
 		</React.Fragment>
 	)
 }
