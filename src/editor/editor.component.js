@@ -54,7 +54,7 @@ const useStyles = makeStyles(theme => ({
 			flex: 1,
 		},
 		[theme.breakpoints.down('sm')]: {
-			height: 300,
+			height: 350,
 		},
 	},
 }))
