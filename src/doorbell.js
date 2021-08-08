@@ -2,7 +2,7 @@ window.doorbellOptions = {
 	id: '11145',
 	appKey: 'qkEYn4twaKWlJqpJbw0Vk1nhQpRdbDd2voXXTKlNNalH4sRca0GBcej703Bs4OfC',
 }
-;(function(w, d, t) {
+function loadDoorbell(w, d, t) {
 	var hasLoaded = false
 	function l() {
 		if (hasLoaded) {
@@ -27,4 +27,8 @@ window.doorbellOptions = {
 	if (d.readyState === 'complete') {
 		l()
 	}
-})(window, document, 'script')
+}
+const mql = window.matchMedia('(min-width: 600px)')
+if (mql.matches) {
+	loadDoorbell(window, document, 'script')
+}
