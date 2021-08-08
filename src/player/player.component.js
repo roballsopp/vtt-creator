@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
 			flex: 1,
 		},
 		[theme.breakpoints.down('sm')]: {
-			height: 70,
+			height: 100,
 		},
 	},
 }))
