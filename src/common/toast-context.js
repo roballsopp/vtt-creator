@@ -91,8 +91,12 @@ export function ToastProvider(props) {
 
 	const handleShowNext = React.useCallback(() => {
 		setToastState(s => {
-			// if were currently showing a toast, or if there are no more in the queue to show, do nothing
-			if (s.show || !toastQueue.current.length) return s
+			// if were currently showing a toast, do nothing
+			if (s.show) return s
+			// if there are no more in the queue to show, reset state
+			//   if we don't do this (probably reset the message, specifically), the snackbar root seems to hang around in the
+			//   dom invisibly and prevent clicks on important stuff under it
+			if (!toastQueue.current.length) return {show: false, ContentProps: {variant: 'success', message: ''}}
 			const next = toastQueue.current.shift()
 			return {
 				show: true,
@@ -138,10 +142,7 @@ export function ToastProvider(props) {
 			)}>
 			{props.children}
 			<Snackbar
-				anchorOrigin={{
-					vertical: 'bottom',
-					horizontal: 'center',
-				}}
+				key={toastState.ContentProps.message}
 				autoHideDuration={4000}
 				open={toastState.show}
 				onClose={handleHideToast}
