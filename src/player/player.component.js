@@ -19,8 +19,13 @@ const useStyles = makeStyles(theme => ({
 		minWidth: 0,
 	},
 	video: {
-		height: 'calc(100% - 38px)',
 		margin: 'auto',
+		[theme.breakpoints.up('sm')]: {
+			height: 'calc(100% - 38px)',
+		},
+		[theme.breakpoints.down('sm')]: {
+			height: 'calc(100% - 28px)',
+		},
 	},
 	vttTimeline: {
 		[theme.breakpoints.up('sm')]: {
