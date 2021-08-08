@@ -1,5 +1,5 @@
 import React from 'react'
-import {AppBar, Hidden, Paper, Toolbar, Typography} from '@material-ui/core'
+import {AppBar, Hidden, Toolbar, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {CuesProvider, CuesFromFileProvider, VideoFileProvider} from '../common'
 import {VC as VCIcon} from '../common/icons'
