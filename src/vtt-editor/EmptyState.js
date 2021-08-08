@@ -16,11 +16,12 @@ const useStyles = makeStyles(theme => ({
 		bottom: 0,
 		left: 0,
 		right: 0,
-		display: 'flex',
-		flexDirection: 'column',
-		padding: theme.spacing(8),
-		justifyContent: 'center',
 		overflowY: 'scroll',
+		padding: theme.spacing(8),
+		'@media (min-height: 600px)': {
+			display: 'flex',
+			alignItems: 'center',
+		},
 	},
 	actionGutter: {
 		marginBottom: theme.spacing(4),
@@ -53,40 +54,42 @@ export default function EmptyState() {
 
 	return (
 		<div className={classes.root}>
-			<div className={clsx(classes.gutterBottom, classes.ie11Fix)}>
-				<Typography align="center">
-					You can manually add caption cues here by clicking the <AddIcon className={classes.alignIcon} /> at the bottom
-					of this pane.
-				</Typography>
-			</div>
-			<div className={clsx(classes.actionGutter, classes.ie11Fix)}>
-				<Typography align="center">
-					You can also load captions from an existing VTT or SRT file on your computer:
-				</Typography>
-			</div>
-			<div className={clsx(classes.gutterBottom, classes.ie11Fix)}>
-				<Button startIcon={<PublishIcon />} variant="contained" color="secondary" onClick={openFileSelector}>
-					Load from file
-				</Button>
-			</div>
-			<div className={clsx(classes.actionGutter, classes.ie11Fix)}>
-				<Typography align="center">
-					You can even let VTT Creator automatically extract captions straight from your video:
-				</Typography>
-			</div>
-			<div className={clsx(classes.gutterBottom, classes.ie11Fix)}>
-				<ExtractFromVideoButton
-					startIcon={<VoiceChatIcon />}
-					variant="contained"
-					color="secondary"
-					onClick={openFileSelector}>
-					Extract from video
-				</ExtractFromVideoButton>
-			</div>
-			<div className={classes.ie11Fix}>
-				<Typography align="center">
-					See more options in the <MoreIcon className={classes.alignIcon} /> menu at the top of this pane.
-				</Typography>
+			<div>
+				<div className={clsx(classes.gutterBottom, classes.ie11Fix)}>
+					<Typography align="center">
+						You can manually add caption cues here by clicking the <AddIcon className={classes.alignIcon} /> at the
+						bottom of this pane.
+					</Typography>
+				</div>
+				<div className={clsx(classes.actionGutter, classes.ie11Fix)}>
+					<Typography align="center">
+						You can also load captions from an existing VTT or SRT file on your computer:
+					</Typography>
+				</div>
+				<div className={clsx(classes.gutterBottom, classes.ie11Fix)}>
+					<Button startIcon={<PublishIcon />} variant="contained" color="secondary" onClick={openFileSelector}>
+						Load from file
+					</Button>
+				</div>
+				<div className={clsx(classes.actionGutter, classes.ie11Fix)}>
+					<Typography align="center">
+						You can even let VTT Creator automatically extract captions straight from your video:
+					</Typography>
+				</div>
+				<div className={clsx(classes.gutterBottom, classes.ie11Fix)}>
+					<ExtractFromVideoButton
+						startIcon={<VoiceChatIcon />}
+						variant="contained"
+						color="secondary"
+						onClick={openFileSelector}>
+						Extract from video
+					</ExtractFromVideoButton>
+				</div>
+				<div className={classes.ie11Fix}>
+					<Typography align="center">
+						See more options in the <MoreIcon className={classes.alignIcon} /> menu at the top of this pane.
+					</Typography>
+				</div>
 			</div>
 		</div>
 	)
