@@ -14,7 +14,6 @@ const useStyles = makeStyles(theme => ({
 	root: {
 		position: 'relative',
 		flex: 1,
-		width: 400,
 	},
 	list: {
 		marginTop: theme.spacing(1),

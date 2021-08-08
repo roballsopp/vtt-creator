@@ -6,7 +6,7 @@ import VttTimeline from '../vtt-timeline'
 import {OverlayProvider, VolumeProvider, SeekingProvider, useVideoDom} from '../common/video'
 import Video from './video.component'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
 	root: {
 		display: 'flex',
 		flexDirection: 'column',
@@ -23,11 +23,15 @@ const useStyles = makeStyles({
 		margin: 'auto',
 	},
 	vttTimeline: {
-		flex: 1,
-		maxHeight: 300,
-		minHeight: 100,
+		[theme.breakpoints.up('sm')]: {
+			maxHeight: 200,
+			flex: 1,
+		},
+		[theme.breakpoints.down('sm')]: {
+			height: 70,
+		},
 	},
-})
+}))
 
 export default function Player() {
 	const classes = useStyles()

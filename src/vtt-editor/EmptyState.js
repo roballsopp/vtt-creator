@@ -11,12 +11,16 @@ import {ExtractFromVideoButton} from '../editor/CueExtractionButton'
 
 const useStyles = makeStyles(theme => ({
 	root: {
-		width: '100%',
-		height: '100%',
+		position: 'absolute',
+		top: 0,
+		bottom: 0,
+		left: 0,
+		right: 0,
 		display: 'flex',
 		flexDirection: 'column',
 		padding: theme.spacing(8),
 		justifyContent: 'center',
+		overflowY: 'scroll',
 	},
 	actionGutter: {
 		marginBottom: theme.spacing(4),

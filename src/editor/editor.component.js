@@ -20,7 +20,7 @@ import {ExtractFromVideoDialogs, ExtractFromVideoProvider} from './CueExtraction
 import {TranslationDialogs, TranslationProvider} from './TranslateButton'
 import VttMenu from './vtt-menu.component'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
 	root: {
 		display: 'flex',
 		flexDirection: 'column',
@@ -33,19 +33,34 @@ const useStyles = makeStyles({
 		flex: 1,
 		minHeight: 0,
 		minWidth: 0,
+		[theme.breakpoints.down('sm')]: {
+			flexDirection: 'column-reverse',
+		},
 	},
 	drawer: {
 		display: 'flex',
 		flexDirection: 'column',
-		height: '100%',
 		zIndex: 1,
+		[theme.breakpoints.up('sm')]: {
+			width: 400,
+			height: '100%',
+		},
+		[theme.breakpoints.down('sm')]: {
+			flex: 1,
+			width: '100%',
+		},
 	},
 	player: {
-		flex: 1,
 		minHeight: 0,
 		minWidth: 0,
+		[theme.breakpoints.up('sm')]: {
+			flex: 1,
+		},
+		[theme.breakpoints.down('sm')]: {
+			height: 300,
+		},
 	},
-})
+}))
 
 export default function Editor() {
 	const classes = useStyles()
