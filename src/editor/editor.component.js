@@ -105,7 +105,9 @@ export default function Editor() {
 																<VTTEditor />
 															</div>
 														</main>
-														<Footer />
+														<Hidden smDown>
+															<Footer />
+														</Hidden>
 													</div>
 													<ExtractFromVideoDialogs />
 													<TranslationDialogs />

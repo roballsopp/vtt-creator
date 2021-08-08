@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {Box, Link, Paper, Typography, useMediaQuery} from '@material-ui/core'
+import {Link, Paper, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {AccountButton} from './account'
 
@@ -41,24 +41,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function Footer() {
 	const classes = useStyles()
-	const useMobileLayout = useMediaQuery(theme => theme.breakpoints.down('sm'))
-
-	if (useMobileLayout) {
-		return (
-			<Box p={2}>
-				<Typography color="primary" variant="subtitle2" align="center">
-					<Link color="inherit" href="/privacy" target="_blank">
-						Privacy
-					</Link>
-					&nbsp;|&nbsp;
-					<Link color="primary" href="mailto:vttcreator@gmail.com" target="_blank">
-						Contact
-					</Link>
-				</Typography>
-			</Box>
-		)
-	}
-
 	return (
 		<Paper square className={classes.root} elevation={8} component="footer">
 			<div className={classes.leftSection} />

@@ -3,6 +3,8 @@ import {gql, useQuery} from '@apollo/client'
 import {useHistory} from 'react-router-dom'
 import {MenuItem} from '@material-ui/core'
 import AccountIcon from '@material-ui/icons/AccountCircle'
+import SignUpIcon from '@material-ui/icons/PersonAdd'
+import PrivacyIcon from '@material-ui/icons/Policy'
 import {makeStyles} from '@material-ui/styles'
 import {useAuthDialog} from '../AuthDialog'
 
@@ -37,10 +39,16 @@ export default function VTTMenuLogin() {
 
 	if (data || loading) {
 		return (
-			<MenuItem disabled={loading} onClick={() => history.push('/account')}>
-				<AccountIcon className={classes.menuIcon} />
-				Account
-			</MenuItem>
+			<React.Fragment>
+				<MenuItem disabled={loading} onClick={() => history.push('/account')}>
+					<AccountIcon className={classes.menuIcon} />
+					Account
+				</MenuItem>
+				<MenuItem onClick={() => history.push('/privacy')}>
+					<PrivacyIcon className={classes.menuIcon} />
+					Privacy
+				</MenuItem>
+			</React.Fragment>
 		)
 	}
 
@@ -51,8 +59,12 @@ export default function VTTMenuLogin() {
 				Login
 			</MenuItem>
 			<MenuItem onClick={handleSignUp}>
-				<AccountIcon className={classes.menuIcon} />
+				<SignUpIcon className={classes.menuIcon} />
 				Sign Up
+			</MenuItem>
+			<MenuItem onClick={() => history.push('/privacy')}>
+				<PrivacyIcon className={classes.menuIcon} />
+				Privacy
 			</MenuItem>
 		</React.Fragment>
 	)
