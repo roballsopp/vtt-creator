@@ -15,6 +15,7 @@ import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
 import CloudUploadIcon from '@material-ui/icons/CloudUpload'
 import DeleteIcon from '@material-ui/icons/Delete'
 import MoreIcon from '@material-ui/icons/MoreVert'
+import MovieIcon from '@material-ui/icons/Movie'
 import {makeStyles} from '@material-ui/styles'
 import {ExtractFromVideoMenuItem} from './CueExtractionButton'
 import {TranslateMenuItem} from './TranslateButton'
@@ -22,6 +23,7 @@ import VTTMenuLogin from './VTTMenuLogin'
 import {useFileSelector, useCues, Button, useCueFromFileLoader} from '../common'
 import {getVTTFromCues} from '../services/vtt.service'
 import {getSRTFromCues} from '../services/srt.service'
+import SelectVideoButton from '../common/SelectVideoButton'
 
 const useStyles = makeStyles({
 	menuIcon: {
@@ -87,6 +89,17 @@ export default function VTTMenu() {
 					<CloudUploadIcon className={classes.menuIcon} />
 					Load from VTT or SRT file...
 				</MenuItem>
+				<Hidden mdUp>
+					<SelectVideoButton
+						element={
+							<MenuItem>
+								<MovieIcon className={classes.menuIcon} />
+								Select Video File...
+							</MenuItem>
+						}
+						onSelected={onCloseOptionsMenu}
+					/>
+				</Hidden>
 				<ExtractFromVideoMenuItem classes={{menuIcon: classes.menuIcon}} onOpening={onCloseOptionsMenu} />
 				<TranslateMenuItem classes={{menuIcon: classes.menuIcon}} onOpening={onCloseOptionsMenu} />
 				<MenuItem onClick={onDownloadVTT}>
@@ -101,7 +114,7 @@ export default function VTTMenu() {
 					<DeleteIcon className={classes.menuIcon} />
 					Clear Cues
 				</MenuItem>
-				<Hidden smUp>
+				<Hidden mdUp>
 					<VTTMenuLogin />
 				</Hidden>
 			</Menu>
