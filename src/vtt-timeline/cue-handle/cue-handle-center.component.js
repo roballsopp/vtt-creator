@@ -12,6 +12,7 @@ const useStyles = makeStyles({
 		'&:hover': {
 			opacity: 0.05,
 		},
+		touchAction: 'none',
 	},
 })
 
