@@ -1,7 +1,5 @@
 import * as React from 'react'
-import Link from '@material-ui/core/Link'
-import Paper from '@material-ui/core/Paper'
-import Typography from '@material-ui/core/Typography'
+import {Link, Paper, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {AccountButton} from './account'
 
@@ -43,7 +41,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function Footer() {
 	const classes = useStyles()
-
 	return (
 		<Paper square className={classes.root} elevation={8} component="footer">
 			<div className={classes.leftSection} />

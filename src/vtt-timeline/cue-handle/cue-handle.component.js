@@ -49,7 +49,7 @@ const useStyles = makeStyles(theme => ({
 		justifyContent: 'center',
 		alignItems: 'center',
 		height: '100%',
-		padding: 30,
+		padding: '8px 30px',
 		userSelect: 'none',
 	},
 	removeButton: {

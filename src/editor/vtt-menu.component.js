@@ -1,20 +1,24 @@
 import * as React from 'react'
 import download from 'downloadjs'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import IconButton from '@material-ui/core/IconButton'
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
+import {
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogTitle,
+	Hidden,
+	IconButton,
+	Menu,
+	MenuItem,
+	Tooltip,
+} from '@material-ui/core'
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
 import CloudUploadIcon from '@material-ui/icons/CloudUpload'
 import DeleteIcon from '@material-ui/icons/Delete'
 import MoreIcon from '@material-ui/icons/MoreVert'
-import Tooltip from '@material-ui/core/Tooltip'
 import {makeStyles} from '@material-ui/styles'
 import {ExtractFromVideoMenuItem} from './CueExtractionButton'
 import {TranslateMenuItem} from './TranslateButton'
+import VTTMenuLogin from './VTTMenuLogin'
 import {useFileSelector, useCues, Button, useCueFromFileLoader} from '../common'
 import {getVTTFromCues} from '../services/vtt.service'
 import {getSRTFromCues} from '../services/srt.service'
@@ -97,6 +101,9 @@ export default function VTTMenu() {
 					<DeleteIcon className={classes.menuIcon} />
 					Clear Cues
 				</MenuItem>
+				<Hidden smUp>
+					<VTTMenuLogin />
+				</Hidden>
 			</Menu>
 			<Dialog
 				maxWidth="sm"

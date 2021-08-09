@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Tooltip from '@material-ui/core/Tooltip'
+import {Hidden, Tooltip} from '@material-ui/core'
 import {createTheme, ThemeProvider as MuiThemeProvider} from '@material-ui/core/styles'
 import FullscreenIcon from '@material-ui/icons/Fullscreen'
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit'
@@ -50,10 +50,17 @@ const useStyles = makeStyles(theme => ({
 	root: {
 		display: 'flex',
 		alignItems: 'center',
-		padding: theme.spacing(0, 8),
-		height: 38,
 		color: 'white',
-		fontSize: 20,
+		[theme.breakpoints.up('sm')]: {
+			height: 38,
+			fontSize: 20,
+			padding: theme.spacing(0, 8),
+		},
+		[theme.breakpoints.down('sm')]: {
+			height: 28,
+			fontSize: 12,
+			padding: theme.spacing(0, 2),
+		},
 	},
 	controlLeft: {
 		marginRight: theme.spacing(1),
@@ -62,12 +69,22 @@ const useStyles = makeStyles(theme => ({
 		marginLeft: theme.spacing(1),
 	},
 	playTime: {
-		marginLeft: theme.spacing(3),
 		marginRight: theme.spacing(1),
+		[theme.breakpoints.up('sm')]: {
+			marginLeft: theme.spacing(3),
+		},
+		[theme.breakpoints.down('sm')]: {
+			marginLeft: theme.spacing(2),
+		},
 	},
 	playDuration: {
 		marginLeft: theme.spacing(1),
-		marginRight: theme.spacing(3),
+		[theme.breakpoints.up('sm')]: {
+			marginRight: theme.spacing(3),
+		},
+		[theme.breakpoints.down('sm')]: {
+			marginRight: theme.spacing(2),
+		},
 	},
 }))
 
@@ -96,7 +113,9 @@ export default function VideoControls({className}) {
 						onToggle={togglePlay}
 						className={classes.controlLeft}
 					/>
-					<VolumeInput disabled={disabled} className={classes.controlLeft} />
+					<Hidden smDown>
+						<VolumeInput disabled={disabled} className={classes.controlLeft} />
+					</Hidden>
 					<PlayTime className={classes.playTime} />
 					<PlayProgress disabled={disabled} />
 					<PlayDuration className={classes.playDuration} />

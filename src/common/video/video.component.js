@@ -36,7 +36,7 @@ export default function Video({src, topElement, children, className}) {
 
 	return (
 		<div className={clsx(classes.root, className)}>
-			<video src={src} ref={onVideoRef} className={classes.video}>
+			<video src={src} ref={onVideoRef} className={classes.video} playsInline autoPlay={false} controls={false}>
 				{children}
 			</video>
 			<VideoOverlay className={classes.overlay} topElement={topElement} />
