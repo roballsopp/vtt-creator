@@ -11,7 +11,6 @@ export default function useDragging(elementRef, {onDragging, onDragStart, onDrag
 
 			const onTouchMove = e => {
 				onDragging?.(e.touches[0])
-				e.stopPropagation()
 			}
 
 			window.addEventListener('mousemove', onMouseMove)
@@ -32,7 +31,6 @@ export default function useDragging(elementRef, {onDragging, onDragStart, onDrag
 		const onTouchStart = e => {
 			setDragging(true)
 			onDragStart?.(e.touches[0])
-			e.stopPropagation()
 		}
 
 		if (elementRef) {
@@ -58,7 +56,6 @@ export default function useDragging(elementRef, {onDragging, onDragStart, onDrag
 			const onTouchEnd = e => {
 				setDragging(false)
 				// we dont fire onDragEnd here because we don't have a touch object with a clientX to pass up
-				e.stopPropagation()
 			}
 
 			window.addEventListener('mouseup', onMouseUp)

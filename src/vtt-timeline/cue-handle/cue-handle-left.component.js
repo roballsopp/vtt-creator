@@ -11,6 +11,7 @@ const useStyles = makeStyles({
 		'&:hover div': {
 			backgroundColor: 'orange',
 		},
+		touchAction: 'none',
 	},
 	borderLine: {
 		height: '100%',
