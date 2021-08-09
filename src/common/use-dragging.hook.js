@@ -2,6 +2,7 @@ import React from 'react'
 
 export default function useDragging(elementRef, {onDragging, onDragStart, onDragEnd}) {
 	const [dragging, setDragging] = React.useState(false)
+	const touchMoveRef = React.useRef()
 
 	React.useEffect(() => {
 		if (dragging) {
@@ -10,6 +11,7 @@ export default function useDragging(elementRef, {onDragging, onDragStart, onDrag
 			}
 
 			const onTouchMove = e => {
+				touchMoveRef.current = e.touches[0]
 				onDragging?.(e.touches[0])
 			}
 
@@ -53,9 +55,10 @@ export default function useDragging(elementRef, {onDragging, onDragStart, onDrag
 				onDragEnd?.(e)
 			}
 
-			const onTouchEnd = e => {
+			const onTouchEnd = () => {
 				setDragging(false)
-				// we dont fire onDragEnd here because we don't have a touch object with a clientX to pass up
+				// we don't get a touch object with clientX in it on touchend, so we use the last touchmove object instead
+				onDragEnd?.(touchMoveRef.current)
 			}
 
 			window.addEventListener('mouseup', onMouseUp)
