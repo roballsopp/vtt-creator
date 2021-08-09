@@ -5,6 +5,7 @@ import {makeStyles} from '@material-ui/styles'
 import {useVideoDom} from './video-dom.context'
 import VideoOverlay from './video-overlay.component'
 import SeekingOverlay from './SeekingOverlay'
+import {useVideoFile} from '../video-file-context'
 
 const useStyles = makeStyles({
 	root: {
@@ -24,19 +25,19 @@ const useStyles = makeStyles({
 })
 
 Video.propTypes = {
-	src: PropTypes.string,
 	topElement: PropTypes.node,
 	children: PropTypes.node,
 	className: PropTypes.string,
 }
 
-export default function Video({src, topElement, children, className}) {
+export default function Video({topElement, children, className}) {
 	const classes = useStyles()
 	const {onVideoRef} = useVideoDom()
+	const {videoSrc} = useVideoFile()
 
 	return (
 		<div className={clsx(classes.root, className)}>
-			<video src={src} ref={onVideoRef} className={classes.video} playsInline autoPlay={false} controls={false}>
+			<video src={videoSrc} ref={onVideoRef} className={classes.video} playsInline autoPlay={false} controls={false}>
 				{children}
 			</video>
 			<VideoOverlay className={classes.overlay} topElement={topElement} />
