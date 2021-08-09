@@ -51,10 +51,15 @@ const useStyles = makeStyles(theme => ({
 		display: 'flex',
 		alignItems: 'center',
 		color: 'white',
-		[theme.breakpoints.up('sm')]: {
+		[theme.breakpoints.up('md')]: {
 			height: 38,
 			fontSize: 20,
 			padding: theme.spacing(0, 8),
+		},
+		[theme.breakpoints.down('md')]: {
+			height: 32,
+			fontSize: 16,
+			padding: theme.spacing(0, 2),
 		},
 		[theme.breakpoints.down('sm')]: {
 			height: 28,
@@ -113,7 +118,7 @@ export default function VideoControls({className}) {
 						onToggle={togglePlay}
 						className={classes.controlLeft}
 					/>
-					<Hidden smDown>
+					<Hidden mdDown>
 						<VolumeInput disabled={disabled} className={classes.controlLeft} />
 					</Hidden>
 					<PlayTime className={classes.playTime} />
