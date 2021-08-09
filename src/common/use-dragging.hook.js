@@ -6,11 +6,19 @@ export default function useDragging(elementRef, {onDragging, onDragStart, onDrag
 	React.useEffect(() => {
 		if (dragging) {
 			const onMouseMove = e => {
-				onDragging && onDragging(e)
+				onDragging?.(e)
 			}
+
+			const onTouchMove = e => {
+				onDragging?.(e.touches[0])
+				e.stopPropagation()
+			}
+
 			window.addEventListener('mousemove', onMouseMove)
+			window.addEventListener('touchmove', onTouchMove)
 			return () => {
 				window.removeEventListener('mousemove', onMouseMove)
+				window.removeEventListener('touchmove', onTouchMove)
 			}
 		}
 	}, [dragging, onDragging])
@@ -18,16 +26,24 @@ export default function useDragging(elementRef, {onDragging, onDragStart, onDrag
 	React.useEffect(() => {
 		const onMouseDown = e => {
 			setDragging(true)
-			onDragStart && onDragStart(e)
+			onDragStart?.(e)
+		}
+
+		const onTouchStart = e => {
+			setDragging(true)
+			onDragStart?.(e.touches[0])
+			e.stopPropagation()
 		}
 
 		if (elementRef) {
 			elementRef.addEventListener('mousedown', onMouseDown)
+			elementRef.addEventListener('touchstart', onTouchStart)
 		}
 
 		return () => {
 			if (elementRef) {
 				elementRef.removeEventListener('mousedown', onMouseDown)
+				elementRef.removeEventListener('touchstart', onTouchStart)
 			}
 		}
 	}, [elementRef, onDragStart])
@@ -36,11 +52,20 @@ export default function useDragging(elementRef, {onDragging, onDragStart, onDrag
 		if (dragging) {
 			const onMouseUp = e => {
 				setDragging(false)
-				onDragEnd && onDragEnd(e)
+				onDragEnd?.(e)
 			}
+
+			const onTouchEnd = e => {
+				setDragging(false)
+				// we dont fire onDragEnd here because we don't have a touch object with a clientX to pass up
+				e.stopPropagation()
+			}
+
 			window.addEventListener('mouseup', onMouseUp)
+			window.addEventListener('touchend', onTouchEnd)
 			return () => {
 				window.removeEventListener('mouseup', onMouseUp)
+				window.removeEventListener('touchend', onTouchEnd)
 			}
 		}
 	}, [dragging, onDragEnd])
