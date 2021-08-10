@@ -85,7 +85,7 @@ export default function AudioTrack() {
 				draw()
 			})
 			.catch(err => {
-				toast.error('Failed to draw waveform. Audio format not supported.')
+				toast.error('Failed to draw waveform. Your browser cannot extract audio from this video.')
 				handleError(err)
 			})
 	}, [draw, videoFile, toast])
