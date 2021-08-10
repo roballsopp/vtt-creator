@@ -1,22 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {gql, useQuery} from '@apollo/client'
-import {TranslationProvider_userFragment} from './translation-context.graphql'
 import {TranslationCost} from '../../config'
 import {useCues} from '../../common'
 import {useAuthDialog} from '../../AuthDialog'
+import CreditDialog from '../CueExtractionButton/CreditDialog'
+import {TranslationProvider_userFragment} from './translation-context.graphql'
+import TranslationDialog from './TranslationDialog'
 
 const TranslationContext = React.createContext({
 	loading: true,
-	user: null,
-	translationCost: null,
-	creditDialogOpen: false,
-	translationDialogOpen: false,
 	handleTranslationDialogOpen: () => {},
-	handleTranslationDialogClose: () => {},
-	handleCreditDialogPaid: () => {},
-	handleCreditDialogClose: () => {},
-	handleCreditDialogExited: () => {},
 })
 
 TranslationProvider.propTypes = {
@@ -103,17 +97,24 @@ export function TranslationProvider({children}) {
 		<TranslationContext.Provider
 			value={{
 				loading,
-				translationCost: data?.translationCost,
-				user: data?.self,
-				creditDialogOpen,
-				translationDialogOpen,
 				handleTranslationDialogOpen,
-				handleTranslationDialogClose,
-				handleCreditDialogPaid,
-				handleCreditDialogClose,
-				handleCreditDialogExited,
 			}}>
 			{children}
+			<TranslationDialog
+				translationCost={data?.translationCost || 0}
+				open={translationDialogOpen}
+				onRequestClose={handleTranslationDialogClose}
+			/>
+			{data?.self && (
+				<CreditDialog
+					user={data?.self}
+					transcriptionCost={data?.translationCost || 0}
+					open={creditDialogOpen}
+					onPaid={handleCreditDialogPaid}
+					onExited={handleCreditDialogExited}
+					onClose={handleCreditDialogClose}
+				/>
+			)}
 		</TranslationContext.Provider>
 	)
 }

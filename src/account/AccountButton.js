@@ -15,7 +15,7 @@ export default function AccountButton() {
 	const {openLoginDialog, openSignupDialog} = useAuthDialog()
 
 	const {loading, data} = useQuery(gql`
-		query getUser {
+		query AccountButtonGetUser {
 			self {
 				id
 			}

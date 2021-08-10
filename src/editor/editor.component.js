@@ -13,8 +13,8 @@ import {
 import Footer from '../footer.component'
 import Player from '../player'
 import VTTEditor from '../vtt-editor'
-import {ExtractFromVideoDialogs, ExtractFromVideoProvider} from './CueExtractionButton'
-import {TranslationDialogs, TranslationProvider} from './TranslateButton'
+import {ExtractFromVideoProvider} from './CueExtractionButton'
+import {TranslationProvider} from './TranslateButton'
 import VttMenu from './vtt-menu.component'
 
 const useStyles = makeStyles(theme => ({
@@ -63,53 +63,49 @@ export default function Editor() {
 	const classes = useStyles()
 
 	return (
-		<React.Fragment>
-			<VideoFileProvider>
-				<VideoDomProvider>
-					<PlayTimeProvider>
-						<DurationProvider>
-							<VideoControlProvider>
-								<KeyboardControlProvider>
-									<CuesProvider>
-										<CuesFromFileProvider>
-											<ExtractFromVideoProvider>
-												<TranslationProvider>
-													<div className={classes.root}>
-														<main className={classes.main}>
-															<div className={classes.player}>
-																<Player />
-															</div>
-															<div className={classes.drawer}>
-																<Hidden smDown>
-																	<AppBar position="static" color="primary">
-																		<Toolbar>
-																			<VCIcon fontSize="large" edge="start" style={{marginRight: 8}} />
-																			<Typography variant="h6" color="inherit" style={{flexGrow: 1}}>
-																				VTT Creator
-																			</Typography>
-																			<VttMenu />
-																		</Toolbar>
-																	</AppBar>
-																</Hidden>
-																<VTTEditor />
-															</div>
-														</main>
-														<Hidden smDown>
-															<Footer />
-														</Hidden>
-													</div>
-													<ExtractFromVideoDialogs />
-													<TranslationDialogs />
-												</TranslationProvider>
-											</ExtractFromVideoProvider>
-										</CuesFromFileProvider>
-									</CuesProvider>
-								</KeyboardControlProvider>
-							</VideoControlProvider>
-						</DurationProvider>
-					</PlayTimeProvider>
-				</VideoDomProvider>
-			</VideoFileProvider>
-		</React.Fragment>
+		<VideoFileProvider>
+			<VideoDomProvider>
+				<PlayTimeProvider>
+					<DurationProvider>
+						<VideoControlProvider>
+							<KeyboardControlProvider>
+								<CuesProvider>
+									<CuesFromFileProvider>
+										<ExtractFromVideoProvider>
+											<TranslationProvider>
+												<div className={classes.root}>
+													<main className={classes.main}>
+														<div className={classes.player}>
+															<Player />
+														</div>
+														<div className={classes.drawer}>
+															<Hidden smDown>
+																<AppBar position="static" color="primary">
+																	<Toolbar>
+																		<VCIcon fontSize="large" edge="start" style={{marginRight: 8}} />
+																		<Typography variant="h6" color="inherit" style={{flexGrow: 1}}>
+																			VTT Creator
+																		</Typography>
+																		<VttMenu />
+																	</Toolbar>
+																</AppBar>
+															</Hidden>
+															<VTTEditor />
+														</div>
+													</main>
+													<Hidden smDown>
+														<Footer />
+													</Hidden>
+												</div>
+											</TranslationProvider>
+										</ExtractFromVideoProvider>
+									</CuesFromFileProvider>
+								</CuesProvider>
+							</KeyboardControlProvider>
+						</VideoControlProvider>
+					</DurationProvider>
+				</PlayTimeProvider>
+			</VideoDomProvider>
+		</VideoFileProvider>
 	)
 }

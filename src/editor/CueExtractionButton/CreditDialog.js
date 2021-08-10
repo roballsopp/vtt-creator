@@ -62,12 +62,12 @@ export default function CreditDialog({user, transcriptionCost, open, onClose, on
 					Remaining credit: ${user.credit.toFixed(2)}
 				</Typography>
 				<Typography paragraph color="error">
-					Transcription cost ${transcriptionCost.toFixed(2)}
+					Action cost ${transcriptionCost.toFixed(2)}
 				</Typography>
 				<Typography paragraph>
 					Specify a USD amount to add to your account below and pay with paypal. Any amount you add beyond the cost of
-					this video will be saved and can be applied to later videos. Check your remaining credit at any time by
-					clicking the Account button in the lower right corner of the screen.
+					this action will be saved and can be applied to other paid features on VTT Creator. Check your remaining
+					credit at any time by clicking the Account button in the lower right corner of the screen.
 				</Typography>
 				<div>
 					<AddCreditInput user={user} defaultValue={defaultValue} onApproved={onPaid} />

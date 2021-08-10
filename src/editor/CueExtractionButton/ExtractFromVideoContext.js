@@ -7,21 +7,13 @@ import {useCues} from '../../common'
 import {useDuration} from '../../common/video'
 import {getCuesFromWords} from '../../services/vtt.service'
 import {useAuthDialog} from '../../AuthDialog'
+import CueExtractionDialog from './cue-extraction-dialog.component'
+import CreditDialog from './CreditDialog'
+import NotSupportedDialog from './NotSupportedDialog'
 
 const ExtractFromVideoContext = React.createContext({
 	loading: true,
-	user: null,
-	transcriptionCost: null,
-	creditDialogOpen: false,
-	cueExtractionDialogOpen: false,
-	notSupportedDialogOpen: false,
 	handleCueExtractionDialogOpen: () => {},
-	handleCueExtractionDialogClose: () => {},
-	handleCreditDialogPaid: () => {},
-	handleCreditDialogClose: () => {},
-	handleCreditDialogExited: () => {},
-	handleCueExtractComplete: () => {},
-	handleNotSupportedDialogClose: () => {},
 })
 
 ExtractFromVideoProvider.propTypes = {
@@ -117,20 +109,26 @@ export function ExtractFromVideoProvider({children}) {
 		<ExtractFromVideoContext.Provider
 			value={{
 				loading,
-				transcriptionCost: data?.transcriptionCost,
-				user: data?.self,
-				creditDialogOpen,
-				cueExtractionDialogOpen,
-				notSupportedDialogOpen,
 				handleCueExtractionDialogOpen,
-				handleCueExtractionDialogClose,
-				handleCreditDialogPaid,
-				handleCreditDialogClose,
-				handleCreditDialogExited,
-				handleCueExtractComplete,
-				handleNotSupportedDialogClose,
 			}}>
 			{children}
+			<CueExtractionDialog
+				transcriptionCost={data?.transcriptionCost || 0}
+				open={cueExtractionDialogOpen}
+				onRequestClose={handleCueExtractionDialogClose}
+				onExtractComplete={handleCueExtractComplete}
+			/>
+			{data?.self && (
+				<CreditDialog
+					user={data?.self}
+					transcriptionCost={data?.transcriptionCost || 0}
+					open={creditDialogOpen}
+					onPaid={handleCreditDialogPaid}
+					onExited={handleCreditDialogExited}
+					onClose={handleCreditDialogClose}
+				/>
+			)}
+			<NotSupportedDialog open={notSupportedDialogOpen} onClose={handleNotSupportedDialogClose} />
 		</ExtractFromVideoContext.Provider>
 	)
 }
