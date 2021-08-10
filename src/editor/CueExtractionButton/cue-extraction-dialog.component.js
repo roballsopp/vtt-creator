@@ -128,7 +128,7 @@ export default function CueExtractionDialog({transcriptionCost, open, onRequestC
 		function handleJobError(e) {
 			handleError(e)
 			if (e instanceof ExtractionError) {
-				return toast.error('Unable to read audio from video file.')
+				return toast.error('Your browser cannot extract audio from this video. Try a different video file or browser.')
 			}
 			if (e instanceof UploadUrlError) {
 				return toast.error('Unable to start upload. Please try again.')
