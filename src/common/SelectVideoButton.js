@@ -24,7 +24,10 @@ export default function SelectVideoButton({element, onSelected}) {
 		toast.error('The file you have selected is too large.')
 	}, [toast])
 
-	const openFileSelector = useFileSelector({accept: 'video/*', onFilesSelected, onFileSizeExceeded})
+	// hack to prevent iOS from compressing videos when loading them
+	const multiple = ['iPhone', 'iPad', 'iPod'].includes(navigator.platform)
+
+	const openFileSelector = useFileSelector({multiple, accept: 'video/*', onFilesSelected, onFileSizeExceeded})
 
 	return React.cloneElement(element, {
 		onClick: openFileSelector,
