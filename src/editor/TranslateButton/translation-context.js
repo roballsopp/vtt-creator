@@ -37,12 +37,10 @@ export function TranslationProvider({children}) {
 			query TranslationContextGetCost($numCharacters: Int!) {
 				self {
 					...TranslationProvider_user
-					...CreditDialogUser
 				}
 				translationCost(numCharacters: $numCharacters)
 			}
 			${TranslationProvider_userFragment}
-			${CreditDialog.fragments.user}
 		`,
 		{
 			variables: {numCharacters},
