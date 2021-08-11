@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {gql, useQuery} from '@apollo/client'
-import {ExtractFromVideoContext_userFragment} from './ExtractFromVideoContext.graphql'
 import {TranscriptionCost} from '../../config'
 import {useCues} from '../../common'
 import {useDuration} from '../../common/video'
@@ -24,63 +23,47 @@ export function ExtractFromVideoProvider({children}) {
 	const {setCues, setCuesLoading} = useCues()
 	const {openLoginDialog, authDialogEvents} = useAuthDialog()
 	const {duration} = useDuration()
-	const queryDataRef = React.useRef()
 
 	const [cueExtractionDialogOpen, setCueExtractionDialogOpen] = React.useState(false)
 	const [creditDialogOpen, setCreditDialogOpen] = React.useState(false)
 	const [notSupportedDialogOpen, setNotSupportedDialogOpen] = React.useState(false)
-	const creditDialogPaid = React.useRef(false)
 
-	const {loading, data} = useQuery(
+	const {refetch, loading, data} = useQuery(
 		gql`
 			query ExtractFromVideoContextGetCost($duration: Float!) {
-				self {
-					...ExtractFromVideoContext_user
-				}
+				canIAffordTranscription(duration: $duration)
 				transcriptionCost(duration: $duration)
 			}
-			${ExtractFromVideoContext_userFragment}
 		`,
 		{
 			variables: {duration},
+			fetchPolicy: 'no-cache',
 		}
 	)
-
-	queryDataRef.current = data
 
 	const handleCueExtractionDialogOpen = React.useCallback(() => {
 		if (!window.AudioContext) return setNotSupportedDialogOpen(true)
 
-		// if error getting cost, we aren't logged in
-		if (!queryDataRef.current) {
-			authDialogEvents.once('exited', () => {
-				// if the query succeeded at some point during the time the login
-				//   dialog was open, we probably logged in and we can try again
-				if (queryDataRef.current) handleCueExtractionDialogOpen()
+		refetch()
+			.then(({data}) => {
+				if (!data.canIAffordTranscription) return setCreditDialogOpen(true)
+				setCueExtractionDialogOpen(true)
 			})
-			return openLoginDialog(
-				`Automatic caption extraction costs $${TranscriptionCost.toFixed(
-					2
-				)} per minute of video and requires an account. Please login or sign up below.`
-			)
-		}
-
-		const {self, transcriptionCost} = queryDataRef.current
-
-		if (transcriptionCost > self.credit && !self.unlimitedUsage) {
-			return setCreditDialogOpen(true)
-		}
-
-		setCueExtractionDialogOpen(true)
-	}, [openLoginDialog, authDialogEvents])
+			// if error refetching, we probably aren't logged in
+			.catch(() => {
+				authDialogEvents.once('exited', justLoggedIn => {
+					if (justLoggedIn) handleCueExtractionDialogOpen()
+				})
+				openLoginDialog(
+					`Automatic caption extraction costs $${TranscriptionCost.toFixed(
+						2
+					)} per minute of video and requires an account. Please login or sign up below.`
+				)
+			})
+	}, [authDialogEvents, openLoginDialog, refetch])
 
 	const handleCueExtractionDialogClose = () => {
 		setCueExtractionDialogOpen(false)
-	}
-
-	const handleCreditDialogPaid = () => {
-		creditDialogPaid.current = true
-		setCreditDialogOpen(false)
 	}
 
 	const handleCreditDialogClose = () => {
@@ -91,11 +74,8 @@ export function ExtractFromVideoProvider({children}) {
 		setNotSupportedDialogOpen(false)
 	}
 
-	const handleCreditDialogExited = () => {
-		if (creditDialogPaid.current) {
-			creditDialogPaid.current = false
-			handleCueExtractionDialogOpen()
-		}
+	const handleCreditDialogExited = justPaid => {
+		if (justPaid) handleCueExtractionDialogOpen()
 	}
 
 	const handleCueExtractComplete = transcript => {
@@ -118,16 +98,12 @@ export function ExtractFromVideoProvider({children}) {
 				onRequestClose={handleCueExtractionDialogClose}
 				onExtractComplete={handleCueExtractComplete}
 			/>
-			{data?.self && (
-				<CreditDialog
-					user={data?.self}
-					transcriptionCost={data?.transcriptionCost || 0}
-					open={creditDialogOpen}
-					onPaid={handleCreditDialogPaid}
-					onExited={handleCreditDialogExited}
-					onClose={handleCreditDialogClose}
-				/>
-			)}
+			<CreditDialog
+				cost={data?.transcriptionCost || 0}
+				open={creditDialogOpen}
+				onExited={handleCreditDialogExited}
+				onClose={handleCreditDialogClose}
+			/>
 			<NotSupportedDialog open={notSupportedDialogOpen} onClose={handleNotSupportedDialogClose} />
 		</ExtractFromVideoContext.Provider>
 	)
