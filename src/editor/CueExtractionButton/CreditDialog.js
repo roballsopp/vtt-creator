@@ -11,6 +11,7 @@ import {styled} from '@material-ui/styles'
 import AddCreditInput from '../../account/AddCreditInput'
 import {Button} from '../../common'
 import {CreditDialog_userFragment} from './CreditDialog.graphql'
+import {gql, useQuery} from '@apollo/client'
 
 const Title = styled(DialogTitle)({
 	display: 'flex',
@@ -18,30 +19,47 @@ const Title = styled(DialogTitle)({
 	alignItems: 'center',
 })
 
-CreditDialog.fragments = {
-	user: CreditDialog_userFragment,
-}
-
 CreditDialog.propTypes = {
-	user: PropTypes.shape({
-		credit: PropTypes.number.isRequired,
-	}).isRequired,
-	transcriptionCost: PropTypes.number.isRequired,
+	cost: PropTypes.number.isRequired,
 	open: PropTypes.bool,
-	onPaid: PropTypes.func.isRequired,
 	onClose: PropTypes.func.isRequired,
 	onExited: PropTypes.func.isRequired,
 }
 
-export default function CreditDialog({user, transcriptionCost, open, onClose, onPaid, onExited}) {
-	const defaultValue = Math.max(transcriptionCost - user.credit, 1).toFixed(2)
+export default function CreditDialog({cost, open, onClose, onExited}) {
+	const justPaid = React.useRef(false)
 
 	function handleClose(e, reason) {
 		if (['backdropClick', 'escapeKeyDown'].includes(reason)) {
 			return
 		}
-		onClose(e)
+		onClose()
 	}
+
+	function handlePaid() {
+		justPaid.current = true
+		onClose()
+	}
+
+	function handleExited() {
+		onExited(justPaid.current)
+		justPaid.current = false
+	}
+
+	const {loading, data} = useQuery(
+		gql`
+			query CreditDialogGetUser {
+				self {
+					...CreditDialogUser
+				}
+			}
+			${CreditDialog_userFragment}
+		`
+	)
+
+	if (loading || !data?.self) return null
+
+	const defaultValue = Math.max(cost - data.self.credit, 1).toFixed(2)
 
 	return (
 		<Dialog
@@ -49,7 +67,7 @@ export default function CreditDialog({user, transcriptionCost, open, onClose, on
 			fullWidth
 			open={open}
 			onClose={handleClose}
-			TransitionProps={{onExited}}
+			TransitionProps={{onExited: handleExited}}
 			aria-labelledby="extract-dialog-title">
 			<Title id="extract-dialog-title" disableTypography>
 				<Typography variant="h6">Not Enough Credit</Typography>
@@ -59,10 +77,10 @@ export default function CreditDialog({user, transcriptionCost, open, onClose, on
 			</Title>
 			<DialogContent>
 				<Typography paragraph color="error">
-					Remaining credit: ${user.credit.toFixed(2)}
+					Remaining credit: ${data.self.credit.toFixed(2)}
 				</Typography>
 				<Typography paragraph color="error">
-					Action cost ${transcriptionCost.toFixed(2)}
+					Action cost ${cost.toFixed(2)}
 				</Typography>
 				<Typography paragraph>
 					Specify a USD amount to add to your account below and pay with paypal. Any amount you add beyond the cost of
@@ -70,7 +88,7 @@ export default function CreditDialog({user, transcriptionCost, open, onClose, on
 					credit at any time by clicking the Account button in the lower right corner of the screen.
 				</Typography>
 				<div>
-					<AddCreditInput user={user} defaultValue={defaultValue} onApproved={onPaid} />
+					<AddCreditInput user={data.self} defaultValue={defaultValue} onApproved={handlePaid} />
 				</div>
 			</DialogContent>
 			<DialogActions>

@@ -7,7 +7,7 @@ import qs from 'qs'
 import {AuthenticationDetails, CognitoUser} from 'amazon-cognito-identity-js'
 import Dialog from '@material-ui/core/Dialog'
 import {cognitoUserPool} from '../cognito'
-import {ExtractFromVideoContext_userFragment} from '../editor/CueExtractionButton/ExtractFromVideoContext.graphql'
+import {CreditDialog_userFragment} from '../editor/CueExtractionButton/CreditDialog.graphql'
 import {handleError} from '../services/error-handler.service'
 import LoginDialog from './LoginDialog'
 import ForgotPasswordDialog from './ForgotPasswordDialog'
@@ -27,8 +27,10 @@ export function AuthDialogProvider({children}) {
 	const params = useQueryParams()
 	const [viewId, setViewId] = React.useState(params.authDialog || '')
 	const [email, setEmail] = React.useState(params.email || '')
-	const authEventsRef = React.useRef(new EventEmitter())
 	const [loginMessage, setLoginMessage] = React.useState('')
+
+	const authEventsRef = React.useRef(new EventEmitter())
+	const justLoggedInRef = React.useRef(false)
 
 	const handleOpenLoginDialog = React.useCallback(msg => {
 		setLoginMessage(msg)
@@ -88,14 +90,15 @@ export function AuthDialogProvider({children}) {
 											credit
 											creditMinutes
 											unlimitedUsage
-											...ExtractFromVideoContext_user
+											...CreditDialogUser
 										}
 									}
-									${ExtractFromVideoContext_userFragment}
+									${CreditDialog_userFragment}
 								`,
 							})
 							.then(({data: {self}}) => {
 								Sentry.setUser(self)
+								justLoggedInRef.current = true
 								resolve()
 								handleCloseDialog()
 							})
@@ -226,7 +229,8 @@ export function AuthDialogProvider({children}) {
 	const handleExited = React.useCallback(() => {
 		// if the user just logged in and the dialog is now exiting, the extraction work flow
 		//   relies on this event being fired after the apollo cache has the new user data
-		authEventsRef.current.emit('exited')
+		authEventsRef.current.emit('exited', justLoggedInRef.current)
+		justLoggedInRef.current = false
 	}, [])
 
 	return (
