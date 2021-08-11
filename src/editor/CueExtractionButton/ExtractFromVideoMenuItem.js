@@ -23,26 +23,12 @@ export default function ExtractFromVideoMenuItem({onOpening, classes}) {
 		handleCueExtractionDialogOpen(e)
 	}
 
-	if (!videoFile) {
+	const tooltipText = getTooltipText(loading, videoFile)
+
+	if (tooltipText) {
 		// span needed here because tooltips don't activate on disabled elements: https://material-ui.com/components/tooltips/#disabled-elements
 		return (
-			<Tooltip
-				title="Select a video in the pane to the left to use this feature"
-				placement="right"
-				PopperProps={{anchorEl: buttonEl}}>
-				<span>
-					<MenuItem disabled ref={setButtonEl}>
-						<VoiceChatIcon className={classes.menuIcon} />
-						Extract from video...
-					</MenuItem>
-				</span>
-			</Tooltip>
-		)
-	}
-
-	if (loading) {
-		return (
-			<Tooltip title="Please wait..." placement="right" PopperProps={{anchorEl: buttonEl}}>
+			<Tooltip title={tooltipText} placement="left" PopperProps={{anchorEl: buttonEl}}>
 				<span>
 					<MenuItem disabled ref={setButtonEl}>
 						<VoiceChatIcon className={classes.menuIcon} />
@@ -59,4 +45,9 @@ export default function ExtractFromVideoMenuItem({onOpening, classes}) {
 			Extract from video...
 		</MenuItem>
 	)
+}
+
+function getTooltipText(loading, videoFile) {
+	if (loading) return 'Please wait...'
+	if (!videoFile) return 'Select a video in the pane to the left to use this feature.'
 }

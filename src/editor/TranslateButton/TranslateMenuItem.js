@@ -23,25 +23,11 @@ export default function TranslateMenuItem({onOpening, classes}) {
 		handleTranslationDialogOpen(e)
 	}
 
-	if (loading) {
-		return (
-			<Tooltip title="Please wait..." placement="right" PopperProps={{anchorEl: buttonEl}}>
-				<span>
-					<MenuItem disabled ref={setButtonEl}>
-						<TranslateIcon className={classes.menuIcon} />
-						Translate Captions...
-					</MenuItem>
-				</span>
-			</Tooltip>
-		)
-	}
+	const tooltipText = getTooltipText(loading, cues)
 
-	if (!cues.length) {
+	if (tooltipText) {
 		return (
-			<Tooltip
-				title="Add some captions below, then you can translate them."
-				placement="right"
-				PopperProps={{anchorEl: buttonEl}}>
+			<Tooltip title={tooltipText} placement="left" PopperProps={{anchorEl: buttonEl}}>
 				<span>
 					<MenuItem disabled ref={setButtonEl}>
 						<TranslateIcon className={classes.menuIcon} />
@@ -58,4 +44,11 @@ export default function TranslateMenuItem({onOpening, classes}) {
 			Translate Captions...
 		</MenuItem>
 	)
+}
+
+function getTooltipText(loading, cues) {
+	if (loading) return 'Please wait...'
+	if (!cues.length) return 'Add some captions below, then you can translate them.'
+	const charCount = cues.reduce((cnt, c) => cnt + c.text.length, 0)
+	if (!charCount) return 'Add some text to your captions to translate.'
 }
