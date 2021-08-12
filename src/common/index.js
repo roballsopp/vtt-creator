@@ -8,6 +8,7 @@ import {ToastProvider, useToast} from './toast-context'
 import {VideoFileProvider, useVideoFile} from './video-file-context'
 import useFileSelector from './use-file-selector.hook'
 import useDragging from './use-dragging.hook'
+import usePromiseLazyQuery from './usePromiseLazyQuery'
 
 export {
 	Button,
@@ -24,4 +25,5 @@ export {
 	useVideoFile,
 	useFileSelector,
 	useDragging,
+	usePromiseLazyQuery,
 }

@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {gql, useQuery} from '@apollo/client'
+import {gql} from '@apollo/client'
 import {TranslationCost} from '../../config'
-import {useCues} from '../../common'
+import {useCues, usePromiseLazyQuery} from '../../common'
 import {useAuthDialog} from '../../AuthDialog'
 import CreditDialog from '../CueExtractionButton/CreditDialog'
 import TranslationDialog from './TranslationDialog'
@@ -29,7 +29,7 @@ export function TranslationProvider({children}) {
 	const [translationDialogOpen, setTranslationDialogOpen] = React.useState(false)
 	const [creditDialogOpen, setCreditDialogOpen] = React.useState(false)
 
-	const {refetch, loading, data} = useQuery(
+	const [getCost, {loading, data}] = usePromiseLazyQuery(
 		gql`
 			query TranslationContextGetCost($numCharacters: Int!) {
 				translationCost(numCharacters: $numCharacters)
@@ -43,7 +43,7 @@ export function TranslationProvider({children}) {
 	)
 
 	const handleTranslationDialogOpen = React.useCallback(() => {
-		refetch()
+		getCost()
 			.then(({data}) => {
 				if (!data.canIAffordTranslation) return setCreditDialogOpen(true)
 				setTranslationDialogOpen(true)
@@ -59,7 +59,7 @@ export function TranslationProvider({children}) {
 					)} per 100 characters and requires an account. Please login or sign up below.`
 				)
 			})
-	}, [authDialogEvents, openLoginDialog, refetch])
+	}, [authDialogEvents, openLoginDialog, getCost])
 
 	const handleTranslationDialogClose = () => {
 		setTranslationDialogOpen(false)

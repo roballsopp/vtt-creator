@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {gql, useQuery} from '@apollo/client'
+import {gql} from '@apollo/client'
 import {TranscriptionCost} from '../../config'
-import {useCues} from '../../common'
+import {useCues, usePromiseLazyQuery} from '../../common'
 import {useDuration} from '../../common/video'
 import {getCuesFromWords} from '../../services/vtt.service'
 import {useAuthDialog} from '../../AuthDialog'
@@ -28,7 +28,7 @@ export function ExtractFromVideoProvider({children}) {
 	const [creditDialogOpen, setCreditDialogOpen] = React.useState(false)
 	const [notSupportedDialogOpen, setNotSupportedDialogOpen] = React.useState(false)
 
-	const {refetch, loading, data} = useQuery(
+	const [getCost, {loading, data}] = usePromiseLazyQuery(
 		gql`
 			query ExtractFromVideoContextGetCost($duration: Float!) {
 				canIAffordTranscription(duration: $duration)
@@ -44,7 +44,7 @@ export function ExtractFromVideoProvider({children}) {
 	const handleCueExtractionDialogOpen = React.useCallback(() => {
 		if (!window.AudioContext) return setNotSupportedDialogOpen(true)
 
-		refetch()
+		getCost()
 			.then(({data}) => {
 				if (!data.canIAffordTranscription) return setCreditDialogOpen(true)
 				setCueExtractionDialogOpen(true)
@@ -60,7 +60,7 @@ export function ExtractFromVideoProvider({children}) {
 					)} per minute of video and requires an account. Please login or sign up below.`
 				)
 			})
-	}, [authDialogEvents, openLoginDialog, refetch])
+	}, [authDialogEvents, openLoginDialog, getCost])
 
 	const handleCueExtractionDialogClose = () => {
 		setCueExtractionDialogOpen(false)
