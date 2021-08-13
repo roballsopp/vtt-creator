@@ -1,5 +1,6 @@
 import * as React from 'react'
 import * as PropTypes from 'prop-types'
+import clsx from 'clsx'
 import {InputBase as MuiInputBase, TextField} from '@material-ui/core'
 import {makeStyles, withStyles} from '@material-ui/styles'
 
@@ -22,6 +23,18 @@ const useStyles = makeStyles({
 	},
 	mills: {
 		flex: 1,
+	},
+	hideArrows: {
+		margin: 0,
+		'& input[type=number]::-webkit-inner-spin-button': {
+			'-webkit-appearance': 'none',
+		},
+		'& input[type=number]::-webkit-outer-spin-button': {
+			'-webkit-appearance': 'none',
+		},
+		'& input[type=number]': {
+			'-moz-appearance': 'textfield',
+		},
 	},
 })
 
@@ -131,7 +144,7 @@ function InputWrapper({value, onChange, onBlur, onFocus}) {
 				value={values.hours}
 				onChange={handleChangeHours}
 				onLengthExceeded={handleHoursLengthExceeded}
-				className={classes.twoChars}
+				className={clsx(classes.hideArrows, classes.twoChars)}
 			/>
 			<span className={classes.separator}>:</span>
 			<MemInput
@@ -140,7 +153,7 @@ function InputWrapper({value, onChange, onBlur, onFocus}) {
 				value={values.mins}
 				onChange={handleChangeMins}
 				onLengthExceeded={handleMinsLengthExceeded}
-				className={classes.twoChars}
+				className={clsx(classes.hideArrows, classes.twoChars)}
 			/>
 			<span className={classes.separator}>:</span>
 			<MemInput
@@ -149,7 +162,7 @@ function InputWrapper({value, onChange, onBlur, onFocus}) {
 				value={values.secs}
 				onChange={handleChangeSecs}
 				onLengthExceeded={handleSecsLengthExceeded}
-				className={classes.twoChars}
+				className={clsx(classes.hideArrows, classes.twoChars)}
 			/>
 			<span className={classes.separator}>.</span>
 			<MemInput
@@ -158,7 +171,7 @@ function InputWrapper({value, onChange, onBlur, onFocus}) {
 				maxLength={3}
 				value={values.mills}
 				onChange={handleChangeMills}
-				className={classes.mills}
+				className={clsx(classes.hideArrows, classes.mills)}
 			/>
 		</div>
 	)
@@ -216,9 +229,8 @@ const MemInput = React.forwardRef(function MemInput(
 	return (
 		<InputBase
 			{...props}
-			pattern="[0-9]*"
-			inputMode="numeric"
-			inputProps={{...inputProps, ref}}
+			type="number"
+			inputProps={{...inputProps, pattern: '[0-9]*', inputMode: 'numeric', ref}}
 			value={_value}
 			placeholder={value}
 			onChange={handleChange}
