@@ -5,7 +5,7 @@ import AddIcon from '@material-ui/icons/Add'
 import {makeStyles} from '@material-ui/styles'
 import {Loader, useCues} from '../common'
 import CueEditor from './cue-editor.component'
-import {AutoScrollProvider} from './auto-scroll.context'
+import {AutoScrollProvider, useAutoScroll} from './auto-scroll.context'
 import AutoScrollItem from './auto-scroll-item.component'
 import EmptyState from './EmptyState'
 
@@ -39,7 +39,7 @@ export default function VTTEditor() {
 			{!loading && !cues.length ? <EmptyState /> : null}
 			{!loading && cues.length ? (
 				<AutoScrollProvider>
-					<FlipMove className={classes.list}>
+					<ListAnimation className={classes.list}>
 						{cues.map(cue => (
 							<div key={cue.id}>
 								<AutoScrollItem cueTime={cue.startTime} className={classes.cueEditor}>
@@ -55,7 +55,7 @@ export default function VTTEditor() {
 								<Divider />
 							</div>
 						))}
-					</FlipMove>
+					</ListAnimation>
 				</AutoScrollProvider>
 			) : null}
 			{loading ? <Loader /> : null}
@@ -65,5 +65,25 @@ export default function VTTEditor() {
 				</FabButton>
 			</Tooltip>
 		</div>
+	)
+}
+
+function ListAnimation({children, className}) {
+	const {scrollToChild} = useAutoScroll()
+
+	function moveToItemOnEnter(element, domNode) {
+		if (element.entering) {
+			scrollToChild(domNode)
+		}
+	}
+
+	return (
+		<FlipMove
+			className={className}
+			onStart={moveToItemOnEnter}
+			enterAnimation="accordionVertical"
+			leaveAnimation="accordionVertical">
+			{children}
+		</FlipMove>
 	)
 }

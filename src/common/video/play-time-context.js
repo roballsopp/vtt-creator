@@ -20,7 +20,7 @@ export function PlayTimeProvider({children}) {
 	)
 }
 
-export function usePlayTimeEvent(handlePlayTimeChange) {
+export function usePlayTimeEvent(handlePlayTimeChange, fireOnMount = true) {
 	const {videoRef} = useVideoDom()
 
 	React.useEffect(() => {
@@ -34,7 +34,7 @@ export function usePlayTimeEvent(handlePlayTimeChange) {
 		}
 
 		// if a component using this hook unmounts, we want to fire current time again when it remounts
-		handlePlayTimeChange(videoRef.currentTime)
+		if (fireOnMount) handlePlayTimeChange(videoRef.currentTime)
 		videoRef.addEventListener('loadstart', handleLoadStart)
 		videoRef.addEventListener('timeupdate', _handlePlayTimeChange)
 
@@ -42,7 +42,7 @@ export function usePlayTimeEvent(handlePlayTimeChange) {
 			videoRef.removeEventListener('loadstart', handleLoadStart)
 			videoRef.removeEventListener('timeupdate', _handlePlayTimeChange)
 		}
-	}, [videoRef, handlePlayTimeChange])
+	}, [videoRef, handlePlayTimeChange, fireOnMount])
 }
 
 export function usePlayTime() {
