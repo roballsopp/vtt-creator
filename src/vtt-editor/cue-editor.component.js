@@ -17,7 +17,7 @@ const useStyles = makeStyles({
 		display: 'flex',
 	},
 	timingInput: {
-		marginRight: 4,
+		marginRight: 8,
 		flex: 1,
 	},
 	iconWrapper: {
@@ -43,7 +43,6 @@ function CueEditor({cue, onRemoveCue, onChangeCueEnd, onChangeCueStart, onChange
 	const classes = useStyles()
 	const captionInputKeyCtrl = useKeyboardControl()
 	const startInputKeyCtrl = useKeyboardControl()
-	const durInputKeyCtrl = useKeyboardControl()
 	const endInputKeyCtrl = useKeyboardControl()
 	const [text, setText] = React.useState(cue.text)
 
@@ -69,10 +68,6 @@ function CueEditor({cue, onRemoveCue, onChangeCueEnd, onChangeCueStart, onChange
 		onChangeCueEnd(cue.id, Number(secs))
 	}
 
-	const onChangeTimeSpan = secs => {
-		onChangeCueEnd(cue.id, cue.startTime + Number(secs))
-	}
-
 	const handleRemoveCue = () => {
 		onRemoveCue(cue.id)
 	}
@@ -88,15 +83,6 @@ function CueEditor({cue, onRemoveCue, onChangeCueEnd, onChangeCueStart, onChange
 					label="Start Time"
 					value={cue.startTime}
 					onChange={onChangeStartTime}
-				/>
-				<TimingInput
-					{...durInputKeyCtrl}
-					className={classes.timingInput}
-					margin="dense"
-					variant="outlined"
-					label="Show For"
-					value={cue.endTime - cue.startTime}
-					onChange={onChangeTimeSpan}
 				/>
 				<TimingInput
 					{...endInputKeyCtrl}
