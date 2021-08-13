@@ -1,6 +1,10 @@
 window.doorbellOptions = {
 	id: '11145',
 	appKey: 'qkEYn4twaKWlJqpJbw0Vk1nhQpRdbDd2voXXTKlNNalH4sRca0GBcej703Bs4OfC',
+	onInitialized: () => {
+		const btn = document.getElementById('doorbell-button')
+		if (btn) btn.className = 'middle_left'
+	},
 }
 function loadDoorbell(w, d, t) {
 	var hasLoaded = false

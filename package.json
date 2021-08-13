@@ -37,6 +37,7 @@
     "qs": "^6.9.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-flip-move": "^3.0.4",
     "react-router-dom": "^5.2.0",
     "react-text-mask": "^5.4.3",
     "regenerator-runtime": "^0.13.3",

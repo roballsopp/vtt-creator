@@ -26,7 +26,8 @@ function AutoScrollItem({cueTime, children, className, ...props}) {
 				prevTimeRef.current = currentTime
 			},
 			[cueTime, scrollToChild]
-		)
+		),
+		false
 	)
 
 	return (
