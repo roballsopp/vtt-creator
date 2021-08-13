@@ -46,6 +46,7 @@ module.exports = {
 			templateParameters: {
 				PAYPAL_CLIENT_ID: process.env.PAYPAL_CLIENT_ID,
 			},
+			favicon: './assets/vtt-creator-logo.svg',
 			filename: path.join(__dirname, 'public', 'index.html'),
 			chunks: ['main'],
 		}),
