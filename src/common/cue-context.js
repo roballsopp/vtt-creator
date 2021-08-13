@@ -91,7 +91,7 @@ export function CuesProvider({children}) {
 		setCues(cues => {
 			const newCues = cues.slice()
 			const idx = newCues.findIndex(c => c.id === id)
-			if (idx === -1) return handleError(new Error('Could not find cue in list'))
+			if (idx === -1) return handleError(new Error('removeCue: could not find cue in list'))
 			newCues.splice(idx, 1)
 			return newCues
 		})
@@ -101,7 +101,7 @@ export function CuesProvider({children}) {
 		setCues(cues => {
 			const newCues = cues.slice()
 			const idx = newCues.findIndex(c => c.id === id)
-			if (idx === -1) return handleError(new Error('Could not find cue in list'))
+			if (idx === -1) return handleError(new Error('changeCueStart: could not find cue in list'))
 			const oldCue = cues[idx]
 			newCues[idx] = new VTTCue(newStartTime, oldCue.endTime, oldCue.text, oldCue.id)
 			return sortBy(newCues, ['startTime'])
@@ -112,7 +112,7 @@ export function CuesProvider({children}) {
 		setCues(cues => {
 			const newCues = cues.slice()
 			const idx = newCues.findIndex(c => c.id === id)
-			if (idx === -1) return handleError(new Error('Could not find cue in list'))
+			if (idx === -1) return handleError(new Error('changeCueEnd: could not find cue in list'))
 			const oldCue = cues[idx]
 			newCues[idx] = new VTTCue(oldCue.startTime, newEndTime, oldCue.text, oldCue.id)
 			return newCues
@@ -123,7 +123,7 @@ export function CuesProvider({children}) {
 		setCues(cues => {
 			const newCues = cues.slice()
 			const idx = newCues.findIndex(c => c.id === id)
-			if (idx === -1) return handleError(new Error('Could not find cue in list'))
+			if (idx === -1) return handleError(new Error('changeCueText: could not find cue in list'))
 			const oldCue = cues[idx]
 			newCues[idx] = new VTTCue(oldCue.startTime, oldCue.endTime, newText, oldCue.id)
 			return newCues
@@ -133,7 +133,7 @@ export function CuesProvider({children}) {
 	const changeCueTiming = React.useCallback((id, {startDelta = 0, endDelta = 0}) => {
 		setCues(cues => {
 			const idx = cues.findIndex(c => c.id === id)
-			if (idx === -1) return handleError(new Error('Could not find cue in list'))
+			if (idx === -1) return handleError(new Error('changeCueTiming: could not find cue in list'))
 
 			const oldCue = cues[idx]
 

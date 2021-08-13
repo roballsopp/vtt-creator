@@ -1,5 +1,6 @@
 import * as React from 'react'
 import * as PropTypes from 'prop-types'
+import clsx from 'clsx'
 import {InputBase as MuiInputBase, TextField} from '@material-ui/core'
 import {makeStyles, withStyles} from '@material-ui/styles'
 
@@ -22,6 +23,18 @@ const useStyles = makeStyles({
 	},
 	mills: {
 		flex: 1,
+	},
+	input: {
+		margin: 0,
+		'& input[type=number]::-webkit-inner-spin-button': {
+			'-webkit-appearance': 'none',
+		},
+		'& input[type=number]::-webkit-outer-spin-button': {
+			'-webkit-appearance': 'none',
+		},
+		'& input[type=number]': {
+			'-moz-appearance': 'textfield',
+		},
 	},
 })
 
@@ -54,6 +67,8 @@ function InputWrapper({value, onChange, onBlur, onFocus}) {
 	const millRef = React.useRef('000')
 
 	const containerRef = React.useRef()
+
+	const hourInputRef = React.useRef()
 	const minInputRef = React.useRef()
 	const secInputRef = React.useRef()
 	const millInputRef = React.useRef()
@@ -79,19 +94,9 @@ function InputWrapper({value, onChange, onBlur, onFocus}) {
 		setValues(v => ({...v, hours}))
 	}
 
-	const handleHoursLengthExceeded = nextChar => {
-		minInputRef.current.focus()
-		if (Number.isFinite(Number(nextChar))) setValues(v => ({...v, mins: nextChar}))
-	}
-
 	const handleChangeMins = mins => {
 		minRef.current = mins
 		setValues(v => ({...v, mins}))
-	}
-
-	const handleMinsLengthExceeded = nextChar => {
-		secInputRef.current.focus()
-		if (Number.isFinite(Number(nextChar))) setValues(v => ({...v, secs: nextChar}))
 	}
 
 	const handleChangeSecs = secs => {
@@ -99,14 +104,25 @@ function InputWrapper({value, onChange, onBlur, onFocus}) {
 		setValues(v => ({...v, secs}))
 	}
 
-	const handleSecsLengthExceeded = nextChar => {
-		millInputRef.current.focus()
-		if (Number.isFinite(Number(nextChar))) setValues(v => ({...v, mills: nextChar}))
-	}
-
 	const handleChangeMills = mills => {
 		millRef.current = mills
 		setValues(v => ({...v, mills}))
+	}
+
+	const focusHours = () => {
+		hourInputRef.current.focus()
+	}
+
+	const focusMins = () => {
+		minInputRef.current.focus()
+	}
+
+	const focusSecs = () => {
+		secInputRef.current.focus()
+	}
+
+	const focusMills = () => {
+		millInputRef.current.focus()
 	}
 
 	function handleFocusRoot(e) {
@@ -127,11 +143,12 @@ function InputWrapper({value, onChange, onBlur, onFocus}) {
 	return (
 		<div ref={containerRef} className={classes.root} onFocus={handleFocusRoot} onBlur={handleBlurRoot}>
 			<MemInput
+				ref={hourInputRef}
 				maxLength={2}
 				value={values.hours}
 				onChange={handleChangeHours}
-				onLengthExceeded={handleHoursLengthExceeded}
-				className={classes.twoChars}
+				onNext={focusMins}
+				className={clsx(classes.input, classes.twoChars)}
 			/>
 			<span className={classes.separator}>:</span>
 			<MemInput
@@ -139,8 +156,9 @@ function InputWrapper({value, onChange, onBlur, onFocus}) {
 				maxLength={2}
 				value={values.mins}
 				onChange={handleChangeMins}
-				onLengthExceeded={handleMinsLengthExceeded}
-				className={classes.twoChars}
+				onPrev={focusHours}
+				onNext={focusSecs}
+				className={clsx(classes.input, classes.twoChars)}
 			/>
 			<span className={classes.separator}>:</span>
 			<MemInput
@@ -148,8 +166,9 @@ function InputWrapper({value, onChange, onBlur, onFocus}) {
 				maxLength={2}
 				value={values.secs}
 				onChange={handleChangeSecs}
-				onLengthExceeded={handleSecsLengthExceeded}
-				className={classes.twoChars}
+				onPrev={focusMins}
+				onNext={focusMills}
+				className={clsx(classes.input, classes.twoChars)}
 			/>
 			<span className={classes.separator}>.</span>
 			<MemInput
@@ -158,31 +177,44 @@ function InputWrapper({value, onChange, onBlur, onFocus}) {
 				maxLength={3}
 				value={values.mills}
 				onChange={handleChangeMills}
-				className={classes.mills}
+				onPrev={focusSecs}
+				className={clsx(classes.input, classes.mills)}
 			/>
 		</div>
 	)
 }
 
 const MemInput = React.forwardRef(function MemInput(
-	{value, maxLength, onChange, onBlur, onFocus, onLengthExceeded, inputProps, ...props},
+	{value, maxLength, onChange, onBlur, onFocus, onNext, onPrev, inputProps, ...props},
 	ref
 ) {
 	const [_value, _setValue] = React.useState(value)
 
+	const _valueRef = React.useRef(_value)
+
 	React.useEffect(() => {
+		_valueRef.current = value
 		_setValue(value)
 	}, [value])
 
 	const handleFocus = e => {
+		_valueRef.current = ''
 		_setValue('')
 		onFocus?.(e)
 	}
 
+	const handleChange = e => {
+		const v = e.target.value
+		_valueRef.current = v
+		_setValue(v)
+		if (v.length === maxLength) onNext?.()
+		if (!v.length) onPrev?.()
+	}
+
 	const handleBlur = e => {
 		const existingNum = Number(value)
-		const pendingNum = Number(_value)
-		const validInput = Boolean(_value && Number.isFinite(pendingNum))
+		const pendingNum = Number(_valueRef.current)
+		const validInput = Boolean(_valueRef.current && Number.isFinite(pendingNum))
 		const numericallyEqual = existingNum === pendingNum
 
 		if (!numericallyEqual && validInput) {
@@ -198,15 +230,6 @@ const MemInput = React.forwardRef(function MemInput(
 		onBlur?.(e)
 	}
 
-	const handleChange = e => {
-		const v = e.target.value
-		if (v.length > maxLength) {
-			onLengthExceeded?.(v.slice(maxLength))
-		} else {
-			_setValue(v)
-		}
-	}
-
 	const handleKeyDown = e => {
 		if (e.key === 'Enter') {
 			e.target.blur()
@@ -216,9 +239,8 @@ const MemInput = React.forwardRef(function MemInput(
 	return (
 		<InputBase
 			{...props}
-			pattern="[0-9]*"
-			inputMode="numeric"
-			inputProps={{...inputProps, ref}}
+			type="number"
+			inputProps={{...inputProps, pattern: '[0-9]*', inputMode: 'numeric', ref}}
 			value={_value}
 			placeholder={value}
 			onChange={handleChange}
