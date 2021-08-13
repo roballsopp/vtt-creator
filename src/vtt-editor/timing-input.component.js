@@ -216,6 +216,8 @@ const MemInput = React.forwardRef(function MemInput(
 	return (
 		<InputBase
 			{...props}
+			pattern="[0-9]*"
+			inputMode="numeric"
 			inputProps={{...inputProps, ref}}
 			value={_value}
 			placeholder={value}
