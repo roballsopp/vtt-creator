@@ -21,20 +21,21 @@ export default function PrivacyPage() {
 						you sign up and the audio component of video files you load into the editor for automatic transcription.
 					</Typography>
 					<Typography variant="body2" paragraph>
-						<strong>We collect data about your usage.</strong> We collect information about how you use vtt-creator,
+						<strong>We collect data about your usage.</strong> We collect information about how you use VTT Creator,
 						such as the features you use; the actions you take; and the time, frequency and duration of your activities.
 					</Typography>
 					<Typography variant="body2" paragraph>
-						<strong>We collect information about transactions made using our services.</strong> If you use
-						vtt-creator&apos;s automatic transcription feature, you&apos;ll be asked to purchase credits with
-						vtt-creator. We collect information about these purchases, such as the date and time of purchase, and
-						information necessary to identify the PayPal order, including your PayPal email.
+						<strong>We collect information about transactions made using our services.</strong> If you use VTT
+						Creator&apos;s automatic transcription feature, you&apos;ll be asked to purchase credits with VTT Creator.
+						We collect information about these purchases, such as the date and time of purchase, and information
+						necessary to identify the PayPal order, including your PayPal email.
 					</Typography>
 					<Typography variant="body2" paragraph>
 						<strong>We use others to help us provide our services</strong>. This includes PayPal for monetary
-						transactions, Google Cloud for speech-to-text transcription, and Amazon Web Services for user account
-						management. They will have access to your information as reasonably necessary to perform these tasks on our
-						behalf. However, they are obligated not to disclose or use the information for any other purpose.
+						transactions, Google Cloud for speech-to-text transcription and translation, and Amazon Web Services for
+						user account management. They will have access to your information as reasonably necessary to perform these
+						tasks on our behalf. However, they are obligated not to disclose or use the information for any other
+						purpose.
 					</Typography>
 					<Typography variant="body2" paragraph>
 						<strong>We or our partners may use cookies to collect and store your information.</strong> Cookies are files
