@@ -7,7 +7,7 @@ export default function TimingInput(props) {
 	return <TextField {...props} InputProps={{inputComponent: InputWrapper}} InputLabelProps={{shrink: true}} />
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles({
 	root: {
 		padding: '0 14px',
 		whiteSpace: 'nowrap',
@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
 	mills: {
 		flex: 1,
 	},
-}))
+})
 
 const InputBase = withStyles({
 	input: {
