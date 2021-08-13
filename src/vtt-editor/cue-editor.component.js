@@ -110,6 +110,7 @@ function CueEditor({cue, onRemoveCue, onChangeCueEnd, onChangeCueStart, onChange
 					rows="3"
 					label="Caption text"
 					value={text}
+					autoFocus
 					onChange={onChangeText}
 					onFocus={captionInputKeyCtrl.onFocus}
 					onBlur={() => {
