@@ -7,6 +7,7 @@ import qs from 'qs'
 import {AuthenticationDetails, CognitoUser} from 'amazon-cognito-identity-js'
 import Dialog from '@material-ui/core/Dialog'
 import {cognitoUserPool} from '../cognito'
+import {ApiURL} from '../config'
 import {CreditDialog_userFragment} from '../editor/CueExtractionButton/CreditDialog.graphql'
 import {handleError} from '../services/error-handler.service'
 import LoginDialog from './LoginDialog'
@@ -53,9 +54,8 @@ export function AuthDialogProvider({children}) {
 		setViewId('RESET_PWD')
 	}, [])
 
-	const handleOpenVerifyEmailDialog = React.useCallback(user => {
+	const handleOpenVerifyEmailDialog = React.useCallback(() => {
 		setLoginMessage('')
-		setEmail(user.getUsername())
 		setViewId('VERIFY_EMAIL')
 	}, [])
 
@@ -136,18 +136,21 @@ export function AuthDialogProvider({children}) {
 	}, [apolloClient, handleCloseDialog])
 
 	const handleSignUp = React.useCallback(
-		(email, password) => {
-			return new Promise((resolve, reject) => {
-				cognitoUserPool.signUp(email, password, [], null, (err, result) => {
-					if (err) {
-						const error = getErrorFromCognitoError(err)
-						handleError(error)
-						return reject(error)
-					}
-					resolve(result.user)
-					handleOpenVerifyEmailDialog(result.user)
+		async (email, password) => {
+			try {
+				const response = await fetch(new URL('/v1/sign-up', ApiURL).href, {
+					method: 'POST',
+					headers: {'Content-Type': 'application/json'},
+					body: JSON.stringify({email, password}),
 				})
-			})
+				const result = await response.json()
+				if (response.status >= 400) throw new Error(result.message)
+				setEmail(result.user.email)
+				handleOpenVerifyEmailDialog()
+			} catch (err) {
+				handleError(err)
+				throw err
+			}
 		},
 		[handleOpenVerifyEmailDialog]
 	)
