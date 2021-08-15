@@ -2,8 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import {useApolloClient, gql} from '@apollo/client'
-import {AddCreditInput_userFragment} from './AddCreditInput.graphql'
-import {AccountPage_userFragment} from '../AccountPage.graphql'
+import {UserContext_userFragment} from '../UserContext/UserContext.graphql'
+import {AccountPage_userFragment} from '../../account/AccountPage.graphql'
 
 const PayPalButton = paypal.Buttons.driver('react', {React, ReactDOM})
 
@@ -27,13 +27,13 @@ const APPLY_PAYPAL_CREDIT_MUTATION = gql`
 	mutation applyPaypalCredit($orderId: String!) {
 		capturePaypalOrder(orderId: $orderId) {
 			user {
-				...AddCreditInput_user
+				...UserContext_user
 				...AccountPage_user
 			}
 			paypalErrorCode
 		}
 	}
-	${AddCreditInput_userFragment}
+	${UserContext_userFragment}
 	${AccountPage_userFragment}
 `
 

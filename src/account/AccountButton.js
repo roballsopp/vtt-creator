@@ -3,7 +3,7 @@ import Typography from '@material-ui/core/Typography'
 import {makeStyles} from '@material-ui/styles'
 import {useAuthDialog} from '../AuthDialog'
 import {Button} from '../common'
-import {gql, useQuery} from '@apollo/client'
+import {useUser} from '../common/UserContext'
 
 const useStyles = makeStyles(theme => ({
 	or: {
@@ -14,19 +14,13 @@ const useStyles = makeStyles(theme => ({
 export default function AccountButton() {
 	const {openLoginDialog, openSignupDialog} = useAuthDialog()
 
-	const {loading, data} = useQuery(gql`
-		query AccountButtonGetUser {
-			self {
-				id
-			}
-		}
-	`)
+	const {userLoading, user} = useUser()
 
 	const classes = useStyles()
 
-	if (data || loading) {
+	if (user || userLoading) {
 		return (
-			<Button name="Account" loading={loading} href="/account" color="secondary" variant="contained">
+			<Button name="Account" loading={userLoading} href="/account" color="secondary" variant="contained">
 				Account
 			</Button>
 		)

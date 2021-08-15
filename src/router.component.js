@@ -7,6 +7,7 @@ import {AccountPage} from './account'
 import PrivacyPage from './privacy'
 import {GAProduct} from './config'
 import {AuthDialogProvider} from './AuthDialog'
+import {UserProvider} from './common/UserContext'
 
 const history = createBrowserHistory()
 
@@ -16,27 +17,29 @@ history.listen(location => {
 
 export default function AppRouter() {
 	return (
-		<Router history={history}>
-			<Switch>
-				<Route path="/" exact>
-					<AuthDialogProvider>
-						<Splash />
-					</AuthDialogProvider>
-				</Route>
-				<Route path="/editor" exact>
-					<AuthDialogProvider>
-						<Editor />
-					</AuthDialogProvider>
-				</Route>
-				<Route path="/account" exact>
-					<AuthDialogProvider>
-						<AccountPage />
-					</AuthDialogProvider>
-				</Route>
-				<Route path="/privacy" exact>
-					<PrivacyPage />
-				</Route>
-			</Switch>
-		</Router>
+		<UserProvider>
+			<Router history={history}>
+				<Switch>
+					<Route path="/" exact>
+						<AuthDialogProvider>
+							<Splash />
+						</AuthDialogProvider>
+					</Route>
+					<Route path="/editor" exact>
+						<AuthDialogProvider>
+							<Editor />
+						</AuthDialogProvider>
+					</Route>
+					<Route path="/account" exact>
+						<AuthDialogProvider>
+							<AccountPage />
+						</AuthDialogProvider>
+					</Route>
+					<Route path="/privacy" exact>
+						<PrivacyPage />
+					</Route>
+				</Switch>
+			</Router>
+		</UserProvider>
 	)
 }
