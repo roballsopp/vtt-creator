@@ -49,14 +49,21 @@ export function CuesProvider({children}) {
 		setLoading(false)
 	}, [toast])
 
-	// save cues if we leave the site
+	// save cues every 10 seconds or if we leave the site
 	React.useEffect(() => {
+		// ios is bad at firing the beforeunload event, so lets save on an interval as well
+		const intervalId = setInterval(() => {
+			saveCuesToStorage(cues)
+		}, 10000)
+
 		const handleBeforeUnload = () => {
 			saveCuesToStorage(cues)
 		}
 		// this actually fires when the browser window is closing _and_ when a react router navigation happens
 		window.addEventListener('beforeunload', handleBeforeUnload)
+
 		return () => {
+			clearInterval(intervalId)
 			window.removeEventListener('beforeunload', handleBeforeUnload)
 		}
 	}, [cues, saveCuesToStorage])
