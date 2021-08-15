@@ -3,6 +3,7 @@ import {useHistory} from 'react-router-dom'
 import {Box, Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import muiBlueGreys from '@material-ui/core/colors/blueGrey'
+import ArrowIcon from '@material-ui/icons/ArrowForward'
 import CloudUploadIcon from '@material-ui/icons/CloudUploadOutlined'
 import CloudDownloadIcon from '@material-ui/icons/CloudDownloadOutlined'
 import MemoryIcon from '@material-ui/icons/MemorySharp'
@@ -69,6 +70,7 @@ export default function Splash() {
 									size="large"
 									variant="contained"
 									color="secondary"
+									endIcon={<ArrowIcon />}
 									onClick={() => history.push('/editor')}>
 									Create Captions
 								</Button>
