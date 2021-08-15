@@ -5,7 +5,7 @@ import {SpeechToTextJobTimeout} from '../../config'
 import {getAudioBlobFromVideo} from '../../services/av.service'
 import {appendNewJob, JobHistoryTable_jobsFragment} from '../../account/JobHistoryTable.graphql'
 import {AccountPage_userFragment} from '../../account/AccountPage.graphql'
-import {CreditDialog_userFragment} from './CreditDialog.graphql'
+import {UserContext_userFragment} from '../../common/UserContext/UserContext.graphql'
 
 export class ExtractionError extends ExtendableError {
 	constructor(m = 'Failed to extract audio') {
@@ -112,7 +112,7 @@ export function getJobRunner(apolloClient, uploadFile) {
 							self {
 								# the user fragments are spread here to update the user's credit after a job completes
 								...AccountPage_user
-								...CreditDialogUser
+								...UserContext_user
 							}
 							transcriptionJob(jobId: $jobId) {
 								id
@@ -128,7 +128,7 @@ export function getJobRunner(apolloClient, uploadFile) {
 							}
 						}
 						${JobHistoryTable_jobsFragment}
-						${CreditDialog_userFragment}
+						${UserContext_userFragment}
 						${AccountPage_userFragment}
 					`,
 					variables: {jobId},

@@ -3,7 +3,7 @@ import {useHistory} from 'react-router-dom'
 import PropTypes from 'prop-types'
 import {Box, Button, Grid, Hidden, Typography} from '@material-ui/core'
 import {useAuthDialog} from '../AuthDialog'
-import AddCreditInput from './AddCreditInput'
+import AddCreditInput from '../common/AddCreditInput'
 import PageContainer from '../common/PageContainer'
 import JobHistoryTable from './JobHistoryTableQueryContainer'
 import TranslationHistoryTable from './TranslationHistoryTableQueryContainer'
@@ -82,7 +82,7 @@ export default function AccountPage({user, transcriptionRate, translationRate}) 
 							</Grid>
 						</Grid>
 						<Grid item xs={12} sm={4}>
-							<AddCreditInput user={user} />
+							<AddCreditInput />
 						</Grid>
 					</Grid>
 				</Grid>

@@ -8,10 +8,9 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import Typography from '@material-ui/core/Typography'
 import CloseIcon from '@material-ui/icons/Close'
 import {styled} from '@material-ui/styles'
-import AddCreditInput from '../../account/AddCreditInput'
 import {Button} from '../../common'
-import {CreditDialog_userFragment} from './CreditDialog.graphql'
-import {gql, useQuery} from '@apollo/client'
+import AddCreditInput from '../../common/AddCreditInput'
+import {useUser} from '../../common/UserContext'
 
 const Title = styled(DialogTitle)({
 	display: 'flex',
@@ -46,20 +45,11 @@ export default function CreditDialog({cost, open, onClose, onExited}) {
 		justPaid.current = false
 	}
 
-	const {loading, data} = useQuery(
-		gql`
-			query CreditDialogGetUser {
-				self {
-					...CreditDialogUser
-				}
-			}
-			${CreditDialog_userFragment}
-		`
-	)
+	const {userLoading, user} = useUser()
 
-	if (loading || !data?.self) return null
+	if (userLoading || !user) return null
 
-	const defaultValue = Math.max(cost - data.self.credit, 1).toFixed(2)
+	const defaultValue = Math.max(cost - user.credit, 1).toFixed(2)
 
 	return (
 		<Dialog
@@ -77,7 +67,7 @@ export default function CreditDialog({cost, open, onClose, onExited}) {
 			</Title>
 			<DialogContent>
 				<Typography paragraph color="error">
-					Remaining credit: ${data.self.credit.toFixed(2)}
+					Remaining credit: ${user.credit.toFixed(2)}
 				</Typography>
 				<Typography paragraph color="error">
 					Action cost ${cost.toFixed(2)}
@@ -88,7 +78,7 @@ export default function CreditDialog({cost, open, onClose, onExited}) {
 					credit at any time by clicking the Account button in the lower right corner of the screen.
 				</Typography>
 				<div>
-					<AddCreditInput user={data.self} defaultValue={defaultValue} onApproved={handlePaid} />
+					<AddCreditInput defaultValue={defaultValue} onApproved={handlePaid} />
 				</div>
 			</DialogContent>
 			<DialogActions>

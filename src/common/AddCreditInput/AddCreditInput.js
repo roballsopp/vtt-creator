@@ -6,7 +6,7 @@ import {makeStyles} from '@material-ui/styles'
 import {handleError} from '../../services/error-handler.service'
 import PaypalButtons from './PaypalButtons'
 import DollarsInput from './DollarsInput'
-import {AddCreditInput_userFragment} from './AddCreditInput.graphql'
+import {useUser} from '../UserContext'
 
 const useStyles = makeStyles(theme => ({
 	loader: {
@@ -21,22 +21,13 @@ const useStyles = makeStyles(theme => ({
 	},
 }))
 
-AddCreditInput.fragments = {
-	user: AddCreditInput_userFragment,
-}
-
 AddCreditInput.propTypes = {
-	user: PropTypes.shape({
-		id: PropTypes.string.isRequired,
-		email: PropTypes.string.isRequired,
-		credit: PropTypes.number.isRequired,
-	}).isRequired,
 	defaultValue: PropTypes.string,
 	onApproved: PropTypes.func,
 	onError: PropTypes.func,
 }
 
-export default function AddCreditInput({user, defaultValue, onApproved, onError}) {
+export default function AddCreditInput({defaultValue, onApproved, onError}) {
 	const [purchaseAmt, setPurchaseAmt] = React.useState(defaultValue || '')
 	const [paypalError, setPaypalError] = React.useState(false)
 	const [cardError, setCardError] = React.useState(false)
@@ -78,6 +69,8 @@ export default function AddCreditInput({user, defaultValue, onApproved, onError}
 		}
 	}
 
+	const mailTo = useMailTo()
+
 	return (
 		<React.Fragment>
 			{paypalError && (
@@ -85,7 +78,7 @@ export default function AddCreditInput({user, defaultValue, onApproved, onError}
 					<Typography variant="subtitle2" color="error" paragraph>
 						There was an error accepting your payment. Please send us an email so we can take a look and fix any issues.
 					</Typography>
-					<Button href={getMailTo(user)} variant="contained" color="primary" startIcon={<EmailIcon />}>
+					<Button href={mailTo} variant="contained" color="primary" startIcon={<EmailIcon />}>
 						Report Issue
 					</Button>
 				</Box>
@@ -118,7 +111,11 @@ export default function AddCreditInput({user, defaultValue, onApproved, onError}
 	)
 }
 
-function getMailTo(user) {
+function useMailTo() {
+	const {user} = useUser()
+
+	if (!user) return `mailto:vttcreator@gmail.com`
+
 	const subject = encodeURIComponent(`Payment Error - User: ${user.email}`)
 	const body = encodeURIComponent(`\n\nError Info\nAccount Email: ${user.email}\nDate: ${new Date().toISOString()}`)
 	return `mailto:vttcreator@gmail.com?subject=${subject}&body=${body}`

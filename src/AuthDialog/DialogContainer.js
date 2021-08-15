@@ -1,14 +1,13 @@
 import React from 'react'
 import EventEmitter from 'events'
 import PropTypes from 'prop-types'
-import * as Sentry from '@sentry/browser'
 import {gql, useApolloClient} from '@apollo/client'
 import qs from 'qs'
 import {AuthenticationDetails, CognitoUser} from 'amazon-cognito-identity-js'
 import Dialog from '@material-ui/core/Dialog'
 import {cognitoUserPool} from '../cognito'
 import {ApiURL} from '../config'
-import {CreditDialog_userFragment} from '../editor/CueExtractionButton/CreditDialog.graphql'
+import {UserContext_userFragment} from '../common/UserContext/UserContext.graphql'
 import {handleError} from '../services/error-handler.service'
 import LoginDialog from './LoginDialog'
 import ForgotPasswordDialog from './ForgotPasswordDialog'
@@ -85,19 +84,13 @@ export function AuthDialogProvider({children}) {
 								query: gql`
 									query getUserAfterLoginQuery {
 										self {
-											id
-											email
-											credit
-											creditMinutes
-											unlimitedUsage
-											...CreditDialogUser
+											...UserContext_user
 										}
 									}
-									${CreditDialog_userFragment}
+									${UserContext_userFragment}
 								`,
 							})
-							.then(({data: {self}}) => {
-								Sentry.setUser(self)
+							.then(() => {
 								justLoggedInRef.current = true
 								resolve()
 								handleCloseDialog()
