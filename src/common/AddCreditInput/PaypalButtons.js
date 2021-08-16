@@ -30,6 +30,11 @@ const APPLY_PAYPAL_CREDIT_MUTATION = gql`
 				...UserContext_user
 				...AccountPage_user
 			}
+			order {
+				id
+				amount
+				currencyCode
+			}
 			paypalErrorCode
 		}
 	}
@@ -85,7 +90,17 @@ export default function PaypalButtons({purchaseAmt, disabled, onApprove, onAppro
 		onApprove()
 		return apolloClient
 			.mutate({mutation: APPLY_PAYPAL_CREDIT_MUTATION, variables: {orderId: data.orderID}})
-			.then(r => onApproved(r.data.capturePaypalOrder))
+			.then(r => {
+				const {order} = r.data.capturePaypalOrder
+				window.gtag('event', 'purchase', {
+					transaction_id: order?.id,
+					value: order?.amount,
+					currency: 'USD',
+					tax: 0,
+					shipping: 0,
+				})
+				onApproved(r.data.capturePaypalOrder)
+			})
 			.catch(err => {
 				// this is an apollo error, and it would be nice if parents don't need to figure that out
 				throw err.networkError || err.graphQLErrors || err
