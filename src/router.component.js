@@ -12,10 +12,9 @@ import {UserProvider} from './common/UserContext'
 const history = createBrowserHistory()
 
 history.listen(() => {
-	window.gtag('event', 'page_view', {
+	window.gtag('config', GAProduct, {
 		page_title: window.location.pathname,
 		page_location: window.location.href,
-		send_to: GAProduct,
 	})
 })
 

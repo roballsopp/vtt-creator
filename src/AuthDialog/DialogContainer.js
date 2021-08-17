@@ -6,7 +6,7 @@ import qs from 'qs'
 import {AuthenticationDetails, CognitoUser} from 'amazon-cognito-identity-js'
 import Dialog from '@material-ui/core/Dialog'
 import {cognitoUserPool} from '../cognito'
-import {ApiURL} from '../config'
+import {ApiURL, GAProduct} from '../config'
 import {UserContext_userFragment} from '../common/UserContext/UserContext.graphql'
 import {handleError} from '../services/error-handler.service'
 import LoginDialog from './LoginDialog'
@@ -91,6 +91,7 @@ export function AuthDialogProvider({children}) {
 								`,
 							})
 							.then(() => {
+								window.gtag('event', 'login')
 								justLoggedInRef.current = true
 								resolve()
 								handleCloseDialog()
@@ -138,6 +139,7 @@ export function AuthDialogProvider({children}) {
 				})
 				const result = await response.json()
 				if (response.status >= 400) throw new Error(result.message)
+				window.gtag('event', 'sign_up')
 				setEmail(result.user.email)
 				handleOpenVerifyEmailDialog()
 			} catch (err) {
