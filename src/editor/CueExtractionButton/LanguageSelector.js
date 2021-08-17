@@ -18,16 +18,17 @@ const LANGUAGES_QUERY = gql`
 
 LanguageSelector.propTypes = {
 	value: PropTypes.string.isRequired,
+	disabled: PropTypes.bool,
 	onChange: PropTypes.func.isRequired,
 }
 
-export default function LanguageSelector({value, onChange}) {
+export default function LanguageSelector({value, disabled, onChange}) {
 	const {loading, error, data} = useQuery(LANGUAGES_QUERY)
 
 	const supportedLanguages = loading || error ? [] : data.supportedLanguages
 
 	return (
-		<FormControl>
+		<FormControl margin="normal" disabled={disabled}>
 			<InputLabel htmlFor="select-language">Language</InputLabel>
 			<Select
 				value={value}

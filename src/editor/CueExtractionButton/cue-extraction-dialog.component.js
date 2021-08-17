@@ -1,11 +1,7 @@
 import * as React from 'react'
 import * as PropTypes from 'prop-types'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import Typography from '@material-ui/core/Typography'
-import {styled, makeStyles} from '@material-ui/styles'
+import {Box, Dialog, DialogActions, DialogContent, DialogTitle, Typography} from '@material-ui/core'
+import {styled} from '@material-ui/styles'
 import UploadProgress, {
 	UPLOAD_STATE_COMPLETED,
 	UPLOAD_STATE_EXTRACTING,
@@ -44,12 +40,6 @@ const Title = styled(DialogTitle)({
 	alignItems: 'center',
 })
 
-const useStyles = makeStyles(theme => ({
-	priceInfo: {
-		paddingBottom: theme.spacing(4),
-	},
-}))
-
 CueExtractionDialog.propTypes = {
 	transcriptionCost: PropTypes.number.isRequired,
 	open: PropTypes.bool,
@@ -61,7 +51,6 @@ export default function CueExtractionDialog({transcriptionCost, open, onRequestC
 	const {videoFile} = useVideoFile()
 	const {duration} = useDuration()
 	const apolloClient = useApolloClient()
-	const classes = useStyles()
 	// there is a brief moment during the call to initTranscription when closing the modal allows a transcription
 	//   to continue. cancelDisabled is true during that time so we can prevent this state
 	const [cancelDisabled, setCancelDisabled] = React.useState(false)
@@ -181,21 +170,31 @@ export default function CueExtractionDialog({transcriptionCost, open, onRequestC
 	return (
 		<Dialog maxWidth="sm" fullWidth open={open} onClose={handleRequestClose} aria-labelledby="extract-dialog-title">
 			<Title id="extract-dialog-title" disableTypography>
-				<Typography variant="h6">Extract cues from video</Typography>
+				<Typography variant="h6">Extract captions from video</Typography>
 			</Title>
 			<DialogContent>
-				<div className={classes.priceInfo}>
+				<Box pb={2}>
+					<Typography>
+						This action will extract the audio from your video and attempt to find speech in the language you choose
+						below. If any speech is found, captions will be automatically generated for you.
+					</Typography>
+					<LanguageSelector
+						value={languageCode}
+						disabled={jobRunnerRef.current?.inProgress}
+						onChange={setLanguageCode}
+					/>
+				</Box>
+				<Box pb={4}>
 					<Typography gutterBottom>Transcription cost: (${transcriptionCost.toFixed(2)})</Typography>
 					<Typography variant="caption">
 						The cost of this transcription will be deducted from your credit balance only if it completes successfully.
 						It can take up to 20 minutes to complete the transcription process for an hour long video. Please be patient
 						and do not close this window until your transcription completes.
 					</Typography>
-				</div>
+				</Box>
 				{jobRunnerRef.current?.inProgress && (
 					<UploadProgress progressBytes={progressBytes} totalBytes={totalBytes} uploadState={uploadState} />
 				)}
-				{!jobRunnerRef.current?.inProgress && <LanguageSelector value={languageCode} onChange={setLanguageCode} />}
 			</DialogContent>
 			<DialogActions>
 				<Button
