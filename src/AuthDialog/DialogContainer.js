@@ -91,7 +91,7 @@ export function AuthDialogProvider({children}) {
 								`,
 							})
 							.then(() => {
-								window.gtag('event', 'login')
+								window.gtag('event', 'login', {method: 'email'})
 								justLoggedInRef.current = true
 								resolve()
 								handleCloseDialog()
@@ -139,7 +139,7 @@ export function AuthDialogProvider({children}) {
 				})
 				const result = await response.json()
 				if (response.status >= 400) throw new Error(result.message)
-				window.gtag('event', 'sign_up')
+				window.gtag('event', 'sign_up', {method: 'email'})
 				setEmail(result.user.email)
 				handleOpenVerifyEmailDialog()
 			} catch (err) {
