@@ -16,5 +16,5 @@ if (GAProduct) {
 	head.appendChild(script)
 
 	gtag('js', new Date())
-	gtag('config', GAProduct, {page_title: window.location.pathname})
+	gtag('config', GAProduct)
 }
