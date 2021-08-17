@@ -96,8 +96,7 @@ export default function PaypalButtons({purchaseAmt, disabled, onApprove, onAppro
 					transaction_id: order?.id,
 					value: order?.amount,
 					currency: 'USD',
-					tax: 0,
-					shipping: 0,
+					items: [{item_id: 'site_credit', item_name: 'Site Credit'}],
 				})
 				onApproved(r.data.capturePaypalOrder)
 			})
