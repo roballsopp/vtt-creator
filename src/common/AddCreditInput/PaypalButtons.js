@@ -65,13 +65,25 @@ export default function PaypalButtons({purchaseAmt, disabled, onApprove, onAppro
 	}, [disabled])
 
 	const handleCreateOrder = async () => {
-		const {
-			data: {createPaypalOrder},
-		} = await apolloClient.mutate({
-			mutation: CREATE_PAYPAL_ORDER_MUTATION,
-			variables: {purchaseAmt: Number(purchaseAmt)},
+		window.gtag('event', 'begin_checkout', {
+			value: purchaseAmt,
+			currency: 'USD',
+			items: [{item_id: 'site_credit', item_name: 'Site Credit'}],
 		})
-		return createPaypalOrder.orderId
+
+		return apolloClient
+			.mutate({
+				mutation: CREATE_PAYPAL_ORDER_MUTATION,
+				variables: {purchaseAmt: Number(purchaseAmt)},
+			})
+			.then(r => {
+				return r.data.createPaypalOrder.orderId
+			})
+			.catch(err => {
+				// we don't need to call handleError here because these errors all go to the onError callback on the PaypalButton
+				// this is an apollo error, and it would be nice if parents don't need to figure that out
+				throw err.networkError || err.graphQLErrors || err
+			})
 	}
 
 	const handleInit = (data, actions) => {
