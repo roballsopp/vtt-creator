@@ -12,7 +12,10 @@ import {UserProvider} from './common/UserContext'
 const history = createBrowserHistory()
 
 history.listen(location => {
-	window.gtag('config', GAProduct, {page_path: location.pathname + location.search})
+	window.gtag('event', 'page_view', {
+		page_location: location.pathname + location.search,
+		send_to: GAProduct,
+	})
 })
 
 export default function AppRouter() {

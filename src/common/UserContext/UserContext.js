@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import {gql, useQuery} from '@apollo/client'
 import * as Sentry from '@sentry/browser'
 import {UserContext_userFragment} from './UserContext.graphql'
+import {GAProduct} from '../../config'
 
 const UserContext = React.createContext({
 	userLoading: false,
@@ -28,7 +29,7 @@ export function UserProvider({children}) {
 		{
 			onCompleted: data => {
 				Sentry.setUser(data.self)
-				window.gtag('config', 'GA_MEASUREMENT_ID', {user_id: data.self.id})
+				window.gtag('config', GAProduct, {user_id: data.self.id})
 			},
 		}
 	)
