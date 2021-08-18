@@ -119,7 +119,7 @@ export default function CueExtractionDialog({transcriptionCost, open, onRequestC
 			if (e instanceof ExtractionError) {
 				if (e.message === 'Not enough arguments') {
 					return toast.error(
-						"Looks like you're on an old version of Safari which cannot extract audio from this video. Upgrade to 14.1 or later to use this feature, or try a different browser."
+						'Your version of Safari is out of date and cannot extract audio from this video. Upgrade to 14.1 or later to use this feature, or try a different browser.'
 					)
 				}
 				return toast.error('Your browser cannot extract audio from this video. Try a different video file or browser.')
