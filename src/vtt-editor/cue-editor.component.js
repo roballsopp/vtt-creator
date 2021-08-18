@@ -45,6 +45,7 @@ function CueEditor({cue, onRemoveCue, onChangeCueEnd, onChangeCueStart, onChange
 	const startInputKeyCtrl = useKeyboardControl()
 	const endInputKeyCtrl = useKeyboardControl()
 	const [text, setText] = React.useState(cue.text)
+	const [disabled, setDisabled] = React.useState(false)
 
 	const debouncedOnChangeText = React.useCallback(debounce(onChangeCueText, 400), [onChangeCueText])
 
@@ -69,6 +70,7 @@ function CueEditor({cue, onRemoveCue, onChangeCueEnd, onChangeCueStart, onChange
 	}
 
 	const handleRemoveCue = () => {
+		setDisabled(true)
 		onRemoveCue(cue.id)
 	}
 
@@ -77,6 +79,7 @@ function CueEditor({cue, onRemoveCue, onChangeCueEnd, onChangeCueStart, onChange
 			<div className={classes.timingRow}>
 				<TimingInput
 					{...startInputKeyCtrl}
+					disabled={disabled}
 					className={classes.timingInput}
 					margin="dense"
 					variant="outlined"
@@ -86,6 +89,7 @@ function CueEditor({cue, onRemoveCue, onChangeCueEnd, onChangeCueStart, onChange
 				/>
 				<TimingInput
 					{...endInputKeyCtrl}
+					disabled={disabled}
 					className={classes.timingInput}
 					margin="dense"
 					variant="outlined"
@@ -95,7 +99,7 @@ function CueEditor({cue, onRemoveCue, onChangeCueEnd, onChangeCueStart, onChange
 				/>
 				<Tooltip title="Delete Cue">
 					<div className={classes.iconWrapper}>
-						<IconButton aria-label="Delete" onClick={handleRemoveCue} size="small" edge="end">
+						<IconButton aria-label="Delete" disabled={disabled} onClick={handleRemoveCue} size="small" edge="end">
 							<CloseIcon fontSize="small" />
 						</IconButton>
 					</div>
@@ -111,6 +115,7 @@ function CueEditor({cue, onRemoveCue, onChangeCueEnd, onChangeCueStart, onChange
 					label="Caption text"
 					value={text}
 					autoFocus
+					disabled={disabled}
 					onChange={onChangeText}
 					onFocus={captionInputKeyCtrl.onFocus}
 					onBlur={() => {
