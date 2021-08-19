@@ -19,6 +19,9 @@ export default function ExtractFromVideoMenuItem({onOpening, classes}) {
 	const [buttonEl, setButtonEl] = React.useState()
 
 	const handleClick = e => {
+		window.gtag('event', 'extract from video menu item', {
+			event_category: 'button_click',
+		})
 		onOpening()
 		handleCueExtractionDialogOpen(e)
 	}
