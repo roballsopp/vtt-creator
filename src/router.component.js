@@ -5,6 +5,7 @@ import {Editor} from './editor'
 import {Splash} from './splash'
 import {AccountPage} from './account'
 import PrivacyPage from './privacy'
+import BatchPage from './batch'
 import {GAProduct} from './config'
 import {AuthDialogProvider} from './AuthDialog'
 import {UserProvider} from './common/UserContext'
@@ -32,6 +33,9 @@ export default function AppRouter() {
 						<AuthDialogProvider>
 							<Editor />
 						</AuthDialogProvider>
+					</Route>
+					<Route path="/batch-processing" exact>
+						<BatchPage />
 					</Route>
 					<Route path="/account" exact>
 						<AuthDialogProvider>
