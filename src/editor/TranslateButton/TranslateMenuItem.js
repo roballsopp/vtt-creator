@@ -19,6 +19,9 @@ export default function TranslateMenuItem({onOpening, classes}) {
 	const [buttonEl, setButtonEl] = React.useState()
 
 	const handleClick = e => {
+		window.gtag('event', 'translate menu item', {
+			event_category: 'button_click',
+		})
 		onOpening()
 		handleTranslationDialogOpen(e)
 	}

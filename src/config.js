@@ -8,6 +8,7 @@ export const CognitoUserPoolId = COGNITO_USER_POOL_ID
 export const CognitoDomain = COGNITO_DOMAIN
 export const DebugMode = Boolean(DEBUG)
 export const GAProduct = GA_PRODUCT
+export const GADebug = GA_DEBUG
 export const PaypalClientId = PAYPAL_CLIENT_ID
 
 export const TranscriptionCost = 0.15 // $0.15 per minute

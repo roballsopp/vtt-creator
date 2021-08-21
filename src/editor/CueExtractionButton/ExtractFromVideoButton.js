@@ -21,7 +21,7 @@ export default function ExtractFromVideoButton(buttonProps) {
 	}
 
 	return (
-		<Button {...buttonProps} loading={loading} onClick={handleCueExtractionDialogOpen}>
+		<Button {...buttonProps} name="extract from video button" loading={loading} onClick={handleCueExtractionDialogOpen}>
 			Extract from video
 		</Button>
 	)

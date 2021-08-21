@@ -1,4 +1,4 @@
-import {GAProduct} from './config'
+import {GAProduct, GADebug} from './config'
 
 window.dataLayer = window.dataLayer || []
 
@@ -16,5 +16,5 @@ if (GAProduct) {
 	head.appendChild(script)
 
 	gtag('js', new Date())
-	gtag('config', GAProduct)
+	gtag('config', GAProduct, {debug_mode: GADebug})
 }
