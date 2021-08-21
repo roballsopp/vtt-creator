@@ -16,5 +16,5 @@ if (GAProduct) {
 	head.appendChild(script)
 
 	gtag('js', new Date())
-	gtag('config', GAProduct, {debug_mode: GADebug === 'true'})
+	gtag('config', GAProduct, {debug_mode: GADebug})
 }

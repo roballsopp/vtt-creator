@@ -42,7 +42,7 @@ module.exports = config => {
 					COGNITO_USER_POOL_ID: JSON.stringify(process.env.COGNITO_USER_POOL_ID),
 					DEBUG: process.env.DEBUG,
 					GA_PRODUCT: JSON.stringify(process.env.GA_PRODUCT),
-					GA_DEBUG: JSON.stringify(process.env.GA_DEBUG),
+					GA_DEBUG: process.env.GA_DEBUG,
 					PAYPAL_CLIENT_ID: JSON.stringify(process.env.PAYPAL_CLIENT_ID),
 				}),
 				new HtmlWebpackPlugin({
