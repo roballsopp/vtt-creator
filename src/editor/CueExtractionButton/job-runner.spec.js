@@ -111,11 +111,13 @@ describe('JobRunner', function() {
 
 		describe('then, if an upload url is successfully retrieved', function() {
 			beforeEach(function(done) {
-				this.expectedFileName = uuid()
+				this.expectedFileId = uuid()
 				this.expectedUploadUrl = uuid()
 				// start assertions at the next graphql call, which should be to start the transcription
 				this.apolloEvents.once('op', () => done())
-				this.linkObserver.next({data: {uploadUrl: {filename: this.expectedFileName, url: this.expectedUploadUrl}}})
+				this.linkObserver.next({
+					data: {createFileUpload: {fileUploadId: this.expectedFileId, uploadUrl: this.expectedUploadUrl}},
+				})
 				this.linkObserver.complete()
 			})
 
@@ -146,7 +148,7 @@ describe('JobRunner', function() {
 			})
 
 			it(`the transcription job should run against the uploaded file`, function() {
-				chai.expect(this.lastOp.variables.filename).to.equal(this.expectedFileName)
+				chai.expect(this.lastOp.variables.inputFileId).to.equal(this.expectedFileId)
 			})
 
 			it(`the transcription job should run with the specified language`, function() {
@@ -420,10 +422,12 @@ describe('JobRunner', function() {
 		describe('then, when the job is cancelled during upload url retrieval', function() {
 			beforeEach(function() {
 				this.runner.cancel()
-				this.expectedFileName = uuid()
+				this.expectedFileId = uuid()
 				this.expectedUploadUrl = uuid()
 				// in this case, since we cancelled, we never will get the next graphql call
-				this.linkObserver.next({data: {uploadUrl: {filename: this.expectedFileName, url: this.expectedUploadUrl}}})
+				this.linkObserver.next({
+					data: {createFileUpload: {fileUploadId: this.expectedFileId, uploadUrl: this.expectedUploadUrl}},
+				})
 				this.linkObserver.complete()
 				return this.jobPromise
 			})
@@ -455,6 +459,7 @@ function getTestFile() {
 		request.open('GET', audioFileUrl, true)
 		request.responseType = 'blob'
 		request.onload = function() {
+			request.response.name = 'test_file.wav'
 			resolve(request.response)
 		}
 		request.send()
