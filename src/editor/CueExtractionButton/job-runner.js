@@ -57,31 +57,31 @@ export const JOB_STATE_CANCELLED = 'job-cancelled'
 export const JOB_STATE_COMPLETED = 'job-completed'
 
 export function getJobRunner(apolloClient, uploadFile) {
-	async function getUploadUrl() {
+	async function getUploadUrl(filename) {
 		const {
-			data: {uploadUrl},
-		} = await apolloClient.query({
-			fetchPolicy: 'network-only',
-			query: gql`
-				query getUploadUrl {
-					uploadUrl {
-						filename
-						url
+			data: {createFileUpload},
+		} = await apolloClient.mutate({
+			mutation: gql`
+				mutation getUploadUrl($filename: String!) {
+					createFileUpload(filename: $filename) {
+						fileUploadId
+						uploadUrl
 					}
 				}
 			`,
+			variables: {filename},
 		})
 
-		return uploadUrl
+		return createFileUpload
 	}
 
-	async function initTranscription(filename, languageCode) {
+	async function initTranscription(inputFileId, languageCode) {
 		const {
 			data: {beginTranscription},
 		} = await apolloClient.mutate({
 			mutation: gql`
-				mutation initTranscription($filename: String!, $languageCode: String!) {
-					beginTranscription(filename: $filename, languageCode: $languageCode) {
+				mutation initTranscription($inputFileId: String!, $languageCode: String!) {
+					beginTranscription(inputFileId: $inputFileId, languageCode: $languageCode) {
 						job {
 							id
 							state
@@ -91,7 +91,7 @@ export function getJobRunner(apolloClient, uploadFile) {
 				}
 				${JobHistoryTable_jobsFragment}
 			`,
-			variables: {filename, languageCode},
+			variables: {inputFileId, languageCode},
 			update(cache, {data: {beginTranscription}}) {
 				appendNewJob(cache, beginTranscription?.job)
 			},
@@ -230,8 +230,8 @@ export function getJobRunner(apolloClient, uploadFile) {
 				queue.emit(EVENT_JOB_STATE, JOB_STATE_UPLOADING)
 
 				return {
-					promise: getUploadUrl()
-						.then(({filename, url}) => ({...ctx, filename, uploadUrl: url}))
+					promise: getUploadUrl(ctx.videoFile.name)
+						.then(({fileUploadId, uploadUrl}) => ({...ctx, fileUploadId, uploadUrl}))
 						.catch(e => {
 							throw new UploadUrlError(e.message)
 						}),
@@ -261,7 +261,7 @@ export function getJobRunner(apolloClient, uploadFile) {
 				queue.emit(EVENT_JOB_STATE, JOB_STATE_TRANSCRIBING)
 				queue.disableCancel()
 				return {
-					promise: initTranscription(ctx.filename, ctx.languageCode)
+					promise: initTranscription(ctx.fileUploadId, ctx.languageCode)
 						.then(({job}) => {
 							recordS2TEvent(ctx.duration)
 							return {...ctx, job: job}
