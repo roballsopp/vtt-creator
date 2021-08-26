@@ -2,7 +2,7 @@ import * as React from 'react'
 import PropTypes from 'prop-types'
 import {format} from 'date-fns'
 import {Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography} from '@material-ui/core'
-import StatusBubble from './StatusBubble'
+import StatusBubble from '../common/StatusBubble'
 import {TranslationHistoryTable_translationsFragment} from './TranslationHistoryTable.graphql'
 import TranslationActionMenu from './TranslationActionMenu'
 
