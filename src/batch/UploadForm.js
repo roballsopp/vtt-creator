@@ -1,4 +1,5 @@
 import * as React from 'react'
+import * as PropTypes from 'prop-types'
 import {
 	Box,
 	Button,
@@ -16,11 +17,17 @@ import FolderIcon from '@material-ui/icons/FolderOpen'
 import {useFileSelector} from '../common'
 import {useUpload} from './UploadProvider'
 
-export default function UploadForm() {
+UploadForm.propTypes = {
+	batchId: PropTypes.string.isRequired,
+}
+
+export default function UploadForm({batchId}) {
 	const {uploadState, handleUpload, handleAddFiles, handleRemoveFile} = useUpload()
 
+	const batchUploads = React.useMemo(() => uploadState.uploads[batchId] || [], [uploadState.uploads, batchId])
+
 	const handleFilesSelected = e => {
-		handleAddFiles([...e.target.files])
+		handleAddFiles(batchId, [...e.target.files])
 	}
 
 	const openFileSelector = useFileSelector({accept: 'video/*', multiple: true, onFilesSelected: handleFilesSelected})
@@ -38,22 +45,22 @@ export default function UploadForm() {
 						variant="contained"
 						color="secondary"
 						startIcon={<UploadIcon />}
-						disabled={uploadState.uploading || !uploadState.uploads.length}
-						onClick={handleUpload}>
+						disabled={uploadState.uploading || !batchUploads.length}
+						onClick={() => handleUpload(batchId)}>
 						Upload
 					</Button>
 				</Box>
 			</Box>
 			<List disablePadding>
-				{uploadState.uploads.map((u, i) => (
-					<ListItem key={i}>
+				{batchUploads.map(u => (
+					<ListItem key={u.id}>
 						<ListItemText
 							disableTypography
 							primary={<Typography>{u.file.name}</Typography>}
 							secondary={<LinearProgress variant="determinate" value={(u.loaded / u.total) * 100} />}
 						/>
 						<ListItemSecondaryAction>
-							<IconButton edge="end" disabled={uploadState.uploading} onClick={() => handleRemoveFile(i)}>
+							<IconButton edge="end" disabled={u.state !== 'queued'} onClick={() => handleRemoveFile(batchId, u.id)}>
 								<CloseIcon />
 							</IconButton>
 						</ListItemSecondaryAction>

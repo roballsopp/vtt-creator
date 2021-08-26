@@ -57,7 +57,7 @@ export default new ApolloClient({
 				fields: {
 					nodes: {
 						// Don't cache separate results based on any of this field's arguments.
-						keyArgs: false,
+						keyArgs: ['batchId'],
 						merge(existing, incoming, {args: {offset = 0}}) {
 							const merged = existing ? existing.slice(0) : []
 							for (let i = 0; i < incoming.length; ++i) {

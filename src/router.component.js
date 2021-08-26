@@ -34,7 +34,7 @@ export default function AppRouter() {
 							<Editor />
 						</AuthDialogProvider>
 					</Route>
-					<Route path="/batch-processing" exact>
+					<Route path="/batches/:batchId/edit" exact>
 						<BatchPage />
 					</Route>
 					<Route path="/account" exact>

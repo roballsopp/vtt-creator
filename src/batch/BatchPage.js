@@ -1,10 +1,12 @@
 import * as React from 'react'
+import {useParams} from 'react-router-dom'
 import {Button, Paper} from '@material-ui/core'
 import PageContainer from '../common/PageContainer'
 import {UploadProvider} from './UploadProvider'
-import UploadForm from './UploadForm'
+import BatchTranscriptionTable from './BatchTranscriptionTableContainer'
 
 export default function BatchPage() {
+	const {batchId} = useParams()
 	return (
 		<PageContainer
 			headerRight={
@@ -14,7 +16,7 @@ export default function BatchPage() {
 			}>
 			<UploadProvider>
 				<Paper>
-					<UploadForm />
+					<BatchTranscriptionTable batchId={batchId} />
 				</Paper>
 			</UploadProvider>
 		</PageContainer>
