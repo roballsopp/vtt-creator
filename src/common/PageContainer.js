@@ -1,12 +1,8 @@
 import * as React from 'react'
 import * as PropTypes from 'prop-types'
 import {makeStyles} from '@material-ui/styles'
-import Toolbar from '@material-ui/core/Toolbar'
+import {AppBar, Box, Link, Toolbar, Typography} from '@material-ui/core'
 import {VC as VCIcon} from './icons'
-import Typography from '@material-ui/core/Typography'
-import AppBar from '@material-ui/core/AppBar'
-import Link from '@material-ui/core/Link'
-import Box from '@material-ui/core/Box'
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -29,6 +25,7 @@ const useStyles = makeStyles(theme => ({
 	content: {
 		flex: 1,
 		maxWidth: 960,
+		width: '100%',
 		margin: 'auto',
 		padding: theme.spacing(4),
 	},
