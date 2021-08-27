@@ -2,7 +2,7 @@ import * as React from 'react'
 import PropTypes from 'prop-types'
 import MenuItem from '@material-ui/core/MenuItem'
 import Tooltip from '@material-ui/core/Tooltip'
-import VoiceChatIcon from '@material-ui/icons/VoiceChat'
+import CaptionsIcon from '@material-ui/icons/ClosedCaption'
 import {useVideoFile} from '../../common'
 import {useExtractFromVideo} from './ExtractFromVideoContext'
 
@@ -34,7 +34,7 @@ export default function ExtractFromVideoMenuItem({onOpening, classes}) {
 			<Tooltip title={tooltipText} placement="left" PopperProps={{anchorEl: buttonEl}}>
 				<span>
 					<MenuItem disabled ref={setButtonEl}>
-						<VoiceChatIcon className={classes.menuIcon} />
+						<CaptionsIcon className={classes.menuIcon} />
 						Extract from video...
 					</MenuItem>
 				</span>
@@ -44,7 +44,7 @@ export default function ExtractFromVideoMenuItem({onOpening, classes}) {
 
 	return (
 		<MenuItem onClick={handleClick}>
-			<VoiceChatIcon className={classes.menuIcon} />
+			<CaptionsIcon className={classes.menuIcon} />
 			Extract from video...
 		</MenuItem>
 	)

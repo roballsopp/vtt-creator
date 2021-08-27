@@ -3,8 +3,8 @@ import clsx from 'clsx'
 import {Hidden, Typography} from '@material-ui/core'
 import AddIcon from '@material-ui/icons/AddCircle'
 import MoreIcon from '@material-ui/icons/MoreVert'
-import PublishIcon from '@material-ui/icons/Publish'
-import VoiceChatIcon from '@material-ui/icons/VoiceChat'
+import FolderIcon from '@material-ui/icons/FolderOpen'
+import CaptionsIcon from '@material-ui/icons/ClosedCaption'
 import {makeStyles} from '@material-ui/styles'
 import {useFileSelector, Button, useCueFromFileLoader} from '../common'
 import {ExtractFromVideoButton} from '../editor/CueExtractionButton'
@@ -67,7 +67,7 @@ export default function EmptyState() {
 					</Typography>
 				</div>
 				<div className={clsx(classes.gutterBottom, classes.ie11Fix)}>
-					<Button startIcon={<PublishIcon />} variant="contained" color="secondary" onClick={openFileSelector}>
+					<Button startIcon={<FolderIcon />} variant="contained" color="secondary" onClick={openFileSelector}>
 						Load from file
 					</Button>
 				</div>
@@ -78,7 +78,7 @@ export default function EmptyState() {
 				</div>
 				<div className={clsx(classes.gutterBottom, classes.ie11Fix)}>
 					<ExtractFromVideoButton
-						startIcon={<VoiceChatIcon />}
+						startIcon={<CaptionsIcon />}
 						variant="contained"
 						color="secondary"
 						onClick={openFileSelector}>
