@@ -1,7 +1,7 @@
 import * as React from 'react'
 import PropTypes from 'prop-types'
 import Tooltip from '@material-ui/core/Tooltip'
-import VoiceChatIcon from '@material-ui/icons/VoiceChat'
+import CaptionsIcon from '@material-ui/icons/ClosedCaption'
 import {useVideoFile, Button} from '../../common'
 import {useExtractFromVideo} from './ExtractFromVideoContext'
 
@@ -18,10 +18,10 @@ export default function ExtractFromVideoToolbarButton(props) {
 	if (tooltipText) {
 		// span needed here because tooltips don't activate on disabled elements: https://material-ui.com/components/tooltips/#disabled-elements
 		return (
-			<Tooltip title={tooltipText} placement="left">
+			<Tooltip title={tooltipText}>
 				<span className={props.className}>
 					<Button {...props} disabled>
-						<VoiceChatIcon />
+						<CaptionsIcon />
 					</Button>
 				</span>
 			</Tooltip>
@@ -31,7 +31,7 @@ export default function ExtractFromVideoToolbarButton(props) {
 	return (
 		<Button {...props} name="extract from video toolbar button" onClick={handleCueExtractionDialogOpen}>
 			<Tooltip title="Extract captions from video">
-				<VoiceChatIcon />
+				<CaptionsIcon />
 			</Tooltip>
 		</Button>
 	)
@@ -39,5 +39,5 @@ export default function ExtractFromVideoToolbarButton(props) {
 
 function getTooltipText(loading, videoFile) {
 	if (loading) return 'Please wait...'
-	if (!videoFile) return 'Select a video in the pane to the left to automatically extract captions from.'
+	if (!videoFile) return 'Select a video in the pane to the left, then you can automatically extract captions.'
 }

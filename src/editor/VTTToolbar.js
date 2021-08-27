@@ -17,6 +17,8 @@ const useStyles = makeStyles(theme => ({
 		boxShadow: theme.shadows[3],
 		backgroundImage: `linear-gradient(white, white 30%, #CCCCDD)`,
 		color: theme.palette.grey[700],
+		// raises this just above the vtt editor so the scrollbar is not in front of the toolbar shadow
+		zIndex: 1,
 	},
 	menuIcon: {
 		marginRight: 16,

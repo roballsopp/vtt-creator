@@ -17,7 +17,7 @@ export default function TranslateToolbarButton(props) {
 
 	if (tooltipText) {
 		return (
-			<Tooltip title={tooltipText} placement="left">
+			<Tooltip title={tooltipText}>
 				<span className={props.className}>
 					<Button {...props} disabled>
 						<TranslateIcon />
