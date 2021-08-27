@@ -1,4 +1,5 @@
 import TranslateMenuItem from './TranslateMenuItem'
+import TranslateToolbarButton from './TranslateToolbarButton'
 import {TranslationProvider, useTranslate} from './translation-context'
 
-export {TranslateMenuItem, TranslationProvider, useTranslate}
+export {TranslateMenuItem, TranslateToolbarButton, TranslationProvider, useTranslate}

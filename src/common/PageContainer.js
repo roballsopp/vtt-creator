@@ -33,41 +33,33 @@ const useStyles = makeStyles(theme => ({
 
 PageContainer.propTypes = {
 	children: PropTypes.node.isRequired,
-	headerRight: PropTypes.node,
 }
 
-export default function PageContainer({children, headerRight}) {
+export default function PageContainer({children}) {
 	const classes = useStyles()
 
 	return (
-		<div className={classes.root}>
-			<AppBar position="static" color="primary">
-				<Toolbar>
-					<VCIcon fontSize="large" edge="start" style={{marginRight: 8}} />
-					<Typography variant="h6" color="inherit" style={{flexGrow: 1}}>
-						VTT Creator
-					</Typography>
-					{headerRight}
-				</Toolbar>
-			</AppBar>
-			<div className={classes.scrollContainer}>
-				<main className={classes.content}>{children}</main>
-				<Box component="footer" p={4} display="flex" justifyContent="center">
-					<Typography color="primary" variant="subtitle2">
-						<Link color="inherit" href="/account">
-							Account
-						</Link>
-						&nbsp;|&nbsp;
-						<Link color="inherit" href="/privacy" target="_blank">
-							Privacy
-						</Link>
-						&nbsp;|&nbsp;
-						<Link color="inherit" href="mailto:vttcreator@gmail.com" target="_blank">
-							Contact
-						</Link>
-					</Typography>
-				</Box>
-			</div>
+		<div className={classes.scrollContainer}>
+			<main className={classes.content}>{children}</main>
+			<Box component="footer" p={4} display="flex" justifyContent="center">
+				<Typography color="primary" variant="subtitle2">
+					<Link color="inherit" href="/editor">
+						Editor
+					</Link>
+					&nbsp;|&nbsp;
+					<Link color="inherit" href="/account">
+						Account
+					</Link>
+					&nbsp;|&nbsp;
+					<Link color="inherit" href="/privacy" target="_blank">
+						Privacy
+					</Link>
+					&nbsp;|&nbsp;
+					<Link color="inherit" href="mailto:vttcreator@gmail.com" target="_blank">
+						Contact
+					</Link>
+				</Typography>
+			</Box>
 		</div>
 	)
 }

@@ -16,6 +16,7 @@ import VTTEditor from '../vtt-editor'
 import {ExtractFromVideoProvider} from './CueExtractionButton'
 import {TranslationProvider} from './TranslateButton'
 import VttMenu from './vtt-menu.component'
+import VTTToolbar from './VTTToolbar'
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -80,22 +81,11 @@ export default function Editor() {
 														</div>
 														<div className={classes.drawer}>
 															<Hidden smDown>
-																<AppBar position="static" color="primary">
-																	<Toolbar>
-																		<VCIcon fontSize="large" edge="start" style={{marginRight: 8}} />
-																		<Typography variant="h6" color="inherit" style={{flexGrow: 1}}>
-																			VTT Creator
-																		</Typography>
-																		<VttMenu />
-																	</Toolbar>
-																</AppBar>
+																<VTTToolbar />
 															</Hidden>
 															<VTTEditor />
 														</div>
 													</main>
-													<Hidden smDown>
-														<Footer />
-													</Hidden>
 												</div>
 											</TranslationProvider>
 										</ExtractFromVideoProvider>
