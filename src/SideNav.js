@@ -1,6 +1,7 @@
 import React from 'react'
 import clsx from 'clsx'
 import {useHistory} from 'react-router-dom'
+import {gql, useMutation} from '@apollo/client'
 import {Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, Tooltip} from '@material-ui/core'
 import AccountIcon from '@material-ui/icons/AccountCircle'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
@@ -14,6 +15,7 @@ import {makeStyles} from '@material-ui/styles'
 import {SIDE_NAV_WIDTH, useSideNav} from './NavProvider'
 import {useAuthDialog} from './AuthDialog'
 import {useUser} from './common/UserContext'
+import {TranscriptionCost} from './config'
 
 const useStyles = makeStyles(theme => ({
 	drawer: {
@@ -86,6 +88,31 @@ export default function SideNav() {
 		setSideNavOpen(false)
 	}
 
+	const [createBatch, {loading: creatingBatch}] = useMutation(gql`
+		mutation createBatch {
+			createBatch(jobType: "transcription") {
+				batch {
+					id
+				}
+			}
+		}
+	`)
+
+	const handleClickBatchTranscription = () => {
+		createBatch()
+			.then(({data}) => {
+				setSideNavOpen(false)
+				history.push(`/batches/${data.createBatch.batch.id}/edit`)
+			})
+			.catch(() => {
+				openLoginDialog(
+					`Automatic caption extraction costs $${TranscriptionCost.toFixed(
+						2
+					)} per minute of video and requires an account. Please login or sign up below.`
+				)
+			})
+	}
+
 	return (
 		<Drawer
 			className={clsx(classes.drawer, {
@@ -124,7 +151,7 @@ export default function SideNav() {
 					</Tooltip>
 					<ListItemText primary="Caption Editor" />
 				</ListItem>
-				<ListItem button onClick={handleClickEditor}>
+				<ListItem disabled={creatingBatch} button onClick={handleClickBatchTranscription}>
 					<Tooltip title="Batch Transcribe">
 						<ListItemIcon>
 							<CaptionsIcon />
