@@ -38,6 +38,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-flip-move": "^3.0.4",
+    "react-infinite-scroll-component": "^6.1.0",
     "react-router-dom": "^5.2.0",
     "regenerator-runtime": "^0.13.3",
     "simple-icons": "^1.11.0",

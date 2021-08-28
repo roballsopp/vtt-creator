@@ -21,6 +21,10 @@ const useStyles = makeStyles(theme => ({
 	},
 }))
 
+const PageContext = React.createContext({
+	pageContainerRef: React.createRef(),
+})
+
 PageContainer.propTypes = {
 	children: PropTypes.node.isRequired,
 }
@@ -28,9 +32,13 @@ PageContainer.propTypes = {
 export default function PageContainer({children}) {
 	const classes = useStyles()
 
+	const pageContainerRef = React.useRef(null)
+
 	return (
-		<div className={classes.scrollContainer}>
-			<main className={classes.content}>{children}</main>
+		<div className={classes.scrollContainer} ref={pageContainerRef}>
+			<main className={classes.content}>
+				<PageContext.Provider value={{pageContainerRef}}>{children}</PageContext.Provider>
+			</main>
 			<Box component="footer" p={4} display="flex" justifyContent="center">
 				<Typography color="primary" variant="subtitle2">
 					<Link color="inherit" href="/editor">
@@ -52,4 +60,8 @@ export default function PageContainer({children}) {
 			</Box>
 		</div>
 	)
+}
+
+export function usePage() {
+	return React.useContext(PageContext)
 }

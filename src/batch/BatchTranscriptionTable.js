@@ -3,11 +3,13 @@ import PropTypes from 'prop-types'
 import {
 	Box,
 	Button,
+	List,
+	ListItem,
+	ListItemText,
 	Table,
 	TableBody,
 	TableCell,
 	TableContainer,
-	TableFooter,
 	TableHead,
 	TableRow,
 	Toolbar,
@@ -15,16 +17,14 @@ import {
 } from '@material-ui/core'
 import FolderIcon from '@material-ui/icons/FolderOpen'
 import {useFileSelector} from '../common'
-import {
-	BatchTranscriptionTable_jobsFragment,
-	BatchTranscriptionTable_totalsFragment,
-} from './BatchTranscriptionTable.graphql'
+import {BatchTranscriptionTable_jobsFragment} from './BatchTranscriptionTable.graphql'
 import UploadDialog from './UploadDialog'
 import {useUpload} from './UploadProvider'
+import BatchTranscriptionRow from './BatchTranscriptionRow'
+import BatchLanguageSelector from './BatchLanguageSelector'
 
 BatchTranscriptionTable.fragments = {
 	jobs: BatchTranscriptionTable_jobsFragment,
-	totals: BatchTranscriptionTable_totalsFragment,
 }
 
 BatchTranscriptionTable.propTypes = {
@@ -44,13 +44,9 @@ BatchTranscriptionTable.propTypes = {
 			}).isRequired,
 		}).isRequired
 	).isRequired,
-	totals: PropTypes.shape({
-		totalCost: PropTypes.number.isRequired,
-		totalDuration: PropTypes.number.isRequired,
-	}).isRequired,
 }
 
-export default function BatchTranscriptionTable({batchId, jobs, totals}) {
+export default function BatchTranscriptionTable({batchId, jobs}) {
 	const {handleAddFiles} = useUpload()
 
 	const [uploadDialogOpen, setUploadDialogOpen] = React.useState(false)
@@ -72,56 +68,50 @@ export default function BatchTranscriptionTable({batchId, jobs, totals}) {
 
 	return (
 		<React.Fragment>
-			<Toolbar>
-				<Typography variant="h6">Batch Transcription Summary</Typography>
-				<Box flex={1} />
-				{jobs.length ? (
-					<Button variant="contained" color="secondary" startIcon={<FolderIcon />} onClick={openFileSelector}>
+			{jobs.length ? (
+				<Toolbar>
+					<Button
+						variant="contained"
+						color="secondary"
+						size="large"
+						startIcon={<FolderIcon />}
+						onClick={openFileSelector}>
 						Select Videos
 					</Button>
-				) : null}
-			</Toolbar>
+					<Box flex={1} />
+					<BatchLanguageSelector batchId={batchId} />
+				</Toolbar>
+			) : null}
 			<TableContainer>
 				<Table>
-					<TableHead>
-						<TableRow>
-							<TableCell>File name</TableCell>
-							<TableCell align="center">Language</TableCell>
-							<TableCell align="right">Cost Per Min</TableCell>
-							<TableCell align="right">Duration (minutes)</TableCell>
-							<TableCell align="right">Job Cost</TableCell>
-						</TableRow>
-					</TableHead>
 					<TableBody>
 						{jobs.map(job => {
-							return (
-								<TableRow key={job.inputFile.id}>
-									<TableCell>
-										<Box textOverflow="ellipsis" whiteSpace="nowrap" overflow="hidden" width={300}>
-											{job.inputFile.originalFileName}
-										</Box>
-									</TableCell>
-									<TableCell align="center">{job.language}</TableCell>
-									<TableCell align="right">${job.pricePerMin.toFixed(2)}</TableCell>
-									<TableCell align="right">{(job.fileDuration / 60).toFixed(1)}</TableCell>
-									<TableCell align="right">${job.cost.toFixed(2)}</TableCell>
-								</TableRow>
-							)
+							return <BatchTranscriptionRow job={job} key={job.inputFile.id} />
 						})}
 						{!jobs.length && (
 							<TableRow>
-								<TableCell colSpan={5}>
+								<TableCell colSpan={2}>
 									<Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" py={4} px={10}>
 										<Typography paragraph align="center">
 											Have a large number of videos you&apos;d like to automatically extract captions for? You&apos;ve
 											come to the right place!
 										</Typography>
-										<Typography paragraph align="center">
-											Select some video files from your computer below to get started. Once your files have uploaded,
-											you&apos;ll be able to select the language each video is spoken in, and see the total cost of
-											extracting captions from all of the videos you&apos;ve selected before we start extracting
-											captions.
-										</Typography>
+										<List>
+											<ListItem>
+												<ListItemText primary="1. Select some video files to upload from your computer below." />
+											</ListItem>
+											<ListItem>
+												<ListItemText primary="2. Once your files have uploaded, select the language each video is spoken in." />
+											</ListItem>
+											<ListItem>
+												<ListItemText primary="3. Review the total cost of the extraction job at the bottom of this table." />
+											</ListItem>
+											<ListItem>
+												<ListItemText
+													primary={'4. Click "Start Transcription", and wait for your transcription to complete.'}
+												/>
+											</ListItem>
+										</List>
 										<Box marginTop={4}>
 											<Button
 												variant="contained"
@@ -137,15 +127,6 @@ export default function BatchTranscriptionTable({batchId, jobs, totals}) {
 							</TableRow>
 						)}
 					</TableBody>
-					<TableFooter>
-						<TableRow>
-							<TableCell colSpan={3} align="right">
-								Total
-							</TableCell>
-							<TableCell align="right">{(totals.totalDuration / 60).toFixed(1)}</TableCell>
-							<TableCell align="right">${totals.totalCost.toFixed(2)}</TableCell>
-						</TableRow>
-					</TableFooter>
 				</Table>
 			</TableContainer>
 			<UploadDialog
