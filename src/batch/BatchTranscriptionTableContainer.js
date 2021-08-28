@@ -6,11 +6,14 @@ import BatchTranscriptionTable from './BatchTranscriptionTable'
 import {handleError} from '../services/error-handler.service'
 import {BatchTranscriptionTableGetJobsQuery} from './BatchTranscriptionTable.graphql'
 import {usePage} from '../common/PageContainer'
+import BatchTranscriptionCheckoutSummary from './BatchTranscriptionCheckoutSummary'
 
 export default function BatchTranscriptionTableContainer({batchId}) {
 	const {pageContainerRef} = usePage()
 
 	const {loading, data, previousData, fetchMore} = useQuery(BatchTranscriptionTableGetJobsQuery, {
+		// TODO: this is seemingly necessary when there are no jobs yet
+		fetchPolicy: 'network-only',
 		variables: {
 			batchId,
 			offset: 0,
@@ -72,37 +75,11 @@ export default function BatchTranscriptionTableContainer({batchId}) {
 			</Grid>
 			<Grid item xs={12} md={4}>
 				<Paper style={{position: 'sticky', top: 16}}>
-					<Box p={4}>
-						<Grid container spacing={4}>
-							<Grid item xs={12}>
-								<Typography variant="h6">Order Summary</Typography>
-							</Grid>
-							<Grid item xs={12}>
-								<Typography variant="body2">The amount shown below will be deducted from your site credit.</Typography>
-							</Grid>
-							<Grid item xs={12}>
-								<Typography variant="body2">
-									You won&apos;t be charged the entire amount right away, but rather you&apos;ll be charged for
-									individual jobs as they complete successfully.
-								</Typography>
-							</Grid>
-							<Grid item xs={12}>
-								<Typography variant="body2">You will not be charged for any job that fails.</Typography>
-							</Grid>
-							<Grid container item xs={12} justifyContent="space-between">
-								<Typography variant="h6">Total cost:</Typography>
-								<Typography variant="h6" align="right">
-									${transcriptionJobsConn.aggregate.totalCost.toFixed(2)}
-								</Typography>
-							</Grid>
-							<Grid container item xs={12} justifyContent="space-between">
-								<Button>Cancel</Button>
-								<Button variant="contained" color="secondary" disabled={!transcriptionJobs.length}>
-									Start Transcribing
-								</Button>
-							</Grid>
-						</Grid>
-					</Box>
+					<BatchTranscriptionCheckoutSummary
+						batchId={batchId}
+						totalCost={transcriptionJobsConn.aggregate.totalCost}
+						batchHasJobs={Boolean(transcriptionJobs.length)}
+					/>
 				</Paper>
 			</Grid>
 		</Grid>

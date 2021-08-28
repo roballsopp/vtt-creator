@@ -39,3 +39,25 @@ export const BatchJobHistoryTableGetBatchJobsQuery = gql`
 	}
 	${BatchJobHistoryTable_batchJobsFragment}
 `
+
+export function removeBatch(cache, batchId) {
+	const data = cache.readQuery({
+		query: BatchJobHistoryTableGetBatchJobsQuery,
+		variables: {offset: 0, limit: 10},
+	})
+
+	if (data) {
+		const nodes = data.batchJobs.nodes.filter(b => b.id !== batchId)
+		cache.writeQuery({
+			query: BatchJobHistoryTableGetBatchJobsQuery,
+			data: {
+				...data,
+				batchJobs: {
+					...data.batchJobs,
+					nodes,
+					totalCount: data.batchJobs.totalCount - 1,
+				},
+			},
+		})
+	}
+}
