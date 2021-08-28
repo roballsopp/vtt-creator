@@ -59,3 +59,23 @@ export function appendJobToBatch(cache, batchId, job) {
 		})
 	}
 }
+
+export function updateBatchLanguage(cache, batchId, newLanguage) {
+	const data = cache.readQuery({
+		query: BatchTranscriptionTableGetJobsQuery,
+		variables: {batchId, offset: 0, limit: 100000},
+	})
+
+	if (data) {
+		cache.writeQuery({
+			query: BatchTranscriptionTableGetJobsQuery,
+			data: {
+				...data,
+				transcriptionJobs: {
+					...data.transcriptionJobs,
+					nodes: data.transcriptionJobs.nodes.map(n => ({...n, language: newLanguage})),
+				},
+			},
+		})
+	}
+}
