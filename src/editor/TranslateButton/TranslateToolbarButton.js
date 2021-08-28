@@ -29,7 +29,7 @@ export default function TranslateToolbarButton(props) {
 
 	return (
 		<Button {...props} name="translate toolbar button" onClick={handleTranslationDialogOpen}>
-			<Tooltip title="Translate captions...">
+			<Tooltip title="Translate captions">
 				<TranslateIcon />
 			</Tooltip>
 		</Button>

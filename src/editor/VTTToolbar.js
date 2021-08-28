@@ -15,7 +15,7 @@ import {getSRTFromCues} from '../services/srt.service'
 const useStyles = makeStyles(theme => ({
 	root: {
 		boxShadow: theme.shadows[3],
-		backgroundImage: `linear-gradient(white, white 30%, #CCCCDD)`,
+		backgroundImage: `linear-gradient(#EEE, #EEE 30%, #CCC)`,
 		color: theme.palette.grey[700],
 		// raises this just above the vtt editor so the scrollbar is not in front of the toolbar shadow
 		zIndex: 1,
