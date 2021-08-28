@@ -10,9 +10,7 @@ import {
 	TableBody,
 	TableCell,
 	TableContainer,
-	TableHead,
 	TableRow,
-	Toolbar,
 	Typography,
 } from '@material-ui/core'
 import FolderIcon from '@material-ui/icons/FolderOpen'
@@ -69,18 +67,20 @@ export default function BatchTranscriptionTable({batchId, jobs}) {
 	return (
 		<React.Fragment>
 			{jobs.length ? (
-				<Toolbar>
-					<Button
-						variant="contained"
-						color="secondary"
-						size="large"
-						startIcon={<FolderIcon />}
-						onClick={openFileSelector}>
-						Select Videos
-					</Button>
+				<Box display="flex" px={4} alignItems="center">
+					<Box>
+						<Button
+							variant="contained"
+							color="secondary"
+							size="large"
+							startIcon={<FolderIcon />}
+							onClick={openFileSelector}>
+							Add More Videos
+						</Button>
+					</Box>
 					<Box flex={1} />
 					<BatchLanguageSelector batchId={batchId} />
-				</Toolbar>
+				</Box>
 			) : null}
 			<TableContainer>
 				<Table>
@@ -91,10 +91,9 @@ export default function BatchTranscriptionTable({batchId, jobs}) {
 						{!jobs.length && (
 							<TableRow>
 								<TableCell colSpan={2}>
-									<Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" py={4} px={10}>
-										<Typography paragraph align="center">
-											Have a large number of videos you&apos;d like to automatically extract captions for? You&apos;ve
-											come to the right place!
+									<Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" px={10}>
+										<Typography align="center" variant="h6">
+											Welcome!
 										</Typography>
 										<List>
 											<ListItem>
@@ -104,11 +103,11 @@ export default function BatchTranscriptionTable({batchId, jobs}) {
 												<ListItemText primary="2. Once your files have uploaded, select the language each video is spoken in." />
 											</ListItem>
 											<ListItem>
-												<ListItemText primary="3. Review the total cost of the extraction job at the bottom of this table." />
+												<ListItemText primary="3. Review the total cost of the batch extraction job to the right." />
 											</ListItem>
 											<ListItem>
 												<ListItemText
-													primary={'4. Click "Start Transcription", and wait for your transcription to complete.'}
+													primary={'4. Click "Start Transcribing", and wait for your transcription to complete.'}
 												/>
 											</ListItem>
 										</List>
