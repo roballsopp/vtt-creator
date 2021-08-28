@@ -38,3 +38,24 @@ export const BatchTranscriptionTableGetJobsQuery = gql`
 	${BatchTranscriptionTable_jobsFragment}
 	${BatchTranscriptionTable_totalsFragment}
 `
+
+export function appendJobToBatch(cache, batchId, job) {
+	const data = cache.readQuery({
+		query: BatchTranscriptionTableGetJobsQuery,
+		variables: {batchId, offset: 0, limit: 100000},
+	})
+
+	if (data) {
+		const nodes = [job, ...(data.transcriptionJobs?.nodes || [])]
+		cache.writeQuery({
+			query: BatchTranscriptionTableGetJobsQuery,
+			data: {
+				...data,
+				transcriptionJobs: {
+					...data.transcriptionJobs,
+					nodes,
+				},
+			},
+		})
+	}
+}

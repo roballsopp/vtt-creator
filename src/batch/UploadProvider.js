@@ -6,6 +6,7 @@ import {gql, useApolloClient} from '@apollo/client'
 import {uploadFile} from '../services/rest-api.service'
 import {handleError} from '../services/error-handler.service'
 import EventEmitter from 'events'
+import {appendJobToBatch, BatchTranscriptionTable_jobsFragment} from './BatchTranscriptionTable.graphql'
 
 const UploadContext = React.createContext({
 	uploadState: {},
@@ -191,19 +192,20 @@ export function UploadProvider({children}) {
 								id
 							}
 							job {
-								id
-								state
-								inputFile {
-									id
-								}
+								...BatchTranscriptionTable_jobs
 							}
 						}
 					}
+					${BatchTranscriptionTable_jobsFragment}
 				`,
 				variables: {
 					batchId,
 					fileUploadId,
 					languageCode: 'en-US',
+				},
+				update(cache, {data: {addVideoTranscriptionToBatch}}) {
+					const {batch, job} = addVideoTranscriptionToBatch
+					appendJobToBatch(cache, batch.id, job)
 				},
 			})
 
