@@ -2,9 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {useMutation, gql} from '@apollo/client'
 import {useHistory} from 'react-router-dom'
-import {Box, Button, Grid, Typography} from '@material-ui/core'
+import {Box, Grid, Typography} from '@material-ui/core'
 import {handleError} from '../services/error-handler.service'
-import {useToast} from '../common'
+import {Button, useToast} from '../common'
 import {removeBatch} from '../account/BatchJobHistoryTable.graphql'
 
 BatchTranscriptionCheckoutSummary.propTypes = {
@@ -32,6 +32,19 @@ export default function BatchTranscriptionCheckoutSummary({batchId, totalCost, b
 		}
 	)
 
+	const [startBatch, {loading: starting}] = useMutation(
+		gql`
+			mutation startBatch($batchId: String!) {
+				startBatch(batchId: $batchId) {
+					batch {
+						id
+						startedAt
+					}
+				}
+			}
+		`
+	)
+
 	const handleCancelBatch = async () => {
 		cancelBatch({variables: {batchId}})
 			.then(() => {
@@ -39,6 +52,17 @@ export default function BatchTranscriptionCheckoutSummary({batchId, totalCost, b
 			})
 			.catch(err => {
 				toast.error('There was a problem cancelling this batch. Please try again.')
+				handleError(err)
+			})
+	}
+
+	const handleStartBatch = async () => {
+		startBatch({variables: {batchId}})
+			.then(() => {
+				// history.push('/account')
+			})
+			.catch(err => {
+				toast.error('There was a problem starting this batch. Please try again.')
 				handleError(err)
 			})
 	}
@@ -68,10 +92,15 @@ export default function BatchTranscriptionCheckoutSummary({batchId, totalCost, b
 					</Typography>
 				</Grid>
 				<Grid container item xs={12} justifyContent="space-between">
-					<Button color="primary" disabled={cancelling} onClick={handleCancelBatch}>
+					<Button color="primary" disabled={starting} loading={cancelling} onClick={handleCancelBatch}>
 						Cancel
 					</Button>
-					<Button variant="contained" color="secondary" disabled={!batchHasJobs}>
+					<Button
+						variant="contained"
+						color="secondary"
+						disabled={!batchHasJobs || cancelling}
+						loading={starting}
+						onClick={handleStartBatch}>
 						Start Transcribing
 					</Button>
 				</Grid>
