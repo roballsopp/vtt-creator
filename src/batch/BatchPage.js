@@ -8,12 +8,7 @@ import BatchTranscriptionTable from './BatchTranscriptionTableContainer'
 export default function BatchPage() {
 	const {batchId} = useParams()
 	return (
-		<PageContainer
-			headerRight={
-				<Button color="secondary" variant="contained" href="/editor">
-					Editor
-				</Button>
-			}>
+		<PageContainer>
 			<UploadProvider>
 				<Paper>
 					<BatchTranscriptionTable batchId={batchId} />

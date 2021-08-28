@@ -35,12 +35,7 @@ export default function AccountPage({user, transcriptionRate, translationRate}) 
 	}
 
 	return (
-		<PageContainer
-			headerRight={
-				<Button color="secondary" variant="contained" href="/editor">
-					Editor
-				</Button>
-			}>
+		<PageContainer>
 			<Grid container spacing={6}>
 				<Grid item container xs={12}>
 					<Box display="flex" flex={1} alignItems="center">
