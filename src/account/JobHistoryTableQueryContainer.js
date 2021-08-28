@@ -8,6 +8,9 @@ import {JobHistoryTableGetJobsQuery} from './JobHistoryTable.graphql'
 export default function JobHistoryTableQueryContainer() {
 	const [pageSize, setPageSize] = React.useState(10)
 	const [page, setPage] = React.useState(0)
+	const [jobConn, setJobConn] = React.useState({})
+
+	const offset = page * pageSize
 
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage)
@@ -18,15 +21,20 @@ export default function JobHistoryTableQueryContainer() {
 		setPage(0)
 	}
 
-	const {loading, data, previousData} = useQuery(JobHistoryTableGetJobsQuery, {
+	const {loading} = useQuery(JobHistoryTableGetJobsQuery, {
 		variables: {
-			offset: page * pageSize,
+			offset,
 			limit: pageSize,
 		},
 		onError: err => handleError(err),
+		onCompleted: ({transcriptionJobs}) => {
+			setJobConn({
+				...transcriptionJobs,
+				nodes: transcriptionJobs.nodes.slice(offset, offset + pageSize),
+			})
+		},
 	})
 
-	const jobConn = data?.transcriptionJobs || previousData?.transcriptionJobs
 	const jobs = React.useMemo(() => jobConn?.nodes || [], [jobConn])
 	const totalCount = React.useMemo(() => jobConn?.totalCount || 0, [jobConn])
 

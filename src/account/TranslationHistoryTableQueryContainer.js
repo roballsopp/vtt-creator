@@ -8,6 +8,9 @@ import {TranslationHistoryTableGetTranslationsQuery} from './TranslationHistoryT
 export default function TranslationHistoryTableQueryContainer() {
 	const [pageSize, setPageSize] = React.useState(10)
 	const [page, setPage] = React.useState(0)
+	const [translationsConn, setTranslationsConn] = React.useState({})
+
+	const offset = page * pageSize
 
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage)
@@ -18,15 +21,20 @@ export default function TranslationHistoryTableQueryContainer() {
 		setPage(0)
 	}
 
-	const {loading, data, previousData} = useQuery(TranslationHistoryTableGetTranslationsQuery, {
+	const {loading} = useQuery(TranslationHistoryTableGetTranslationsQuery, {
 		variables: {
-			offset: page * pageSize,
+			offset,
 			limit: pageSize,
 		},
 		onError: err => handleError(err),
+		onCompleted: ({translations}) => {
+			setTranslationsConn({
+				...translations,
+				nodes: translations.nodes.slice(offset, offset + pageSize),
+			})
+		},
 	})
 
-	const translationsConn = data?.translations || previousData?.translations
 	const translations = React.useMemo(() => translationsConn?.nodes || [], [translationsConn])
 	const totalCount = React.useMemo(() => translationsConn?.totalCount || 0, [translationsConn])
 

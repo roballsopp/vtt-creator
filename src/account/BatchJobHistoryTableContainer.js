@@ -8,6 +8,9 @@ import {BatchJobHistoryTableGetBatchJobsQuery} from './BatchJobHistoryTable.grap
 export default function BatchJobHistoryTableQueryContainer() {
 	const [pageSize, setPageSize] = React.useState(10)
 	const [page, setPage] = React.useState(0)
+	const [batchJobsConn, setBatchJobsConn] = React.useState({})
+
+	const offset = page * pageSize
 
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage)
@@ -18,15 +21,20 @@ export default function BatchJobHistoryTableQueryContainer() {
 		setPage(0)
 	}
 
-	const {loading, data, previousData} = useQuery(BatchJobHistoryTableGetBatchJobsQuery, {
+	const {loading} = useQuery(BatchJobHistoryTableGetBatchJobsQuery, {
 		variables: {
-			offset: page * pageSize,
+			offset,
 			limit: pageSize,
 		},
 		onError: err => handleError(err),
+		onCompleted: ({batchJobs}) => {
+			setBatchJobsConn({
+				...batchJobs,
+				nodes: batchJobs.nodes.slice(offset, offset + pageSize),
+			})
+		},
 	})
 
-	const batchJobsConn = data?.batchJobs || previousData?.batchJobs
 	const batchJobs = React.useMemo(() => batchJobsConn?.nodes || [], [batchJobsConn])
 	const totalCount = React.useMemo(() => batchJobsConn?.totalCount || 0, [batchJobsConn])
 
