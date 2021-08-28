@@ -1,26 +1,16 @@
 import * as React from 'react'
 import * as PropTypes from 'prop-types'
 import {makeStyles} from '@material-ui/styles'
-import {AppBar, Box, Link, Toolbar, Typography} from '@material-ui/core'
-import {VC as VCIcon} from './icons'
+import {Box, Link, Typography} from '@material-ui/core'
 
 const useStyles = makeStyles(theme => ({
-	root: {
-		display: 'flex',
-		flexDirection: 'column',
-		position: 'absolute',
-		top: 0,
-		right: 0,
-		bottom: 0,
-		left: 0,
-	},
 	scrollContainer: {
 		display: 'flex',
 		flexDirection: 'column',
-		flex: 1,
 		minHeight: 0,
 		minWidth: 0,
 		overflow: 'auto',
+		height: '100%',
 	},
 	content: {
 		flex: 1,
