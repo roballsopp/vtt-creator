@@ -1,6 +1,6 @@
 import * as React from 'react'
 import PropTypes from 'prop-types'
-import {Box, TableCell, TableRow, Tooltip, Typography} from '@material-ui/core'
+import {TableCell, TableRow, Tooltip, Typography} from '@material-ui/core'
 import TranscriptionLanguageSelector from './TranscriptionLanguageSelector'
 
 BatchTranscriptionRow.propTypes = {

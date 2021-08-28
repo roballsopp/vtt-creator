@@ -11,8 +11,6 @@ export default function BatchTranscriptionTableContainer({batchId}) {
 	const {pageContainerRef} = usePage()
 
 	const {loading, data, previousData, fetchMore} = useQuery(BatchTranscriptionTableGetJobsQuery, {
-		// TODO: wtf
-		fetchPolicy: 'network-only',
 		variables: {
 			batchId,
 			offset: 0,
@@ -62,11 +60,7 @@ export default function BatchTranscriptionTableContainer({batchId}) {
 								</Box>
 							}
 							scrollableTarget={pageContainerRef.current}>
-							<BatchTranscriptionTable
-								batchId={batchId}
-								jobs={transcriptionJobs}
-								totals={transcriptionJobsConn.aggregate}
-							/>
+							<BatchTranscriptionTable batchId={batchId} jobs={transcriptionJobs} />
 						</InfiniteScroll>
 						{loading && (
 							<Box position="absolute" bottom={0} left={0} right={0}>

@@ -62,8 +62,7 @@ export default function BatchLanguageSelector({batchId}) {
 	}
 
 	const renderSelectDisplay = languageCode => {
-		if (!languageCode) return 'Select batch language...'
-		if (!supportedLanguages.length) return 'Select batch language...'
+		if (!languageCode || !supportedLanguages.length) return 'Set language for all...'
 		return supportedLanguages.find(l => l.value === languageCode).display
 	}
 
