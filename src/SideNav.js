@@ -1,7 +1,6 @@
 import React from 'react'
 import clsx from 'clsx'
 import {useHistory} from 'react-router-dom'
-import {gql, useMutation} from '@apollo/client'
 import {Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, Tooltip} from '@material-ui/core'
 import AccountIcon from '@material-ui/icons/AccountCircle'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
@@ -15,7 +14,7 @@ import {makeStyles} from '@material-ui/styles'
 import {SIDE_NAV_WIDTH, useSideNav} from './NavProvider'
 import {useAuthDialog} from './AuthDialog'
 import {useUser} from './common/UserContext'
-import {TranscriptionCost} from './config'
+import CreateBatchDialog from './CreateBatchDialog'
 
 const useStyles = makeStyles(theme => ({
 	drawer: {
@@ -63,6 +62,8 @@ export default function SideNav() {
 	const {openLoginDialog, openSignupDialog} = useAuthDialog()
 	const {userLoading, user} = useUser()
 
+	const [openCreateBatchDialog, setOpenCreateBatchDialog] = React.useState(false)
+
 	const handleClickEditor = () => {
 		history.push('/editor')
 		setSideNavOpen(false)
@@ -88,132 +89,119 @@ export default function SideNav() {
 		setSideNavOpen(false)
 	}
 
-	const [createBatch, {loading: creatingBatch}] = useMutation(gql`
-		mutation createBatch {
-			createBatch(jobType: "transcription") {
-				batch {
-					id
-				}
-			}
-		}
-	`)
+	const handleOpenCreateBatchDialog = () => {
+		setSideNavOpen(false)
+		setOpenCreateBatchDialog(true)
+	}
 
-	const handleClickBatchTranscription = () => {
-		createBatch()
-			.then(({data}) => {
-				setSideNavOpen(false)
-				history.push(`/batches/${data.createBatch.batch.id}/edit`)
-			})
-			.catch(() => {
-				openLoginDialog(
-					`Automatic caption extraction costs $${TranscriptionCost.toFixed(
-						2
-					)} per minute of video and requires an account. Please login or sign up below.`
-				)
-			})
+	const handleCloseCreateBatchDialog = () => {
+		setOpenCreateBatchDialog(false)
 	}
 
 	return (
-		<Drawer
-			className={clsx(classes.drawer, {
-				[classes.drawerOpen]: sideNavOpen,
-				[classes.drawerClose]: !sideNavOpen,
-			})}
-			variant="permanent"
-			anchor="left"
-			open={sideNavOpen}
-			classes={{
-				paper: clsx(classes.drawerPaper, {
+		<React.Fragment>
+			<Drawer
+				className={clsx(classes.drawer, {
 					[classes.drawerOpen]: sideNavOpen,
 					[classes.drawerClose]: !sideNavOpen,
-				}),
-			}}
-			SlideProps={{
-				onEnter: e => sideNavEvents.emit('enter', e),
-				onEntering: e => sideNavEvents.emit('entering', e),
-				onEntered: e => sideNavEvents.emit('entered', e),
-				onExit: e => sideNavEvents.emit('exit', e),
-				onExiting: e => sideNavEvents.emit('exiting', e),
-				onExited: e => sideNavEvents.emit('exited', e),
-			}}>
-			<div className={classes.drawerHeader}>
-				<IconButton color="inherit" onClick={() => setSideNavOpen(false)}>
-					<ChevronLeftIcon />
-				</IconButton>
-			</div>
-			<Divider />
-			<List>
-				<ListItem button onClick={handleClickEditor}>
-					<Tooltip title="Caption Editor">
-						<ListItemIcon>
-							<EditIcon />
-						</ListItemIcon>
-					</Tooltip>
-					<ListItemText primary="Caption Editor" />
-				</ListItem>
-				<ListItem disabled={creatingBatch} button onClick={handleClickBatchTranscription}>
-					<Tooltip title="Batch Transcribe">
-						<ListItemIcon>
-							<CaptionsIcon />
-						</ListItemIcon>
-					</Tooltip>
-					<ListItemText primary="Batch Transcribe" />
-				</ListItem>
-				<ListItem button onClick={handleClickEditor}>
-					<Tooltip title="Batch Translate">
-						<ListItemIcon>
-							<TranslateIcon />
-						</ListItemIcon>
-					</Tooltip>
-					<ListItemText primary="Batch Translate" />
-				</ListItem>
-				{Boolean(!userLoading && !user) && (
-					<React.Fragment>
-						<ListItem button onClick={handleClickLogin}>
-							<Tooltip title="Login">
+				})}
+				variant="permanent"
+				anchor="left"
+				open={sideNavOpen}
+				classes={{
+					paper: clsx(classes.drawerPaper, {
+						[classes.drawerOpen]: sideNavOpen,
+						[classes.drawerClose]: !sideNavOpen,
+					}),
+				}}
+				SlideProps={{
+					onEnter: e => sideNavEvents.emit('enter', e),
+					onEntering: e => sideNavEvents.emit('entering', e),
+					onEntered: e => sideNavEvents.emit('entered', e),
+					onExit: e => sideNavEvents.emit('exit', e),
+					onExiting: e => sideNavEvents.emit('exiting', e),
+					onExited: e => sideNavEvents.emit('exited', e),
+				}}>
+				<div className={classes.drawerHeader}>
+					<IconButton color="inherit" onClick={() => setSideNavOpen(false)}>
+						<ChevronLeftIcon />
+					</IconButton>
+				</div>
+				<Divider />
+				<List>
+					<ListItem button onClick={handleClickEditor}>
+						<Tooltip title="Caption Editor">
+							<ListItemIcon>
+								<EditIcon />
+							</ListItemIcon>
+						</Tooltip>
+						<ListItemText primary="Caption Editor" />
+					</ListItem>
+					<ListItem button onClick={handleOpenCreateBatchDialog}>
+						<Tooltip title="Batch Transcribe">
+							<ListItemIcon>
+								<CaptionsIcon />
+							</ListItemIcon>
+						</Tooltip>
+						<ListItemText primary="Batch Transcribe" />
+					</ListItem>
+					<ListItem button onClick={handleClickEditor}>
+						<Tooltip title="Batch Translate">
+							<ListItemIcon>
+								<TranslateIcon />
+							</ListItemIcon>
+						</Tooltip>
+						<ListItemText primary="Batch Translate" />
+					</ListItem>
+					{Boolean(!userLoading && !user) && (
+						<React.Fragment>
+							<ListItem button onClick={handleClickLogin}>
+								<Tooltip title="Login">
+									<ListItemIcon>
+										<AccountIcon />
+									</ListItemIcon>
+								</Tooltip>
+								<ListItemText primary="Login" />
+							</ListItem>
+							<ListItem button onClick={handleClickSignUp}>
+								<Tooltip title="Sign Up">
+									<ListItemIcon>
+										<SignUpIcon />
+									</ListItemIcon>
+								</Tooltip>
+								<ListItemText primary="Sign Up" />
+							</ListItem>
+						</React.Fragment>
+					)}
+					{Boolean(userLoading || user) && (
+						<ListItem button onClick={handleClickAccount} disabled={userLoading}>
+							<Tooltip title="Account">
 								<ListItemIcon>
 									<AccountIcon />
 								</ListItemIcon>
 							</Tooltip>
-							<ListItemText primary="Login" />
+							<ListItemText primary="Account" />
 						</ListItem>
-						<ListItem button onClick={handleClickSignUp}>
-							<Tooltip title="Sign Up">
-								<ListItemIcon>
-									<SignUpIcon />
-								</ListItemIcon>
-							</Tooltip>
-							<ListItemText primary="Sign Up" />
-						</ListItem>
-					</React.Fragment>
-				)}
-				{Boolean(userLoading || user) && (
-					<ListItem button onClick={handleClickAccount} disabled={userLoading}>
-						<Tooltip title="Account">
+					)}
+					<ListItem button onClick={handleClickPrivacy}>
+						<Tooltip title="Privacy">
 							<ListItemIcon>
-								<AccountIcon />
+								<PrivacyIcon />
 							</ListItemIcon>
 						</Tooltip>
-						<ListItemText primary="Account" />
+						<ListItemText primary="Privacy" />
 					</ListItem>
-				)}
-				<ListItem button onClick={handleClickPrivacy}>
-					<Tooltip title="Privacy">
-						<ListItemIcon>
-							<PrivacyIcon />
-						</ListItemIcon>
-					</Tooltip>
-					<ListItemText primary="Privacy" />
-				</ListItem>
-				<ListItem button component="a" href="mailto:vttcreator@gmail.com" target="_blank">
-					<Tooltip title="Contact">
-						<ListItemIcon>
-							<EmailIcon />
-						</ListItemIcon>
-					</Tooltip>
-					<ListItemText primary="Contact" />
-				</ListItem>
-			</List>
-		</Drawer>
+					<ListItem button component="a" href="mailto:vttcreator@gmail.com" target="_blank">
+						<Tooltip title="Contact">
+							<ListItemIcon>
+								<EmailIcon />
+							</ListItemIcon>
+						</Tooltip>
+						<ListItemText primary="Contact" />
+					</ListItem>
+				</List>
+			</Drawer>
+			<CreateBatchDialog open={openCreateBatchDialog} onClose={handleCloseCreateBatchDialog} />
+		</React.Fragment>
 	)
 }
