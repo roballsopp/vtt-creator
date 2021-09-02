@@ -41,7 +41,7 @@ export default function BatchTranscriptionTableContainer({batchId}) {
 
 	return (
 		<Grid container spacing={2}>
-			<Grid item xs={12} md={8}>
+			<Grid item xs={12} md={7}>
 				<Paper>
 					<Box position="relative">
 						<InfiniteScroll
@@ -73,7 +73,7 @@ export default function BatchTranscriptionTableContainer({batchId}) {
 					</Box>
 				</Paper>
 			</Grid>
-			<Grid item xs={12} md={4}>
+			<Grid item xs={12} md={5}>
 				<Paper style={{position: 'sticky', top: 16}}>
 					<BatchTranscriptionCheckoutSummary
 						batchId={batchId}

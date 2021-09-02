@@ -93,7 +93,7 @@ export default function BatchTranscriptionTable({batchId, jobs}) {
 								<TableCell colSpan={2}>
 									<Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" px={10}>
 										<Typography align="center" variant="h6">
-											Welcome!
+											Lets make some captions!
 										</Typography>
 										<List>
 											<ListItem>
@@ -103,7 +103,7 @@ export default function BatchTranscriptionTable({batchId, jobs}) {
 												<ListItemText primary="2. Once your files have uploaded, select the language each video is spoken in." />
 											</ListItem>
 											<ListItem>
-												<ListItemText primary="3. Review the total cost of the batch extraction job to the right." />
+												<ListItemText primary="3. Review the total cost of the batch transcription job to the right." />
 											</ListItem>
 											<ListItem>
 												<ListItemText

@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import {useMutation, gql} from '@apollo/client'
 import {useHistory} from 'react-router-dom'
 import {Box, Grid, Typography} from '@material-ui/core'
+import CancelIcon from '@material-ui/icons/DeleteForever'
+import CaptionsIcon from '@material-ui/icons/ClosedCaption'
 import {handleError} from '../services/error-handler.service'
 import {Button, useToast} from '../common'
 import {removeBatch} from '../account/BatchJobHistoryTable.graphql'
@@ -78,12 +80,12 @@ export default function BatchTranscriptionCheckoutSummary({batchId, totalCost, b
 				</Grid>
 				<Grid item xs={12}>
 					<Typography variant="body2">
-						You won&apos;t be charged the entire amount right away, but rather you&apos;ll be charged for individual
-						jobs as they complete successfully.
+						You won&apos;t be charged the entire amount right away, but rather you&apos;ll be charged as each video
+						completes successfully.
 					</Typography>
 				</Grid>
 				<Grid item xs={12}>
-					<Typography variant="body2">You will not be charged for any job that fails.</Typography>
+					<Typography variant="body2">You will not be charged for any transcription that fails.</Typography>
 				</Grid>
 				<Grid container item xs={12} justifyContent="space-between">
 					<Typography variant="h6">Total cost:</Typography>
@@ -92,7 +94,12 @@ export default function BatchTranscriptionCheckoutSummary({batchId, totalCost, b
 					</Typography>
 				</Grid>
 				<Grid container item xs={12} justifyContent="space-between">
-					<Button color="primary" disabled={starting} loading={cancelling} onClick={handleCancelBatch}>
+					<Button
+						color="primary"
+						disabled={starting}
+						loading={cancelling}
+						startIcon={<CancelIcon />}
+						onClick={handleCancelBatch}>
 						Cancel
 					</Button>
 					<Button
@@ -100,6 +107,7 @@ export default function BatchTranscriptionCheckoutSummary({batchId, totalCost, b
 						color="secondary"
 						disabled={!batchHasJobs || cancelling}
 						loading={starting}
+						startIcon={<CaptionsIcon />}
 						onClick={handleStartBatch}>
 						Start Transcribing
 					</Button>
