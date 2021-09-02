@@ -63,6 +63,21 @@ export function appendJobToBatch(cache, batchId, job) {
 				},
 			},
 		})
+	} else {
+		// if there was no data, we are probably on a new blank page and there was no data to load
+		cache.writeQuery({
+			query: BatchTranscriptionTableGetJobsQuery,
+			variables: {batchId, offset: 0, limit: 10},
+			data: {
+				transcriptionJobs: {
+					nodes: [job],
+					aggregate: {
+						totalCost: job.cost,
+					},
+					totalCount: 1,
+				},
+			},
+		})
 	}
 }
 
