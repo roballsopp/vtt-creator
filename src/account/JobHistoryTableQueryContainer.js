@@ -4,51 +4,27 @@ import {Box, LinearProgress, TablePagination} from '@material-ui/core'
 import JobHistoryTable from './JobHistoryTable'
 import {handleError} from '../services/error-handler.service'
 import {JobHistoryTableGetJobsQuery} from './JobHistoryTable.graphql'
+import {useOffsetPagination, useSlicePage} from '../common/useOffsetPagination'
 
 export default function JobHistoryTableQueryContainer() {
-	const [pageSize, setPageSize] = React.useState(10)
-	const [page, setPage] = React.useState(0)
-	const [jobConn, setJobConn] = React.useState({})
+	const {offset, limit, paginatorProps} = useOffsetPagination(0, 10)
 
-	const offset = page * pageSize
-
-	const handleChangePage = (event, newPage) => {
-		setPage(newPage)
-	}
-
-	const handleChangeRowsPerPage = e => {
-		setPageSize(Number(e.target.value))
-		setPage(0)
-	}
-
-	const {loading} = useQuery(JobHistoryTableGetJobsQuery, {
+	const {data, previousData, loading} = useQuery(JobHistoryTableGetJobsQuery, {
 		variables: {
 			offset,
-			limit: pageSize,
+			limit,
 		},
 		onError: err => handleError(err),
-		onCompleted: ({transcriptionJobs}) => {
-			setJobConn({
-				...transcriptionJobs,
-				nodes: transcriptionJobs.nodes.slice(offset, offset + pageSize),
-			})
-		},
 	})
 
-	const jobs = React.useMemo(() => jobConn?.nodes || [], [jobConn])
-	const totalCount = React.useMemo(() => jobConn?.totalCount || 0, [jobConn])
+	const jobConn = data?.transcriptionJobs || previousData?.transcriptionJobs
+	const jobs = useSlicePage(jobConn?.nodes, loading, offset, limit)
+	const totalCount = jobConn?.totalCount || 0
 
 	return (
 		<Box position="relative">
 			<JobHistoryTable jobs={jobs} />
-			<TablePagination
-				component="div"
-				count={totalCount}
-				rowsPerPage={pageSize}
-				page={page}
-				onPageChange={handleChangePage}
-				onRowsPerPageChange={handleChangeRowsPerPage}
-			/>
+			<TablePagination component="div" count={totalCount} {...paginatorProps} />
 			{loading && (
 				<Box position="absolute" bottom={0} left={0} right={0}>
 					<LinearProgress />
