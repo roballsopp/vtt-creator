@@ -14,7 +14,7 @@
   "author": "Robert Allsopp <rallsopp06@gmail.com>",
   "license": "UNLICENSED",
   "dependencies": {
-    "@apollo/client": "^3.3.21",
+    "@apollo/client": "^3.4.10",
     "@babel/core": "^7.14.6",
     "@babel/preset-env": "^7.14.7",
     "@babel/preset-react": "^7.14.5",
