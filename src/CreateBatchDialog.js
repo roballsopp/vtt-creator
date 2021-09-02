@@ -26,7 +26,7 @@ export default function CreateBatchDialog({open, onClose}) {
 	const [batchName, setBatchName] = React.useState('')
 
 	const history = useHistory()
-	const {openLoginDialog} = useAuthDialog()
+	const {openLoginDialog, authDialogEvents} = useAuthDialog()
 
 	const [createBatch, {loading: creatingBatch}] = useMutation(gql`
 		mutation createBatch($batchName: String!) {
@@ -42,13 +42,16 @@ export default function CreateBatchDialog({open, onClose}) {
 		setBatchName(e.target.value)
 	}
 
-	const handleCreateBatch = e => {
-		onClose(e)
+	const handleCreateBatch = () => {
+		onClose()
 		createBatch({variables: {batchName}})
 			.then(({data}) => {
 				history.push(`/batches/${data.createBatch.batch.id}/edit`)
 			})
 			.catch(() => {
+				authDialogEvents.once('exited', justLoggedIn => {
+					if (justLoggedIn) handleCreateBatch()
+				})
 				openLoginDialog(
 					`Automatic caption extraction costs $${TranscriptionCost.toFixed(
 						2
