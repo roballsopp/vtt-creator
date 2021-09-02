@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {TableCell, TableRow, Tooltip, Typography} from '@material-ui/core'
 import TranscriptionLanguageSelector from './TranscriptionLanguageSelector'
 
-BatchTranscriptionRow.propTypes = {
+BatchTranscriptionCartItem.propTypes = {
 	job: PropTypes.shape({
 		id: PropTypes.string.isRequired,
 		cost: PropTypes.number.isRequired,
@@ -19,7 +19,7 @@ BatchTranscriptionRow.propTypes = {
 	}).isRequired,
 }
 
-export default function BatchTranscriptionRow({job}) {
+export default function BatchTranscriptionCartItem({job}) {
 	return (
 		<TableRow>
 			<TableCell>

@@ -1,7 +1,7 @@
 import {gql} from '@apollo/client'
 
-export const BatchTranscriptionTable_jobsFragment = gql`
-	fragment BatchTranscriptionTable_jobs on TranscriptionJob {
+export const BatchTranscriptionCart_jobsFragment = gql`
+	fragment BatchTranscriptionCart_jobs on TranscriptionJob {
 		id
 		cost
 		pricePerMin
@@ -16,39 +16,39 @@ export const BatchTranscriptionTable_jobsFragment = gql`
 	}
 `
 
-export const BatchTranscriptionTable_totalsFragment = gql`
-	fragment BatchTranscriptionTable_totals on TranscriptionJobsAggregation {
+export const BatchTranscriptionCart_totalsFragment = gql`
+	fragment BatchTranscriptionCart_totals on TranscriptionJobsAggregation {
 		totalCost
 		totalDuration
 	}
 `
 
-export const BatchTranscriptionTableGetJobsQuery = gql`
-	query BatchTranscriptionTableGetJobs($batchId: String!, $offset: Int!, $limit: Int!) {
+export const BatchTranscriptionCartGetJobsQuery = gql`
+	query BatchTranscriptionCartGetJobs($batchId: String!, $offset: Int!, $limit: Int!) {
 		transcriptionJobs(batchId: $batchId) {
 			nodes(offset: $offset, limit: $limit) {
-				...BatchTranscriptionTable_jobs
+				...BatchTranscriptionCart_jobs
 			}
 			totalCount
 			aggregate {
-				...BatchTranscriptionTable_totals
+				...BatchTranscriptionCart_totals
 			}
 		}
 	}
-	${BatchTranscriptionTable_jobsFragment}
-	${BatchTranscriptionTable_totalsFragment}
+	${BatchTranscriptionCart_jobsFragment}
+	${BatchTranscriptionCart_totalsFragment}
 `
 
 export function appendJobToBatch(cache, batchId, job) {
 	const data = cache.readQuery({
-		query: BatchTranscriptionTableGetJobsQuery,
+		query: BatchTranscriptionCartGetJobsQuery,
 		variables: {batchId, offset: 0, limit: 10},
 	})
 
 	if (data) {
 		const nodes = [job, ...(data.transcriptionJobs?.nodes || [])]
 		cache.writeQuery({
-			query: BatchTranscriptionTableGetJobsQuery,
+			query: BatchTranscriptionCartGetJobsQuery,
 			variables: {batchId, offset: 0, limit: 10},
 			data: {
 				...data,
@@ -66,7 +66,7 @@ export function appendJobToBatch(cache, batchId, job) {
 	} else {
 		// if there was no data, we are probably on a new blank page and there was no data to load
 		cache.writeQuery({
-			query: BatchTranscriptionTableGetJobsQuery,
+			query: BatchTranscriptionCartGetJobsQuery,
 			variables: {batchId, offset: 0, limit: 10},
 			data: {
 				transcriptionJobs: {
@@ -83,13 +83,13 @@ export function appendJobToBatch(cache, batchId, job) {
 
 export function updateBatchLanguage(cache, batchId, newLanguage) {
 	const data = cache.readQuery({
-		query: BatchTranscriptionTableGetJobsQuery,
+		query: BatchTranscriptionCartGetJobsQuery,
 		variables: {batchId, offset: 0, limit: 100000},
 	})
 
 	if (data) {
 		cache.writeQuery({
-			query: BatchTranscriptionTableGetJobsQuery,
+			query: BatchTranscriptionCartGetJobsQuery,
 			data: {
 				...data,
 				transcriptionJobs: {

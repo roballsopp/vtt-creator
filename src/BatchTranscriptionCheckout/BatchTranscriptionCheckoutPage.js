@@ -2,14 +2,14 @@ import * as React from 'react'
 import {useParams} from 'react-router-dom'
 import PageContainer from '../common/PageContainer'
 import {UploadProvider} from './UploadProvider'
-import BatchTranscriptionTable from './BatchTranscriptionTableContainer'
+import BatchTranscriptionCart from './BatchTranscriptionCartContainer'
 
-export default function BatchPage() {
+export default function BatchTranscriptionCheckoutPage() {
 	const {batchId} = useParams()
 	return (
 		<PageContainer>
 			<UploadProvider>
-				<BatchTranscriptionTable batchId={batchId} />
+				<BatchTranscriptionCart batchId={batchId} />
 			</UploadProvider>
 		</PageContainer>
 	)

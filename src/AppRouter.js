@@ -5,7 +5,7 @@ import {Editor} from './editor'
 import {Splash} from './splash'
 import {AccountPage} from './account'
 import PrivacyPage from './privacy'
-import BatchPage from './batch'
+import BatchTranscriptionCheckoutPage from './BatchTranscriptionCheckout'
 import {GAProduct} from './config'
 import {AuthDialogProvider} from './AuthDialog'
 import {UserProvider} from './common/UserContext'
@@ -44,7 +44,7 @@ export default function AppRouter() {
 								<TopNav />
 								<SideNav />
 								<NavContent>
-									<BatchPage />
+									<BatchTranscriptionCheckoutPage />
 								</NavContent>
 							</Route>
 							<Route path="/account" exact>

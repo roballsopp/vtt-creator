@@ -9,13 +9,13 @@ import {handleError} from '../services/error-handler.service'
 import {Button, useToast} from '../common'
 import {removeBatch} from '../account/BatchJobHistoryTable.graphql'
 
-BatchTranscriptionCheckoutSummary.propTypes = {
+BatchTranscriptionCartSummary.propTypes = {
 	batchId: PropTypes.string.isRequired,
 	totalCost: PropTypes.number.isRequired,
 	batchHasJobs: PropTypes.bool.isRequired,
 }
 
-export default function BatchTranscriptionCheckoutSummary({batchId, totalCost, batchHasJobs}) {
+export default function BatchTranscriptionCartSummary({batchId, totalCost, batchHasJobs}) {
 	const toast = useToast()
 	const history = useHistory()
 

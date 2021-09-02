@@ -1,17 +1,17 @@
 import React from 'react'
 import {useQuery} from '@apollo/client'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import {Box, Button, CircularProgress, Grid, LinearProgress, Paper, Typography} from '@material-ui/core'
-import BatchTranscriptionTable from './BatchTranscriptionTable'
+import {Box, CircularProgress, Grid, LinearProgress, Paper} from '@material-ui/core'
+import BatchTranscriptionCart from './BatchTranscriptionCart'
 import {handleError} from '../services/error-handler.service'
-import {BatchTranscriptionTableGetJobsQuery} from './BatchTranscriptionTable.graphql'
+import {BatchTranscriptionCartGetJobsQuery} from './BatchTranscriptionCart.graphql'
 import {usePage} from '../common/PageContainer'
-import BatchTranscriptionCheckoutSummary from './BatchTranscriptionCheckoutSummary'
+import BatchTranscriptionCartSummary from './BatchTranscriptionCartSummary'
 
-export default function BatchTranscriptionTableContainer({batchId}) {
+export default function BatchTranscriptionCartContainer({batchId}) {
 	const {pageContainerRef} = usePage()
 
-	const {loading, data, previousData, fetchMore} = useQuery(BatchTranscriptionTableGetJobsQuery, {
+	const {loading, data, previousData, fetchMore} = useQuery(BatchTranscriptionCartGetJobsQuery, {
 		// TODO: this is seemingly necessary when there are no jobs yet
 		fetchPolicy: 'network-only',
 		variables: {
@@ -63,7 +63,7 @@ export default function BatchTranscriptionTableContainer({batchId}) {
 								</Box>
 							}
 							scrollableTarget={pageContainerRef.current}>
-							<BatchTranscriptionTable batchId={batchId} jobs={transcriptionJobs} />
+							<BatchTranscriptionCart batchId={batchId} jobs={transcriptionJobs} />
 						</InfiniteScroll>
 						{loading && (
 							<Box position="absolute" bottom={0} left={0} right={0}>
@@ -75,7 +75,7 @@ export default function BatchTranscriptionTableContainer({batchId}) {
 			</Grid>
 			<Grid item xs={12} md={5}>
 				<Paper style={{position: 'sticky', top: 16}}>
-					<BatchTranscriptionCheckoutSummary
+					<BatchTranscriptionCartSummary
 						batchId={batchId}
 						totalCost={transcriptionJobsConn.aggregate.totalCost}
 						batchHasJobs={Boolean(transcriptionJobs.length)}

@@ -15,17 +15,17 @@ import {
 } from '@material-ui/core'
 import FolderIcon from '@material-ui/icons/FolderOpen'
 import {useFileSelector} from '../common'
-import {BatchTranscriptionTable_jobsFragment} from './BatchTranscriptionTable.graphql'
+import {BatchTranscriptionCart_jobsFragment} from './BatchTranscriptionCart.graphql'
 import UploadDialog from './UploadDialog'
 import {useUpload} from './UploadProvider'
-import BatchTranscriptionRow from './BatchTranscriptionRow'
+import BatchTranscriptionCartItem from './BatchTranscriptionCartItem'
 import BatchLanguageSelector from './BatchLanguageSelector'
 
-BatchTranscriptionTable.fragments = {
-	jobs: BatchTranscriptionTable_jobsFragment,
+BatchTranscriptionCart.fragments = {
+	jobs: BatchTranscriptionCart_jobsFragment,
 }
 
-BatchTranscriptionTable.propTypes = {
+BatchTranscriptionCart.propTypes = {
 	batchId: PropTypes.string.isRequired,
 	jobs: PropTypes.arrayOf(
 		PropTypes.shape({
@@ -44,7 +44,7 @@ BatchTranscriptionTable.propTypes = {
 	).isRequired,
 }
 
-export default function BatchTranscriptionTable({batchId, jobs}) {
+export default function BatchTranscriptionCart({batchId, jobs}) {
 	const {handleAddFiles} = useUpload()
 
 	const [uploadDialogOpen, setUploadDialogOpen] = React.useState(false)
@@ -86,7 +86,7 @@ export default function BatchTranscriptionTable({batchId, jobs}) {
 				<Table>
 					<TableBody>
 						{jobs.map(job => {
-							return <BatchTranscriptionRow job={job} key={job.inputFile.id} />
+							return <BatchTranscriptionCartItem job={job} key={job.inputFile.id} />
 						})}
 						{!jobs.length && (
 							<TableRow>

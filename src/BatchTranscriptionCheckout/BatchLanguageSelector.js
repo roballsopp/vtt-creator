@@ -5,7 +5,7 @@ import {CircularProgress, FormControl, FormHelperText, MenuItem, Select} from '@
 import {ArrowDropDown} from '@material-ui/icons'
 import {useToast} from '../common'
 import {handleError} from '../services/error-handler.service'
-import {updateBatchLanguage} from './BatchTranscriptionTable.graphql'
+import {updateBatchLanguage} from './BatchTranscriptionCart.graphql'
 
 const LANGUAGES_QUERY = gql`
 	query getLanguageCodes {
