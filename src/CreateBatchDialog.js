@@ -26,7 +26,7 @@ export default function CreateBatchDialog({open, onClose}) {
 	const [batchName, setBatchName] = React.useState('')
 
 	const history = useHistory()
-	const {openLoginDialog, authDialogEvents} = useAuthDialog()
+	const {openLoginDialog} = useAuthDialog()
 
 	const [createBatch, {loading: creatingBatch}] = useMutation(gql`
 		mutation createBatch($batchName: String!) {
@@ -49,14 +49,13 @@ export default function CreateBatchDialog({open, onClose}) {
 				history.push(`/batches/${data.createBatch.batch.id}/edit`)
 			})
 			.catch(() => {
-				authDialogEvents.once('exited', justLoggedIn => {
-					if (justLoggedIn) handleCreateBatch()
-				})
 				openLoginDialog(
 					`Automatic caption extraction costs $${TranscriptionCost.toFixed(
 						2
 					)} per minute of video and requires an account. Please login or sign up below.`
-				)
+				).then(justLoggedIn => {
+					if (justLoggedIn) handleCreateBatch()
+				})
 			})
 	}
 

@@ -18,7 +18,7 @@ TranslationProvider.propTypes = {
 
 export function TranslationProvider({children}) {
 	const {cues} = useCues()
-	const {openLoginDialog, authDialogEvents} = useAuthDialog()
+	const {openLoginDialog} = useAuthDialog()
 
 	const numCharacters = React.useMemo(() => {
 		return cues.reduce((total, cue) => {
@@ -50,16 +50,15 @@ export function TranslationProvider({children}) {
 			})
 			// if refetch failed, we probably aren't logged in
 			.catch(() => {
-				authDialogEvents.once('exited', justLoggedIn => {
-					if (justLoggedIn) handleTranslationDialogOpen()
-				})
 				openLoginDialog(
 					`Automatic translation costs $${TranslationCost.toFixed(
 						2
 					)} per 100 characters and requires an account. Please login or sign up below.`
-				)
+				).then(justLoggedIn => {
+					if (justLoggedIn) handleTranslationDialogOpen()
+				})
 			})
-	}, [authDialogEvents, openLoginDialog, getCost])
+	}, [openLoginDialog, getCost])
 
 	const handleTranslationDialogClose = () => {
 		setTranslationDialogOpen(false)

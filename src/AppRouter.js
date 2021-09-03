@@ -8,6 +8,7 @@ import PrivacyPage from './privacy'
 import BatchTranscriptionCheckoutPage from './BatchTranscriptionCheckout'
 import {GAProduct} from './config'
 import {AuthDialogProvider} from './AuthDialog'
+import CheckAuth from './CheckAuth'
 import {UserProvider} from './common/UserContext'
 import NavProvider from './NavProvider'
 import SideNav from './SideNav'
@@ -44,14 +45,18 @@ export default function AppRouter() {
 								<TopNav />
 								<SideNav />
 								<NavContent>
-									<BatchTranscriptionCheckoutPage />
+									<CheckAuth>
+										<BatchTranscriptionCheckoutPage />
+									</CheckAuth>
 								</NavContent>
 							</Route>
 							<Route path="/account" exact>
 								<TopNav />
 								<SideNav />
 								<NavContent>
-									<AccountPage />
+									<CheckAuth>
+										<AccountPage />
+									</CheckAuth>
 								</NavContent>
 							</Route>
 							<Route path="/privacy" exact>

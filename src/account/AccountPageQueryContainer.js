@@ -1,10 +1,9 @@
 import {makeStyles} from '@material-ui/styles'
 import React from 'react'
 import {gql, useQuery} from '@apollo/client'
-import {useAuthDialog} from '../AuthDialog'
 import Loader from '../common/loader.component'
-import {UnauthorizedError} from '../errors'
 import AccountPage from './AccountPage'
+import {handleError} from '../services/error-handler.service'
 
 const useStyles = makeStyles(() => ({
 	root: {
@@ -18,7 +17,6 @@ const useStyles = makeStyles(() => ({
 
 export default function AccountPageQueryContainer() {
 	const classes = useStyles()
-	const {openLoginDialog} = useAuthDialog()
 
 	const {loading, data, error} = useQuery(
 		gql`
@@ -32,11 +30,7 @@ export default function AccountPageQueryContainer() {
 			${AccountPage.fragments.user}
 		`,
 		{
-			onError: error => {
-				if (error.networkError instanceof UnauthorizedError) {
-					openLoginDialog()
-				}
-			},
+			onError: err => handleError(err),
 		}
 	)
 
