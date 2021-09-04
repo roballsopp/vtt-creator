@@ -10,8 +10,7 @@ export const BatchStatus_batchFragment = gql`
 		createdAt
 		startedAt
 		finishedAt
-		pendingCharges
-		successfulCharges
+		totalCost
 		totalJobs
 		startedJobs
 		cancelledJobs

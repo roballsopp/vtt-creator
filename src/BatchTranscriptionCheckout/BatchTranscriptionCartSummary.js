@@ -84,12 +84,8 @@ export default function BatchTranscriptionCartSummary({batch}) {
 					<Typography variant="subtitle2">Batch Name: {batch.name}</Typography>
 				</Grid>
 				<Grid item xs={12}>
-					<Typography variant="body2">The amount shown below will be deducted from your site credit.</Typography>
-				</Grid>
-				<Grid item xs={12}>
 					<Typography variant="body2">
-						You won&apos;t be charged the entire amount right away, but rather you&apos;ll be charged as each video
-						completes successfully.
+						The amount shown below will be deducted immediately from your site credit.
 					</Typography>
 				</Grid>
 				<Grid item xs={12}>

@@ -41,8 +41,7 @@ BatchJobHistoryRow.propTypes = {
 		createdAt: PropTypes.string.isRequired,
 		startedAt: PropTypes.string,
 		finishedAt: PropTypes.string,
-		pendingCharges: PropTypes.number.isRequired,
-		successfulCharges: PropTypes.number.isRequired,
+		totalCost: PropTypes.number.isRequired,
 		totalJobs: PropTypes.number.isRequired,
 		startedJobs: PropTypes.number.isRequired,
 		cancelledJobs: PropTypes.number.isRequired,
@@ -78,8 +77,7 @@ export default function BatchJobHistoryRow({batchJob}) {
 						<JobTypeIcon type={batchJob.jobType} />
 					</Box>
 				</TableCell>
-				<TableCell align="right">${batchJob.pendingCharges.toFixed(2)}</TableCell>
-				<TableCell align="right">${batchJob.successfulCharges.toFixed(2)}</TableCell>
+				<TableCell align="right">${batchJob.totalCost.toFixed(2)}</TableCell>
 				<TableCell align="center" padding="none">
 					<BatchJobActionMenu batchJob={batchJob} />
 				</TableCell>

@@ -34,8 +34,7 @@ BatchJobHistoryTable.propTypes = {
 			createdAt: PropTypes.string.isRequired,
 			startedAt: PropTypes.string,
 			finishedAt: PropTypes.string,
-			pendingCharges: PropTypes.number.isRequired,
-			successfulCharges: PropTypes.number.isRequired,
+			totalCost: PropTypes.number.isRequired,
 			totalJobs: PropTypes.number.isRequired,
 			startedJobs: PropTypes.number.isRequired,
 			cancelledJobs: PropTypes.number.isRequired,
@@ -59,16 +58,8 @@ export default function BatchJobHistoryTable({batchJobs}) {
 						<TableCell align="center">Type</TableCell>
 						<TableCell align="right">
 							<Box display="flex" alignItems="center" justifyContent="flex-end">
-								Cost
+								Batch Cost
 								<Tooltip title="The cost of the whole batch. This is how much you'll be charged if all jobs in this batch complete successfully">
-									<HelpIcon fontSize="inherit" className={classes.helpIcon} />
-								</Tooltip>
-							</Box>
-						</TableCell>
-						<TableCell align="right" valign="middle">
-							<Box display="flex" alignItems="center" justifyContent="flex-end">
-								Charged
-								<Tooltip title="This is how much you were actually charged for jobs that finished successfully in this batch">
 									<HelpIcon fontSize="inherit" className={classes.helpIcon} />
 								</Tooltip>
 							</Box>

@@ -43,7 +43,7 @@ export default function BatchTranscriptionCartItem({job}) {
 				deleteTranscription(jobId: $jobId) {
 					batch {
 						id
-						pendingCharges
+						totalCost
 						totalJobs
 					}
 				}

@@ -19,8 +19,7 @@ export const BatchJobHistoryTable_batchJobsFragment = gql`
 		createdAt
 		startedAt
 		finishedAt
-		pendingCharges
-		successfulCharges
+		totalCost
 		totalJobs
 		startedJobs
 		cancelledJobs
