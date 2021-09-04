@@ -10,6 +10,7 @@ import {TranscriptionCost} from './config'
 import {gql, useMutation} from '@apollo/client'
 import {useAuthDialog} from './AuthDialog'
 import {useHistory} from 'react-router-dom'
+import {appendBatch, BatchJobHistoryTable_batchJobsFragment} from './account/BatchJobHistoryTable.graphql'
 
 const Title = styled(DialogTitle)({
 	display: 'flex',
@@ -28,15 +29,24 @@ export default function CreateBatchDialog({open, onClose}) {
 	const history = useHistory()
 	const {openLoginDialog} = useAuthDialog()
 
-	const [createBatch, {loading: creatingBatch}] = useMutation(gql`
-		mutation createBatch($batchName: String!) {
-			createBatch(jobType: "transcription", name: $batchName) {
-				batch {
-					id
+	const [createBatch, {loading: creatingBatch}] = useMutation(
+		gql`
+			mutation createBatch($batchName: String!) {
+				createBatch(jobType: TRANSCRIPTION, name: $batchName) {
+					batch {
+						id
+						...BatchJobHistoryTable_batchJobs
+					}
 				}
 			}
+			${BatchJobHistoryTable_batchJobsFragment}
+		`,
+		{
+			update: (cache, {data: {createBatch}}) => {
+				appendBatch(cache, createBatch.batch)
+			},
 		}
-	`)
+	)
 
 	const handleChangeBatchName = e => {
 		setBatchName(e.target.value)
