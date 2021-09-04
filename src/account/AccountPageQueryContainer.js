@@ -1,24 +1,12 @@
-import {makeStyles} from '@material-ui/styles'
 import React from 'react'
 import {gql, useQuery} from '@apollo/client'
-import Loader from '../common/loader.component'
 import AccountPage from './AccountPage'
 import {handleError} from '../services/error-handler.service'
-
-const useStyles = makeStyles(() => ({
-	root: {
-		display: 'flex',
-		flex: 1,
-		flexDirection: 'column',
-		minHeight: 0,
-		minWidth: 0,
-	},
-}))
+import PageLoader from '../common/PageLoader'
+import PageError from '../common/PageError'
 
 export default function AccountPageQueryContainer() {
-	const classes = useStyles()
-
-	const {loading, data, error} = useQuery(
+	const {loading, data, error, refetch} = useQuery(
 		gql`
 			query AccountPageGetUser {
 				self {
@@ -34,12 +22,12 @@ export default function AccountPageQueryContainer() {
 		}
 	)
 
-	if (loading || error) {
-		return (
-			<main className={classes.root}>
-				<Loader />
-			</main>
-		)
+	if (loading) {
+		return <PageLoader />
+	}
+
+	if (error) {
+		return <PageError retry={refetch} />
 	}
 
 	return (

@@ -2,16 +2,18 @@ import React from 'react'
 import {useQuery} from '@apollo/client'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import {Box, CircularProgress, Grid, LinearProgress, Paper} from '@material-ui/core'
-import BatchTranscriptionCart from './BatchTranscriptionCart'
 import {handleError} from '../services/error-handler.service'
-import {BatchTranscriptionCartGetJobsQuery} from './BatchTranscriptionCart.graphql'
 import {usePage} from '../common/PageContainer'
+import PageLoader from '../common/PageLoader'
+import PageError from '../common/PageError'
+import BatchTranscriptionCart from './BatchTranscriptionCart'
 import BatchTranscriptionCartSummary from './BatchTranscriptionCartSummary'
+import {BatchTranscriptionCartGetJobsQuery} from './BatchTranscriptionCart.graphql'
 
 export default function BatchTranscriptionCartContainer({batchId}) {
 	const {pageContainerRef} = usePage()
 
-	const {loading, data, previousData, fetchMore} = useQuery(BatchTranscriptionCartGetJobsQuery, {
+	const {loading, data, error, previousData, fetchMore, refetch} = useQuery(BatchTranscriptionCartGetJobsQuery, {
 		// TODO: this is seemingly necessary when there are no jobs yet
 		fetchPolicy: 'network-only',
 		variables: {
@@ -30,13 +32,12 @@ export default function BatchTranscriptionCartContainer({batchId}) {
 		fetchMore({variables: {offset: transcriptionJobs.length}})
 	}
 
-	// TODO: use the cool react placeholder lib
-	if (!transcriptionJobsConn) {
-		return (
-			<Box display="flex" justifyContent="center" alignItems="center" height={400}>
-				<CircularProgress />
-			</Box>
-		)
+	if (loading) {
+		return <PageLoader />
+	}
+
+	if (error) {
+		return <PageError retry={refetch} />
 	}
 
 	return (
