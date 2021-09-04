@@ -6,6 +6,7 @@ import {makeStyles} from '@material-ui/styles'
 import DeleteIcon from '@material-ui/icons/DeleteForever'
 import {handleError} from '../services/error-handler.service'
 import {useToast} from '../common'
+import {removeJob} from '../account/JobHistoryTable.graphql'
 import TranscriptionLanguageSelector from './TranscriptionLanguageSelector'
 import {removeJobFromBatch} from './BatchTranscriptionCart.graphql'
 
@@ -51,6 +52,7 @@ export default function BatchTranscriptionCartItem({job}) {
 		{
 			update(cache) {
 				removeJobFromBatch(cache, job.batchId, job)
+				removeJob(cache, job.id)
 			},
 			onError: err => {
 				handleError(err)

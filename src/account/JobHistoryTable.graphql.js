@@ -39,19 +39,44 @@ export const JobHistoryTableGetJobsQuery = gql`
 export function appendNewJob(cache, job) {
 	const jobHistoryQuery = cache.readQuery({
 		query: JobHistoryTableGetJobsQuery,
+		variables: {offset: 0, limit: 10},
 	})
 
-	if (jobHistoryQuery) {
-		const nodes = [job, ...(jobHistoryQuery?.transcriptionJobs?.nodes || [])]
-		cache.writeQuery({
-			query: JobHistoryTableGetJobsQuery,
-			data: {
-				...jobHistoryQuery,
-				transcriptionJobs: {
-					...jobHistoryQuery?.transcriptionJobs,
-					nodes,
-				},
+	// its possible we have never visited the account page, in which case nothing will be in the cache here
+	//   that should mean we don't need to update the cache, because a request will be made to get this the first time
+	if (!jobHistoryQuery) return
+
+	cache.writeQuery({
+		query: JobHistoryTableGetJobsQuery,
+		data: {
+			...jobHistoryQuery,
+			transcriptionJobs: {
+				...jobHistoryQuery?.transcriptionJobs,
+				nodes: [job, ...(jobHistoryQuery?.transcriptionJobs?.nodes || [])],
+				totalCount: jobHistoryQuery.transcriptionJobs.totalCount + 1,
 			},
-		})
-	}
+		},
+	})
+}
+
+export function removeJob(cache, jobId) {
+	const data = cache.readQuery({
+		query: JobHistoryTableGetJobsQuery,
+		variables: {offset: 0, limit: 10},
+	})
+
+	// its possible we have never visited the account page, in which case nothing will be in the cache here
+	if (!data) return
+
+	cache.writeQuery({
+		query: JobHistoryTableGetJobsQuery,
+		data: {
+			...data,
+			transcriptionJobs: {
+				...data.transcriptionJobs,
+				nodes: data.transcriptionJobs.nodes.filter(j => j.id !== jobId),
+				totalCount: data.transcriptionJobs.totalCount - 1,
+			},
+		},
+	})
 }

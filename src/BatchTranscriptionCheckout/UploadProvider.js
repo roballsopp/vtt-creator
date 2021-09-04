@@ -2,10 +2,11 @@ import React from 'react'
 import throttle from 'lodash/throttle'
 import {v4 as uuid} from 'uuid'
 import PropTypes from 'prop-types'
+import EventEmitter from 'events'
 import {gql, useApolloClient} from '@apollo/client'
 import {uploadFile} from '../services/rest-api.service'
 import {handleError} from '../services/error-handler.service'
-import EventEmitter from 'events'
+import {appendNewJob, JobHistoryTable_jobsFragment} from '../account/JobHistoryTable.graphql'
 import {appendJobToBatch, BatchTranscriptionCart_jobsFragment} from './BatchTranscriptionCart.graphql'
 
 const UploadContext = React.createContext({
@@ -186,17 +187,19 @@ export function UploadProvider({children}) {
 				data: {addVideoTranscriptionToBatch},
 			} = await apolloClient.mutate({
 				mutation: gql`
-					mutation addJobtoBatch($batchId: String!, $fileUploadId: String!, $languageCode: String!) {
+					mutation addJobToBatch($batchId: String!, $fileUploadId: String!, $languageCode: String!) {
 						addVideoTranscriptionToBatch(batchId: $batchId, fileUploadId: $fileUploadId, languageCode: $languageCode) {
 							batch {
 								id
 							}
 							job {
 								...BatchTranscriptionCart_jobs
+								...JobHistoryTable_jobs
 							}
 						}
 					}
 					${BatchTranscriptionCart_jobsFragment}
+					${JobHistoryTable_jobsFragment}
 				`,
 				variables: {
 					batchId,
@@ -206,6 +209,7 @@ export function UploadProvider({children}) {
 				update(cache, {data: {addVideoTranscriptionToBatch}}) {
 					const {batch, job} = addVideoTranscriptionToBatch
 					appendJobToBatch(cache, batch.id, job)
+					appendNewJob(cache, job)
 				},
 			})
 
