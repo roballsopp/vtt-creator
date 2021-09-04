@@ -9,7 +9,7 @@ import EditIcon from '@material-ui/icons/Edit'
 import EmailIcon from '@material-ui/icons/Email'
 import SignUpIcon from '@material-ui/icons/PersonAdd'
 import PrivacyIcon from '@material-ui/icons/Policy'
-import TranslateIcon from '@material-ui/icons/Translate'
+// import TranslateIcon from '@material-ui/icons/Translate'
 import {makeStyles} from '@material-ui/styles'
 import {SIDE_NAV_WIDTH, useSideNav} from './NavProvider'
 import {useAuthDialog} from './AuthDialog'
@@ -146,14 +146,14 @@ export default function SideNav() {
 						</Tooltip>
 						<ListItemText primary="Batch Transcribe" />
 					</ListItem>
-					<ListItem button onClick={handleClickEditor}>
-						<Tooltip title="Batch Translate">
-							<ListItemIcon>
-								<TranslateIcon />
-							</ListItemIcon>
-						</Tooltip>
-						<ListItemText primary="Batch Translate" />
-					</ListItem>
+					{/*<ListItem button onClick={handleClickEditor}>*/}
+					{/*	<Tooltip title="Batch Translate">*/}
+					{/*		<ListItemIcon>*/}
+					{/*			<TranslateIcon />*/}
+					{/*		</ListItemIcon>*/}
+					{/*	</Tooltip>*/}
+					{/*	<ListItemText primary="Batch Translate" />*/}
+					{/*</ListItem>*/}
 					{Boolean(!userLoading && !user) && (
 						<React.Fragment>
 							<ListItem button onClick={handleClickLogin}>
