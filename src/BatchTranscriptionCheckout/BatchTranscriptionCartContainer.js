@@ -24,9 +24,9 @@ export default function BatchTranscriptionCartContainer({batchId}) {
 		onError: err => handleError(err),
 	})
 
-	const transcriptionJobsConn = data?.transcriptionJobs || previousData?.transcriptionJobs
-	const transcriptionJobs = React.useMemo(() => transcriptionJobsConn?.nodes || [], [transcriptionJobsConn])
-	const totalCount = React.useMemo(() => transcriptionJobsConn?.totalCount || 0, [transcriptionJobsConn])
+	const jobsConn = data?.batchJob?.jobs || previousData?.batchJob?.jobs
+	const transcriptionJobs = jobsConn?.nodes || []
+	const totalCount = jobsConn?.totalCount || 0
 
 	function handleLoadMore() {
 		fetchMore({variables: {offset: transcriptionJobs.length}})
@@ -42,6 +42,11 @@ export default function BatchTranscriptionCartContainer({batchId}) {
 
 	return (
 		<Grid container spacing={2}>
+			<Grid item xs={12} md={5}>
+				<Paper style={{position: 'sticky', top: 16}}>
+					<BatchTranscriptionCartSummary batch={data.batchJob} />
+				</Paper>
+			</Grid>
 			<Grid item xs={12} md={7}>
 				<Paper>
 					<Box position="relative">
@@ -72,15 +77,6 @@ export default function BatchTranscriptionCartContainer({batchId}) {
 							</Box>
 						)}
 					</Box>
-				</Paper>
-			</Grid>
-			<Grid item xs={12} md={5}>
-				<Paper style={{position: 'sticky', top: 16}}>
-					<BatchTranscriptionCartSummary
-						batchId={batchId}
-						totalCost={transcriptionJobsConn.aggregate.totalCost}
-						batchHasJobs={Boolean(transcriptionJobs.length)}
-					/>
 				</Paper>
 			</Grid>
 		</Grid>
