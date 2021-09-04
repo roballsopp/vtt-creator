@@ -4,7 +4,8 @@ export const BatchJobActionMenu_batchJobFragment = gql`
 	fragment BatchJobActionMenu_batchJob on BatchJob {
 		id
 		downloadAvailable
-		downloadLink
+		downloadLinkVTT
+		downloadLinkSRT
 		createdAt
 		startedAt
 	}

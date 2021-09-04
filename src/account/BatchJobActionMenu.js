@@ -23,8 +23,10 @@ BatchJobActionMenu.propTypes = {
 	batchJob: PropTypes.shape({
 		id: PropTypes.string.isRequired,
 		downloadAvailable: PropTypes.bool.isRequired,
-		downloadLink: PropTypes.string,
+		downloadLinkVTT: PropTypes.string,
+		downloadLinkSRT: PropTypes.string,
 		createdAt: PropTypes.string.isRequired,
+		startedAt: PropTypes.string,
 	}).isRequired,
 }
 
@@ -49,8 +51,12 @@ export default function BatchJobActionMenu({batchJob}) {
 		})
 	}
 
-	const handleGoToSummary = () => {
+	const handleGoToCart = () => {
 		history.push(`/batches/${batchJob.id}/edit`)
+	}
+
+	const handleGoToStatus = () => {
+		history.push(`/batches/${batchJob.id}/status`)
 	}
 
 	const onCloseOptionsMenu = () => {
@@ -69,9 +75,16 @@ export default function BatchJobActionMenu({batchJob}) {
 				</IconButton>
 			</Tooltip>
 			<Menu anchorEl={optionsMenuAnchorEl} open={!!optionsMenuAnchorEl} onClose={onCloseOptionsMenu}>
-				<MenuItem onClick={handleGoToSummary}>Edit batch</MenuItem>
-				<MenuItem disabled={!batchJob.downloadAvailable} onClick={() => handleDownload(batchJob.downloadLink)}>
-					Download zip file
+				{batchJob.startedAt ? (
+					<MenuItem onClick={handleGoToStatus}>Check Status</MenuItem>
+				) : (
+					<MenuItem onClick={handleGoToCart}>Edit batch</MenuItem>
+				)}
+				<MenuItem disabled={!batchJob.downloadAvailable} onClick={() => handleDownload(batchJob.downloadLinkVTT)}>
+					Download VTT cues
+				</MenuItem>
+				<MenuItem disabled={!batchJob.downloadAvailable} onClick={() => handleDownload(batchJob.downloadLinkSRT)}>
+					Download SRT cues
 				</MenuItem>
 			</Menu>
 		</React.Fragment>
