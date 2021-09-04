@@ -28,6 +28,9 @@ const useStyles = makeStyles(() => ({
 	collapseIcon: {
 		margin: -12,
 	},
+	dropBtnColumn: {
+		width: 48,
+	},
 }))
 
 BatchJobHistoryRow.propTypes = {
@@ -56,7 +59,7 @@ export default function BatchJobHistoryRow({batchJob}) {
 	return (
 		<React.Fragment>
 			<TableRow className={classes.root}>
-				<TableCell padding="none" align="center">
+				<TableCell padding="none" align="center" className={classes.dropBtnColumn}>
 					<Tooltip title="Click to show details">
 						<IconButton
 							aria-label="expand row"
