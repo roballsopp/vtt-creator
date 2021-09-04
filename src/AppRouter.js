@@ -6,6 +6,7 @@ import {Splash} from './splash'
 import {AccountPage} from './account'
 import PrivacyPage from './privacy'
 import BatchTranscriptionCheckoutPage from './BatchTranscriptionCheckout'
+import BatchTranscriptionStatusPage from './BatchTranscriptionStatus'
 import {GAProduct} from './config'
 import {AuthDialogProvider} from './AuthDialog'
 import CheckAuth from './CheckAuth'
@@ -47,6 +48,15 @@ export default function AppRouter() {
 								<NavContent>
 									<CheckAuth>
 										<BatchTranscriptionCheckoutPage />
+									</CheckAuth>
+								</NavContent>
+							</Route>
+							<Route path="/batches/:batchId/status" exact>
+								<TopNav />
+								<SideNav />
+								<NavContent>
+									<CheckAuth>
+										<BatchTranscriptionStatusPage />
 									</CheckAuth>
 								</NavContent>
 							</Route>

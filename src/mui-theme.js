@@ -5,6 +5,11 @@ export default responsiveFontSizes(
 		palette: {
 			// type: 'dark',
 		},
+		typography: {
+			subtitle1: {
+				fontWeight: 500,
+			},
+		},
 		spacing: 4,
 		overrides: {
 			MuiSnackbarContent: {
