@@ -33,6 +33,7 @@ const useStyles = makeStyles(theme => ({
 	drawerPaper: {
 		border: 0,
 		zIndex: 1300,
+		overflowX: 'hidden',
 	},
 	drawerHeader: {
 		display: 'flex',
