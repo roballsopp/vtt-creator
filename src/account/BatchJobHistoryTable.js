@@ -54,6 +54,7 @@ export default function BatchJobHistoryTable({batchJobs}) {
 				<TableHead>
 					<TableRow>
 						<TableCell padding="none" />
+						<TableCell>Name</TableCell>
 						<TableCell>Status</TableCell>
 						<TableCell align="center">Type</TableCell>
 						<TableCell align="right">

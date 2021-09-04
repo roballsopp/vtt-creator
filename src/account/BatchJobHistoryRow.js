@@ -1,19 +1,6 @@
 import * as React from 'react'
 import PropTypes from 'prop-types'
-import {format} from 'date-fns'
-import {
-	Box,
-	Collapse,
-	IconButton,
-	Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TableRow,
-	Tooltip,
-	Typography,
-} from '@material-ui/core'
+import {Box, Collapse, IconButton, TableCell, TableRow, Tooltip, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import muiReds from '@material-ui/core/colors/red'
 import muiGreens from '@material-ui/core/colors/green'
@@ -25,8 +12,9 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
 import TranslateIcon from '@material-ui/icons/Translate'
 import BatchJobActionMenu from './BatchJobActionMenu'
+import BatchStatusIndicator from '../common/BatchStatusIndicator'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
 	root: {
 		'& > *': {
 			borderBottom: 'unset',
@@ -45,6 +33,7 @@ const useStyles = makeStyles(theme => ({
 BatchJobHistoryRow.propTypes = {
 	batchJob: PropTypes.shape({
 		id: PropTypes.string.isRequired,
+		name: PropTypes.string.isRequired,
 		jobType: PropTypes.oneOf(['transcription', 'translation']).isRequired,
 		createdAt: PropTypes.string.isRequired,
 		startedAt: PropTypes.string,
@@ -64,30 +53,6 @@ export default function BatchJobHistoryRow({batchJob}) {
 
 	const [showProgress, setShowProgress] = React.useState(false)
 
-	function getStatusText(batchJob) {
-		if (batchJob.finishedAt) {
-			return (
-				<Tooltip title={`Finished on ${format(new Date(batchJob.finishedAt), 'LLL dd, yyyy h:mm aaa')}`}>
-					<span>Finished</span>
-				</Tooltip>
-			)
-		}
-
-		if (batchJob.startedAt) {
-			return (
-				<Tooltip title={`Started on ${format(new Date(batchJob.startedAt), 'LLL dd, yyyy h:mm aaa')}`}>
-					<span>Started</span>
-				</Tooltip>
-			)
-		}
-
-		return (
-			<Tooltip title={`Created on ${format(new Date(batchJob.createdAt), 'LLL dd, yyyy h:mm aaa')}`}>
-				<span>Not Started</span>
-			</Tooltip>
-		)
-	}
-
 	return (
 		<React.Fragment>
 			<TableRow className={classes.root}>
@@ -101,7 +66,10 @@ export default function BatchJobHistoryRow({batchJob}) {
 						</IconButton>
 					</Tooltip>
 				</TableCell>
-				<TableCell>{getStatusText(batchJob)}</TableCell>
+				<TableCell>{batchJob.name}</TableCell>
+				<TableCell>
+					<BatchStatusIndicator batchJob={batchJob} />
+				</TableCell>
 				<TableCell align="center" padding="none">
 					<Box display="flex" alignItems="center" justifyContent="center">
 						<JobTypeIcon type={batchJob.jobType} />
@@ -114,7 +82,7 @@ export default function BatchJobHistoryRow({batchJob}) {
 				</TableCell>
 			</TableRow>
 			<TableRow className={classes.detailRow}>
-				<TableCell style={{padding: 0}} colSpan={6}>
+				<TableCell style={{padding: 0}} colSpan={7}>
 					<Collapse in={showProgress} timeout="auto" unmountOnExit>
 						<Box display="flex">
 							<Box flex={1} color={muiBlues[800]} p={2}>

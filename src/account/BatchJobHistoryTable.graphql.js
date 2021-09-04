@@ -6,12 +6,14 @@ export const BatchJobActionMenu_batchJobFragment = gql`
 		downloadAvailable
 		downloadLink
 		createdAt
+		startedAt
 	}
 `
 
 export const BatchJobHistoryTable_batchJobsFragment = gql`
 	fragment BatchJobHistoryTable_batchJobs on BatchJob {
 		id
+		name
 		jobType
 		createdAt
 		startedAt
