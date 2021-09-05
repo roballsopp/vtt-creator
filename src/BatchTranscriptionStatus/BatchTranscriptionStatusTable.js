@@ -19,6 +19,10 @@ BatchTranscriptionStatusTable.propTypes = {
 			state: PropTypes.string.isRequired,
 			createdAt: PropTypes.string.isRequired,
 			updatedAt: PropTypes.string.isRequired,
+			inputFile: PropTypes.shape({
+				id: PropTypes.string.isRequired,
+				originalFileName: PropTypes.string.isRequired,
+			}).isRequired,
 		}).isRequired
 	).isRequired,
 }
@@ -29,6 +33,7 @@ export default function BatchTranscriptionStatusTable({jobs}) {
 			<Table>
 				<TableHead>
 					<TableRow>
+						<TableCell>File Name</TableCell>
 						<TableCell>Status</TableCell>
 						<TableCell align="right">Job Cost</TableCell>
 						<TableCell align="right">Audio Duration (minutes)</TableCell>
@@ -41,6 +46,7 @@ export default function BatchTranscriptionStatusTable({jobs}) {
 					{jobs.map(job => {
 						return (
 							<TableRow key={job.id}>
+								<TableCell>{job.inputFile.originalFileName}</TableCell>
 								<TableCell>
 									<Box display="flex" alignItems="center">
 										<StatusBubble status={job.state} /> {getStatusText(job)}

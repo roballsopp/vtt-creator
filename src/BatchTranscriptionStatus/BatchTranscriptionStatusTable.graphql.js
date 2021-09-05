@@ -28,6 +28,10 @@ export const BatchTranscriptionStatusTable_jobsFragment = gql`
 		state
 		createdAt
 		updatedAt
+		inputFile {
+			id
+			originalFileName
+		}
 	}
 `
 

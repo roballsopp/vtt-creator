@@ -1,8 +1,13 @@
 import React from 'react'
 import {useQuery} from '@apollo/client'
 import download from 'downloadjs'
-import {Box, Button, Grid, LinearProgress, Link, TablePagination, Tooltip, Typography} from '@material-ui/core'
+import {Box, Button, Grid, LinearProgress, TablePagination, Tooltip, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
+import muiGreys from '@material-ui/core/colors/grey'
+import muiBlues from '@material-ui/core/colors/blue'
+import muiYellows from '@material-ui/core/colors/yellow'
+import muiReds from '@material-ui/core/colors/red'
+import muiGreens from '@material-ui/core/colors/green'
 import {handleError} from '../services/error-handler.service'
 import {useOffsetPagination, useSlicePage} from '../common/useOffsetPagination'
 import PageLoader from '../common/PageLoader'
@@ -10,11 +15,6 @@ import PageError from '../common/PageError'
 import {BatchTranscriptionStatusTableGetJobsQuery} from './BatchTranscriptionStatusTable.graphql'
 import BatchTranscriptionStatusTable from './BatchTranscriptionStatusTable'
 import BatchStatusIndicator from '../common/BatchStatusIndicator'
-import muiGreys from '@material-ui/core/colors/grey'
-import muiBlues from '@material-ui/core/colors/blue'
-import muiYellows from '@material-ui/core/colors/yellow'
-import muiReds from '@material-ui/core/colors/red'
-import muiGreens from '@material-ui/core/colors/green'
 import {cognitoUserPool} from '../cognito'
 import {ApiURL} from '../config'
 
@@ -91,7 +91,7 @@ export default function BatchTranscriptionStatusTableContainer({batchId}) {
 			<Grid item xs={12}>
 				<Typography variant="h6">Batch Status</Typography>
 			</Grid>
-			<Grid item container direction="column" xs={12} sm={4}>
+			<Grid item container direction="column" xs={12} sm={3}>
 				<div className={classes.titleBox}>
 					<Typography variant="subtitle1" align="center">
 						Batch Name:
@@ -107,7 +107,7 @@ export default function BatchTranscriptionStatusTableContainer({batchId}) {
 					</div>
 				</div>
 			</Grid>
-			<Grid item container direction="column" justifyContent="center" xs={12} sm={4}>
+			<Grid item container direction="column" justifyContent="center" xs={12} sm={3}>
 				<div className={classes.titleBox}>
 					<Typography variant="subtitle1" align="center">
 						Batch Status:
@@ -119,7 +119,19 @@ export default function BatchTranscriptionStatusTableContainer({batchId}) {
 					</Typography>
 				</div>
 			</Grid>
-			<Grid item container direction="column" xs={12} sm={4}>
+			<Grid item container direction="column" justifyContent="center" xs={12} sm={3}>
+				<div className={classes.titleBox}>
+					<Typography variant="subtitle1" align="center">
+						Batch Cost:
+					</Typography>
+				</div>
+				<div className={classes.valueBox}>
+					<Typography variant="body1" align="center">
+						${data.batchJob.totalCost.toFixed(2)}
+					</Typography>
+				</div>
+			</Grid>
+			<Grid item container direction="column" xs={12} sm={3}>
 				<div className={classes.titleBox}>
 					<Typography variant="subtitle1" align="center">
 						Downloads:
@@ -144,7 +156,7 @@ export default function BatchTranscriptionStatusTableContainer({batchId}) {
 				)}
 			</Grid>
 			<Grid item xs={12}>
-				<Typography variant="h6">Transcription Job Status</Typography>
+				<Typography variant="h6">Transcription Jobs In This Batch</Typography>
 			</Grid>
 			<Grid item xs={12}>
 				<Box display="flex" bgcolor={muiGreys[200]} borderRadius={2}>
