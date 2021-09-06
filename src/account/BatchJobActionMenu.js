@@ -23,8 +23,7 @@ BatchJobActionMenu.propTypes = {
 	batchJob: PropTypes.shape({
 		id: PropTypes.string.isRequired,
 		downloadAvailable: PropTypes.bool.isRequired,
-		downloadLinkVTT: PropTypes.string,
-		downloadLinkSRT: PropTypes.string,
+		downloadLink: PropTypes.string,
 		createdAt: PropTypes.string.isRequired,
 		startedAt: PropTypes.string,
 	}).isRequired,
@@ -80,11 +79,8 @@ export default function BatchJobActionMenu({batchJob}) {
 				) : (
 					<MenuItem onClick={handleGoToCart}>Edit batch</MenuItem>
 				)}
-				<MenuItem disabled={!batchJob.downloadAvailable} onClick={() => handleDownload(batchJob.downloadLinkVTT)}>
-					Download VTT cues
-				</MenuItem>
-				<MenuItem disabled={!batchJob.downloadAvailable} onClick={() => handleDownload(batchJob.downloadLinkSRT)}>
-					Download SRT cues
+				<MenuItem disabled={!batchJob.downloadAvailable} onClick={() => handleDownload(batchJob.downloadLink)}>
+					Download cues
 				</MenuItem>
 			</Menu>
 		</React.Fragment>

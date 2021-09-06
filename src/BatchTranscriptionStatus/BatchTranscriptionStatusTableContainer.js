@@ -89,7 +89,9 @@ export default function BatchTranscriptionStatusTableContainer({batchId}) {
 	return (
 		<Grid container spacing={2}>
 			<Grid item xs={12}>
-				<Typography variant="h6">Batch Status</Typography>
+				<Typography variant="h6" align="center">
+					Batch Status
+				</Typography>
 			</Grid>
 			<Grid item container direction="column" xs={12} sm={3}>
 				<div className={classes.titleBox}>
@@ -139,11 +141,8 @@ export default function BatchTranscriptionStatusTableContainer({batchId}) {
 				</div>
 				{data.batchJob.downloadAvailable && (
 					<div className={classes.valueBox}>
-						<Button color="primary" onClick={() => handleDownloadTranscript(data.batchJob.downloadLinkVTT)}>
-							Download VTT cues
-						</Button>
-						<Button color="primary" onClick={() => handleDownloadTranscript(data.batchJob.downloadLinkSRT)}>
-							Download SRT cues
+						<Button color="primary" onClick={() => handleDownloadTranscript(data.batchJob.downloadLink)}>
+							Download cues
 						</Button>
 					</div>
 				)}
@@ -156,7 +155,9 @@ export default function BatchTranscriptionStatusTableContainer({batchId}) {
 				)}
 			</Grid>
 			<Grid item xs={12}>
-				<Typography variant="h6">Transcription Jobs In This Batch</Typography>
+				<Typography variant="h6" align="center">
+					Transcription Jobs In This Batch
+				</Typography>
 			</Grid>
 			<Grid item xs={12}>
 				<Box display="flex" bgcolor={muiGreys[200]} borderRadius={2}>

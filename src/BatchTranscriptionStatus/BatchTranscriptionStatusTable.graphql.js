@@ -5,8 +5,7 @@ export const BatchStatus_batchFragment = gql`
 		id
 		name
 		downloadAvailable
-		downloadLinkVTT
-		downloadLinkSRT
+		downloadLink
 		createdAt
 		startedAt
 		finishedAt
