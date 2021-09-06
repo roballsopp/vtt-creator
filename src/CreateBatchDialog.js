@@ -56,6 +56,7 @@ export default function CreateBatchDialog({open, onClose}) {
 		onClose()
 		createBatch({variables: {batchName}})
 			.then(({data}) => {
+				setBatchName('')
 				history.push(`/batches/${data.createBatch.batch.id}/edit`)
 			})
 			.catch(() => {
@@ -69,11 +70,16 @@ export default function CreateBatchDialog({open, onClose}) {
 			})
 	}
 
+	const handleUserClose = () => {
+		setBatchName('')
+		onClose()
+	}
+
 	return (
-		<Dialog maxWidth="sm" fullWidth open={open} onClose={onClose} aria-labelledby="batch-create-dialog-title">
+		<Dialog maxWidth="sm" fullWidth open={open} onClose={handleUserClose} aria-labelledby="batch-create-dialog-title">
 			<Title id="batch-create-dialog-title" disableTypography>
 				<Typography variant="h6">Create Batch</Typography>
-				<IconButton aria-label="Close" edge="end" onClick={onClose}>
+				<IconButton aria-label="Close" edge="end" onClick={handleUserClose}>
 					<CloseIcon />
 				</IconButton>
 			</Title>
@@ -93,7 +99,7 @@ export default function CreateBatchDialog({open, onClose}) {
 				</div>
 			</DialogContent>
 			<DialogActions>
-				<Button name="Batch Cancel" onClick={onClose} color="primary">
+				<Button name="Batch Cancel" onClick={handleUserClose} color="primary">
 					Cancel
 				</Button>
 				<Button
