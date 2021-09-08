@@ -7,11 +7,11 @@ import muiGreens from '@material-ui/core/colors/green'
 import muiYellows from '@material-ui/core/colors/yellow'
 import muiBlues from '@material-ui/core/colors/blue'
 import muiGreys from '@material-ui/core/colors/grey'
-import CaptionsIcon from '@material-ui/icons/ClosedCaption'
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
 import TranslateIcon from '@material-ui/icons/Translate'
 import BatchJobActionMenu from './BatchJobActionMenu'
+import {BatchTranscribe} from '../common/icons'
 import BatchStatusIndicator from '../common/BatchStatusIndicator'
 
 const useStyles = makeStyles(() => ({
@@ -123,7 +123,7 @@ function JobTypeIcon({type}) {
 	if (type === 'transcription') {
 		return (
 			<Tooltip title="The batch contains caption transcriptions">
-				<CaptionsIcon />
+				<BatchTranscribe />
 			</Tooltip>
 		)
 	}

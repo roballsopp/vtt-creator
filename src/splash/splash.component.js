@@ -10,6 +10,7 @@ import MemoryIcon from '@material-ui/icons/MemorySharp'
 import SubtitlesIcon from '@material-ui/icons/Subtitles'
 import TranslateIcon from '@material-ui/icons/Translate'
 import {Button} from '../common'
+import {BatchTranscribe} from '../common/icons'
 import {VC as VCIcon} from '../common/icons'
 import BannerBgImg from '../../assets/banner_bg.jpg'
 import Footer from '../footer.component'
@@ -148,6 +149,20 @@ export default function Splash() {
 							<CloudDownloadIcon className={classes.featureIcon} />
 							<Typography variant="subtitle1" align="center">
 								Export your work to a .vtt file for use anywhere on the web, or a .srt file for use offline.
+							</Typography>
+						</Grid>
+						<Grid
+							item
+							container
+							xs={12}
+							sm={6}
+							lg={4}
+							direction="column"
+							alignItems="center"
+							justifyContent="flex-start">
+							<BatchTranscribe className={classes.featureIcon} />
+							<Typography variant="subtitle1" align="center">
+								Extract captions from many videos at once with Batch Transcriptions
 							</Typography>
 						</Grid>
 					</Grid>

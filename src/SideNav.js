@@ -4,13 +4,13 @@ import {useHistory} from 'react-router-dom'
 import {Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, Tooltip} from '@material-ui/core'
 import AccountIcon from '@material-ui/icons/AccountCircle'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
-import CaptionsIcon from '@material-ui/icons/ClosedCaption'
 import EditIcon from '@material-ui/icons/Edit'
 import EmailIcon from '@material-ui/icons/Email'
 import SignUpIcon from '@material-ui/icons/PersonAdd'
 import PrivacyIcon from '@material-ui/icons/Policy'
 // import TranslateIcon from '@material-ui/icons/Translate'
 import {makeStyles} from '@material-ui/styles'
+import {BatchTranscribe} from './common/icons'
 import {SIDE_NAV_WIDTH, useSideNav} from './NavProvider'
 import {useAuthDialog} from './AuthDialog'
 import {useUser} from './common/UserContext'
@@ -141,7 +141,7 @@ export default function SideNav() {
 					<ListItem button onClick={handleOpenCreateBatchDialog}>
 						<Tooltip title="Batch Transcribe">
 							<ListItemIcon>
-								<CaptionsIcon />
+								<BatchTranscribe />
 							</ListItemIcon>
 						</Tooltip>
 						<ListItemText primary="Batch Transcribe" />

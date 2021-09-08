@@ -4,7 +4,7 @@ import {useMutation, gql} from '@apollo/client'
 import {useHistory} from 'react-router-dom'
 import {Box, Grid, Tooltip, Typography} from '@material-ui/core'
 import CancelIcon from '@material-ui/icons/DeleteForever'
-import CaptionsIcon from '@material-ui/icons/ClosedCaption'
+import {BatchTranscribe} from '../common/icons'
 import {handleError} from '../services/error-handler.service'
 import {Button, useToast} from '../common'
 import {removeBatch} from '../account/BatchJobHistoryTable.graphql'
@@ -115,7 +115,7 @@ export default function BatchTranscriptionCartSummary({batch}) {
 						color="secondary"
 						disabled={!batch.jobs.totalCount || cancelling}
 						loading={starting}
-						startIcon={<CaptionsIcon />}
+						startIcon={<BatchTranscribe />}
 						onClick={handleStartBatch}>
 						Start Transcribing
 					</Button>
