@@ -4,10 +4,10 @@ import {gql} from '@apollo/client'
 import {TranscriptionCost} from '../../config'
 import {useCues, usePromiseLazyQuery} from '../../common'
 import {useDuration} from '../../common/video'
+import CreditDialog from '../../common/CreditDialog'
 import {getCuesFromWords} from '../../services/vtt.service'
 import {useAuthDialog} from '../../AuthDialog'
 import CueExtractionDialog from './cue-extraction-dialog.component'
-import CreditDialog from './CreditDialog'
 import NotSupportedDialog from './NotSupportedDialog'
 
 const ExtractFromVideoContext = React.createContext({

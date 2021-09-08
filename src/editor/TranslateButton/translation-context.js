@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import {gql} from '@apollo/client'
 import {TranslationCost} from '../../config'
 import {useCues, usePromiseLazyQuery} from '../../common'
+import CreditDialog from '../../common/CreditDialog'
 import {useAuthDialog} from '../../AuthDialog'
-import CreditDialog from '../CueExtractionButton/CreditDialog'
 import TranslationDialog from './TranslationDialog'
 
 const TranslationContext = React.createContext({

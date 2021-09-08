@@ -8,9 +8,9 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import Typography from '@material-ui/core/Typography'
 import CloseIcon from '@material-ui/icons/Close'
 import {styled} from '@material-ui/styles'
-import {Button} from '../../common'
-import AddCreditInput from '../../common/AddCreditInput'
-import {useUser} from '../../common/UserContext'
+import Button from './button.component'
+import AddCreditInput from './AddCreditInput'
+import {useUser} from './UserContext'
 
 const Title = styled(DialogTitle)({
 	display: 'flex',
