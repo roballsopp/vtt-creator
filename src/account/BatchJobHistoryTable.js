@@ -52,8 +52,7 @@ export default function BatchJobHistoryTable({batchJobs}) {
 			<Table>
 				<TableHead>
 					<TableRow>
-						<TableCell padding="none" />
-						<TableCell>Name</TableCell>
+						<TableCell padding="none">Name</TableCell>
 						<TableCell>Status</TableCell>
 						<TableCell align="center">Type</TableCell>
 						<TableCell align="right">
@@ -75,7 +74,7 @@ export default function BatchJobHistoryTable({batchJobs}) {
 					))}
 					{!batchJobs.length && (
 						<TableRow>
-							<TableCell colSpan={7}>
+							<TableCell colSpan={6}>
 								<Box height={100} display="flex" alignItems="center" justifyContent="center">
 									<Typography align="center">Looks like you haven&apos;t started any batch jobs</Typography>
 								</Box>
