@@ -78,19 +78,28 @@ export default function CreateBatchDialog({open, onClose}) {
 	return (
 		<Dialog maxWidth="sm" fullWidth open={open} onClose={handleUserClose} aria-labelledby="batch-create-dialog-title">
 			<Title id="batch-create-dialog-title" disableTypography>
-				<Typography variant="h6">Create Batch</Typography>
+				<Typography variant="h6">Batch Transcribe</Typography>
 				<IconButton aria-label="Close" edge="end" onClick={handleUserClose}>
 					<CloseIcon />
 				</IconButton>
 			</Title>
 			<DialogContent>
-				<Typography paragraph>Have a bunch of videos you want to extract captions for all at once?</Typography>
-				<Typography paragraph>You clicked the right thing!</Typography>
-				<Typography paragraph>Before we proceed, give this batch of videos a name so you can find it later.</Typography>
+				<Typography paragraph>
+					Do you have a bunch of videos you want to automatically create captions for without lifting a finger?
+				</Typography>
+				<Typography paragraph>You&apos;ve come to the right place!</Typography>
+				<Typography paragraph>
+					<strong>Batch Transcribe</strong> leverages machine learning technology to convert the speech in your videos
+					into text, break the text into synced captions, and provide you with zipped VTT and SRT files for each video
+					you upload in minutes.
+				</Typography>
+				<Typography paragraph>
+					If you&apos;d like to start now, give your batch of videos a name below so you can find it later.
+				</Typography>
 				<div>
 					<TextField
 						variant="outlined"
-						label="Name"
+						label="Batch Name"
 						value={batchName}
 						placeholder="CSCI 5866 Fall 2021 Lectures"
 						fullWidth

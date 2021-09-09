@@ -1,6 +1,6 @@
 import * as React from 'react'
 import PropTypes from 'prop-types'
-import {Box, Button, List, ListItem, ListItemText, Typography} from '@material-ui/core'
+import {Box, Button, List, Typography} from '@material-ui/core'
 import FolderIcon from '@material-ui/icons/FolderOpen'
 import {useFileSelector} from '../common'
 import {BatchTranscriptionCart_jobsFragment} from './BatchTranscriptionCart.graphql'
@@ -8,6 +8,19 @@ import UploadDialog from './UploadDialog'
 import {useUpload} from './UploadProvider'
 import BatchTranscriptionCartItem from './BatchTranscriptionCartItem'
 import BatchLanguageSelector from './BatchLanguageSelector'
+import {makeStyles} from '@material-ui/styles'
+
+const useStyles = makeStyles(theme => ({
+	emptyList: {
+		listStyleType: 'decimal',
+		margin: 0,
+		paddingInlineStart: theme.spacing(5),
+		'& li': {
+			...theme.typography.body1,
+			margin: theme.spacing(4, 0),
+		},
+	},
+}))
 
 BatchTranscriptionCart.fragments = {
 	jobs: BatchTranscriptionCart_jobsFragment,
@@ -23,6 +36,8 @@ BatchTranscriptionCart.propTypes = {
 }
 
 export default function BatchTranscriptionCart({batchId, jobs}) {
+	const classes = useStyles()
+
 	const {handleAddFiles} = useUpload()
 
 	const [uploadDialogOpen, setUploadDialogOpen] = React.useState(false)
@@ -64,23 +79,39 @@ export default function BatchTranscriptionCart({batchId, jobs}) {
 			)}
 			{!jobs.length && (
 				<Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" px={10} py={6}>
-					<Typography align="center" variant="h6">
+					<Typography align="center" variant="h6" gutterBottom>
 						Lets make some captions!
 					</Typography>
-					<List>
-						<ListItem>
-							<ListItemText primary="1. Select some video files to upload from your computer below." />
-						</ListItem>
-						<ListItem>
-							<ListItemText primary="2. Once your files have uploaded, select the language each video is spoken in." />
-						</ListItem>
-						<ListItem>
-							<ListItemText primary="3. Review the total cost of the batch transcription job to the right." />
-						</ListItem>
-						<ListItem>
-							<ListItemText primary={'4. Click "Start Transcribing", and wait for your transcription to complete.'} />
-						</ListItem>
-					</List>
+					<Typography variant="h4" align="center">
+						1
+					</Typography>
+					<Typography variant="body1" paragraph align="center">
+						Select some video files to upload from your computer below.
+					</Typography>
+					<Typography variant="h4" align="center">
+						2
+					</Typography>
+					<Typography variant="body1" paragraph align="center">
+						Once your files have uploaded, select the language each video is spoken in.
+					</Typography>
+					<Typography variant="h4" align="center">
+						3
+					</Typography>
+					<Typography variant="body1" paragraph align="center">
+						Review the total cost of the batch transcription job to the left.
+					</Typography>
+					<Typography variant="h4" align="center">
+						4
+					</Typography>
+					<Typography variant="body1" paragraph align="center">
+						Click &ldquo;Start Transcribing&rdquo;, and wait for your transcription to complete.
+					</Typography>
+					<Typography variant="h4" align="center">
+						5
+					</Typography>
+					<Typography variant="body1" paragraph align="center">
+						Download a zip file containing captions in VTT and SRT format for each video you uploaded.
+					</Typography>
 					<Box marginTop={4}>
 						<Button
 							variant="contained"

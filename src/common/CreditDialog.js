@@ -72,10 +72,14 @@ export default function CreditDialog({cost, open, onClose, onExited}) {
 				<Typography paragraph color="error">
 					Action cost ${cost.toFixed(2)}
 				</Typography>
+				<Typography paragraph>Specify a USD amount to add to your account below and pay with paypal.</Typography>
 				<Typography paragraph>
-					Specify a USD amount to add to your account below and pay with paypal. Any amount you add beyond the cost of
-					this action will be saved and can be applied to other paid features on VTT Creator. Check your remaining
-					credit at any time by clicking the Account button in the lower right corner of the screen.
+					Any amount you add beyond the cost of this action will be saved and can be applied to other paid features on
+					VTT Creator.
+				</Typography>
+				<Typography paragraph>
+					Check your remaining credit at any time by visiting the Account page using the navigation menu in the top left
+					of the screen.
 				</Typography>
 				<div>
 					<AddCreditInput defaultValue={defaultValue} onApproved={handlePaid} />

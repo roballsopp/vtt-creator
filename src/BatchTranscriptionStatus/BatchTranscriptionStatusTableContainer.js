@@ -89,8 +89,26 @@ export default function BatchTranscriptionStatusTableContainer({batchId}) {
 	return (
 		<Grid container spacing={2}>
 			<Grid item xs={12}>
+				<Typography variant="h4">Batch Status</Typography>
+			</Grid>
+			<Grid item xs={12}>
+				<Typography variant="body2" paragraph>
+					Most batch transcriptions will complete in a few minutes, but if you have some very long videos in your batch,
+					it could take up to an hour to complete. You can leave this page, or even leave VTT Creator entirely, and
+					we&apos;ll continue working on your transcriptions in the cloud.
+				</Typography>
+				<Typography variant="body2" paragraph>
+					VTT Creator does not currently provide email notifications, so you&apos;ll have to return to this page
+					periodically to check on the progress of your batch.
+				</Typography>
+				<Typography variant="body2" paragraph>
+					To find this page again, navigate to your Account using the navigation menu in the top left of the screen.
+					Scroll to the bottom of the screen and locate this batch by the name you gave it (shown below).
+				</Typography>
+			</Grid>
+			<Grid item xs={12}>
 				<Typography variant="h6" align="center">
-					Batch Status
+					Batch Information
 				</Typography>
 			</Grid>
 			<Grid item container direction="column" xs={12} sm={3}>
@@ -147,11 +165,13 @@ export default function BatchTranscriptionStatusTableContainer({batchId}) {
 					</div>
 				)}
 				{!data.batchJob.downloadAvailable && (
-					<div className={classes.valueBox}>
-						<Typography variant="body1" align="center">
-							-
-						</Typography>
-					</div>
+					<Tooltip title="Downloads will be available here when we finish creating all of your captions">
+						<div className={classes.valueBox}>
+							<Typography variant="body1" align="center">
+								-
+							</Typography>
+						</div>
+					</Tooltip>
 				)}
 			</Grid>
 			<Grid item xs={12}>
