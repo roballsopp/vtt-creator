@@ -80,7 +80,7 @@ export default function BatchJobActionMenu({batchJob}) {
 					<MenuItem onClick={handleGoToCart}>Edit batch</MenuItem>
 				)}
 				<MenuItem disabled={!batchJob.downloadAvailable} onClick={() => handleDownload(batchJob.downloadLink)}>
-					Download cues
+					Download Captions
 				</MenuItem>
 			</Menu>
 		</React.Fragment>
