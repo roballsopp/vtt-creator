@@ -39,10 +39,8 @@ export const BatchTranscriptionCartSummary_batchFragment = gql`
 	fragment BatchTranscriptionCartSummary_batch on BatchJob {
 		id
 		name
-		jobs {
-			totalCost
-			totalCount
-		}
+		totalCost
+		totalJobs
 	}
 `
 

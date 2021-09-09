@@ -2,27 +2,29 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {useMutation, gql} from '@apollo/client'
 import {useHistory} from 'react-router-dom'
-import {Box, Grid, Tooltip, Typography} from '@material-ui/core'
+import {Box, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Tooltip, Typography} from '@material-ui/core'
 import CancelIcon from '@material-ui/icons/DeleteForever'
 import {BatchTranscribe} from '../common/icons'
 import {handleError} from '../services/error-handler.service'
-import {Button, useToast} from '../common'
+import {Button, usePromiseLazyQuery, useToast} from '../common'
 import {removeBatch} from '../account/BatchJobHistoryTable.graphql'
+import CreditDialog from '../common/CreditDialog'
 
 BatchTranscriptionCartSummary.propTypes = {
 	batch: PropTypes.shape({
 		id: PropTypes.string.isRequired,
 		name: PropTypes.string.isRequired,
-		jobs: PropTypes.shape({
-			totalCount: PropTypes.number.isRequired,
-			totalCost: PropTypes.number.isRequired,
-		}).isRequired,
+		totalCost: PropTypes.number.isRequired,
+		totalJobs: PropTypes.number.isRequired,
 	}).isRequired,
 }
 
 export default function BatchTranscriptionCartSummary({batch}) {
 	const toast = useToast()
 	const history = useHistory()
+
+	const [creditDialogOpen, setCreditDialogOpen] = React.useState(false)
+	const [confirmDialogOpen, setConfirmDialogOpen] = React.useState(false)
 
 	const [cancelBatch, {loading: cancelling}] = useMutation(
 		gql`
@@ -52,6 +54,42 @@ export default function BatchTranscriptionCartSummary({batch}) {
 		`
 	)
 
+	const [getCost, {loading: checkingCost}] = usePromiseLazyQuery(
+		gql`
+			query BatchSummaryGetCost($batchId: String!) {
+				canIAffordBatch(batchId: $batchId)
+			}
+		`,
+		{
+			variables: {batchId: batch.id},
+			fetchPolicy: 'no-cache',
+		}
+	)
+
+	const handleCreditDialogClose = () => {
+		setCreditDialogOpen(false)
+	}
+
+	const handleCreditDialogExited = justPaid => {
+		if (justPaid) handleConfirmDialogOpen()
+	}
+
+	const handleConfirmDialogOpen = () => {
+		getCost()
+			.then(({data}) => {
+				if (!data.canIAffordBatch) return setCreditDialogOpen(true)
+				setConfirmDialogOpen(true)
+			})
+			.catch(err => {
+				toast.error('There was a problem confirming the cost of this batch. Please try again.')
+				handleError(err)
+			})
+	}
+
+	const handleConfirmDialogClose = () => {
+		setConfirmDialogOpen(false)
+	}
+
 	const handleCancelBatch = async () => {
 		cancelBatch({variables: {batchId: batch.id}})
 			.then(() => {
@@ -63,7 +101,7 @@ export default function BatchTranscriptionCartSummary({batch}) {
 			})
 	}
 
-	const handleStartBatch = async () => {
+	const handleStartBatch = () => {
 		startBatch({variables: {batchId: batch.id}})
 			.then(() => {
 				history.replace(`/batches/${batch.id}/status`)
@@ -75,52 +113,93 @@ export default function BatchTranscriptionCartSummary({batch}) {
 	}
 
 	return (
-		<Box p={4}>
-			<Grid container spacing={4}>
-				<Grid item xs={12}>
-					<Typography variant="h6">Order Summary</Typography>
+		<React.Fragment>
+			<Box p={4}>
+				<Grid container spacing={4}>
+					<Grid item xs={12}>
+						<Typography variant="h6">Order Summary</Typography>
+					</Grid>
+					<Grid item xs={12}>
+						<Typography variant="subtitle2">Batch Name: {batch.name}</Typography>
+					</Grid>
+					<Grid item xs={12}>
+						<Typography variant="body2">
+							The amount shown below will be deducted immediately from your site credit.
+						</Typography>
+					</Grid>
+					<Grid item xs={12}>
+						<Typography variant="body2">
+							If you don&apos;t currently have enough credit to cover the cost, you&apos;ll be prompted to add more when
+							you hit the &ldquo;Start Transcribing&rdquo; button.
+						</Typography>
+					</Grid>
+					<Grid container item xs={12} justifyContent="space-between">
+						<Typography variant="h6">Total cost:</Typography>
+						<Typography variant="h6" align="right">
+							${batch.totalCost.toFixed(2)}
+						</Typography>
+					</Grid>
+					<Grid container item xs={12} justifyContent="space-between">
+						<Tooltip title="Cancel and discard this batch">
+							<span>
+								<Button
+									color="primary"
+									disabled={starting}
+									loading={cancelling}
+									startIcon={<CancelIcon />}
+									onClick={handleCancelBatch}>
+									Cancel
+								</Button>
+							</span>
+						</Tooltip>
+						<Button
+							variant="contained"
+							color="secondary"
+							disabled={!batch.totalJobs || cancelling}
+							loading={checkingCost || starting}
+							startIcon={<BatchTranscribe />}
+							onClick={handleConfirmDialogOpen}>
+							Start Transcribing
+						</Button>
+					</Grid>
 				</Grid>
-				<Grid item xs={12}>
-					<Typography variant="subtitle2">Batch Name: {batch.name}</Typography>
-				</Grid>
-				<Grid item xs={12}>
-					<Typography variant="body2">
-						The amount shown below will be deducted immediately from your site credit.
+			</Box>
+			<CreditDialog
+				cost={batch.totalCost || 0}
+				open={creditDialogOpen}
+				onExited={handleCreditDialogExited}
+				onClose={handleCreditDialogClose}
+			/>
+			<Dialog
+				open={confirmDialogOpen}
+				onClose={handleConfirmDialogClose}
+				aria-labelledby="alert-dialog-title"
+				aria-describedby="alert-dialog-description">
+				<DialogTitle id="alert-dialog-title">Start Transcribing Videos?</DialogTitle>
+				<DialogContent>
+					<Typography paragraph>
+						This action will start the transcription process for the {batch.totalJobs} videos you have uploaded to this
+						batch.
 					</Typography>
-				</Grid>
-				<Grid item xs={12}>
-					<Typography variant="body2">You will not be charged for any transcription that fails.</Typography>
-				</Grid>
-				<Grid container item xs={12} justifyContent="space-between">
-					<Typography variant="h6">Total cost:</Typography>
-					<Typography variant="h6" align="right">
-						${batch.jobs.totalCost.toFixed(2)}
-					</Typography>
-				</Grid>
-				<Grid container item xs={12} justifyContent="space-between">
-					<Tooltip title="Cancel and discard this batch">
-						<span>
-							<Button
-								color="primary"
-								disabled={starting}
-								loading={cancelling}
-								startIcon={<CancelIcon />}
-								onClick={handleCancelBatch}>
-								Cancel
-							</Button>
-						</span>
-					</Tooltip>
+					<Typography paragraph>${batch.totalCost.toFixed(2)} will be deducted from your account credit.</Typography>
+					<Typography paragraph>Do you want to proceed?</Typography>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={handleConfirmDialogClose} color="primary">
+						Cancel
+					</Button>
 					<Button
 						variant="contained"
 						color="secondary"
-						disabled={!batch.jobs.totalCount || cancelling}
-						loading={starting}
+						disabled={!batch.totalJobs || cancelling}
+						loading={checkingCost || starting}
 						startIcon={<BatchTranscribe />}
-						onClick={handleStartBatch}>
-						Start Transcribing
+						onClick={handleStartBatch}
+						autoFocus>
+						Yes, Start Transcribing
 					</Button>
-				</Grid>
-			</Grid>
-		</Box>
+				</DialogActions>
+			</Dialog>
+		</React.Fragment>
 	)
 }
