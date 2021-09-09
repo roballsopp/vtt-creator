@@ -1,6 +1,6 @@
 import React from 'react'
 import clsx from 'clsx'
-import {AppBar, Hidden, IconButton, Toolbar} from '@material-ui/core'
+import {AppBar, Hidden, IconButton, Toolbar, Tooltip} from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
 import {makeStyles} from '@material-ui/styles'
 import {SIDE_NAV_WIDTH, useSideNav} from './NavProvider'
@@ -41,16 +41,18 @@ export default function TopNav() {
 		<Hidden smDown>
 			<AppBar position="fixed" className={clsx(classes.appBar, {[classes.appBarShift]: sideNavOpen})}>
 				<Toolbar variant="dense">
-					<IconButton
-						edge="start"
-						className={clsx(classes.menuButton, {
-							[classes.hide]: sideNavOpen,
-						})}
-						color="inherit"
-						aria-label="Home"
-						onClick={() => setSideNavOpen(o => !o)}>
-						<MenuIcon />
-					</IconButton>
+					<Tooltip title="Open Navigation Menu">
+						<IconButton
+							edge="start"
+							className={clsx(classes.menuButton, {
+								[classes.hide]: sideNavOpen,
+							})}
+							color="inherit"
+							aria-label="Home"
+							onClick={() => setSideNavOpen(o => !o)}>
+							<MenuIcon />
+						</IconButton>
+					</Tooltip>
 					<VCIcon fontSize="large" edge="start" style={{marginRight: 8}} />
 					<Typography variant="h6" color="inherit">
 						VTT Creator

@@ -8,9 +8,8 @@ import EditIcon from '@material-ui/icons/Edit'
 import EmailIcon from '@material-ui/icons/Email'
 import SignUpIcon from '@material-ui/icons/PersonAdd'
 import PrivacyIcon from '@material-ui/icons/Policy'
-// import TranslateIcon from '@material-ui/icons/Translate'
 import {makeStyles} from '@material-ui/styles'
-import {BatchTranscribe} from './common/icons'
+import {BatchTranscribe, BatchTranslate} from './common/icons'
 import {SIDE_NAV_WIDTH, useSideNav} from './NavProvider'
 import {useAuthDialog} from './AuthDialog'
 import {useUser} from './common/UserContext'
@@ -124,9 +123,11 @@ export default function SideNav() {
 					onExited: e => sideNavEvents.emit('exited', e),
 				}}>
 				<div className={classes.drawerHeader}>
-					<IconButton color="inherit" onClick={() => setSideNavOpen(false)}>
-						<ChevronLeftIcon />
-					</IconButton>
+					<Tooltip title="Close Navigation Menu">
+						<IconButton color="inherit" onClick={() => setSideNavOpen(false)}>
+							<ChevronLeftIcon />
+						</IconButton>
+					</Tooltip>
 				</div>
 				<Divider />
 				<List>
@@ -149,7 +150,7 @@ export default function SideNav() {
 					{/*<ListItem button onClick={handleClickEditor}>*/}
 					{/*	<Tooltip title="Batch Translate">*/}
 					{/*		<ListItemIcon>*/}
-					{/*			<TranslateIcon />*/}
+					{/*			<BatchTranslate />*/}
 					{/*		</ListItemIcon>*/}
 					{/*	</Tooltip>*/}
 					{/*	<ListItemText primary="Batch Translate" />*/}
