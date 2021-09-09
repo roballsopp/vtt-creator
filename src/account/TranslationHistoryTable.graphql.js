@@ -20,6 +20,7 @@ export const TranslationHistoryTable_translationsFragment = gql`
 		targetLang
 		state
 		createdAt
+		updatedAt
 		...TranslationActionMenu_translation
 	}
 	${TranslationActionMenu_translationFragment}

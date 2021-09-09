@@ -1,10 +1,9 @@
 import * as React from 'react'
 import PropTypes from 'prop-types'
-import {format} from 'date-fns'
 import {Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography} from '@material-ui/core'
-import StatusBubble from '../common/StatusBubble'
 import {TranslationHistoryTable_translationsFragment} from './TranslationHistoryTable.graphql'
 import TranslationActionMenu from './TranslationActionMenu'
+import JobStatusIndicator from '../common/JobStatusIndicator'
 
 TranslationHistoryTable.fragments = {
 	translations: TranslationHistoryTable_translationsFragment,
@@ -20,6 +19,7 @@ TranslationHistoryTable.propTypes = {
 			targetLang: PropTypes.string.isRequired,
 			state: PropTypes.string.isRequired,
 			createdAt: PropTypes.string.isRequired,
+			updatedAt: PropTypes.string.isRequired,
 		}).isRequired
 	).isRequired,
 }
@@ -30,8 +30,7 @@ export default function TranslationHistoryTable({translations}) {
 			<Table>
 				<TableHead>
 					<TableRow>
-						<TableCell padding="none">Started At</TableCell>
-						<TableCell>Status</TableCell>
+						<TableCell padding="none">Status</TableCell>
 						<TableCell align="right">Translation Cost</TableCell>
 						<TableCell align="right">Number of Characters</TableCell>
 						<TableCell align="center">Source Language</TableCell>
@@ -45,12 +44,8 @@ export default function TranslationHistoryTable({translations}) {
 					{translations.map(translation => {
 						return (
 							<TableRow key={translation.id}>
-								<TableCell padding="none">{format(new Date(translation.createdAt), 'LLL dd, yyyy h:mm aaa')}</TableCell>
-								<TableCell>
-									<Box display="flex" alignItems="center">
-										<StatusBubble status={translation.state} />
-										{translation.state}
-									</Box>
+								<TableCell padding="none">
+									<JobStatusIndicator job={translation} />
 								</TableCell>
 								<TableCell align="right">${translation.cost.toFixed(2)}</TableCell>
 								<TableCell align="right">{translation.numCharacters}</TableCell>
@@ -64,7 +59,7 @@ export default function TranslationHistoryTable({translations}) {
 					})}
 					{!translations.length && (
 						<TableRow>
-							<TableCell colSpan={7}>
+							<TableCell colSpan={6}>
 								<Box height={100} display="flex" alignItems="center" justifyContent="center">
 									<Typography align="center">Looks like you haven&apos;t translated anything yet</Typography>
 								</Box>

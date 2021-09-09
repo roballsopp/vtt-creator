@@ -19,6 +19,7 @@ export const JobHistoryTable_jobsFragment = gql`
 		language
 		state
 		createdAt
+		updatedAt
 		...JobActionMenu_job
 	}
 	${JobActionMenu_jobFragment}
