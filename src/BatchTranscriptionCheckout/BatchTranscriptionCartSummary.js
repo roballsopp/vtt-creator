@@ -173,9 +173,8 @@ export default function BatchTranscriptionCartSummary({batch}) {
 			<Dialog
 				open={confirmDialogOpen}
 				onClose={handleConfirmDialogClose}
-				aria-labelledby="alert-dialog-title"
-				aria-describedby="alert-dialog-description">
-				<DialogTitle id="alert-dialog-title">Start Transcribing Videos?</DialogTitle>
+				aria-labelledby="confirm-transcribe-batch-title">
+				<DialogTitle id="confirm-transcribe-batch-title">Start Transcribing Videos?</DialogTitle>
 				<DialogContent>
 					<Typography paragraph>
 						This action will start the transcription process for the {batch.totalJobs} videos you have uploaded to this

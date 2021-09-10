@@ -81,7 +81,7 @@ export default function BatchLanguageSelector({batchId}) {
 					</MenuItem>
 				))}
 			</Select>
-			<FormHelperText>Change the language of all videos in this batch</FormHelperText>
+			<FormHelperText>Set the language of all videos in this batch</FormHelperText>
 		</FormControl>
 	)
 }
