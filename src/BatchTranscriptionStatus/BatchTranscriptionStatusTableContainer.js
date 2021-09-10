@@ -64,15 +64,22 @@ export default function BatchTranscriptionStatusTableContainer({batchId}) {
 		})
 	}
 
-	const {data, previousData, error, loading, refetch} = useQuery(BatchTranscriptionStatusTableGetJobsQuery, {
-		variables: {
-			batchId,
-			offset,
-			limit,
-		},
-		pollInterval: 3000,
-		onError: err => handleError(err),
-	})
+	const {data, previousData, error, loading, refetch, stopPolling} = useQuery(
+		BatchTranscriptionStatusTableGetJobsQuery,
+		{
+			variables: {
+				batchId,
+				offset,
+				limit,
+			},
+			pollInterval: 3000,
+			onError: err => handleError(err),
+		}
+	)
+
+	React.useEffect(() => {
+		if (data?.batchJob?.finishedAt && data?.batchJob?.downloadAvailable) stopPolling()
+	}, [data, stopPolling])
 
 	const jobConn = data?.transcriptionJobs || previousData?.transcriptionJobs
 	const jobs = useSlicePage(jobConn?.nodes, loading, offset, limit)
