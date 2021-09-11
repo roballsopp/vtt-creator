@@ -115,7 +115,7 @@ export default function CueExtractionDialog({transcriptionCost, open, onRequestC
 		}
 
 		function handleJobError(e) {
-			handleError(e)
+			handleError(e, {file: {name: videoFile?.name, size: videoFile?.size, type: videoFile?.type}})
 			if (e instanceof ExtractionError) {
 				if (e.message === 'Not enough arguments') {
 					return toast.error(
