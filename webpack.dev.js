@@ -59,12 +59,17 @@ module.exports = {
 		}),
 	],
 	devServer: {
-		// where to get static files (index.html)
-		contentBase: STATIC_FILES_DIR,
 		port: 3000,
-		// where to serve bundles from (main.js will be available at http://localhost:<port>/<publicPath>)
-		publicPath: '/',
 		historyApiFallback: true,
-		overlay: true,
+		static: {
+			// where to get static files (index.html)
+			directory: STATIC_FILES_DIR,
+			// where to serve bundles from (main.js will be available at http://localhost:<port>/<publicPath>)
+			publicPath: '/',
+		},
+		client: {
+			overlay: true,
+			progress: true,
+		},
 	},
 }
