@@ -2,13 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {gql} from '@apollo/client'
 import {TranscriptionCost} from '../../config'
-import {useCues, usePromiseLazyQuery} from '../../common'
+import {useCues, usePromiseLazyQuery, useVideoFile} from '../../common'
 import {useDuration} from '../../common/video'
 import CreditDialog from '../../common/CreditDialog'
 import {getCuesFromWords} from '../../services/vtt.service'
 import {useAuthDialog} from '../../AuthDialog'
 import CueExtractionDialog from './cue-extraction-dialog.component'
 import NotSupportedDialog from './NotSupportedDialog'
+import FileTooLargeDialog from './FileTooLargeDialog'
 
 const ExtractFromVideoContext = React.createContext({
 	loading: true,
@@ -23,9 +24,11 @@ export function ExtractFromVideoProvider({children}) {
 	const {setCues, setCuesLoading} = useCues()
 	const {openLoginDialog} = useAuthDialog()
 	const {duration} = useDuration()
+	const {videoFile} = useVideoFile()
 
 	const [cueExtractionDialogOpen, setCueExtractionDialogOpen] = React.useState(false)
 	const [creditDialogOpen, setCreditDialogOpen] = React.useState(false)
+	const [fileTooLargeDialogOpen, setFileTooLargeDialogOpen] = React.useState(false)
 	const [notSupportedDialogOpen, setNotSupportedDialogOpen] = React.useState(false)
 
 	const [getCost, {loading, data}] = usePromiseLazyQuery(
@@ -43,6 +46,7 @@ export function ExtractFromVideoProvider({children}) {
 
 	const handleCueExtractionDialogOpen = React.useCallback(() => {
 		if (!window.AudioContext) return setNotSupportedDialogOpen(true)
+		if (videoFile.size > 2000000000) return setFileTooLargeDialogOpen(true)
 
 		getCost()
 			.then(({data}) => {
@@ -59,7 +63,7 @@ export function ExtractFromVideoProvider({children}) {
 					if (justLoggedIn) handleCueExtractionDialogOpen()
 				})
 			})
-	}, [openLoginDialog, getCost])
+	}, [openLoginDialog, videoFile, getCost])
 
 	const handleCueExtractionDialogClose = () => {
 		setCueExtractionDialogOpen(false)
@@ -71,6 +75,10 @@ export function ExtractFromVideoProvider({children}) {
 
 	const handleNotSupportedDialogClose = () => {
 		setNotSupportedDialogOpen(false)
+	}
+
+	const handleFileTooLargeDialogClose = () => {
+		setFileTooLargeDialogOpen(false)
 	}
 
 	const handleCreditDialogExited = justPaid => {
@@ -103,6 +111,7 @@ export function ExtractFromVideoProvider({children}) {
 				onExited={handleCreditDialogExited}
 				onClose={handleCreditDialogClose}
 			/>
+			<FileTooLargeDialog open={fileTooLargeDialogOpen} onClose={handleFileTooLargeDialogClose} />
 			<NotSupportedDialog open={notSupportedDialogOpen} onClose={handleNotSupportedDialogClose} />
 		</ExtractFromVideoContext.Provider>
 	)
