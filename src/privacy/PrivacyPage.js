@@ -13,12 +13,12 @@ export default function PrivacyPage() {
 				</Grid>
 				<Grid item xs={12}>
 					<Typography variant="body2" paragraph>
-						If you choose to use our service, then you agree to the collection and use of your personal information as
+						If you choose to use VTT Creator, then you agree to the collection and use of your personal information as
 						described by this policy.
 					</Typography>
 					<Typography variant="body2" paragraph>
 						<strong>We collect information and content you provide.</strong> This includes information you provide when
-						you sign up and the audio component of video files you load into the editor for automatic transcription.
+						you sign up and the video files you load into the editor for automatic transcription.
 					</Typography>
 					<Typography variant="body2" paragraph>
 						<strong>We collect data about your usage.</strong> We collect information about how you use VTT Creator,

@@ -10,6 +10,7 @@ import {makeStyles} from '@material-ui/styles'
 import {TranslationActionMenu_translationFragment} from './TranslationHistoryTable.graphql'
 import {cognitoUserPool} from '../cognito'
 import {ApiURL} from '../config'
+import {handleError} from '../services/error-handler.service'
 
 const useStyles = makeStyles({
 	menuButton: {
@@ -43,7 +44,7 @@ export default function TranslationActionMenu({translation}) {
 
 		cognitoUser.getSession((err, session) => {
 			if (err) {
-				return console.error(err)
+				return handleError(err)
 			}
 			const token = session.getIdToken().getJwtToken()
 			const url = new URL(downloadPath, ApiURL)

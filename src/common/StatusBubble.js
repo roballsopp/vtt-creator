@@ -1,13 +1,14 @@
 import * as React from 'react'
 import PropTypes from 'prop-types'
 import {Box} from '@material-ui/core'
+import blue from '@material-ui/core/colors/blue'
 import green from '@material-ui/core/colors/green'
 import red from '@material-ui/core/colors/red'
 import yellow from '@material-ui/core/colors/yellow'
 import grey from '@material-ui/core/colors/grey'
 
 StatusBubble.propTypes = {
-	status: PropTypes.oneOf(['pending', 'cancelled', 'error', 'success']).isRequired,
+	status: PropTypes.oneOf(['created', 'pending', 'cancelled', 'error', 'failed', 'success', 'finished']).isRequired,
 }
 
 export default function StatusBubble({status}) {
@@ -16,13 +17,19 @@ export default function StatusBubble({status}) {
 
 function getColor(status) {
 	switch (status) {
+		case 'created':
+			return blue[400]
 		case 'pending':
 			return yellow[600]
 		case 'cancelled':
 			return grey[400]
 		case 'error':
 			return red[500]
+		case 'failed':
+			return red[500]
 		case 'success':
+			return green[500]
+		case 'finished':
 			return green[500]
 		default:
 			return ''

@@ -5,6 +5,7 @@ import {Box, Button, Grid, Hidden, Typography} from '@material-ui/core'
 import {useAuthDialog} from '../AuthDialog'
 import AddCreditInput from '../common/AddCreditInput'
 import PageContainer from '../common/PageContainer'
+import BatchJobHistoryTable from './BatchJobHistoryTableContainer'
 import JobHistoryTable from './JobHistoryTableQueryContainer'
 import TranslationHistoryTable from './TranslationHistoryTableQueryContainer'
 import {AccountPage_userFragment} from './AccountPage.graphql'
@@ -35,12 +36,7 @@ export default function AccountPage({user, transcriptionRate, translationRate}) 
 	}
 
 	return (
-		<PageContainer
-			headerRight={
-				<Button color="secondary" variant="contained" href="/editor">
-					Editor
-				</Button>
-			}>
+		<PageContainer>
 			<Grid container spacing={6}>
 				<Grid item container xs={12}>
 					<Box display="flex" flex={1} alignItems="center">
@@ -110,6 +106,18 @@ export default function AccountPage({user, transcriptionRate, translationRate}) 
 							</Typography>
 						</Box>
 						<TranslationHistoryTable />
+					</Grid>
+					<Grid item container xs={12} direction="column">
+						<Box>
+							<Typography variant="h6" gutterBottom>
+								Batch Job History
+							</Typography>
+							<Typography paragraph>
+								Batch job results are available for download from the Actions menus below for 10 days after all jobs are
+								completed.
+							</Typography>
+						</Box>
+						<BatchJobHistoryTable />
 					</Grid>
 				</Hidden>
 			</Grid>
