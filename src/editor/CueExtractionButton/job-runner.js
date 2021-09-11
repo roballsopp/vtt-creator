@@ -263,7 +263,6 @@ export function getJobRunner(apolloClient, uploadFile) {
 				return {
 					promise: initTranscription(ctx.fileUploadId, ctx.languageCode)
 						.then(({job}) => {
-							recordS2TEvent(ctx.duration)
 							return {...ctx, job: job}
 						})
 						.catch(e => {
@@ -358,12 +357,4 @@ class TaskQueue extends EventEmitter {
 			this.emit(EVENT_JOB_STATE, JOB_STATE_CANCELLED)
 		}
 	}
-}
-
-function recordS2TEvent(videoDuration) {
-	const minutes = Math.round((videoDuration || 0) / 60) + ''
-	window.gtag('event', `video_length_${minutes.padStart(2, '0')}`, {
-		event_category: 'speech_to_text',
-		value: videoDuration,
-	})
 }

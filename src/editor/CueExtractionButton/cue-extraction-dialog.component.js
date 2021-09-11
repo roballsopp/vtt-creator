@@ -13,7 +13,6 @@ import LanguageSelector from './LanguageSelector'
 import {handleError} from '../../services/error-handler.service'
 import {uploadFile} from '../../services/rest-api.service'
 import {useToast, Button, useVideoFile} from '../../common'
-import {useDuration} from '../../common/video'
 import {
 	EVENT_CANCEL_DISABLED,
 	EVENT_DONE,
@@ -49,7 +48,6 @@ CueExtractionDialog.propTypes = {
 
 export default function CueExtractionDialog({transcriptionCost, open, onRequestClose, onExtractComplete}) {
 	const {videoFile} = useVideoFile()
-	const {duration} = useDuration()
 	const apolloClient = useApolloClient()
 	// there is a brief moment during the call to initTranscription when closing the modal allows a transcription
 	//   to continue. cancelDisabled is true during that time so we can prevent this state
@@ -163,7 +161,6 @@ export default function CueExtractionDialog({transcriptionCost, open, onRequestC
 		try {
 			await runner.run({
 				videoFile,
-				duration,
 				languageCode,
 				pollInterval: 2000,
 			})
