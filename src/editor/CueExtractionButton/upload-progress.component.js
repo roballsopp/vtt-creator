@@ -65,10 +65,10 @@ function ProgressBar({uploadState, progressPercent}) {
 
 function getMessageFromUploadState(uploadState) {
 	switch (uploadState) {
+		case UPLOAD_STATE_UPLOADING:
+			return 'Uploading video...'
 		case UPLOAD_STATE_EXTRACTING:
 			return 'Extracting audio...'
-		case UPLOAD_STATE_UPLOADING:
-			return 'Uploading audio...'
 		case UPLOAD_STATE_PROCESSING:
 			return 'Processing audio...'
 		case UPLOAD_STATE_FAILED:
