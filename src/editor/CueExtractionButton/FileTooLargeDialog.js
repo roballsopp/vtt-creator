@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import IconButton from '@material-ui/core/IconButton'
-import Link from '@material-ui/core/Link'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -17,31 +16,28 @@ const Title = styled(DialogTitle)({
 	alignItems: 'center',
 })
 
-NotSupportedDialog.propTypes = {
+FileTooLargeDialog.propTypes = {
 	open: PropTypes.bool,
 	onClose: PropTypes.func.isRequired,
 }
 
-export default function NotSupportedDialog({open, onClose}) {
+export default function FileTooLargeDialog({open, onClose}) {
 	return (
-		<Dialog maxWidth="sm" fullWidth open={open} onClose={onClose} aria-labelledby="extraction-not-supported-title">
-			<Title id="extraction-not-supported-title" disableTypography>
-				<Typography variant="h6">Your browser doesn&apos;t support caption extraction</Typography>
+		<Dialog maxWidth="sm" fullWidth open={open} onClose={onClose} aria-labelledby="file-too-large-title">
+			<Title id="file-too-large-title" disableTypography>
+				<Typography variant="h6">File Too Large</Typography>
 				<IconButton aria-label="Close" edge="end" onClick={onClose}>
 					<CloseIcon />
 				</IconButton>
 			</Title>
 			<DialogContent>
 				<Typography>
-					It looks like you are using an older browser that doesn&apos;t support some key features needed to extract
-					captions from your video. Try loading this app in the latest version of{' '}
-					<Link href="https://www.google.com/chrome/">Chrome</Link>,{' '}
-					<Link href="https://www.mozilla.org/en-US/firefox/new/">Firefox</Link>, or{' '}
-					<Link href="https://www.microsoft.com/en-us/windows/microsoft-edge">Edge</Link>.
+					This file is over 2GB in size, and we will be unable to extract audio from it. Try using a compressed or
+					reduced resolution version of the file that is under 2GB.
 				</Typography>
 			</DialogContent>
 			<DialogActions>
-				<Button name="Not supported close" onClick={onClose} color="primary">
+				<Button name="File too large close" onClick={onClose} color="primary">
 					Got it.
 				</Button>
 			</DialogActions>
