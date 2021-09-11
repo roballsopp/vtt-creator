@@ -46,6 +46,14 @@ export default function Footer() {
 			<div className={classes.leftSection} />
 			<div className={classes.centerSection}>
 				<Typography color="inherit" variant="subtitle2">
+					<Link color="inherit" href="/editor">
+						Editor
+					</Link>
+					&nbsp;|&nbsp;
+					<Link color="inherit" href="/account">
+						Account
+					</Link>
+					&nbsp;|&nbsp;
 					<Link color="inherit" href="/privacy" target="_blank">
 						Privacy
 					</Link>

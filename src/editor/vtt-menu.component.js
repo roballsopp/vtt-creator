@@ -1,16 +1,6 @@
 import * as React from 'react'
 import download from 'downloadjs'
-import {
-	Dialog,
-	DialogActions,
-	DialogContent,
-	DialogTitle,
-	Hidden,
-	IconButton,
-	Menu,
-	MenuItem,
-	Tooltip,
-} from '@material-ui/core'
+import {Hidden, IconButton, Menu, MenuItem, Tooltip} from '@material-ui/core'
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
 import CloudUploadIcon from '@material-ui/icons/CloudUpload'
 import DeleteIcon from '@material-ui/icons/Delete'
@@ -20,7 +10,8 @@ import {makeStyles} from '@material-ui/styles'
 import {ExtractFromVideoMenuItem} from './CueExtractionButton'
 import {TranslateMenuItem} from './TranslateButton'
 import VTTMenuLogin from './VTTMenuLogin'
-import {useFileSelector, useCues, Button, useCueFromFileLoader} from '../common'
+import ClearCuesDialog from './ClearCuesDialog'
+import {useFileSelector, useCues, useCueFromFileLoader} from '../common'
 import {getVTTFromCues} from '../services/vtt.service'
 import {getSRTFromCues} from '../services/srt.service'
 import SelectVideoButton from '../common/SelectVideoButton'
@@ -33,7 +24,7 @@ const useStyles = makeStyles({
 
 export default function VTTMenu() {
 	const classes = useStyles()
-	const {cues, setCues} = useCues()
+	const {cues} = useCues()
 	const {loadCuesFromFile} = useCueFromFileLoader()
 
 	const [optionsMenuAnchorEl, setOptionsMenuAnchorEl] = React.useState(null)
@@ -59,11 +50,6 @@ export default function VTTMenu() {
 	}
 
 	const onCloseClearCuesDialog = () => {
-		setClearCuesDialogOpen(false)
-	}
-
-	const onClearCues = () => {
-		setCues([])
 		setClearCuesDialogOpen(false)
 	}
 
@@ -118,26 +104,7 @@ export default function VTTMenu() {
 					<VTTMenuLogin />
 				</Hidden>
 			</Menu>
-			<Dialog
-				maxWidth="sm"
-				fullWidth
-				open={clearCuesDialogOpen}
-				onClose={onCloseClearCuesDialog}
-				aria-labelledby="extract-dialog-title">
-				<DialogTitle id="extract-dialog-title">Are you sure you want to delete your cues?</DialogTitle>
-				<DialogContent>
-					This will delete all the cues you have created or extracted, and you&apos;ll have to start over. Are you sure
-					you want to proceed?
-				</DialogContent>
-				<DialogActions>
-					<Button name="Delete Cues Cancel" onClick={onCloseClearCuesDialog} color="primary">
-						Cancel
-					</Button>
-					<Button name="Delete Cues Confirm" onClick={onClearCues} color="primary" variant="contained">
-						Yes, Delete Cues
-					</Button>
-				</DialogActions>
-			</Dialog>
+			<ClearCuesDialog open={clearCuesDialogOpen} onClose={onCloseClearCuesDialog} />
 		</React.Fragment>
 	)
 }

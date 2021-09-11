@@ -6,7 +6,7 @@ import {ThemeProvider as MuiThemeProvider} from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import * as Sentry from '@sentry/browser'
 import theme from './mui-theme'
-import Router from './router.component'
+import Router from './AppRouter'
 import {ToastProvider, ErrorBoundary} from './common'
 import {SentryDSN} from './config'
 

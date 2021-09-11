@@ -6,12 +6,12 @@ export const uploadFile = (file, url, onProgress) => {
 			if (onProgress) xhr.upload.addEventListener('progress', onProgress)
 
 			xhr.upload.addEventListener('error', () => reject(new Error('Upload errored')))
-			xhr.upload.addEventListener('abort', resolve)
+			xhr.upload.addEventListener('abort', () => resolve({result: 'cancelled'}))
 			xhr.addEventListener('load', () => {
 				if (xhr.status >= 400) {
 					return reject(new Error(`${xhr.status} - upload failed. ${xhr.responseText}. ${xhr.response}`))
 				}
-				resolve()
+				resolve({result: 'completed'})
 			})
 
 			xhr.open('PUT', url)
@@ -23,12 +23,12 @@ export const uploadFile = (file, url, onProgress) => {
 					if (xhr.status >= 400) {
 						return reject(new Error(`${xhr.status} - upload cancel failed. ${xhr.responseText}. ${xhr.response}`))
 					}
-					resolve()
+					resolve({result: 'completed'})
 				})
 				xhr.upload.addEventListener('error', () => {
 					reject(new Error('error cancelling upload'))
 				})
-				xhr.upload.addEventListener('abort', resolve)
+				xhr.upload.addEventListener('abort', () => resolve({result: 'cancelled'}))
 				xhr.abort()
 			})
 		},

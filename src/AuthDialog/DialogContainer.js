@@ -6,7 +6,7 @@ import qs from 'qs'
 import {AuthenticationDetails, CognitoUser} from 'amazon-cognito-identity-js'
 import Dialog from '@material-ui/core/Dialog'
 import {cognitoUserPool} from '../cognito'
-import {ApiURL, GAProduct} from '../config'
+import {ApiURL} from '../config'
 import {UserContext_userFragment} from '../common/UserContext/UserContext.graphql'
 import {handleError} from '../services/error-handler.service'
 import LoginDialog from './LoginDialog'
@@ -35,6 +35,10 @@ export function AuthDialogProvider({children}) {
 	const handleOpenLoginDialog = React.useCallback(msg => {
 		setLoginMessage(msg)
 		setViewId('LOGIN')
+
+		return new Promise(resolve => {
+			authEventsRef.current.once('exited', resolve)
+		})
 	}, [])
 
 	const handleOpenSignUpDialog = React.useCallback(() => {

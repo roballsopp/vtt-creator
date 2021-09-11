@@ -4,10 +4,10 @@ import {gql} from '@apollo/client'
 import {TranscriptionCost} from '../../config'
 import {useCues, usePromiseLazyQuery} from '../../common'
 import {useDuration} from '../../common/video'
+import CreditDialog from '../../common/CreditDialog'
 import {getCuesFromWords} from '../../services/vtt.service'
 import {useAuthDialog} from '../../AuthDialog'
 import CueExtractionDialog from './cue-extraction-dialog.component'
-import CreditDialog from './CreditDialog'
 import NotSupportedDialog from './NotSupportedDialog'
 
 const ExtractFromVideoContext = React.createContext({
@@ -21,7 +21,7 @@ ExtractFromVideoProvider.propTypes = {
 
 export function ExtractFromVideoProvider({children}) {
 	const {setCues, setCuesLoading} = useCues()
-	const {openLoginDialog, authDialogEvents} = useAuthDialog()
+	const {openLoginDialog} = useAuthDialog()
 	const {duration} = useDuration()
 
 	const [cueExtractionDialogOpen, setCueExtractionDialogOpen] = React.useState(false)
@@ -51,16 +51,15 @@ export function ExtractFromVideoProvider({children}) {
 			})
 			// if error refetching, we probably aren't logged in
 			.catch(() => {
-				authDialogEvents.once('exited', justLoggedIn => {
-					if (justLoggedIn) handleCueExtractionDialogOpen()
-				})
 				openLoginDialog(
 					`Automatic caption extraction costs $${TranscriptionCost.toFixed(
 						2
 					)} per minute of video and requires an account. Please login or sign up below.`
-				)
+				).then(justLoggedIn => {
+					if (justLoggedIn) handleCueExtractionDialogOpen()
+				})
 			})
-	}, [authDialogEvents, openLoginDialog, getCost])
+	}, [openLoginDialog, getCost])
 
 	const handleCueExtractionDialogClose = () => {
 		setCueExtractionDialogOpen(false)
