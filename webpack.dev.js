@@ -7,7 +7,8 @@ const STATIC_FILES_DIR = path.resolve(__dirname, 'public')
 module.exports = {
 	// files are named according to `entry` key
 	entry: {
-		main: ['./src/google-analytics', './src/polyfills', './src/doorbell', './src/index.js'],
+		main: ['./src/google-analytics', './src/polyfills', './src/index.js'],
+		doorbell: ['./src/doorbell'],
 	},
 	mode: 'development',
 	// map webpack's output back to source files when debugging in chrome https://webpack.js.org/configuration/devtool/

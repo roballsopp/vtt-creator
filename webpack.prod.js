@@ -5,13 +5,17 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
 	entry: {
-		main: ['./src/full-story', './src/google-analytics', './src/polyfills', './src/doorbell', './src/index.js'],
+		main: ['./src/google-analytics', './src/polyfills', './src/index.js'],
+		fullstory: ['./src/full-story'],
+		doorbell: ['./src/doorbell'],
 	},
 	mode: 'production',
 	// this setting and UglifyJsPlugin({ sourceMap: true }) necessary to output source maps
 	devtool: 'source-map',
 	output: {
 		// the filename will just be the corresponding key from the entry object above (entry.main becomes docs/main.js)
+		filename: '[name].bundle.js',
+		chunkFilename: '[name].bundle.js',
 		path: path.resolve(__dirname, 'public'),
 	},
 	module: {

@@ -1,3 +1,1 @@
-import Editor from './editor.component'
-
-export {Editor}
+export {default} from './editor.component'
