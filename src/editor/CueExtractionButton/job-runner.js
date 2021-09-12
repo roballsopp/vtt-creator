@@ -75,6 +75,25 @@ export function getJobRunner(apolloClient, uploadFile) {
 		return createFileUpload
 	}
 
+	async function extractAudio(inputFileId) {
+		const {
+			data: {extractAudioFromFile},
+		} = await apolloClient.mutate({
+			mutation: gql`
+				mutation extractAudio($inputFileId: String!) {
+					extractAudioFromFile(inputFileId: $inputFileId) {
+						audioFile {
+							id
+						}
+					}
+				}
+			`,
+			variables: {inputFileId},
+		})
+
+		return extractAudioFromFile.audioFile
+	}
+
 	async function initTranscription(inputFileId, languageCode) {
 		const {
 			data: {beginTranscription},
@@ -211,27 +230,13 @@ export function getJobRunner(apolloClient, uploadFile) {
 
 	return new TaskQueue([
 		{
-			name: 'Extract Audio',
-			run: (ctx, queue) => {
-				queue.emit(EVENT_JOB_STATE, JOB_STATE_EXTRACTING)
-
-				return {
-					promise: getAudioBlobFromVideo(ctx.videoFile)
-						.then(audioBlob => ({...ctx, audioBlob}))
-						.catch(e => {
-							throw new ExtractionError(e.message)
-						}),
-				}
-			},
-		},
-		{
 			name: 'Get Upload Url',
 			run: (ctx, queue) => {
 				queue.emit(EVENT_JOB_STATE, JOB_STATE_UPLOADING)
 
 				return {
 					promise: getUploadUrl(ctx.videoFile.name)
-						.then(({fileUploadId, uploadUrl}) => ({...ctx, fileUploadId, uploadUrl}))
+						.then(({fileUploadId, uploadUrl}) => ({...ctx, videoFileId: fileUploadId, uploadUrl}))
 						.catch(e => {
 							throw new UploadUrlError(e.message)
 						}),
@@ -239,12 +244,12 @@ export function getJobRunner(apolloClient, uploadFile) {
 			},
 		},
 		{
-			name: 'Upload Audio',
+			name: 'Upload Video',
 			run: (ctx, queue) => {
 				const handleProgress = e => {
 					queue.emit(EVENT_UPLOAD_PROGRESS, e.loaded, e.total)
 				}
-				const uploader = uploadFile(ctx.audioBlob, ctx.uploadUrl, handleProgress)
+				const uploader = uploadFile(ctx.videoFile, ctx.uploadUrl, handleProgress)
 				return {
 					promise: uploader.promise
 						.then(() => ctx)
@@ -256,12 +261,26 @@ export function getJobRunner(apolloClient, uploadFile) {
 			},
 		},
 		{
+			name: 'Extract Audio',
+			run: (ctx, queue) => {
+				queue.emit(EVENT_JOB_STATE, JOB_STATE_EXTRACTING)
+
+				return {
+					promise: extractAudio(ctx.videoFileId)
+						.then(audioFile => ({...ctx, audioFileId: audioFile.id}))
+						.catch(e => {
+							throw new ExtractionError(e.message)
+						}),
+				}
+			},
+		},
+		{
 			name: 'Begin Transcription',
 			run: (ctx, queue) => {
 				queue.emit(EVENT_JOB_STATE, JOB_STATE_TRANSCRIBING)
 				queue.disableCancel()
 				return {
-					promise: initTranscription(ctx.fileUploadId, ctx.languageCode)
+					promise: initTranscription(ctx.audioFileId, ctx.languageCode)
 						.then(({job}) => {
 							return {...ctx, job: job}
 						})
