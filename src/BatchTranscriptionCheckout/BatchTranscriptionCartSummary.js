@@ -9,6 +9,7 @@ import {handleError} from '../services/error-handler.service'
 import {Button, usePromiseLazyQuery, useToast} from '../common'
 import {removeBatch} from '../account/BatchJobHistoryTable.graphql'
 import CreditDialog from '../common/CreditDialog'
+import {useUpload} from './UploadProvider'
 
 BatchTranscriptionCartSummary.propTypes = {
 	batch: PropTypes.shape({
@@ -22,6 +23,12 @@ BatchTranscriptionCartSummary.propTypes = {
 export default function BatchTranscriptionCartSummary({batch}) {
 	const toast = useToast()
 	const history = useHistory()
+	const {uploadState} = useUpload()
+
+	const batchUploadState = React.useMemo(() => uploadState.batches[batch.id] || {uploading: false, uploads: []}, [
+		uploadState.batches,
+		batch.id,
+	])
 
 	const [creditDialogOpen, setCreditDialogOpen] = React.useState(false)
 	const [confirmDialogOpen, setConfirmDialogOpen] = React.useState(false)
@@ -139,29 +146,49 @@ export default function BatchTranscriptionCartSummary({batch}) {
 							${batch.totalCost.toFixed(2)}
 						</Typography>
 					</Grid>
-					<Grid container item xs={12} justifyContent="space-between">
-						<Tooltip title="Cancel and discard this batch">
-							<span>
-								<Button
-									color="primary"
-									disabled={starting}
-									loading={cancelling}
-									startIcon={<CancelIcon />}
-									onClick={handleCancelBatch}>
-									Cancel
-								</Button>
-							</span>
-						</Tooltip>
-						<Button
-							variant="contained"
-							color="secondary"
-							disabled={!batch.totalJobs || cancelling}
-							loading={checkingCost || starting}
-							startIcon={<BatchTranscribe />}
-							onClick={handleConfirmDialogOpen}>
-							Start Transcribing
-						</Button>
-					</Grid>
+					{batchUploadState.uploading && (
+						<Grid container item xs={12} justifyContent="space-between">
+							<Tooltip title="Cancel your current uploads first, then you can cancel this batch">
+								<span>
+									<Button color="primary" disabled startIcon={<CancelIcon />}>
+										Cancel
+									</Button>
+								</span>
+							</Tooltip>
+							<Tooltip title="Wait for your current uploads to complete before starting the transcription process.">
+								<span>
+									<Button variant="contained" color="secondary" disabled startIcon={<BatchTranscribe />}>
+										Start Transcribing
+									</Button>
+								</span>
+							</Tooltip>
+						</Grid>
+					)}
+					{!batchUploadState.uploading && (
+						<Grid container item xs={12} justifyContent="space-between">
+							<Tooltip title="Cancel and discard this batch">
+								<span>
+									<Button
+										color="primary"
+										disabled={starting}
+										loading={cancelling}
+										startIcon={<CancelIcon />}
+										onClick={handleCancelBatch}>
+										Cancel
+									</Button>
+								</span>
+							</Tooltip>
+							<Button
+								variant="contained"
+								color="secondary"
+								disabled={!batch.totalJobs || cancelling}
+								loading={checkingCost || starting}
+								startIcon={<BatchTranscribe />}
+								onClick={handleConfirmDialogOpen}>
+								Start Transcribing
+							</Button>
+						</Grid>
+					)}
 				</Grid>
 			</Box>
 			<CreditDialog

@@ -8,19 +8,6 @@ import UploadDialog from './UploadDialog'
 import {useUpload} from './UploadProvider'
 import BatchTranscriptionCartItem from './BatchTranscriptionCartItem'
 import BatchLanguageSelector from './BatchLanguageSelector'
-import {makeStyles} from '@material-ui/styles'
-
-const useStyles = makeStyles(theme => ({
-	emptyList: {
-		listStyleType: 'decimal',
-		margin: 0,
-		paddingInlineStart: theme.spacing(5),
-		'& li': {
-			...theme.typography.body1,
-			margin: theme.spacing(4, 0),
-		},
-	},
-}))
 
 BatchTranscriptionCart.fragments = {
 	jobs: BatchTranscriptionCart_jobsFragment,
@@ -36,8 +23,6 @@ BatchTranscriptionCart.propTypes = {
 }
 
 export default function BatchTranscriptionCart({batchId, jobs}) {
-	const classes = useStyles()
-
 	const {handleAddFiles} = useUpload()
 
 	const [uploadDialogOpen, setUploadDialogOpen] = React.useState(false)
