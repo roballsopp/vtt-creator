@@ -32,8 +32,8 @@ export default function FileTooLargeDialog({open, onClose}) {
 			</Title>
 			<DialogContent>
 				<Typography>
-					This file is over 2GB in size, and we will be unable to extract audio from it. Try using a compressed or
-					reduced resolution version of the file that is under 2GB.
+					This video file is over 5GB in size, and we will be unable to extract audio from it. Try using a compressed or
+					reduced resolution version of the video that is under 5GB.
 				</Typography>
 			</DialogContent>
 			<DialogActions>

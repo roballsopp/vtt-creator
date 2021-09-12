@@ -46,7 +46,7 @@ export function ExtractFromVideoProvider({children}) {
 
 	const handleCueExtractionDialogOpen = React.useCallback(() => {
 		if (!window.AudioContext) return setNotSupportedDialogOpen(true)
-		if (videoFile.size > 2000000000) return setFileTooLargeDialogOpen(true)
+		if (videoFile.size > 5000000000) return setFileTooLargeDialogOpen(true)
 
 		getCost()
 			.then(({data}) => {

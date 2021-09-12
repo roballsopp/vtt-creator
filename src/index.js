@@ -9,6 +9,7 @@ import theme from './mui-theme'
 import Router from './AppRouter'
 import {ToastProvider, ErrorBoundary} from './common'
 import {SentryDSN} from './config'
+import {UploadProvider} from './BatchTranscriptionCheckout/UploadProvider'
 
 function AppWrapper() {
 	return (
@@ -17,7 +18,9 @@ function AppWrapper() {
 				<CssBaseline />
 				<ErrorBoundary>
 					<ToastProvider>
-						<Router />
+						<UploadProvider>
+							<Router />
+						</UploadProvider>
 					</ToastProvider>
 				</ErrorBoundary>
 			</MuiThemeProvider>
