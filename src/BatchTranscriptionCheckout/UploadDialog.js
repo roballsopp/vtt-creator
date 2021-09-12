@@ -114,8 +114,13 @@ export default function UploadDialog({open, batchId, onOpen, onClose}) {
 				</Title>
 				<Box px={2}>
 					<Box px={4}>
-						<Typography gutterBottom>
-							You can close this dialog, and your uploads will continue in the background.
+						<Typography variant="body2" paragraph>
+							Your uploads will continue in the background even if you close this dialog or navigate to a different page
+							within VTT Creator.
+						</Typography>
+						<Typography variant="body2" paragraph>
+							Don&apos;t close this tab or use it to navigate to a different site though, or any uploads in progress
+							will be lost and you&apos;ll need to start them over.
 						</Typography>
 					</Box>
 					<List disablePadding>
