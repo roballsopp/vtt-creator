@@ -6,7 +6,6 @@
     "lint": "eslint \"**/*.js\"",
     "lint-fix": "eslint \"{./**/*.js,}\" --fix",
     "build": "webpack --config webpack.prod.js",
-    "build-demo": "webpack --config webpack.demo.js",
     "start": "webpack serve --config webpack.dev.js",
     "test": "karma start karma.conf.js --auto-watch",
     "test-ci": "karma start karma.conf.js --single-run"
