@@ -116,7 +116,7 @@ export default function PaypalButtons({purchaseAmt, disabled, onApprove, onAppro
 			})
 	}
 
-	const PayPalButton = paypal.Buttons.driver('react', {React, ReactDOM})
+	const PayPalButton = React.useMemo(() => paypal.Buttons.driver('react', {React, ReactDOM}), [])
 
 	return (
 		<PayPalButton
