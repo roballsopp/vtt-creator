@@ -1,5 +1,4 @@
 const path = require('path')
-const TerserPlugin = require('terser-webpack-plugin')
 const {DefinePlugin} = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
@@ -54,8 +53,4 @@ module.exports = {
 			chunks: ['main'],
 		}),
 	],
-	optimization: {
-		minimize: true,
-		minimizer: [new TerserPlugin({include: /\.(js)$/, parallel: true})],
-	},
 }
