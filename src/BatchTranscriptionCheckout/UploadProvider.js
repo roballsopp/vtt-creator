@@ -72,25 +72,6 @@ export function UploadProvider({children}) {
 		[setUploadState]
 	)
 
-	const handleAddFiles = React.useCallback(
-		(batchId, files) => {
-			const newUploads = files.map(file => ({
-				id: uuid(),
-				batchId,
-				state: 'queued',
-				file,
-				loaded: 0,
-				total: file.size || 0,
-				error: null,
-			}))
-
-			setBatchState(batchId, b => ({...b, uploads: [...b.uploads, ...newUploads]}))
-
-			handleUpload(batchId)
-		},
-		[handleUpload, setBatchState]
-	)
-
 	const handleRemoveFile = React.useCallback(
 		(batchId, id) => {
 			setBatchState(batchId, b => ({...b, uploads: b.uploads.filter(u => u.id !== id)}))
@@ -280,6 +261,25 @@ export function UploadProvider({children}) {
 			setBatchState,
 			setUploadState,
 		]
+	)
+
+	const handleAddFiles = React.useCallback(
+		(batchId, files) => {
+			const newUploads = files.map(file => ({
+				id: uuid(),
+				batchId,
+				state: 'queued',
+				file,
+				loaded: 0,
+				total: file.size || 0,
+				error: null,
+			}))
+
+			setBatchState(batchId, b => ({...b, uploads: [...b.uploads, ...newUploads]}))
+
+			handleUpload(batchId)
+		},
+		[handleUpload, setBatchState]
 	)
 
 	return (
