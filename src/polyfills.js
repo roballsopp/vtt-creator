@@ -1,5 +1,4 @@
 import 'regenerator-runtime/runtime'
-import 'core-js/stable'
 import {VTTCue as BaseCue} from 'vtt.js'
 import {v4 as uuid} from 'uuid'
 
