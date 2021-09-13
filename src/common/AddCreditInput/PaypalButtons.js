@@ -5,8 +5,6 @@ import {useApolloClient, gql} from '@apollo/client'
 import {UserContext_userFragment} from '../UserContext/UserContext.graphql'
 import {AccountPage_userFragment} from '../../account/AccountPage.graphql'
 
-const PayPalButton = paypal.Buttons.driver('react', {React, ReactDOM})
-
 const CREATE_PAYPAL_ORDER_MUTATION = gql`
 	mutation createPaypalOrder($purchaseAmt: Float!) {
 		createPaypalOrder(purchaseAmt: $purchaseAmt) {
@@ -117,6 +115,8 @@ export default function PaypalButtons({purchaseAmt, disabled, onApprove, onAppro
 				throw err.networkError || err.graphQLErrors || err
 			})
 	}
+
+	const PayPalButton = paypal.Buttons.driver('react', {React, ReactDOM})
 
 	return (
 		<PayPalButton
