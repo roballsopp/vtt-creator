@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import * as PropTypes from 'prop-types'
 import {Box, Dialog, DialogActions, DialogContent, DialogTitle, Typography} from '@material-ui/core'
 import {styled} from '@material-ui/styles'

@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import Tooltip from '@material-ui/core/Tooltip'
 import {useVideoFile, Button} from '../../common'
 import {useExtractFromVideo} from './ExtractFromVideoContext'

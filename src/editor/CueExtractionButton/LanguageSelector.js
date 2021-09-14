@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import * as PropTypes from 'prop-types'
 import {useQuery, gql} from '@apollo/client'
 import FormHelperText from '@material-ui/core/FormHelperText'

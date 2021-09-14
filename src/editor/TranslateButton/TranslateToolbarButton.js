@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import {Tooltip} from '@material-ui/core'
 import TranslateIcon from '@material-ui/icons/Translate'

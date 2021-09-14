@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import download from 'downloadjs'
 import {Hidden, IconButton, Menu, MenuItem, Tooltip} from '@material-ui/core'
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload'

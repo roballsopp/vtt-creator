@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import * as PropTypes from 'prop-types'
 import {useQuery, useMutation, gql} from '@apollo/client'
 import {CircularProgress, FormControl, FormHelperText, MenuItem, Select} from '@material-ui/core'

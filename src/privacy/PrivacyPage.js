@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import Link from '@material-ui/core/Link'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'

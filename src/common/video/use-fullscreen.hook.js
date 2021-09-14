@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import {useVideoDom} from './video-dom.context'
 
 export default function useFullscreen() {

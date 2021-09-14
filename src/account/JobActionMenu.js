@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import download from 'downloadjs'
 import IconButton from '@material-ui/core/IconButton'

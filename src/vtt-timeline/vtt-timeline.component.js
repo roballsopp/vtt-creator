@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import {makeStyles} from '@material-ui/styles'
 import CueTrack from './cue-track.component'
 import AudioTrack from './audio-track.component'
