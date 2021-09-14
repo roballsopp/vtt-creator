@@ -3,9 +3,7 @@ import EventEmitter from 'events'
 import PropTypes from 'prop-types'
 import {gql, useApolloClient} from '@apollo/client'
 import qs from 'qs'
-import {AuthenticationDetails, CognitoUser} from 'amazon-cognito-identity-js'
 import Dialog from '@material-ui/core/Dialog'
-import {cognitoUserPool} from '../cognito'
 import {ApiURL} from '../config'
 import {UserContext_userFragment} from '../common/UserContext/UserContext.graphql'
 import {handleError} from '../services/error-handler.service'
@@ -76,7 +74,8 @@ export function AuthDialogProvider({children}) {
 	}, [])
 
 	const handleLogin = React.useCallback(
-		(email, password) => {
+		async (email, password) => {
+			const {cognitoUserPool, CognitoUser, AuthenticationDetails} = await import('../cognito')
 			return new Promise((resolve, reject) => {
 				const cognitoUser = new CognitoUser({Username: email, Pool: cognitoUserPool})
 				cognitoUser.authenticateUser(new AuthenticationDetails({Username: email, Password: password}), {
@@ -116,7 +115,8 @@ export function AuthDialogProvider({children}) {
 		[apolloClient, handleCloseDialog]
 	)
 
-	const handleLogout = React.useCallback(() => {
+	const handleLogout = React.useCallback(async () => {
+		const {cognitoUserPool} = await import('../cognito')
 		return new Promise((resolve, reject) => {
 			const cognitoUser = cognitoUserPool.getCurrentUser()
 			if (cognitoUser) {
@@ -155,7 +155,8 @@ export function AuthDialogProvider({children}) {
 	)
 
 	const handleVerifyEmail = React.useCallback(
-		code => {
+		async code => {
+			const {cognitoUserPool, CognitoUser} = await import('../cognito')
 			return new Promise((resolve, reject) => {
 				const cognitoUser = new CognitoUser({Username: email, Pool: cognitoUserPool})
 				cognitoUser.confirmRegistration(code, false, function(err) {
@@ -173,7 +174,8 @@ export function AuthDialogProvider({children}) {
 	)
 
 	const handleSendResetCode = React.useCallback(
-		email => {
+		async email => {
+			const {cognitoUserPool, CognitoUser} = await import('../cognito')
 			return new Promise((resolve, reject) => {
 				const cognitoUser = new CognitoUser({Username: email, Pool: cognitoUserPool})
 				cognitoUser.forgotPassword({
@@ -192,9 +194,10 @@ export function AuthDialogProvider({children}) {
 		[handleOpenPasswordResetDialog]
 	)
 
-	const handleResendCode = React.useCallback(() => {
+	const handleResendCode = React.useCallback(async () => {
 		// only reason this might happen is if someone navigated directly to the verify email dialog with ?authDialog=VERIFY_EMAIL
 		if (!email) return Promise.reject(new Error('No email found. Please sign up first.'))
+		const {cognitoUserPool, CognitoUser} = await import('../cognito')
 		return new Promise((resolve, reject) => {
 			const cognitoUser = new CognitoUser({Username: email, Pool: cognitoUserPool})
 			cognitoUser.resendConfirmationCode(function(err) {
@@ -209,7 +212,8 @@ export function AuthDialogProvider({children}) {
 	}, [email])
 
 	const handleResetPassword = React.useCallback(
-		(code, newPassword) => {
+		async (code, newPassword) => {
+			const {cognitoUserPool, CognitoUser} = await import('../cognito')
 			return new Promise((resolve, reject) => {
 				const cognitoUser = new CognitoUser({Username: email, Pool: cognitoUserPool})
 				cognitoUser.confirmPassword(code, newPassword, {

@@ -8,7 +8,6 @@ import MoreIcon from '@material-ui/icons/MoreVert'
 import Tooltip from '@material-ui/core/Tooltip'
 import {makeStyles} from '@material-ui/styles'
 import {TranslationActionMenu_translationFragment} from './TranslationHistoryTable.graphql'
-import {cognitoUserPool} from '../cognito'
 import {ApiURL} from '../config'
 import {handleError} from '../services/error-handler.service'
 
@@ -37,9 +36,10 @@ export default function TranslationActionMenu({translation}) {
 	const classes = useStyles()
 	const [optionsMenuAnchorEl, setOptionsMenuAnchorEl] = React.useState(null)
 
-	const handleDownloadTranscript = downloadPath => {
+	const handleDownloadTranscript = async downloadPath => {
 		setOptionsMenuAnchorEl(null)
 
+		const {cognitoUserPool} = await import('../cognito')
 		const cognitoUser = cognitoUserPool.getCurrentUser()
 
 		cognitoUser.getSession((err, session) => {

@@ -2,7 +2,6 @@ import React from 'react'
 import {Box, Button, CircularProgress, Typography} from '@material-ui/core'
 import {handleError} from './services/error-handler.service'
 import {useAuthDialog} from './AuthDialog'
-import {cognitoUserPool} from './cognito'
 
 export default function CheckAuth({children}) {
 	const [loading, setLoading] = React.useState(true)
@@ -10,31 +9,38 @@ export default function CheckAuth({children}) {
 	const {openLoginDialog} = useAuthDialog()
 
 	React.useEffect(() => {
-		setLoading(true)
-		const cognitoUser = cognitoUserPool.getCurrentUser()
+		async function getSession() {
+			const {cognitoUserPool} = await import('./cognito')
+			const cognitoUser = cognitoUserPool.getCurrentUser()
 
-		if (!cognitoUser) {
-			setLoading(false)
-			setNeedsLogin(true)
-			openLoginDialog("You'll need to be logged in to access this page.").then(justLoggedIn => {
-				if (justLoggedIn) setNeedsLogin(false)
+			if (!cognitoUser) {
+				return null
+			}
+
+			return new Promise((resolve, reject) => {
+				cognitoUser.getSession(function(err, result) {
+					if (err) return reject(err)
+					resolve(result)
+				})
 			})
-			return
 		}
 
-		cognitoUser.getSession(function(err, result) {
-			setLoading(false)
-			if (err) handleError(err)
-
-			if (result) {
-				setNeedsLogin(false)
-			} else {
-				openLoginDialog("You'll need to be logged in to access this page.").then(justLoggedIn => {
-					if (justLoggedIn) setNeedsLogin(false)
-				})
-				setNeedsLogin(true)
-			}
-		})
+		setLoading(true)
+		getSession()
+			.then(session => {
+				if (!session) {
+					setNeedsLogin(true)
+					openLoginDialog("You'll need to be logged in to access this page.").then(justLoggedIn => {
+						if (justLoggedIn) setNeedsLogin(false)
+					})
+				} else {
+					setNeedsLogin(false)
+				}
+			})
+			.catch(handleError)
+			.finally(() => {
+				setLoading(false)
+			})
 	}, [openLoginDialog])
 
 	function handleOpenLoginDialog() {

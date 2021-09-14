@@ -6,7 +6,6 @@ import {IconButton, Menu, MenuItem, Tooltip} from '@material-ui/core'
 import MoreIcon from '@material-ui/icons/MoreVert'
 import {makeStyles} from '@material-ui/styles'
 import {BatchJobActionMenu_batchJobFragment} from './BatchJobHistoryTable.graphql'
-import {cognitoUserPool} from '../cognito'
 import {ApiURL} from '../config'
 
 const useStyles = makeStyles({
@@ -35,9 +34,10 @@ export default function BatchJobActionMenu({batchJob}) {
 
 	const history = useHistory()
 
-	const handleDownload = downloadPath => {
+	const handleDownload = async downloadPath => {
 		setOptionsMenuAnchorEl(null)
 
+		const {cognitoUserPool} = await import('../cognito')
 		const cognitoUser = cognitoUserPool.getCurrentUser()
 
 		cognitoUser.getSession((err, session) => {
