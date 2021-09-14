@@ -93,13 +93,13 @@ export function getJobRunner(apolloClient, uploadFile) {
 		return extractAudioFromFile.audioFile
 	}
 
-	async function initTranscription(inputFileId, languageCode) {
+	async function initTranscription(inputFileId, languageCode, isPhoneCall) {
 		const {
 			data: {beginTranscription},
 		} = await apolloClient.mutate({
 			mutation: gql`
-				mutation initTranscription($inputFileId: String!, $languageCode: String!) {
-					beginTranscription(inputFileId: $inputFileId, languageCode: $languageCode) {
+				mutation initTranscription($inputFileId: String!, $languageCode: String!, $isPhoneCall: Boolean!) {
+					beginTranscription(inputFileId: $inputFileId, languageCode: $languageCode, isPhoneCall: $isPhoneCall) {
 						job {
 							id
 							state
@@ -109,7 +109,7 @@ export function getJobRunner(apolloClient, uploadFile) {
 				}
 				${JobHistoryTable_jobsFragment}
 			`,
-			variables: {inputFileId, languageCode},
+			variables: {inputFileId, languageCode, isPhoneCall},
 			update(cache, {data: {beginTranscription}}) {
 				appendNewJob(cache, beginTranscription?.job)
 			},
@@ -279,7 +279,7 @@ export function getJobRunner(apolloClient, uploadFile) {
 				queue.emit(EVENT_JOB_STATE, JOB_STATE_TRANSCRIBING)
 				queue.disableCancel()
 				return {
-					promise: initTranscription(ctx.audioFileId, ctx.languageCode)
+					promise: initTranscription(ctx.audioFileId, ctx.languageCode, ctx.isPhoneCall)
 						.then(({job}) => {
 							return {...ctx, job: job}
 						})
