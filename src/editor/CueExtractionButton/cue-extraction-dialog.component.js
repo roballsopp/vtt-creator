@@ -1,7 +1,20 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
-import {Box, Dialog, DialogActions, DialogContent, DialogTitle, Typography} from '@material-ui/core'
+import {
+	Box,
+	Checkbox,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogTitle,
+	FormControl,
+	FormControlLabel,
+	Tooltip,
+	Typography,
+} from '@material-ui/core'
 import {styled} from '@material-ui/styles'
+import InfoIcon from '@material-ui/icons/Help'
+import {useApolloClient} from '@apollo/client'
 import UploadProgress, {
 	UPLOAD_STATE_COMPLETED,
 	UPLOAD_STATE_EXTRACTING,
@@ -31,7 +44,6 @@ import {
 	UploadError,
 	UploadUrlError,
 } from './job-runner'
-import {useApolloClient} from '@apollo/client'
 
 const Title = styled(DialogTitle)({
 	display: 'flex',
@@ -57,6 +69,7 @@ export default function CueExtractionDialog({transcriptionCost, open, onRequestC
 	const [totalBytes, setTotalBytes] = React.useState(0)
 	const [uploadState, setUploadState] = React.useState()
 	const [languageCode, setLanguageCode] = React.useState('en-US')
+	const [isPhoneCall, setIsPhoneCall] = React.useState(false)
 	const jobRunnerRef = React.useRef(null)
 
 	const toast = useToast()
@@ -80,6 +93,10 @@ export default function CueExtractionDialog({transcriptionCost, open, onRequestC
 		},
 		[onRequestClose]
 	)
+
+	const handleChangeIsPhoneCall = e => {
+		setIsPhoneCall(e.target.checked)
+	}
 
 	React.useEffect(() => {
 		return () => {
@@ -162,6 +179,7 @@ export default function CueExtractionDialog({transcriptionCost, open, onRequestC
 			await runner.run({
 				videoFile,
 				languageCode,
+				isPhoneCall,
 				pollInterval: 2000,
 			})
 		} finally {
@@ -185,6 +203,21 @@ export default function CueExtractionDialog({transcriptionCost, open, onRequestC
 						disabled={jobRunnerRef.current?.inProgress}
 						onChange={setLanguageCode}
 					/>
+					<FormControl fullWidth margin="dense">
+						<FormControlLabel
+							control={
+								<Checkbox checked={isPhoneCall} onChange={handleChangeIsPhoneCall} name="phone_call" color="primary" />
+							}
+							label={
+								<Box display="flex" alignItems="center">
+									<Typography>This is a phone call</Typography>
+									<Tooltip title="Checking this box may result in a more accurate transcription if this video is a recorded phone call (seems to work well for Zoom/Video conferencing calls)">
+										<InfoIcon fontSize="small" style={{marginLeft: 8}} />
+									</Tooltip>
+								</Box>
+							}
+						/>
+					</FormControl>
 				</Box>
 				<Box pb={4}>
 					<Typography gutterBottom>Transcription cost: (${transcriptionCost.toFixed(2)})</Typography>

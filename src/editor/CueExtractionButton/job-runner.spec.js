@@ -68,6 +68,7 @@ describe('JobRunner', function() {
 				.then(videoFile => {
 					this.jobPromise = this.runner.run({
 						videoFile,
+						isPhoneCall: false,
 						languageCode: this.expectedLanguage,
 						pollInterval: 10,
 					})
