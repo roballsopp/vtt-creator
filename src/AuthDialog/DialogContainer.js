@@ -2,7 +2,6 @@ import React from 'react'
 import EventEmitter from 'events'
 import PropTypes from 'prop-types'
 import {gql, useApolloClient} from '@apollo/client'
-import qs from 'qs'
 import Dialog from '@material-ui/core/Dialog'
 import {ApiURL} from '../config'
 import {UserContext_userFragment} from '../common/UserContext/UserContext.graphql'
@@ -22,9 +21,8 @@ AuthDialogProvider.propTypes = {
 
 export function AuthDialogProvider({children}) {
 	const apolloClient = useApolloClient()
-	const params = useQueryParams()
-	const [viewId, setViewId] = React.useState(params.authDialog || '')
-	const [email, setEmail] = React.useState(params.email || '')
+	const [viewId, setViewId] = React.useState('')
+	const [email, setEmail] = React.useState('')
 	const [loginMessage, setLoginMessage] = React.useState('')
 
 	const authEventsRef = React.useRef(new EventEmitter())
@@ -282,12 +280,4 @@ function AuthView({viewId, loginMessage}) {
 	if (viewId === 'VERIFY_EMAIL') return <VerifyEmailDialog />
 	if (viewId === 'EMAIL_VERIFIED') return <EmailVerifiedDialog />
 	return null
-}
-
-function useQueryParams() {
-	const queryString = window.location.search
-	return React.useMemo(() => {
-		if (!queryString) return {}
-		return qs.parse(queryString.slice(1))
-	}, [queryString])
 }
