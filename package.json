@@ -12,6 +12,7 @@
   },
   "author": "Robert Allsopp <rallsopp06@gmail.com>",
   "license": "UNLICENSED",
+  "sideEffects": false,
   "dependencies": {
     "@apollo/client": "^3.4.10",
     "@babel/core": "^7.14.6",
