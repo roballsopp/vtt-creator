@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import * as PropTypes from 'prop-types'
 import download from 'downloadjs'
 import {gql, useLazyQuery, useMutation} from '@apollo/client'
@@ -20,7 +20,6 @@ import {styled} from '@material-ui/styles'
 import PoweredByGoogleImg from '../../../assets/translate_powered_by_google.svg'
 import {handleError} from '../../services/error-handler.service'
 import {useToast, Button, useCues} from '../../common'
-import {cognitoUserPool} from '../../cognito'
 import {ApiURL} from '../../config'
 
 const Title = styled(DialogTitle)({
@@ -106,6 +105,7 @@ export default function TranslationDialog({translationCost, open, onRequestClose
 			// const text = cues.map(c => c.text)
 			const cuesInput = cues.map(c => ({text: c.text, startTime: c.startTime, endTime: c.endTime}))
 			const {data} = await translate({variables: {cues: cuesInput, sourceLang, targetLang}})
+			const {cognitoUserPool} = await import('../../cognito')
 			const cognitoUser = cognitoUserPool.getCurrentUser()
 
 			cognitoUser.getSession((err, session) => {

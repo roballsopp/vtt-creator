@@ -8,10 +8,12 @@
     "build": "webpack --config webpack.prod.js",
     "start": "webpack serve --config webpack.dev.js",
     "test": "karma start karma.conf.js --auto-watch",
-    "test-ci": "karma start karma.conf.js --single-run"
+    "test-ci": "karma start karma.conf.js --single-run",
+    "analyze": "source-map-explorer public/*.bundle.js"
   },
   "author": "Robert Allsopp <rallsopp06@gmail.com>",
   "license": "UNLICENSED",
+  "sideEffects": false,
   "dependencies": {
     "@apollo/client": "^3.4.10",
     "@babel/core": "^7.14.6",
@@ -31,7 +33,6 @@
     "html-webpack-plugin": "^5.3.2",
     "lodash": "^4.17.19",
     "prop-types": "^15.7.2",
-    "qs": "^6.9.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-flip-move": "^3.0.4",
@@ -61,6 +62,7 @@
     "karma-webpack": "^5.0.0",
     "mocha": "^6.1.4",
     "prettier": "^1.18.2",
+    "source-map-explorer": "^2.5.2",
     "webpack-dev-server": "^4.2.0"
   }
 }

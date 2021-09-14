@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import throttle from 'lodash/throttle'
 import muiPinks from '@material-ui/core/colors/pink'
 import {makeStyles} from '@material-ui/styles'

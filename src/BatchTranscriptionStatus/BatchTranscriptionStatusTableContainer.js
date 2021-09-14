@@ -15,7 +15,6 @@ import PageError from '../common/PageError'
 import {BatchTranscriptionStatusTableGetJobsQuery} from './BatchTranscriptionStatusTable.graphql'
 import BatchTranscriptionStatusTable from './BatchTranscriptionStatusTable'
 import BatchStatusIndicator from '../common/BatchStatusIndicator'
-import {cognitoUserPool} from '../cognito'
 import {ApiURL} from '../config'
 
 const useStyles = makeStyles(theme => ({
@@ -51,7 +50,8 @@ export default function BatchTranscriptionStatusTableContainer({batchId}) {
 	const classes = useStyles()
 	const {offset, limit, paginatorProps} = useOffsetPagination(0, 10)
 
-	const handleDownloadTranscript = downloadPath => {
+	const handleDownloadTranscript = async downloadPath => {
+		const {cognitoUserPool} = await import('../cognito')
 		const cognitoUser = cognitoUserPool.getCurrentUser()
 
 		cognitoUser.getSession((err, session) => {

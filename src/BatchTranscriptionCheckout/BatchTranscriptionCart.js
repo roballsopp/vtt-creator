@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import {Box, Button, List, Typography} from '@material-ui/core'
 import FolderIcon from '@material-ui/icons/FolderOpen'

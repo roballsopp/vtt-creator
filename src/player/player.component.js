@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import {makeStyles} from '@material-ui/styles'
 import {PlayingProvider} from '../common/video/playing-context'
 import VideoControls from '../common/video/video-controls.component'

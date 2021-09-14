@@ -17,6 +17,9 @@ module.exports = {
 			// where to serve bundles from (main.js will be available at http://localhost:<port>/<publicPath>)
 			publicPath: '/',
 		},
+		// gzips all assets before serve
+		//  netlify uses brotli to automatically do this so we don't need to generate compress files for prod
+		compress: true,
 		client: {
 			overlay: true,
 			progress: true,

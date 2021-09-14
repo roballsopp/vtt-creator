@@ -1,6 +1,8 @@
 import {CognitoUserPool} from 'amazon-cognito-identity-js'
 import {CognitoClientId, CognitoUserPoolId} from './config'
 
+export {AuthenticationDetails, CognitoUser} from 'amazon-cognito-identity-js'
+
 export const cognitoUserPool = new CognitoUserPool({
 	UserPoolId: CognitoUserPoolId, // Your user pool id here
 	ClientId: CognitoClientId,

@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import {useHistory} from 'react-router-dom'
 import PropTypes from 'prop-types'
 import {Box, Button, Grid, Hidden, Typography} from '@material-ui/core'

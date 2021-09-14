@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import * as PropTypes from 'prop-types'
 import clsx from 'clsx'
 import {IconButton, Snackbar as MuiSnackbar, SnackbarContent as MuiSnackbarContent} from '@material-ui/core'

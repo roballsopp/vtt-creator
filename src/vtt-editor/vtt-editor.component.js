@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import FlipMove from 'react-flip-move'
 import {Divider, Fab as FabButton, Tooltip} from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'

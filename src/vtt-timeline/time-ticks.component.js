@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import * as PropTypes from 'prop-types'
 import {makeStyles, useTheme} from '@material-ui/styles'
 import {useZoom} from './zoom-container.component'

@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import linkedinIcon from 'simple-icons/icons/linkedin'
 import SvgIcon from '@material-ui/core/SvgIcon'
 

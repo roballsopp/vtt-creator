@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import SvgIcon from '@material-ui/core/SvgIcon'
 
 VC.propTypes = SvgIcon.propTypes
