@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import IconButton from '@material-ui/core/IconButton'
-import {Dialog, DialogActions, DialogContent, DialogTitle, Typography} from '@material-ui/core'
+import {Dialog, DialogActions, DialogContent, DialogTitle, Typography, useMediaQuery} from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import {styled} from '@material-ui/styles'
 import {Button} from './common'
@@ -75,8 +75,16 @@ export default function CreateBatchDialog({open, onClose}) {
 		onClose()
 	}
 
+	const useMobileLayout = useMediaQuery(theme => theme.breakpoints.down('sm'))
+
 	return (
-		<Dialog maxWidth="sm" fullWidth open={open} onClose={handleUserClose} aria-labelledby="batch-create-dialog-title">
+		<Dialog
+			maxWidth="sm"
+			fullWidth
+			fullScreen={useMobileLayout}
+			open={open}
+			onClose={handleUserClose}
+			aria-labelledby="batch-create-dialog-title">
 			<Title id="batch-create-dialog-title" disableTypography>
 				<Typography variant="h6">Batch Transcribe</Typography>
 				<IconButton aria-label="Close" edge="end" onClick={handleUserClose}>

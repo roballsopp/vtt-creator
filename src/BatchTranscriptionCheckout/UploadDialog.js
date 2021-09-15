@@ -15,6 +15,7 @@ import {
 	Snackbar,
 	Tooltip,
 	Typography,
+	useMediaQuery,
 } from '@material-ui/core'
 import * as PropTypes from 'prop-types'
 import MuiCancelledIcon from '@material-ui/icons/Cancel'
@@ -92,6 +93,8 @@ export default function UploadDialog({open, batchId, onOpen, onClose}) {
 
 	const openFileSelector = useFileSelector({accept: 'video/*', multiple: true, onFilesSelected: handleFilesSelected})
 
+	const useMobileLayout = useMediaQuery(theme => theme.breakpoints.down('sm'))
+
 	return (
 		<React.Fragment>
 			<Snackbar
@@ -105,7 +108,13 @@ export default function UploadDialog({open, batchId, onOpen, onClose}) {
 					</Button>
 				}
 			/>
-			<Dialog maxWidth="md" fullWidth open={open} onClose={onClose} aria-labelledby="batch-upload-dialog">
+			<Dialog
+				maxWidth="md"
+				fullWidth
+				fullScreen={useMobileLayout}
+				open={open}
+				onClose={onClose}
+				aria-labelledby="batch-upload-dialog">
 				<Title disableTypography>
 					<Typography variant="h6">Upload Files</Typography>
 					<IconButton aria-label="Close" edge="end" onClick={onClose}>
