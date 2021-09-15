@@ -13,18 +13,18 @@ import {UploadProvider} from './BatchTranscriptionCheckout/UploadProvider'
 
 function AppWrapper() {
 	return (
-		<ApolloProvider client={apolloClient}>
-			<MuiThemeProvider theme={theme}>
-				<CssBaseline />
-				<ErrorBoundary>
+		<MuiThemeProvider theme={theme}>
+			<CssBaseline />
+			<ErrorBoundary>
+				<ApolloProvider client={apolloClient}>
 					<ToastProvider>
 						<UploadProvider>
 							<Router />
 						</UploadProvider>
 					</ToastProvider>
-				</ErrorBoundary>
-			</MuiThemeProvider>
-		</ApolloProvider>
+				</ApolloProvider>
+			</ErrorBoundary>
+		</MuiThemeProvider>
 	)
 }
 

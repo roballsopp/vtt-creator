@@ -8,7 +8,7 @@ import {handleError} from '../services/error-handler.service'
 
 const styles = theme => ({
 	root: {
-		backgroundColor: theme.palette.primary.main,
+		backgroundColor: theme.palette.grey[200],
 		display: 'flex',
 		flexDirection: 'column',
 		justifyContent: 'center',
@@ -43,14 +43,20 @@ class ErrorBoundary extends React.Component {
 			<div className={classes.root}>
 				<Paper elevation={3} className={classes.message}>
 					<Typography variant="h3" paragraph>
-						Oh no! :(
+						Oh no! Something broke... :(
+					</Typography>
+					<Typography paragraph>
+						Its possible a simple page refresh will fix the issue, so give that a shot first.
+					</Typography>
+					<Typography paragraph>
+						VTT Creator only supports modern browsers. If you&#39;re using an older browser, try this app in the latest
+						version of <Link href="https://www.google.com/chrome/">Chrome</Link>,{' '}
+						<Link href="https://www.mozilla.org/en-US/firefox/new/">Firefox</Link>, or{' '}
+						<Link href="https://www.microsoft.com/en-us/windows/microsoft-edge">Edge</Link>.
 					</Typography>
 					<Typography>
-						Something has gone horribly wrong! If you&#39;re using an older browser, you might want to try this app in
-						the latest version of <Link href="https://www.google.com/chrome/">Chrome</Link>,{' '}
-						<Link href="https://www.mozilla.org/en-US/firefox/new/">Firefox</Link>, or, if you must,{' '}
-						<Link href="https://www.microsoft.com/en-us/windows/microsoft-edge">Edge</Link>. If you think you&#39;re
-						up-to-date, hang in there until I can release a fix!
+						If you&apos;re still experiencing an issue, please{' '}
+						<Link href="mailto:vttcreator@gmail.com">send us an email</Link> so we can fix the problem.
 					</Typography>
 				</Paper>
 			</div>
