@@ -1,5 +1,12 @@
-import EventEmitter from 'events'
 import {gql} from '@apollo/client'
+import TaskQueue, {
+	QUEUE_EVENT_CANCEL_DISABLED,
+	QUEUE_EVENT_QUEUE_STATE,
+	QUEUE_EVENT_ERROR,
+	QUEUE_EVENT_DONE,
+	QUEUE_EVENT_CANCELLING,
+	QUEUE_EVENT_CANCELLED,
+} from '../../common/TaskQueue'
 import {ExtendableError} from '../../errors'
 import {SpeechToTextJobTimeout} from '../../config'
 import {appendNewJob, JobHistoryTable_jobsFragment} from '../../account/JobHistoryTable.graphql'
@@ -42,18 +49,16 @@ export class JobError extends ExtendableError {
 }
 
 export const EVENT_UPLOAD_PROGRESS = 'uploading-progress'
-export const EVENT_CANCEL_DISABLED = 'cancel-disabled'
-export const EVENT_JOB_STATE = 'job-state-change'
-export const EVENT_ERROR = 'error'
-export const EVENT_DONE = 'done'
+export const EVENT_CANCEL_DISABLED = QUEUE_EVENT_CANCEL_DISABLED
+export const EVENT_JOB_STATE = QUEUE_EVENT_QUEUE_STATE
+export const EVENT_ERROR = QUEUE_EVENT_ERROR
+export const EVENT_DONE = QUEUE_EVENT_DONE
+export const EVENT_CANCELLING = QUEUE_EVENT_CANCELLING
+export const EVENT_CANCELLED = QUEUE_EVENT_CANCELLED
 
 export const JOB_STATE_EXTRACTING = 'extracting-audio'
 export const JOB_STATE_UPLOADING = 'uploading-audio'
 export const JOB_STATE_TRANSCRIBING = 'transcribing-audio'
-export const JOB_STATE_FAILED = 'job-failed'
-export const JOB_STATE_CANCELLING = 'job-cancelling'
-export const JOB_STATE_CANCELLED = 'job-cancelled'
-export const JOB_STATE_COMPLETED = 'job-completed'
 
 export function getJobRunner(apolloClient, uploadFile) {
 	async function getUploadUrl(filename) {
@@ -307,72 +312,4 @@ export function getJobRunner(apolloClient, uploadFile) {
 			},
 		},
 	])
-}
-
-class TaskQueue extends EventEmitter {
-	constructor(queue = []) {
-		super()
-		this._queue = queue
-		this._currentTask = null
-		this._cancelled = false
-		this.inProgress = false
-		this.cancelDisabled = false
-	}
-
-	async run(startCtx = {}) {
-		this.inProgress = true
-
-		try {
-			let prevTaskPromise = Promise.resolve(startCtx)
-
-			for (let i = 0; i < this._queue.length; i++) {
-				const currentTask = this._queue[i]
-				// wait for the previous task to finish
-				const runContext = await prevTaskPromise
-				// if we cancelled some time during the previous task, don't continue
-				if (this._cancelled) {
-					this.inProgress = false
-					return
-				}
-				// start the current task, passing the context from the previous task
-				this._currentTask = currentTask.run(runContext, this)
-				prevTaskPromise = this._currentTask.promise
-			}
-
-			const result = await prevTaskPromise
-
-			this.inProgress = false
-
-			// we could still have cancelled during the last task, and we need to not send a completion event if so
-			if (this._cancelled) return
-
-			this.emit(EVENT_JOB_STATE, JOB_STATE_COMPLETED)
-			this.emit(EVENT_DONE, result)
-		} catch (e) {
-			this.inProgress = false
-			this.emit(EVENT_JOB_STATE, JOB_STATE_FAILED)
-			this.emit(EVENT_ERROR, e)
-		}
-	}
-
-	disableCancel() {
-		this.cancelDisabled = true
-		this.emit(EVENT_CANCEL_DISABLED, true)
-	}
-
-	enableCancel() {
-		this.cancelDisabled = false
-		this.emit(EVENT_CANCEL_DISABLED, false)
-	}
-
-	async cancel() {
-		if (!this.cancelDisabled) {
-			this._cancelled = true
-			this.emit(EVENT_JOB_STATE, JOB_STATE_CANCELLING)
-			if (this._currentTask?.cancel) await this._currentTask.cancel()
-			await this._currentTask.promise
-			this.inProgress = false
-			this.emit(EVENT_JOB_STATE, JOB_STATE_CANCELLED)
-		}
-	}
 }

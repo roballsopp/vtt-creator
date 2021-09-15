@@ -152,7 +152,7 @@ export default function UploadDialog({open, batchId, onOpen, onClose}) {
 											</span>
 										</Tooltip>
 									)}
-									{['queued', 'uploading'].includes(u.state) && batchState.uploading && (
+									{['queued', 'extracting', 'uploading'].includes(u.state) && batchState.uploading && (
 										<Tooltip title="Cancel">
 											<span>
 												<IconButton edge="end" onClick={() => handleCancelFile(batchId, u.id)}>
@@ -160,6 +160,11 @@ export default function UploadDialog({open, batchId, onOpen, onClose}) {
 												</IconButton>
 											</span>
 										</Tooltip>
+									)}
+									{['adding'].includes(u.state) && (
+										<IconButton edge="end" disabled>
+											<CancelledIcon />
+										</IconButton>
 									)}
 									{u.state === 'cancelled' && <CancelledIcon />}
 									{u.state === 'failed' && <FailedIcon />}
@@ -185,6 +190,10 @@ function getProgressBar(uploadState, progressPercent) {
 			return <LinearProgress variant="determinate" value={0} />
 		case 'uploading':
 			return <LinearProgress variant="determinate" value={progressPercent} />
+		case 'extracting':
+		case 'adding':
+		case 'cancelling':
+			return <LinearProgress variant="indeterminate" color="secondary" />
 		case 'cancelled':
 			return <CancelledLinearProgress variant="determinate" value={progressPercent} />
 		case 'failed':
@@ -200,8 +209,14 @@ function getProgressMessage(uploadState, progressBytes, totalBytes) {
 	switch (uploadState) {
 		case 'queued':
 			return 'Queued'
+		case 'extracting':
+			return 'Extracting Audio...'
 		case 'uploading':
 			return `${bytesToMB(progressBytes)} of ${bytesToMB(totalBytes)} MB`
+		case 'adding':
+			return 'Adding To Batch...'
+		case 'cancelling':
+			return 'Cancelling...'
 		case 'cancelled':
 			return 'Cancelled'
 		case 'failed':

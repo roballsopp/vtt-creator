@@ -7,6 +7,7 @@ import {gql, useApolloClient} from '@apollo/client'
 import {uploadFile} from '../services/rest-api.service'
 import {handleError} from '../services/error-handler.service'
 import {appendNewJob, JobHistoryTable_jobsFragment} from '../account/JobHistoryTable.graphql'
+import TaskQueue, {QUEUE_EVENT_DONE, QUEUE_EVENT_CANCELLED, QUEUE_EVENT_ERROR} from '../common/TaskQueue'
 import {appendJobToBatch, BatchTranscriptionCart_jobsFragment} from './BatchTranscriptionCart.graphql'
 
 const UploadContext = React.createContext({
@@ -81,7 +82,10 @@ export function UploadProvider({children}) {
 
 	const checkBatchDone = React.useCallback(
 		batchId => {
-			setBatchState(batchId, b => ({...b, uploading: b.uploads.some(u => ['queued', 'uploading'].includes(u.state))}))
+			setBatchState(batchId, b => ({
+				...b,
+				uploading: b.uploads.some(u => ['queued', 'extracting', 'uploading', 'adding'].includes(u.state)),
+			}))
 		},
 		[setBatchState]
 	)
@@ -94,15 +98,16 @@ export function UploadProvider({children}) {
 					if (u.id === id && u.state === 'queued') {
 						uploadQueueRef.current.removeItemById(id)
 						return {...u, state: 'cancelled'}
-					} else if (u.id === id && u.state === 'uploading') {
+					} else if (u.id === id && ['extracting', 'uploading'].includes(u.state)) {
 						u.uploader.cancel().catch(handleError)
 						return {...u, state: 'cancelled'}
 					}
 					return u
 				}),
 			}))
+			checkBatchDone(batchId)
 		},
-		[setBatchState]
+		[setBatchState, checkBatchDone]
 	)
 
 	const handleCancelBatch = React.useCallback(
@@ -162,14 +167,36 @@ export function UploadProvider({children}) {
 		[apolloClient]
 	)
 
-	const handleCreateTranscriptionJobs = React.useCallback(
+	const handleExtractAudio = React.useCallback(
+		async inputFileId => {
+			const {
+				data: {extractAudioFromFile},
+			} = await apolloClient.mutate({
+				mutation: gql`
+					mutation extractAudio($inputFileId: String!) {
+						extractAudioFromFile(inputFileId: $inputFileId) {
+							audioFile {
+								id
+							}
+						}
+					}
+				`,
+				variables: {inputFileId},
+			})
+
+			return extractAudioFromFile.audioFile
+		},
+		[apolloClient]
+	)
+
+	const handleCreateTranscriptionJob = React.useCallback(
 		async (batchId, fileUploadId) => {
 			const {
-				data: {addVideoTranscriptionToBatch},
+				data: {addAudioTranscriptionToBatch},
 			} = await apolloClient.mutate({
 				mutation: gql`
 					mutation addJobToBatch($batchId: String!, $fileUploadId: String!, $languageCode: String!) {
-						addVideoTranscriptionToBatch(batchId: $batchId, fileUploadId: $fileUploadId, languageCode: $languageCode) {
+						addAudioTranscriptionToBatch(batchId: $batchId, fileUploadId: $fileUploadId, languageCode: $languageCode) {
 							batch {
 								id
 							}
@@ -187,14 +214,14 @@ export function UploadProvider({children}) {
 					fileUploadId,
 					languageCode: 'en-US',
 				},
-				update(cache, {data: {addVideoTranscriptionToBatch}}) {
-					const {batch, job} = addVideoTranscriptionToBatch
+				update(cache, {data: {addAudioTranscriptionToBatch}}) {
+					const {batch, job} = addAudioTranscriptionToBatch
 					appendJobToBatch(cache, batch.id, job)
 					appendNewJob(cache, job)
 				},
 			})
 
-			return addVideoTranscriptionToBatch
+			return addAudioTranscriptionToBatch
 		},
 		[apolloClient]
 	)
@@ -222,18 +249,67 @@ export function UploadProvider({children}) {
 							updateSingleUpload({loaded: e.loaded, total: e.total})
 						}, 500)
 
-						return async function startSingleUpload() {
-							const uploader = uploadFile(upload.file, uploadUrl, handleProgress)
-							updateSingleUpload({state: 'uploading', uploader})
-
-							return uploader.promise
-								.then(async ({result}) => {
-									if (result === 'cancelled') {
-										return updateSingleUpload({state: 'cancelled'})
+						const singleUploadTask = new TaskQueue([
+							{
+								name: 'Upload Video',
+								run: ctx => {
+									const uploader = uploadFile(upload.file, uploadUrl, handleProgress)
+									return {
+										promise: uploader.promise
+											.then(() => ctx)
+											.catch(e => {
+												throw new Error(e.message)
+											}),
+										cancel: () => uploader.cancel(),
 									}
+								},
+							},
+							{
+								name: 'Extract Audio',
+								run: ctx => {
+									updateSingleUpload({state: 'extracting'})
+									return {
+										promise: handleExtractAudio(fileUploadId)
+											.then(audioFile => ({...ctx, audioFileId: audioFile.id}))
+											.catch(e => {
+												throw new Error(e.message)
+											}),
+									}
+								},
+							},
+							{
+								name: 'Add Transcription',
+								run: (ctx, queue) => {
+									updateSingleUpload({state: 'adding'})
+									queue.disableCancel()
+									return {
+										promise: handleCreateTranscriptionJob(upload.batchId, ctx.audioFileId)
+											.then(({job}) => {
+												return {...ctx, job: job}
+											})
+											.catch(e => {
+												throw new Error(e.message)
+											})
+											.finally(() => queue.enableCancel()),
+									}
+								},
+							},
+						])
+
+						return async function startSingleUpload() {
+							return new Promise((resolve, reject) => {
+								singleUploadTask.once(QUEUE_EVENT_DONE, () => {
 									updateSingleUpload({state: 'completed'})
-									return handleCreateTranscriptionJobs(upload.batchId, fileUploadId)
+									resolve()
 								})
+								// cancelled event is required since neither done nor error will fire if cancelled
+								singleUploadTask.once(QUEUE_EVENT_CANCELLED, resolve)
+								singleUploadTask.once(QUEUE_EVENT_ERROR, reject)
+
+								updateSingleUpload({state: 'uploading', uploader: singleUploadTask})
+
+								singleUploadTask.run()
+							})
 								.catch(error => {
 									handleError(error)
 									updateSingleUpload({state: 'failed', error})
@@ -256,8 +332,9 @@ export function UploadProvider({children}) {
 		[
 			checkBatchDone,
 			getSingleUploadUpdater,
-			handleCreateTranscriptionJobs,
+			handleCreateTranscriptionJob,
 			handleCreateUploadUrls,
+			handleExtractAudio,
 			setBatchState,
 			setUploadState,
 		]
