@@ -9,6 +9,7 @@ const config = {
 		filename: '[name].bundle.js',
 		chunkFilename: '[name].bundle.js',
 		path: STATIC_FILES_DIR,
+		publicPath: '/',
 	},
 	module: {
 		rules: [
