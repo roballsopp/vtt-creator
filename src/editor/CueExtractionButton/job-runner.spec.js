@@ -13,9 +13,8 @@ import {
 	JOB_STATE_UPLOADING,
 	getJobRunner,
 	EVENT_DONE,
-	JOB_STATE_CANCELLING,
-	JOB_STATE_CANCELLED,
-	JOB_STATE_FAILED,
+	EVENT_CANCELLING,
+	EVENT_CANCELLED,
 } from './job-runner'
 
 chai.use(spies)
@@ -45,6 +44,8 @@ describe('JobRunner', function() {
 			this.cancelDisabledEvents = []
 			this.errorEvents = []
 			this.doneEvents = []
+			this.cancellingEvents = 0
+			this.cancelledEvents = 0
 			this.runner.on(EVENT_JOB_STATE, state => {
 				this.jobStateEvents.push(state)
 			})
@@ -56,6 +57,12 @@ describe('JobRunner', function() {
 			})
 			this.runner.on(EVENT_DONE, result => {
 				this.doneEvents.push(result)
+			})
+			this.runner.on(EVENT_CANCELLING, () => {
+				this.cancellingEvents++
+			})
+			this.runner.on(EVENT_CANCELLED, () => {
+				this.cancelledEvents++
 			})
 			// start assertions at the first graphql call, which should be to get an upload url
 			this.runner.once(EVENT_ERROR, done)
@@ -294,10 +301,9 @@ describe('JobRunner', function() {
 							chai.expect(this.errorEvents).to.have.length(1)
 						})
 
-						it(`the job state is failed`, function() {
-							chai.expect(this.jobStateEvents).to.have.length(4)
+						it(`no other job state events are emitted`, function() {
+							chai.expect(this.jobStateEvents).to.have.length(3)
 							chai.expect(this.jobStateEvents[2]).to.equal(JOB_STATE_TRANSCRIBING)
-							chai.expect(this.jobStateEvents[3]).to.equal(JOB_STATE_FAILED)
 						})
 					})
 
@@ -315,10 +321,9 @@ describe('JobRunner', function() {
 							chai.expect(this.errorEvents).to.have.length(1)
 						})
 
-						it(`the job state is failed`, function() {
-							chai.expect(this.jobStateEvents).to.have.length(4)
+						it(`no other job state events are emitted`, function() {
+							chai.expect(this.jobStateEvents).to.have.length(3)
 							chai.expect(this.jobStateEvents[2]).to.equal(JOB_STATE_TRANSCRIBING)
-							chai.expect(this.jobStateEvents[3]).to.equal(JOB_STATE_FAILED)
 						})
 					})
 
@@ -347,9 +352,12 @@ describe('JobRunner', function() {
 							chai.expect(this.doneEvents).to.have.length(0)
 						})
 
-						it(`the cancelling event is emitted`, function() {
-							chai.expect(this.jobStateEvents).to.have.length(4)
-							chai.expect(this.jobStateEvents[3]).to.equal(JOB_STATE_CANCELLING)
+						it('the cancelling event is emitted', function() {
+							chai.expect(this.cancellingEvents).to.equal(1)
+						})
+
+						it(`no other job state events are emitted`, function() {
+							chai.expect(this.jobStateEvents).to.have.length(3)
 						})
 
 						it(`the pending operation should be to cancel the transcription job`, function() {
@@ -375,9 +383,16 @@ describe('JobRunner', function() {
 								chai.expect(this.doneEvents).to.have.length(0)
 							})
 
-							it(`the cancelled event is emitted`, function() {
-								chai.expect(this.jobStateEvents).to.have.length(5)
-								chai.expect(this.jobStateEvents[4]).to.equal(JOB_STATE_CANCELLED)
+							it('the cancelled event is emitted', function() {
+								chai.expect(this.cancelledEvents).to.equal(1)
+							})
+
+							it('no additional cancelling events are emitted', function() {
+								chai.expect(this.cancellingEvents).to.equal(1)
+							})
+
+							it(`no additional job state events are emitted`, function() {
+								chai.expect(this.jobStateEvents).to.have.length(3)
 							})
 						})
 					})
@@ -397,10 +412,9 @@ describe('JobRunner', function() {
 						chai.expect(this.errorEvents).to.have.length(1)
 					})
 
-					it(`the job state is failed`, function() {
-						chai.expect(this.jobStateEvents).to.have.length(4)
+					it(`no other job state events are emitted`, function() {
+						chai.expect(this.jobStateEvents).to.have.length(3)
 						chai.expect(this.jobStateEvents[2]).to.equal(JOB_STATE_TRANSCRIBING)
-						chai.expect(this.jobStateEvents[3]).to.equal(JOB_STATE_FAILED)
 					})
 
 					it(`the next graphql call is not attempted (the most recent call is still initTranscription)`, function() {
@@ -430,6 +444,11 @@ describe('JobRunner', function() {
 					})
 
 					it(`no cancellation events are emitted`, function() {
+						chai.expect(this.cancellingEvents).to.equal(0)
+						chai.expect(this.cancelledEvents).to.equal(0)
+					})
+
+					it(`no other job state events are emitted`, function() {
 						chai.expect(this.jobStateEvents).to.have.length(3)
 						chai.expect(this.jobStateEvents[2]).to.equal(JOB_STATE_TRANSCRIBING)
 					})
@@ -454,10 +473,9 @@ describe('JobRunner', function() {
 					chai.expect(this.errorEvents).to.have.length(1)
 				})
 
-				it(`the job state is failed`, function() {
-					chai.expect(this.jobStateEvents).to.have.length(3)
+				it(`no other job state events are emitted`, function() {
+					chai.expect(this.jobStateEvents).to.have.length(2)
 					chai.expect(this.jobStateEvents[1]).to.equal(JOB_STATE_EXTRACTING)
-					chai.expect(this.jobStateEvents[2]).to.equal(JOB_STATE_FAILED)
 				})
 
 				it(`the next graphql call is not attempted (the most recent call is still extractAudio)`, function() {
@@ -489,10 +507,16 @@ describe('JobRunner', function() {
 					chai.expect(this.doneEvents).to.have.length(0)
 				})
 
-				it(`cancelling and cancelled events are emitted`, function() {
-					chai.expect(this.jobStateEvents).to.have.length(4)
-					chai.expect(this.jobStateEvents[2]).to.equal(JOB_STATE_CANCELLING)
-					chai.expect(this.jobStateEvents[3]).to.equal(JOB_STATE_CANCELLED)
+				it('the cancelling event is emitted', function() {
+					chai.expect(this.cancellingEvents).to.equal(1)
+				})
+
+				it('the cancelled event is emitted', function() {
+					chai.expect(this.cancelledEvents).to.equal(1)
+				})
+
+				it(`no additional job state events are emitted`, function() {
+					chai.expect(this.jobStateEvents).to.have.length(2)
 				})
 			})
 		})
@@ -541,10 +565,16 @@ describe('JobRunner', function() {
 				chai.expect(this.doneEvents).to.have.length(0)
 			})
 
-			it(`cancelling and cancelled events are emitted`, function() {
-				chai.expect(this.jobStateEvents).to.have.length(3)
-				chai.expect(this.jobStateEvents[1]).to.equal(JOB_STATE_CANCELLING)
-				chai.expect(this.jobStateEvents[2]).to.equal(JOB_STATE_CANCELLED)
+			it('the cancelling event is emitted', function() {
+				chai.expect(this.cancellingEvents).to.equal(1)
+			})
+
+			it('the cancelled event is emitted', function() {
+				chai.expect(this.cancelledEvents).to.equal(1)
+			})
+
+			it(`no additional job state events are emitted`, function() {
+				chai.expect(this.jobStateEvents).to.have.length(1)
 			})
 		})
 	})

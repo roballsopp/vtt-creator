@@ -32,11 +32,10 @@ import {
 	EVENT_ERROR,
 	EVENT_JOB_STATE,
 	EVENT_UPLOAD_PROGRESS,
+	EVENT_CANCELLING,
 	ExtractionError,
 	getJobRunner,
-	JOB_STATE_CANCELLING,
 	JOB_STATE_EXTRACTING,
-	JOB_STATE_FAILED,
 	JOB_STATE_TRANSCRIBING,
 	JOB_STATE_UPLOADING,
 	JobError,
@@ -118,18 +117,12 @@ export default function CueExtractionDialog({transcriptionCost, open, onRequestC
 					return setUploadState(UPLOAD_STATE_UPLOADING)
 				case JOB_STATE_TRANSCRIBING:
 					return setUploadState(UPLOAD_STATE_PROCESSING)
-				case JOB_STATE_CANCELLING:
-					return setCancelling(true)
-				case JOB_STATE_FAILED:
-					setCancelling(false)
-					return setUploadState(UPLOAD_STATE_FAILED)
-				default:
-					setCancelling(false)
-					return setUploadState(UPLOAD_STATE_COMPLETED)
 			}
 		}
 
 		function handleJobError(e) {
+			setCancelling(false)
+			setUploadState(UPLOAD_STATE_FAILED)
 			handleError(e, {file: {name: videoFile?.name, size: videoFile?.size, type: videoFile?.type}})
 			if (e instanceof ExtractionError) {
 				if (e.message === 'Not enough arguments') {
@@ -158,7 +151,14 @@ export default function CueExtractionDialog({transcriptionCost, open, onRequestC
 			setTotalBytes(total)
 		}
 
+		function handleJobCancelling() {
+			setCancelling(true)
+		}
+
 		function handleJobDone({transcript}) {
+			setCancelling(false)
+			setUploadState(UPLOAD_STATE_COMPLETED)
+
 			if (!transcript) {
 				toast.error('The transcription completed, but no speech in the chosen language was found')
 				return handleError(new Error('unable to find any transcribable speech'))
@@ -170,9 +170,10 @@ export default function CueExtractionDialog({transcriptionCost, open, onRequestC
 		}
 
 		runner.on(EVENT_JOB_STATE, handleJobStateUpdate)
-		runner.on(EVENT_ERROR, handleJobError)
 		runner.on(EVENT_UPLOAD_PROGRESS, handleUploadProgress)
 		runner.on(EVENT_CANCEL_DISABLED, setCancelDisabled)
+		runner.once(EVENT_CANCELLING, handleJobCancelling)
+		runner.once(EVENT_ERROR, handleJobError)
 		runner.once(EVENT_DONE, handleJobDone)
 
 		try {

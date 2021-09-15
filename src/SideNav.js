@@ -9,7 +9,7 @@ import EmailIcon from '@material-ui/icons/Email'
 import SignUpIcon from '@material-ui/icons/PersonAdd'
 import PrivacyIcon from '@material-ui/icons/Policy'
 import {makeStyles} from '@material-ui/styles'
-// import {BatchTranscribe, BatchTranslate} from './common/icons'
+import {BatchTranscribe, BatchTranslate} from './common/icons'
 import {SIDE_NAV_WIDTH, useSideNav} from './NavProvider'
 import {useAuthDialog} from './AuthDialog'
 import {useUser} from './common/UserContext'
@@ -89,10 +89,10 @@ export default function SideNav() {
 		setSideNavOpen(false)
 	}
 
-	// const handleOpenCreateBatchDialog = () => {
-	// 	setSideNavOpen(false)
-	// 	setOpenCreateBatchDialog(true)
-	// }
+	const handleOpenCreateBatchDialog = () => {
+		setSideNavOpen(false)
+		setOpenCreateBatchDialog(true)
+	}
 
 	const handleCloseCreateBatchDialog = () => {
 		setOpenCreateBatchDialog(false)
@@ -139,14 +139,14 @@ export default function SideNav() {
 						</Tooltip>
 						<ListItemText primary="Caption Editor" />
 					</ListItem>
-					{/*<ListItem button onClick={handleOpenCreateBatchDialog}>*/}
-					{/*	<Tooltip title="Batch Transcribe">*/}
-					{/*		<ListItemIcon>*/}
-					{/*			<BatchTranscribe />*/}
-					{/*		</ListItemIcon>*/}
-					{/*	</Tooltip>*/}
-					{/*	<ListItemText primary="Batch Transcribe" />*/}
-					{/*</ListItem>*/}
+					<ListItem button onClick={handleOpenCreateBatchDialog}>
+						<Tooltip title="Batch Transcribe">
+							<ListItemIcon>
+								<BatchTranscribe />
+							</ListItemIcon>
+						</Tooltip>
+						<ListItemText primary="Batch Transcribe" />
+					</ListItem>
 					{/*<ListItem button onClick={handleClickEditor}>*/}
 					{/*	<Tooltip title="Batch Translate">*/}
 					{/*		<ListItemIcon>*/}
