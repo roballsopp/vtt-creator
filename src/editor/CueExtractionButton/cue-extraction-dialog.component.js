@@ -11,6 +11,7 @@ import {
 	FormControlLabel,
 	Tooltip,
 	Typography,
+	useMediaQuery,
 } from '@material-ui/core'
 import {styled} from '@material-ui/styles'
 import InfoIcon from '@material-ui/icons/Help'
@@ -188,8 +189,16 @@ export default function CueExtractionDialog({transcriptionCost, open, onRequestC
 		}
 	}
 
+	const useMobileLayout = useMediaQuery(theme => theme.breakpoints.down('sm'))
+
 	return (
-		<Dialog maxWidth="sm" fullWidth open={open} onClose={handleRequestClose} aria-labelledby="extract-dialog-title">
+		<Dialog
+			maxWidth="sm"
+			fullWidth
+			fullScreen={useMobileLayout}
+			open={open}
+			onClose={handleRequestClose}
+			aria-labelledby="extract-dialog-title">
 			<Title id="extract-dialog-title" disableTypography>
 				<Typography variant="h6">Extract captions from video</Typography>
 			</Title>
