@@ -2,13 +2,15 @@ import React from 'react'
 import * as PropTypes from 'prop-types'
 import {
 	Box,
-	Checkbox,
 	Dialog,
 	DialogActions,
 	DialogContent,
 	DialogTitle,
 	FormControl,
 	FormControlLabel,
+	FormLabel,
+	Radio,
+	RadioGroup,
 	Tooltip,
 	Typography,
 	useMediaQuery,
@@ -69,7 +71,7 @@ export default function CueExtractionDialog({transcriptionCost, open, onRequestC
 	const [totalBytes, setTotalBytes] = React.useState(0)
 	const [uploadState, setUploadState] = React.useState()
 	const [languageCode, setLanguageCode] = React.useState('en-US')
-	const [isPhoneCall, setIsPhoneCall] = React.useState(false)
+	const [speechModel, setSpeechModel] = React.useState('DEFAULT')
 	const jobRunnerRef = React.useRef(null)
 
 	const toast = useToast()
@@ -94,8 +96,8 @@ export default function CueExtractionDialog({transcriptionCost, open, onRequestC
 		[onRequestClose]
 	)
 
-	const handleChangeIsPhoneCall = e => {
-		setIsPhoneCall(e.target.checked)
+	const handleChangeSpeechModel = e => {
+		setSpeechModel(e.target.value)
 	}
 
 	React.useEffect(() => {
@@ -181,7 +183,7 @@ export default function CueExtractionDialog({transcriptionCost, open, onRequestC
 			await runner.run({
 				videoFile,
 				languageCode,
-				isPhoneCall,
+				speechModel,
 				pollInterval: 2000,
 			})
 		} finally {
@@ -203,32 +205,55 @@ export default function CueExtractionDialog({transcriptionCost, open, onRequestC
 				<Typography variant="h6">Extract captions from video</Typography>
 			</Title>
 			<DialogContent>
-				<Box pb={2}>
-					<Typography>
-						This action will extract the audio from your video and attempt to find speech in the language you choose
-						below. If any speech is found, captions will be automatically generated for you.
-					</Typography>
-					<LanguageSelector
-						value={languageCode}
-						disabled={jobRunnerRef.current?.inProgress}
-						onChange={setLanguageCode}
-					/>
-					<FormControl fullWidth margin="dense">
-						<FormControlLabel
-							control={
-								<Checkbox checked={isPhoneCall} onChange={handleChangeIsPhoneCall} name="phone_call" color="primary" />
-							}
-							label={
-								<Box display="flex" alignItems="center">
-									<Typography>This is a phone call</Typography>
-									<Tooltip title="Checking this box may result in a more accurate transcription if this video is a recorded phone call (seems to work well for Zoom/Video conferencing calls)">
-										<InfoIcon fontSize="small" style={{marginLeft: 8}} />
-									</Tooltip>
-								</Box>
-							}
+				{!jobRunnerRef.current?.inProgress && (
+					<Box pb={2}>
+						<Typography>
+							This action will extract the audio from your video and attempt to find speech in the language you choose
+							below. If any speech is found, captions will be automatically generated for you.
+						</Typography>
+						<LanguageSelector
+							value={languageCode}
+							disabled={jobRunnerRef.current?.inProgress}
+							onChange={setLanguageCode}
 						/>
-					</FormControl>
-				</Box>
+						<FormControl component="fieldset" fullWidth margin="normal" disabled={jobRunnerRef.current?.inProgress}>
+							<Typography variant="caption" color="textSecondary">
+								Speech to Text Model
+							</Typography>
+							<RadioGroup
+								aria-label="speechModel"
+								name="speechModel"
+								value={speechModel}
+								onChange={handleChangeSpeechModel}>
+								<FormControlLabel value="DEFAULT" control={<Radio />} label="Default" />
+								<FormControlLabel
+									value="VIDEO"
+									control={<Radio />}
+									label={
+										<Box display="flex" alignItems="center">
+											<Typography>This video has multiple speakers</Typography>
+											<Tooltip title="This option seems to work well for Zoom/Video conferencing calls">
+												<InfoIcon fontSize="small" style={{marginLeft: 8}} />
+											</Tooltip>
+										</Box>
+									}
+								/>
+								<FormControlLabel
+									value="PHONE_CALL"
+									control={<Radio />}
+									label={
+										<Box display="flex" alignItems="center">
+											<Typography>This video is a recorded phone call</Typography>
+											<Tooltip title="Choose this for very low bit rate audio, like you would hear through a phone speaker">
+												<InfoIcon fontSize="small" style={{marginLeft: 8}} />
+											</Tooltip>
+										</Box>
+									}
+								/>
+							</RadioGroup>
+						</FormControl>
+					</Box>
+				)}
 				<Box pb={4}>
 					<Typography gutterBottom>Transcription cost: (${transcriptionCost.toFixed(2)})</Typography>
 					<Typography variant="caption">
