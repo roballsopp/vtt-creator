@@ -1,20 +1,7 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
-import {
-	Box,
-	Checkbox,
-	Dialog,
-	DialogActions,
-	DialogContent,
-	DialogTitle,
-	FormControl,
-	FormControlLabel,
-	Tooltip,
-	Typography,
-	useMediaQuery,
-} from '@material-ui/core'
+import {Box, Dialog, DialogActions, DialogContent, DialogTitle, Typography, useMediaQuery} from '@material-ui/core'
 import {styled} from '@material-ui/styles'
-import InfoIcon from '@material-ui/icons/Help'
 import {useApolloClient} from '@apollo/client'
 import UploadProgress, {
 	UPLOAD_STATE_COMPLETED,
@@ -23,7 +10,7 @@ import UploadProgress, {
 	UPLOAD_STATE_UPLOADING,
 	UPLOAD_STATE_FAILED,
 } from './upload-progress.component'
-import LanguageSelector from './LanguageSelector'
+import SpeechToTextOptionsSelector from './SpeechToTextOptionsSelector'
 import {handleError} from '../../services/error-handler.service'
 import {uploadFile} from '../../services/rest-api.service'
 import {useToast, Button, useVideoFile} from '../../common'
@@ -69,7 +56,7 @@ export default function CueExtractionDialog({transcriptionCost, open, onRequestC
 	const [totalBytes, setTotalBytes] = React.useState(0)
 	const [uploadState, setUploadState] = React.useState()
 	const [languageCode, setLanguageCode] = React.useState('en-US')
-	const [isPhoneCall, setIsPhoneCall] = React.useState(false)
+	const [speechModel, setSpeechModel] = React.useState('DEFAULT')
 	const jobRunnerRef = React.useRef(null)
 
 	const toast = useToast()
@@ -93,10 +80,6 @@ export default function CueExtractionDialog({transcriptionCost, open, onRequestC
 		},
 		[onRequestClose]
 	)
-
-	const handleChangeIsPhoneCall = e => {
-		setIsPhoneCall(e.target.checked)
-	}
 
 	React.useEffect(() => {
 		return () => {
@@ -181,7 +164,7 @@ export default function CueExtractionDialog({transcriptionCost, open, onRequestC
 			await runner.run({
 				videoFile,
 				languageCode,
-				isPhoneCall,
+				speechModel,
 				pollInterval: 2000,
 			})
 		} finally {
@@ -203,32 +186,20 @@ export default function CueExtractionDialog({transcriptionCost, open, onRequestC
 				<Typography variant="h6">Extract captions from video</Typography>
 			</Title>
 			<DialogContent>
-				<Box pb={2}>
-					<Typography>
-						This action will extract the audio from your video and attempt to find speech in the language you choose
-						below. If any speech is found, captions will be automatically generated for you.
-					</Typography>
-					<LanguageSelector
-						value={languageCode}
-						disabled={jobRunnerRef.current?.inProgress}
-						onChange={setLanguageCode}
-					/>
-					<FormControl fullWidth margin="dense">
-						<FormControlLabel
-							control={
-								<Checkbox checked={isPhoneCall} onChange={handleChangeIsPhoneCall} name="phone_call" color="primary" />
-							}
-							label={
-								<Box display="flex" alignItems="center">
-									<Typography>This is a phone call</Typography>
-									<Tooltip title="Checking this box may result in a more accurate transcription if this video is a recorded phone call (seems to work well for Zoom/Video conferencing calls)">
-										<InfoIcon fontSize="small" style={{marginLeft: 8}} />
-									</Tooltip>
-								</Box>
-							}
+				{!jobRunnerRef.current?.inProgress && (
+					<Box pb={2}>
+						<Typography>
+							This action will extract the audio from your video and attempt to find speech in the language you choose
+							below. If any speech is found, captions will be automatically generated for you.
+						</Typography>
+						<SpeechToTextOptionsSelector
+							languageCode={languageCode}
+							speechModel={speechModel}
+							onChangeLanguageCode={setLanguageCode}
+							onChangeSpeechModel={setSpeechModel}
 						/>
-					</FormControl>
-				</Box>
+					</Box>
+				)}
 				<Box pb={4}>
 					<Typography gutterBottom>Transcription cost: (${transcriptionCost.toFixed(2)})</Typography>
 					<Typography variant="caption">

@@ -98,13 +98,13 @@ export function getJobRunner(apolloClient, uploadFile) {
 		return extractAudioFromFile.audioFile
 	}
 
-	async function initTranscription(inputFileId, languageCode, isPhoneCall) {
+	async function initTranscription(inputFileId, languageCode, speechModel) {
 		const {
 			data: {beginTranscription},
 		} = await apolloClient.mutate({
 			mutation: gql`
-				mutation initTranscription($inputFileId: String!, $languageCode: String!, $isPhoneCall: Boolean!) {
-					beginTranscription(inputFileId: $inputFileId, languageCode: $languageCode, isPhoneCall: $isPhoneCall) {
+				mutation initTranscription($inputFileId: String!, $languageCode: String!, $speechModel: SpeechModelEnum!) {
+					beginTranscription(inputFileId: $inputFileId, languageCode: $languageCode, speechModel: $speechModel) {
 						job {
 							id
 							state
@@ -114,7 +114,7 @@ export function getJobRunner(apolloClient, uploadFile) {
 				}
 				${JobHistoryTable_jobsFragment}
 			`,
-			variables: {inputFileId, languageCode, isPhoneCall},
+			variables: {inputFileId, languageCode, speechModel},
 			update(cache, {data: {beginTranscription}}) {
 				appendNewJob(cache, beginTranscription?.job)
 			},
@@ -284,7 +284,7 @@ export function getJobRunner(apolloClient, uploadFile) {
 				queue.emit(EVENT_JOB_STATE, JOB_STATE_TRANSCRIBING)
 				queue.disableCancel()
 				return {
-					promise: initTranscription(ctx.audioFileId, ctx.languageCode, ctx.isPhoneCall)
+					promise: initTranscription(ctx.audioFileId, ctx.languageCode, ctx.speechModel)
 						.then(({job}) => {
 							return {...ctx, job: job}
 						})
