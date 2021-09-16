@@ -1,22 +1,7 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
-import {
-	Box,
-	Dialog,
-	DialogActions,
-	DialogContent,
-	DialogTitle,
-	FormControl,
-	FormControlLabel,
-	FormLabel,
-	Radio,
-	RadioGroup,
-	Tooltip,
-	Typography,
-	useMediaQuery,
-} from '@material-ui/core'
+import {Box, Dialog, DialogActions, DialogContent, DialogTitle, Typography, useMediaQuery} from '@material-ui/core'
 import {styled} from '@material-ui/styles'
-import InfoIcon from '@material-ui/icons/Help'
 import {useApolloClient} from '@apollo/client'
 import UploadProgress, {
 	UPLOAD_STATE_COMPLETED,
@@ -25,7 +10,7 @@ import UploadProgress, {
 	UPLOAD_STATE_UPLOADING,
 	UPLOAD_STATE_FAILED,
 } from './upload-progress.component'
-import LanguageSelector from './LanguageSelector'
+import SpeechToTextOptionsSelector from './SpeechToTextOptionsSelector'
 import {handleError} from '../../services/error-handler.service'
 import {uploadFile} from '../../services/rest-api.service'
 import {useToast, Button, useVideoFile} from '../../common'
@@ -95,10 +80,6 @@ export default function CueExtractionDialog({transcriptionCost, open, onRequestC
 		},
 		[onRequestClose]
 	)
-
-	const handleChangeSpeechModel = e => {
-		setSpeechModel(e.target.value)
-	}
 
 	React.useEffect(() => {
 		return () => {
@@ -211,47 +192,12 @@ export default function CueExtractionDialog({transcriptionCost, open, onRequestC
 							This action will extract the audio from your video and attempt to find speech in the language you choose
 							below. If any speech is found, captions will be automatically generated for you.
 						</Typography>
-						<LanguageSelector
-							value={languageCode}
-							disabled={jobRunnerRef.current?.inProgress}
-							onChange={setLanguageCode}
+						<SpeechToTextOptionsSelector
+							languageCode={languageCode}
+							speechModel={speechModel}
+							onChangeLanguageCode={setLanguageCode}
+							onChangeSpeechModel={setSpeechModel}
 						/>
-						<FormControl component="fieldset" fullWidth margin="normal" disabled={jobRunnerRef.current?.inProgress}>
-							<Typography variant="caption" color="textSecondary">
-								Speech to Text Model
-							</Typography>
-							<RadioGroup
-								aria-label="speechModel"
-								name="speechModel"
-								value={speechModel}
-								onChange={handleChangeSpeechModel}>
-								<FormControlLabel value="DEFAULT" control={<Radio />} label="Default" />
-								<FormControlLabel
-									value="VIDEO"
-									control={<Radio />}
-									label={
-										<Box display="flex" alignItems="center">
-											<Typography>This video has multiple speakers</Typography>
-											<Tooltip title="This option seems to work well for Zoom/Video conferencing calls">
-												<InfoIcon fontSize="small" style={{marginLeft: 8}} />
-											</Tooltip>
-										</Box>
-									}
-								/>
-								<FormControlLabel
-									value="PHONE_CALL"
-									control={<Radio />}
-									label={
-										<Box display="flex" alignItems="center">
-											<Typography>This video is a recorded phone call</Typography>
-											<Tooltip title="Choose this for very low bit rate audio, like you would hear through a phone speaker">
-												<InfoIcon fontSize="small" style={{marginLeft: 8}} />
-											</Tooltip>
-										</Box>
-									}
-								/>
-							</RadioGroup>
-						</FormControl>
 					</Box>
 				)}
 				<Box pb={4}>
