@@ -54,9 +54,10 @@ function getCueFromWords(wordsList, cursor) {
 	let charCount = 0
 	const endOfList = wordsList.length
 	const start = cursor
-	while (charCount < 40 && cursor < endOfList) {
-		const wordData = wordsList[cursor]
-		charCount += wordData.word.length
+	// netflix style guide is 42 chars per line: https://partnerhelp.netflixstudios.com/hc/en-us/articles/217350977-English-Timed-Text-Style-Guide
+	//   start === cursor ensures we always move forward at least one word. I've never heard of a single 42 character long word...but its possible
+	while (cursor < endOfList && (start === cursor || charCount + wordsList[cursor].word.length < 42)) {
+		charCount += wordsList[cursor].word.length + 1 // plus 1 for the space after this word
 		cursor++
 	}
 

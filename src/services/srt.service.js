@@ -75,7 +75,7 @@ export function getCuesFromSRT(file) {
 				let l = 0
 
 				while (l < lines.length) {
-					if (!lines[l] || !Number.isFinite(Number(lines[l]))) {
+					if (!lines[l].trim() || !Number.isFinite(Number(lines[l].trim()))) {
 						l++
 						continue
 					}
