@@ -2,42 +2,57 @@ import chai from 'chai'
 import {getSRTFromCues, getCuesFromSRT, MalformedSRTTimestampError} from './srt.service'
 
 const SRTFile = `1
-00:00:00,000 --> 00:00:03,700
-The ABC Company code of conduct is an important tool
+00:00:00,000 --> 00:00:02,900
+The ABC Company code of conduct is an
 
 2
-00:00:03,700 --> 00:00:07,800
-for anyone who works on ABC's behalf. So, how do
+00:00:02,900 --> 00:00:05,000
+important tool for anyone who works on
 
 3
-00:00:07,800 --> 00:00:10,900
-you use it first read through the whole document
+00:00:05,000 --> 00:00:09,500
+ABC's behalf. So, how do you use it first
 
 4
-00:00:10,900 --> 00:00:12,500
-to make sure you understand it?`
+00:00:09,500 --> 00:00:09,500
+
+
+5
+00:00:09,500 --> 00:00:11,400
+read through the whole document to make
+
+6
+00:00:11,400 --> 00:00:12,500
+sure you understand it?`
 
 // has extra newlines, spaces, and tabs
-const SRTFileWExtraNewlinesAndSpaces = `
-1
-00:00:00,000	-->00:00:03,700
-The ABC Company code of conduct is an important tool
-	
+const SRTFileWExtraNewlinesAndSpaces = `1
+00:00:00,000-->  00:00:02,900
+The ABC Company code of conduct is an
+
 
 2
-00:00:03,700 -->  00:00:07,800 
-for anyone who works on ABC's behalf. So, how do
+00:00:02,900  -->  00:00:05,000
+important tool for anyone who works on
+
+3 
+00:00:05,000 -->00:00:09,500
+ABC's behalf. So, how do you use it first
+
+
+4	
+00:00:09,500 -->00:00:09,500
+ 	
+
  
-3
-00:00:07,800--> 00:00:10,900
-you use it first read through the whole document
-
-
-4
-00:00:10,900  --> 00:00:12,500	
-to make sure you understand it?
-
-`
+5
+00:00:09,500-->00:00:11,400
+read through the whole document to make
+	
+6
+00:00:11,400 -->	00:00:12,500
+sure you understand it?
+	 `
 
 const SRTFileBadTimestamp1 = `1
 00:00:00,000 --> 00:00:03700
@@ -88,10 +103,12 @@ you use it first read through the whole document
 to make sure you understand it?`
 
 const cues = [
-	new VTTCue(0, 3.7, 'The ABC Company code of conduct is an important tool'),
-	new VTTCue(3.7, 7.8, "for anyone who works on ABC's behalf. So, how do"),
-	new VTTCue(7.8, 10.9, 'you use it first read through the whole document'),
-	new VTTCue(10.9, 12.5, 'to make sure you understand it?'),
+	new VTTCue(0, 2.9, 'The ABC Company code of conduct is an'),
+	new VTTCue(2.9, 5, 'important tool for anyone who works on'),
+	new VTTCue(5, 9.5, "ABC's behalf. So, how do you use it first"),
+	new VTTCue(9.5, 9.5, ''),
+	new VTTCue(9.5, 11.4, 'read through the whole document to make'),
+	new VTTCue(11.4, 12.5, 'sure you understand it?'),
 ]
 
 describe('srt.service', function() {
@@ -107,7 +124,7 @@ describe('srt.service', function() {
 		it('should output the correct cues', async () => {
 			const srtBlob = new Blob([SRTFile], {type: 'text/srt'})
 			const actualCues = await getCuesFromSRT(srtBlob)
-			chai.expect(actualCues).to.have.length(4)
+			chai.expect(actualCues).to.have.length(6)
 
 			actualCues.forEach((cue, i) => {
 				chai.expect(cue.startTime).to.equal(cues[i].startTime)
@@ -119,7 +136,7 @@ describe('srt.service', function() {
 		it('should output the correct cues even with weird spacing and extra newlines', async () => {
 			const srtBlob = new Blob([SRTFileWExtraNewlinesAndSpaces], {type: 'text/srt'})
 			const actualCues = await getCuesFromSRT(srtBlob)
-			chai.expect(actualCues).to.have.length(4)
+			chai.expect(actualCues).to.have.length(6)
 
 			actualCues.forEach((cue, i) => {
 				chai.expect(cue.startTime).to.equal(cues[i].startTime)

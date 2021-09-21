@@ -48,36 +48,43 @@ const words = [
 
 const VTTFile = `WEBVTT - Made with VTT Creator
 
-00:00.000 --> 00:03.700
-The ABC Company code of conduct is an important tool
+00:00.000 --> 00:02.900
+The ABC Company code of conduct is an
 
-00:03.700 --> 00:07.800
-for anyone who works on ABC's behalf. So, how do you
+00:02.900 --> 00:05.000
+important tool for anyone who works on
 
-00:07.800 --> 00:11.400
-use it first read through the whole document to make
+00:05.000 --> 00:09.500
+ABC's behalf. So, how do you use it first
+
+00:09.500 --> 00:11.400
+read through the whole document to make
 
 00:11.400 --> 00:12.500
 sure you understand it?`
 
 const VTTFileWHours = `WEBVTT - Made with VTT Creator
 
-00:00:00.000 --> 00:00:03.700
-The ABC Company code of conduct is an important tool
+00:00:00.000 --> 00:00:02.900
+The ABC Company code of conduct is an
 
-00:00:03.700 --> 00:00:07.800
-for anyone who works on ABC's behalf. So, how do you
+00:00:02.900 --> 00:00:05.000
+important tool for anyone who works on
 
-00:00:07.800 --> 00:00:11.400
-use it first read through the whole document to make
+00:00:05.000 --> 00:00:09.500
+ABC's behalf. So, how do you use it first
+
+00:00:09.500 --> 00:00:11.400
+read through the whole document to make
 
 00:00:11.400 --> 00:00:12.500
 sure you understand it?`
 
 const cues = [
-	new VTTCue(0, 3.7, 'The ABC Company code of conduct is an important tool'),
-	new VTTCue(3.7, 7.8, "for anyone who works on ABC's behalf. So, how do you"),
-	new VTTCue(7.8, 11.4, 'use it first read through the whole document to make'),
+	new VTTCue(0, 2.9, 'The ABC Company code of conduct is an'),
+	new VTTCue(2.9, 5, 'important tool for anyone who works on'),
+	new VTTCue(5, 9.5, "ABC's behalf. So, how do you use it first"),
+	new VTTCue(9.5, 11.4, 'read through the whole document to make'),
 	new VTTCue(11.4, 12.5, 'sure you understand it?'),
 ]
 
