@@ -22,7 +22,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/styles": "^4.11.4",
     "@sentry/browser": "^6.12.0",
-    "amazon-cognito-identity-js": "^5.0.6",
+    "amazon-cognito-identity-js": "^5.2.4",
     "audiobuffer-to-wav": "^1.0.0",
     "babel-loader": "^8.2.2",
     "clsx": "^1.0.4",
