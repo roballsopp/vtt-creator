@@ -1,6 +1,6 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
-import download from 'downloadjs'
+import {saveAs} from 'file-saver'
 import {gql, useLazyQuery, useMutation} from '@apollo/client'
 import {
 	Box,
@@ -71,11 +71,11 @@ export default function TranslationDialog({translationCost, open, onRequestClose
 	const toast = useToast()
 
 	const [loadLanguages, {loading: loadingLanguages, data}] = useLazyQuery(LANGUAGES_QUERY, {
-		onCompleted: data => {
+		onCompleted: (data) => {
 			if (data.detectLanguage.languageCode === 'und') return
 			setSourceLang(data.detectLanguage.languageCode)
 		},
-		onError: err => {
+		onError: (err) => {
 			toast.error('Failed to load available translation languages.')
 			handleError(err)
 		},
@@ -103,7 +103,7 @@ export default function TranslationDialog({translationCost, open, onRequestClose
 	const handleTranslation = async () => {
 		try {
 			// const text = cues.map(c => c.text)
-			const cuesInput = cues.map(c => ({text: c.text, startTime: c.startTime, endTime: c.endTime}))
+			const cuesInput = cues.map((c) => ({text: c.text, startTime: c.startTime, endTime: c.endTime}))
 			const {data} = await translate({variables: {cues: cuesInput, sourceLang, targetLang}})
 			const {cognitoUserPool} = await import('../../cognito')
 			const cognitoUser = cognitoUserPool.getCurrentUser()
@@ -114,10 +114,10 @@ export default function TranslationDialog({translationCost, open, onRequestClose
 				}
 				const token = session.getIdToken().getJwtToken()
 				const url = new URL(data.translateCues.translation.translationDownloadLinkVTT, ApiURL)
-				download(`${url.href}?token=${token}`)
+				saveAs(`${url.href}?token=${token}`)
 			})
 			// const translatedCues = cues.map((c, i) => new VTTCue(c.startTime, c.endTime, data.translateText.text[i], c.id))
-			// download(getVTTFromCues(translatedCues), 'translated_captions.vtt', 'text/vtt')
+			// saveAs(getVTTFromCues(translatedCues), 'translated_captions.vtt', 'text/vtt')
 			toast.success('Translation successful!')
 			onRequestClose()
 		} catch (e) {
@@ -132,7 +132,7 @@ export default function TranslationDialog({translationCost, open, onRequestClose
 		loadLanguages({variables: {detectionSample}})
 	}
 
-	const renderSelectDisplay = languageCode => {
+	const renderSelectDisplay = (languageCode) => {
 		if (loadingLanguages)
 			return (
 				<Box display="flex" alignItems="center">
@@ -173,14 +173,14 @@ export default function TranslationDialog({translationCost, open, onRequestClose
 						disabled={loadingLanguages}
 						value={sourceLang}
 						displayEmpty
-						onChange={e => setSourceLang(e.target.value)}
+						onChange={(e) => setSourceLang(e.target.value)}
 						renderValue={renderSelectDisplay}
 						labelId="select-source-language-label"
 						inputProps={{
 							name: 'select-source-language',
 							id: 'select-source-language',
 						}}>
-						{supportedLanguages.map(l => (
+						{supportedLanguages.map((l) => (
 							<MenuItem key={l.languageCode} value={l.languageCode}>
 								{l.displayName} ({l.languageCode})
 							</MenuItem>
@@ -196,14 +196,14 @@ export default function TranslationDialog({translationCost, open, onRequestClose
 						disabled={loadingLanguages}
 						value={targetLang}
 						displayEmpty
-						onChange={e => setTargetLang(e.target.value)}
+						onChange={(e) => setTargetLang(e.target.value)}
 						renderValue={renderSelectDisplay}
 						labelId="select-target-language-label"
 						inputProps={{
 							name: 'select-target-language',
 							id: 'select-target-language',
 						}}>
-						{supportedLanguages.map(l => (
+						{supportedLanguages.map((l) => (
 							<MenuItem key={l.languageCode} value={l.languageCode}>
 								{l.displayName} ({l.languageCode})
 							</MenuItem>

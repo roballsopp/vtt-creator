@@ -27,7 +27,7 @@
     "babel-loader": "^8.2.2",
     "clsx": "^1.0.4",
     "date-fns": "^2.22.1",
-    "downloadjs": "^1.4.7",
+    "file-saver": "^2.0.5",
     "graphql": "^15.3.0",
     "history": "^4.10.1",
     "html-webpack-plugin": "^5.5.0",

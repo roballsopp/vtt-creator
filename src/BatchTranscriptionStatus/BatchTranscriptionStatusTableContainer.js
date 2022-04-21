@@ -1,6 +1,6 @@
 import React from 'react'
 import {useQuery} from '@apollo/client'
-import download from 'downloadjs'
+import {saveAs} from 'file-saver'
 import {Box, Button, Grid, LinearProgress, TablePagination, Tooltip, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import muiGreys from '@material-ui/core/colors/grey'
@@ -17,7 +17,7 @@ import BatchTranscriptionStatusTable from './BatchTranscriptionStatusTable'
 import BatchStatusIndicator from '../common/BatchStatusIndicator'
 import {ApiURL} from '../config'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
 	titleBox: {
 		backgroundColor: theme.palette.grey[200],
 		padding: theme.spacing(2),
@@ -50,7 +50,7 @@ export default function BatchTranscriptionStatusTableContainer({batchId}) {
 	const classes = useStyles()
 	const {offset, limit, paginatorProps} = useOffsetPagination(0, 10)
 
-	const handleDownloadTranscript = async downloadPath => {
+	const handleDownloadTranscript = async (downloadPath) => {
 		const {cognitoUserPool} = await import('../cognito')
 		const cognitoUser = cognitoUserPool.getCurrentUser()
 
@@ -60,7 +60,7 @@ export default function BatchTranscriptionStatusTableContainer({batchId}) {
 			}
 			const token = session.getIdToken().getJwtToken()
 			const url = new URL(downloadPath, ApiURL)
-			download(`${url.href}?token=${token}`)
+			saveAs(`${url.href}?token=${token}`)
 		})
 	}
 
@@ -73,7 +73,7 @@ export default function BatchTranscriptionStatusTableContainer({batchId}) {
 				limit,
 			},
 			pollInterval: 3000,
-			onError: err => handleError(err),
+			onError: (err) => handleError(err),
 		}
 	)
 
