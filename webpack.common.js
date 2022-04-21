@@ -7,7 +7,7 @@ const STATIC_FILES_DIR = path.resolve(__dirname, 'public')
 const config = {
 	output: {
 		filename: '[name].bundle.js',
-		chunkFilename: '[name].bundle.js',
+		chunkFilename: '[name].[chunkhash].bundle.js',
 		path: STATIC_FILES_DIR,
 		publicPath: '/',
 	},

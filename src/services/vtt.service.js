@@ -79,7 +79,7 @@ function joinWords(wordsList, from, to) {
 
 // type CueList = Array<VTTCue>;
 export function getVTTFromCues(cueList, title = 'Made with VTT Creator') {
-	const vttParts = cueList.map(nextCue => {
+	const vttParts = cueList.map((nextCue) => {
 		const start = formatSeconds(nextCue.startTime)
 		const end = formatSeconds(nextCue.endTime)
 		return `${start} --> ${end}\n${nextCue.text}\n\n`
@@ -87,7 +87,7 @@ export function getVTTFromCues(cueList, title = 'Made with VTT Creator') {
 
 	vttParts.unshift(`WEBVTT - ${title}\n\n`)
 
-	return new Blob(vttParts, {type: 'text/vtt'})
+	return new Blob(vttParts, {type: 'text/vtt;charset=utf8'})
 }
 
 // decSeconds is a float version of the time in seconds (e.g. 13.456)
@@ -117,8 +117,8 @@ export function getCuesFromVTT(file) {
 			if (!reader.result) return reject(new EmptyVTTFileError('Empty VTT file'))
 			const cues = []
 			const parser = new WebVTT.Parser(window, WebVTT.StringDecoder())
-			parser.oncue = c => cues.push(c)
-			parser.onparsingerror = e => {
+			parser.oncue = (c) => cues.push(c)
+			parser.onparsingerror = (e) => {
 				if (e.code === 0) return reject(new MalformedVTTSignatureError(e.message))
 				if (e.code === 1) {
 					// eslint-disable-next-line no-case-declarations
@@ -137,7 +137,7 @@ export function getCuesFromVTT(file) {
 }
 
 export function storeCues(cues) {
-	const reducedCues = cues.map(c => ({id: c.id, startTime: c.startTime, endTime: c.endTime, text: c.text}))
+	const reducedCues = cues.map((c) => ({id: c.id, startTime: c.startTime, endTime: c.endTime, text: c.text}))
 	localStorage.setItem(CUE_STORAGE_KEY, JSON.stringify(reducedCues))
 }
 
@@ -145,5 +145,5 @@ export function getCuesFromStorage() {
 	const cueStr = localStorage.getItem(CUE_STORAGE_KEY)
 	if (!cueStr) return null
 	const parsed = JSON.parse(cueStr)
-	return parsed.map(c => new VTTCue(c.startTime, c.endTime, c.text, c.id))
+	return parsed.map((c) => new VTTCue(c.startTime, c.endTime, c.text, c.id))
 }
