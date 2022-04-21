@@ -22,7 +22,7 @@ export function getSRTFromCues(cueList) {
 		return `${i + 1}\n${start} --> ${end}\n${nextCue.text}\n\n`
 	})
 
-	return new Blob(srtParts, {type: 'text/srt'})
+	return new Blob(srtParts, {type: 'text/srt;charset=utf8'})
 }
 
 // decSeconds is a float version of the time in seconds (e.g. 13.456)
