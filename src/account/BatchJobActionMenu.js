@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {useHistory} from 'react-router-dom'
-import download from 'downloadjs'
+import {saveAs} from 'file-saver'
 import {IconButton, Menu, MenuItem, Tooltip} from '@material-ui/core'
 import MoreIcon from '@material-ui/icons/MoreVert'
 import {makeStyles} from '@material-ui/styles'
@@ -34,7 +34,7 @@ export default function BatchJobActionMenu({batchJob}) {
 
 	const history = useHistory()
 
-	const handleDownload = async downloadPath => {
+	const handleDownload = async (downloadPath) => {
 		setOptionsMenuAnchorEl(null)
 
 		const {cognitoUserPool} = await import('../cognito')
@@ -46,7 +46,7 @@ export default function BatchJobActionMenu({batchJob}) {
 			}
 			const token = session.getIdToken().getJwtToken()
 			const url = new URL(downloadPath, ApiURL)
-			download(`${url.href}?token=${token}`)
+			saveAs(`${url.href}?token=${token}`)
 		})
 	}
 
@@ -69,7 +69,7 @@ export default function BatchJobActionMenu({batchJob}) {
 					color="inherit"
 					aria-label="BatchJob Actions Menu"
 					className={classes.menuButton}
-					onClick={e => setOptionsMenuAnchorEl(e.currentTarget)}>
+					onClick={(e) => setOptionsMenuAnchorEl(e.currentTarget)}>
 					<MoreIcon />
 				</IconButton>
 			</Tooltip>

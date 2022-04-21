@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import download from 'downloadjs'
+import {saveAs} from 'file-saver'
 import IconButton from '@material-ui/core/IconButton'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -36,7 +36,7 @@ export default function TranslationActionMenu({translation}) {
 	const classes = useStyles()
 	const [optionsMenuAnchorEl, setOptionsMenuAnchorEl] = React.useState(null)
 
-	const handleDownloadTranscript = async downloadPath => {
+	const handleDownloadTranscript = async (downloadPath) => {
 		setOptionsMenuAnchorEl(null)
 
 		const {cognitoUserPool} = await import('../cognito')
@@ -48,7 +48,7 @@ export default function TranslationActionMenu({translation}) {
 			}
 			const token = session.getIdToken().getJwtToken()
 			const url = new URL(downloadPath, ApiURL)
-			download(`${url.href}?token=${token}`)
+			saveAs(`${url.href}?token=${token}`)
 		})
 	}
 
@@ -63,7 +63,7 @@ export default function TranslationActionMenu({translation}) {
 					color="inherit"
 					aria-label="Translation Actions Menu"
 					className={classes.menuButton}
-					onClick={e => setOptionsMenuAnchorEl(e.currentTarget)}>
+					onClick={(e) => setOptionsMenuAnchorEl(e.currentTarget)}>
 					<MoreIcon />
 				</IconButton>
 			</Tooltip>

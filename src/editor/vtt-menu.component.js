@@ -1,5 +1,5 @@
 import React from 'react'
-import download from 'downloadjs'
+import {saveAs} from 'file-saver'
 import {Hidden, IconButton, Menu, MenuItem, Tooltip} from '@material-ui/core'
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
 import CloudUploadIcon from '@material-ui/icons/CloudUpload'
@@ -35,12 +35,12 @@ export default function VTTMenu() {
 	}
 
 	const onDownloadVTT = () => {
-		download(getVTTFromCues(cues), 'my_captions.vtt', 'text/vtt')
+		saveAs(getVTTFromCues(cues), 'my_captions.vtt')
 		onCloseOptionsMenu()
 	}
 
 	const onDownloadSRT = () => {
-		download(getSRTFromCues(cues), 'my_captions.srt', 'text/srt')
+		saveAs(getSRTFromCues(cues), 'my_captions.srt')
 		onCloseOptionsMenu()
 	}
 
@@ -54,7 +54,7 @@ export default function VTTMenu() {
 	}
 
 	const onFileSelected = React.useCallback(
-		e => {
+		(e) => {
 			onCloseOptionsMenu()
 			loadCuesFromFile(e.target.files[0])
 		},
@@ -66,7 +66,11 @@ export default function VTTMenu() {
 	return (
 		<React.Fragment>
 			<Tooltip title="Cue Options">
-				<IconButton edge="end" color="inherit" aria-label="Menu" onClick={e => setOptionsMenuAnchorEl(e.currentTarget)}>
+				<IconButton
+					edge="end"
+					color="inherit"
+					aria-label="Menu"
+					onClick={(e) => setOptionsMenuAnchorEl(e.currentTarget)}>
 					<MoreIcon />
 				</IconButton>
 			</Tooltip>

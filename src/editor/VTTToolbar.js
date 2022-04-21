@@ -1,5 +1,5 @@
 import React from 'react'
-import download from 'downloadjs'
+import {saveAs} from 'file-saver'
 import {ButtonGroup, Menu, MenuItem, Tooltip} from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/DeleteForever'
 import FolderIcon from '@material-ui/icons/FolderOpen'
@@ -12,7 +12,7 @@ import {useFileSelector, useCues, Button, useCueFromFileLoader} from '../common'
 import {getVTTFromCues} from '../services/vtt.service'
 import {getSRTFromCues} from '../services/srt.service'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
 	root: {
 		boxShadow: theme.shadows[3],
 		backgroundImage: `linear-gradient(#EEE, #EEE 30%, #CCC)`,
@@ -38,12 +38,12 @@ export default function VTTToolbar() {
 	}
 
 	const onDownloadVTT = () => {
-		download(getVTTFromCues(cues), 'my_captions.vtt', 'text/vtt')
+		saveAs(getVTTFromCues(cues), 'my_captions.vtt')
 		onCloseOptionsMenu()
 	}
 
 	const onDownloadSRT = () => {
-		download(getSRTFromCues(cues), 'my_captions.srt', 'text/srt')
+		saveAs(getSRTFromCues(cues), 'my_captions.srt')
 		onCloseOptionsMenu()
 	}
 
@@ -56,7 +56,7 @@ export default function VTTToolbar() {
 	}
 
 	const onFileSelected = React.useCallback(
-		e => {
+		(e) => {
 			loadCuesFromFile(e.target.files[0])
 		},
 		[loadCuesFromFile]
@@ -72,7 +72,7 @@ export default function VTTToolbar() {
 						<FolderIcon />
 					</Tooltip>
 				</Button>
-				<Button onClick={e => setSaveMenuAnchorEl(e.currentTarget)}>
+				<Button onClick={(e) => setSaveMenuAnchorEl(e.currentTarget)}>
 					<Tooltip title="Save captions to file">
 						<SaveIcon />
 					</Tooltip>
