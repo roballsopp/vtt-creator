@@ -1,8 +1,7 @@
 import React from 'react'
-import {AppBar, Hidden, Toolbar, Typography} from '@material-ui/core'
+import {Hidden} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {CuesProvider, CuesFromFileProvider, VideoFileProvider} from '../common'
-import {VC as VCIcon} from '../common/icons'
 import {
 	DurationProvider,
 	PlayTimeProvider,
@@ -10,21 +9,20 @@ import {
 	KeyboardControlProvider,
 	VideoControlProvider,
 } from '../common/video'
-import Footer from '../footer.component'
 import Player from '../player'
 import VTTEditor from '../vtt-editor'
 import {ExtractFromVideoProvider} from './CueExtractionButton'
 import {TranslationProvider} from './TranslateButton'
-import VttMenu from './vtt-menu.component'
 import VTTToolbar from './VTTToolbar'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
 	root: {
 		display: 'flex',
 		flexDirection: 'column',
 		height: '100%',
 		minHeight: 0,
 		minWidth: 0,
+		overflow: 'hidden',
 	},
 	main: {
 		display: 'flex',
