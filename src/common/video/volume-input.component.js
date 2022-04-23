@@ -8,7 +8,7 @@ import IconToggle from './icon-toggle.component'
 import {useVideoControl} from './video-control-context'
 import {useVolume} from './volume-context'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
 	container: {
 		display: 'flex',
 		alignItems: 'center',
@@ -51,6 +51,7 @@ export default function VolumeInput({disabled, className}) {
 						throttledOnChange(volume)
 					}}
 					max={1}
+					aria-label="Set video volume"
 				/>
 			</div>
 		</div>

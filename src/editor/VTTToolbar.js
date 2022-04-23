@@ -67,19 +67,19 @@ export default function VTTToolbar() {
 	return (
 		<div className={classes.root}>
 			<ButtonGroup variant="text" color="inherit">
-				<Button onClick={openFileSelector}>
+				<Button onClick={openFileSelector} aria-label="Load captions from file">
 					<Tooltip title="Load captions from file">
 						<FolderIcon />
 					</Tooltip>
 				</Button>
-				<Button onClick={(e) => setSaveMenuAnchorEl(e.currentTarget)}>
+				<Button onClick={(e) => setSaveMenuAnchorEl(e.currentTarget)} aria-label="Save captions to file">
 					<Tooltip title="Save captions to file">
 						<SaveIcon />
 					</Tooltip>
 				</Button>
-				<ExtractFromVideoToolbarButton />
-				<TranslateToolbarButton />
-				<Button disabled={!cues.length} onClick={onOpenClearCuesDialog}>
+				<ExtractFromVideoToolbarButton aria-label="Extract captions from video" />
+				<TranslateToolbarButton aria-label="Translate captions" />
+				<Button disabled={!cues.length} onClick={onOpenClearCuesDialog} aria-label="Clear captions">
 					<Tooltip title="Clear captions">
 						<DeleteIcon />
 					</Tooltip>
