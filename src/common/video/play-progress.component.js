@@ -9,7 +9,7 @@ import {useVideoControl} from './video-control-context'
 
 const PLAYHEAD_RADIUS = 6
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
 	root: {
 		padding: 12,
 		cursor: 'pointer',
@@ -51,7 +51,7 @@ export default function PlayProgress() {
 
 	usePlayTimeEvent(
 		React.useCallback(
-			currentTime => {
+			(currentTime) => {
 				const progress = duration && currentTime ? currentTime / duration : 0
 				if (!draggingRef.current) setPlaypos(progress)
 			},
@@ -63,7 +63,7 @@ export default function PlayProgress() {
 
 	React.useEffect(() => () => throttledSeek.cancel(), [throttledSeek])
 
-	const getPlayposFromMouseEvent = React.useCallback(e => {
+	const getPlayposFromMouseEvent = React.useCallback((e) => {
 		const rect = progressElRef.current.getBoundingClientRect()
 		const playpos = (e.clientX - rect.left) / rect.width
 		if (playpos > 1) return 1
@@ -72,7 +72,7 @@ export default function PlayProgress() {
 	}, [])
 
 	const onClickProgressBar = React.useCallback(
-		e => {
+		(e) => {
 			const playpos = getPlayposFromMouseEvent(e)
 			const clipped = Math.min(Math.max(playpos, 0), 1)
 			setPlaypos(clipped)
@@ -86,7 +86,7 @@ export default function PlayProgress() {
 			draggingRef.current = true
 		}, []),
 		onDragging: React.useCallback(
-			e => {
+			(e) => {
 				const playpos = getPlayposFromMouseEvent(e)
 				const clipped = Math.min(Math.max(playpos, 0), 1)
 				setPlaypos(clipped)
@@ -103,12 +103,12 @@ export default function PlayProgress() {
 	return (
 		<div className={classes.root} onClick={onClickProgressBar}>
 			<div className={classes.playheadContainer}>
-				<LinearProgress ref={progressElRef} variant="determinate" value={playpos * 100} />
+				<LinearProgress ref={progressElRef} variant="determinate" value={playpos * 100} aria-label="Play progress" />
 				<div
 					ref={playheadRef}
 					className={classes.playhead}
 					style={{left: playheadPos}}
-					onMouseDown={e => e.stopPropagation()}
+					onMouseDown={(e) => e.stopPropagation()}
 				/>
 			</div>
 		</div>
