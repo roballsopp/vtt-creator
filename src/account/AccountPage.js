@@ -9,6 +9,7 @@ import BatchJobHistoryTable from './BatchJobHistoryTableContainer'
 import JobHistoryTable from './JobHistoryTableQueryContainer'
 import TranslationHistoryTable from './TranslationHistoryTableQueryContainer'
 import {AccountPage_userFragment} from './AccountPage.graphql'
+import DeleteAccountDialog from './DeleteAccountDialog'
 
 AccountPage.fragments = {
 	user: AccountPage_userFragment,
@@ -27,12 +28,17 @@ AccountPage.propTypes = {
 }
 
 export default function AccountPage({user, transcriptionRate, translationRate}) {
+	const [deleteAccountDialogOpen, setDeleteAccountDialogOpen] = React.useState(false)
 	const {logout} = useAuthDialog()
 	const history = useHistory()
 
 	const handleLogout = () => {
 		logout()
 		history.push('/editor')
+	}
+
+	const handleDeleteAccount = async () => {
+		setDeleteAccountDialogOpen(true)
 	}
 
 	return (
@@ -45,6 +51,11 @@ export default function AccountPage({user, transcriptionRate, translationRate}) 
 					<Box>
 						<Button color="secondary" size="large" variant="contained" onClick={handleLogout}>
 							Log out
+						</Button>
+					</Box>
+					<Box ml={2}>
+						<Button color="secondary" size="large" variant="contained" onClick={handleDeleteAccount}>
+							Delete Account
 						</Button>
 					</Box>
 				</Grid>
@@ -121,6 +132,7 @@ export default function AccountPage({user, transcriptionRate, translationRate}) 
 					</Grid>
 				</Hidden>
 			</Grid>
+			<DeleteAccountDialog open={deleteAccountDialogOpen} onClose={() => setDeleteAccountDialogOpen(false)} />
 		</PageContainer>
 	)
 }
