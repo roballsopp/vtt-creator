@@ -175,15 +175,15 @@ export function getCuesFromStorage() {
 	return parsed.map((c) => {
 		const cue = new VTTCue(c.startTime, c.endTime, c.text)
 		cue.id = c.id
-		cue.align = c.align
-		cue.line = c.line
-		cue.lineAlign = c.lineAlign
-		cue.position = c.position
-		cue.positionAlign = c.positionAlign
-		cue.region = c.region
-		cue.size = c.size
-		cue.snapToLines = c.snapToLines
-		cue.vertical = c.vertical
+		if (c.align) cue.align = c.align
+		if (c.line) cue.line = c.line
+		if (c.lineAlign) cue.lineAlign = c.lineAlign
+		if (c.position) cue.position = c.position
+		if (c.positionAlign) cue.positionAlign = c.positionAlign
+		if (c.region) cue.region = c.region
+		if (c.size) cue.size = c.size
+		if (c.snapToLines) cue.snapToLines = c.snapToLines
+		if (c.vertical) cue.vertical = c.vertical
 		return cue
 	})
 }
