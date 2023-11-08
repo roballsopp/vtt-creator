@@ -15,6 +15,10 @@ const CuesContext = React.createContext({
 	changeCueEnd: () => {},
 	changeCueText: () => {},
 	changeCueTiming: () => {},
+	changeCueVert: () => {},
+	changeCueHoriz: () => {},
+	changeCueLinePos: () => {},
+	changeCueAlign: () => {},
 	setCues: () => {},
 	setCuesLoading: () => {},
 })
@@ -29,7 +33,7 @@ export function CuesProvider({children}) {
 	const toast = useToast()
 	const {videoRef} = useVideoDom()
 
-	const saveCuesToStorage = React.useCallback(cues => {
+	const saveCuesToStorage = React.useCallback((cues) => {
 		try {
 			storeCues(cues)
 		} catch (e) {
@@ -69,13 +73,13 @@ export function CuesProvider({children}) {
 	}, [cues, saveCuesToStorage])
 
 	const addCue = React.useCallback(() => {
-		setCues(cues => {
+		setCues((cues) => {
 			const newCues = cues.slice()
 
 			if (videoRef) {
 				// if we have a video loaded, insert the new cue at the current video time
 				const newCue = new VTTCue(videoRef.currentTime, videoRef.currentTime + 2, '')
-				const newIndex = newCues.findIndex(c => c.startTime > newCue.startTime)
+				const newIndex = newCues.findIndex((c) => c.startTime > newCue.startTime)
 				if (newIndex === -1) {
 					newCues.push(newCue)
 				} else {
@@ -94,10 +98,10 @@ export function CuesProvider({children}) {
 		})
 	}, [videoRef])
 
-	const removeCue = React.useCallback(id => {
-		setCues(cues => {
+	const removeCue = React.useCallback((id) => {
+		setCues((cues) => {
 			const newCues = cues.slice()
-			const idx = newCues.findIndex(c => c.id === id)
+			const idx = newCues.findIndex((c) => c.id === id)
 			if (idx === -1) {
 				handleError(new Error('removeCue: could not find cue in list'))
 				return newCues
@@ -108,50 +112,50 @@ export function CuesProvider({children}) {
 	}, [])
 
 	const changeCueStart = React.useCallback((id, newStartTime) => {
-		setCues(cues => {
+		setCues((cues) => {
 			const newCues = cues.slice()
-			const idx = newCues.findIndex(c => c.id === id)
+			const idx = newCues.findIndex((c) => c.id === id)
 			if (idx === -1) {
 				handleError(new Error('changeCueStart: could not find cue in list'))
 				return newCues
 			}
 			const oldCue = cues[idx]
-			newCues[idx] = new VTTCue(newStartTime, oldCue.endTime, oldCue.text, oldCue.id)
+			newCues[idx] = new VTTCue(newStartTime, oldCue.endTime, oldCue.text, oldCue)
 			return sortBy(newCues, ['startTime'])
 		})
 	}, [])
 
 	const changeCueEnd = React.useCallback((id, newEndTime) => {
-		setCues(cues => {
+		setCues((cues) => {
 			const newCues = cues.slice()
-			const idx = newCues.findIndex(c => c.id === id)
+			const idx = newCues.findIndex((c) => c.id === id)
 			if (idx === -1) {
 				handleError(new Error('changeCueEnd: could not find cue in list'))
 				return newCues
 			}
 			const oldCue = cues[idx]
-			newCues[idx] = new VTTCue(oldCue.startTime, newEndTime, oldCue.text, oldCue.id)
+			newCues[idx] = new VTTCue(oldCue.startTime, newEndTime, oldCue.text, oldCue)
 			return newCues
 		})
 	}, [])
 
 	const changeCueText = React.useCallback((id, newText) => {
-		setCues(cues => {
+		setCues((cues) => {
 			const newCues = cues.slice()
-			const idx = newCues.findIndex(c => c.id === id)
+			const idx = newCues.findIndex((c) => c.id === id)
 			if (idx === -1) {
 				handleError(new Error('changeCueText: could not find cue in list'))
 				return newCues
 			}
 			const oldCue = cues[idx]
-			newCues[idx] = new VTTCue(oldCue.startTime, oldCue.endTime, newText, oldCue.id)
+			newCues[idx] = new VTTCue(oldCue.startTime, oldCue.endTime, newText, oldCue)
 			return newCues
 		})
 	}, [])
 
 	const changeCueTiming = React.useCallback((id, {startDelta = 0, endDelta = 0}) => {
-		setCues(cues => {
-			const idx = cues.findIndex(c => c.id === id)
+		setCues((cues) => {
+			const idx = cues.findIndex((c) => c.id === id)
 			if (idx === -1) {
 				handleError(new Error('changeCueTiming: could not find cue in list'))
 				return cues
@@ -170,9 +174,73 @@ export function CuesProvider({children}) {
 			}
 
 			const newCues = cues.slice()
-			newCues[idx] = new VTTCue(newStartTime, newEndTime, oldCue.text, oldCue.id)
+			newCues[idx] = new VTTCue(newStartTime, newEndTime, oldCue.text, oldCue)
 
 			return sortBy(newCues, ['startTime'])
+		})
+	}, [])
+
+	const changeCueVert = React.useCallback((id, newVert) => {
+		setCues((cues) => {
+			const newCues = cues.slice()
+			const idx = newCues.findIndex((c) => c.id === id)
+			if (idx === -1) {
+				handleError(new Error('changeCueVert: could not find cue in list'))
+				return newCues
+			}
+			const oldCue = cues[idx]
+			const newCue = new VTTCue(oldCue.startTime, oldCue.endTime, oldCue.text, oldCue)
+			newCue.vertical = newVert
+			newCues[idx] = newCue
+			return newCues
+		})
+	}, [])
+
+	const changeCueLinePos = React.useCallback((id, newLine) => {
+		setCues((cues) => {
+			const newCues = cues.slice()
+			const idx = newCues.findIndex((c) => c.id === id)
+			if (idx === -1) {
+				handleError(new Error('changeCueLinePos: could not find cue in list'))
+				return newCues
+			}
+			const oldCue = cues[idx]
+			const newCue = new VTTCue(oldCue.startTime, oldCue.endTime, oldCue.text, oldCue)
+			newCue.line = newLine
+			newCues[idx] = newCue
+			return newCues
+		})
+	}, [])
+
+	const changeCueHoriz = React.useCallback((id, newHoriz) => {
+		setCues((cues) => {
+			const newCues = cues.slice()
+			const idx = newCues.findIndex((c) => c.id === id)
+			if (idx === -1) {
+				handleError(new Error('changeCueHoriz: could not find cue in list'))
+				return newCues
+			}
+			const oldCue = cues[idx]
+			const newCue = new VTTCue(oldCue.startTime, oldCue.endTime, oldCue.text, oldCue)
+			newCue.position = newHoriz
+			newCues[idx] = newCue
+			return newCues
+		})
+	}, [])
+
+	const changeCueAlign = React.useCallback((id, newAlign) => {
+		setCues((cues) => {
+			const newCues = cues.slice()
+			const idx = newCues.findIndex((c) => c.id === id)
+			if (idx === -1) {
+				handleError(new Error('changeCueAlign: could not find cue in list'))
+				return newCues
+			}
+			const oldCue = cues[idx]
+			const newCue = new VTTCue(oldCue.startTime, oldCue.endTime, oldCue.text, oldCue)
+			newCue.align = newAlign
+			newCues[idx] = newCue
+			return newCues
 		})
 	}, [])
 
@@ -188,10 +256,27 @@ export function CuesProvider({children}) {
 					changeCueEnd,
 					changeCueText,
 					changeCueTiming,
+					changeCueVert,
+					changeCueHoriz,
+					changeCueLinePos,
+					changeCueAlign,
 					setCues,
 					setCuesLoading: setLoading,
 				}),
-				[cues, loading, addCue, removeCue, changeCueStart, changeCueEnd, changeCueText, changeCueTiming]
+				[
+					cues,
+					loading,
+					addCue,
+					removeCue,
+					changeCueStart,
+					changeCueEnd,
+					changeCueText,
+					changeCueTiming,
+					changeCueVert,
+					changeCueHoriz,
+					changeCueLinePos,
+					changeCueAlign,
+				]
 			)}>
 			{children}
 		</CuesContext.Provider>

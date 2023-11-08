@@ -116,7 +116,7 @@ export default function TranslationDialog({translationCost, open, onRequestClose
 				const url = new URL(data.translateCues.translation.translationDownloadLinkVTT, ApiURL)
 				saveAs(`${url.href}?token=${token}`)
 			})
-			// const translatedCues = cues.map((c, i) => new VTTCue(c.startTime, c.endTime, data.translateText.text[i], c.id))
+			// const translatedCues = cues.map((c, i) => new VTTCue(c.startTime, c.endTime, data.translateText.text[i], c))
 			// saveAs(getVTTFromCues(translatedCues), 'translated_captions.vtt', 'text/vtt')
 			toast.success('Translation successful!')
 			onRequestClose()

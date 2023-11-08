@@ -48,19 +48,19 @@ const words = [
 
 const VTTFile = `WEBVTT - Made with VTT Creator
 
-00:00.000 --> 00:02.900
+00:00.000 --> 00:02.900 position:50% align:middle
 The ABC Company code of conduct is an
 
-00:02.900 --> 00:05.000
+00:02.900 --> 00:05.000 position:50% align:middle
 important tool for anyone who works on
 
-00:05.000 --> 00:09.500
+00:05.000 --> 00:09.500 position:50% align:middle
 ABC's behalf. So, how do you use it first
 
-00:09.500 --> 00:11.400
+00:09.500 --> 00:11.400 position:50% align:middle
 read through the whole document to make
 
-00:11.400 --> 00:12.500
+00:11.400 --> 00:12.500 position:50% align:middle
 sure you understand it?`
 
 const VTTFileWHours = `WEBVTT - Made with VTT Creator
@@ -88,9 +88,9 @@ const cues = [
 	new VTTCue(11.4, 12.5, 'sure you understand it?'),
 ]
 
-describe('vtt.service', function() {
-	describe('getCuesFromWords', function() {
-		it('should output the correct cues', function() {
+describe('vtt.service', function () {
+	describe('getCuesFromWords', function () {
+		it('should output the correct cues', function () {
 			const result = getCuesFromWords(words)
 			cues.map((expectedCue, i) => {
 				const actualCue = result[i]
@@ -102,7 +102,7 @@ describe('vtt.service', function() {
 		})
 	})
 
-	describe('getVTTFromCues', function() {
+	describe('getVTTFromCues', function () {
 		it('should output the correct vtt file string', async () => {
 			const vttBlob = getVTTFromCues(cues)
 			const result = await readTextFile(vttBlob)
@@ -110,14 +110,14 @@ describe('vtt.service', function() {
 		})
 	})
 
-	describe('getCuesFromVTT', function() {
-		describe('when timestamps have minutes in the most significant position', function() {
-			before(async function() {
+	describe('getCuesFromVTT', function () {
+		describe('when timestamps have minutes in the most significant position', function () {
+			before(async function () {
 				const vttBlob = new Blob([VTTFile], {type: 'text/vtt'})
 				this.result = await getCuesFromVTT(vttBlob)
 			})
 
-			it('outputs the correct cues', function() {
+			it('outputs the correct cues', function () {
 				cues.map((expectedCue, i) => {
 					const actualCue = this.result[i]
 					chai.assert.isOk(actualCue.id, `cue ${i} should have a unique id`)
@@ -128,13 +128,13 @@ describe('vtt.service', function() {
 			})
 		})
 
-		describe('when timestamps have hours in the most significant position', function() {
-			before(async function() {
+		describe('when timestamps have hours in the most significant position', function () {
+			before(async function () {
 				const vttBlob = new Blob([VTTFileWHours], {type: 'text/vtt'})
 				this.result = await getCuesFromVTT(vttBlob)
 			})
 
-			it('outputs the correct cues', function() {
+			it('outputs the correct cues', function () {
 				cues.map((expectedCue, i) => {
 					const actualCue = this.result[i]
 					chai.assert.isOk(actualCue.id, `cue ${i} should have a unique id`)
@@ -145,25 +145,25 @@ describe('vtt.service', function() {
 			})
 		})
 
-		describe('when the file is empty', function() {
-			before(function() {
+		describe('when the file is empty', function () {
+			before(function () {
 				this.vttBlob = new Blob([''], {type: 'text/vtt'})
 			})
 
-			it('throws an EmptyFileError', function(done) {
+			it('throws an EmptyFileError', function (done) {
 				getCuesFromVTT(this.vttBlob)
 					.then(() => {
 						done(new Error('Expected an error to be thrown'))
 					})
-					.catch(e => {
+					.catch((e) => {
 						chai.expect(e).to.be.an.instanceof(EmptyVTTFileError)
 						done()
 					})
 			})
 		})
 
-		describe('when the file has a malformed timestamp', function() {
-			before(function() {
+		describe('when the file has a malformed timestamp', function () {
+			before(function () {
 				const VTTFile = `WEBVTT - Made with VTT Creator
 
 				00:00:00,000 --> 00:00:03.700
@@ -172,12 +172,12 @@ describe('vtt.service', function() {
 				this.vttBlob = new Blob([VTTFile], {type: 'text/vtt'})
 			})
 
-			it('throws a MalformedVTTTimestampError', function(done) {
+			it('throws a MalformedVTTTimestampError', function (done) {
 				getCuesFromVTT(this.vttBlob)
 					.then(() => {
 						done(new Error('Expected an error to be thrown'))
 					})
-					.catch(e => {
+					.catch((e) => {
 						chai.expect(e).to.be.an.instanceof(MalformedVTTTimestampError)
 						chai.expect(e.badTimeStamp).to.equal('00:00:00,000 --> 00:00:03.700')
 						done()
@@ -185,8 +185,8 @@ describe('vtt.service', function() {
 			})
 		})
 
-		describe('when the file has a malformed header', function() {
-			before(function() {
+		describe('when the file has a malformed header', function () {
+			before(function () {
 				const VTTFile = `WEBVT - Made with VTT Creator
 
 				00:00:00.000 --> 00:00:03.700
@@ -195,12 +195,12 @@ describe('vtt.service', function() {
 				this.vttBlob = new Blob([VTTFile], {type: 'text/vtt'})
 			})
 
-			it('throws a MalformedVTTSignatureError', function(done) {
+			it('throws a MalformedVTTSignatureError', function (done) {
 				getCuesFromVTT(this.vttBlob)
 					.then(() => {
 						done(new Error('Expected an error to be thrown'))
 					})
-					.catch(e => {
+					.catch((e) => {
 						chai.expect(e).to.be.an.instanceof(MalformedVTTSignatureError)
 						done()
 					})

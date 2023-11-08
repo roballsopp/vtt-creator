@@ -9,7 +9,7 @@ import {AutoScrollProvider} from './auto-scroll.context'
 import AutoScrollItem from './auto-scroll-item.component'
 import EmptyState from './EmptyState'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
 	root: {
 		position: 'relative',
 		flex: 1,
@@ -32,7 +32,20 @@ VTTEditor.propTypes = {}
 
 export default function VTTEditor() {
 	const classes = useStyles()
-	const {cues, loading, addCue, removeCue, changeCueEnd, changeCueStart, changeCueText, changeCueTiming} = useCues()
+	const {
+		cues,
+		loading,
+		addCue,
+		removeCue,
+		changeCueEnd,
+		changeCueStart,
+		changeCueText,
+		changeCueTiming,
+		changeCueVert,
+		changeCueHoriz,
+		changeCueAlign,
+		changeCueLinePos,
+	} = useCues()
 
 	return (
 		<div className={classes.root}>
@@ -40,7 +53,7 @@ export default function VTTEditor() {
 			{!loading && cues.length ? (
 				<AutoScrollProvider>
 					<FlipMove className={classes.list} enterAnimation="accordionVertical" leaveAnimation="accordionVertical">
-						{cues.map(cue => (
+						{cues.map((cue) => (
 							<div key={cue.id}>
 								<AutoScrollItem cueTime={cue.startTime} className={classes.cueEditor}>
 									<CueEditor
@@ -50,6 +63,10 @@ export default function VTTEditor() {
 										onChangeCueStart={changeCueStart}
 										onChangeCueText={changeCueText}
 										onChangeCueTiming={changeCueTiming}
+										onChangeCueVert={changeCueVert}
+										onChangeCueHoriz={changeCueHoriz}
+										onChangeCueAlign={changeCueAlign}
+										onChangeCueLinePos={changeCueLinePos}
 									/>
 								</AutoScrollItem>
 								<Divider />
