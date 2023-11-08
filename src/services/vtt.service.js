@@ -82,7 +82,20 @@ export function getVTTFromCues(cueList, title = 'Made with VTT Creator') {
 	const vttParts = cueList.map((nextCue) => {
 		const start = formatSeconds(nextCue.startTime)
 		const end = formatSeconds(nextCue.endTime)
-		return `${start} --> ${end}\n${nextCue.text}\n\n`
+		const settings = []
+		if (nextCue.vertical) {
+			settings.push(`vertical:${nextCue.vertical}`)
+		}
+		if (Number.isFinite(nextCue.position)) {
+			settings.push(`position:${nextCue.position}%`)
+		}
+		if (nextCue.align) {
+			settings.push(`align:${nextCue.align}`)
+		}
+		if (Number.isFinite(nextCue.line)) {
+			settings.push(`line:${nextCue.line}%`)
+		}
+		return `${start} --> ${end} ${settings.join(' ')}\n${nextCue.text}\n\n`
 	})
 
 	vttParts.unshift(`WEBVTT - ${title}\n\n`)
@@ -137,7 +150,21 @@ export function getCuesFromVTT(file) {
 }
 
 export function storeCues(cues) {
-	const reducedCues = cues.map((c) => ({id: c.id, startTime: c.startTime, endTime: c.endTime, text: c.text}))
+	const reducedCues = cues.map((c) => ({
+		id: c.id,
+		startTime: c.startTime,
+		endTime: c.endTime,
+		text: c.text,
+		align: c.align,
+		line: c.line,
+		lineAlign: c.lineAlign,
+		position: c.position,
+		positionAlign: c.positionAlign,
+		region: c.region,
+		size: c.size,
+		snapToLines: c.snapToLines,
+		vertical: c.vertical,
+	}))
 	localStorage.setItem(CUE_STORAGE_KEY, JSON.stringify(reducedCues))
 }
 
@@ -145,5 +172,18 @@ export function getCuesFromStorage() {
 	const cueStr = localStorage.getItem(CUE_STORAGE_KEY)
 	if (!cueStr) return null
 	const parsed = JSON.parse(cueStr)
-	return parsed.map((c) => new VTTCue(c.startTime, c.endTime, c.text, c.id))
+	return parsed.map((c) => {
+		const cue = new VTTCue(c.startTime, c.endTime, c.text)
+		cue.id = c.id
+		cue.align = c.align
+		cue.line = c.line
+		cue.lineAlign = c.lineAlign
+		cue.position = c.position
+		cue.positionAlign = c.positionAlign
+		cue.region = c.region
+		cue.size = c.size
+		cue.snapToLines = c.snapToLines
+		cue.vertical = c.vertical
+		return cue
+	})
 }
