@@ -1,7 +1,5 @@
 import React, {Suspense} from 'react'
-import {Router, Route, Switch} from 'react-router-dom'
-import {createBrowserHistory} from 'history'
-import {GAProduct} from './config'
+import {createBrowserRouter, RouterProvider} from 'react-router-dom'
 import {AuthDialogProvider} from './AuthDialog'
 import CheckAuth from './CheckAuth'
 import {UserProvider} from './common/UserContext'
@@ -18,80 +16,99 @@ const Editor = React.lazy(() => import('./editor'))
 const PrivacyPage = React.lazy(() => import('./privacy'))
 const Splash = React.lazy(() => import('./splash'))
 
-const history = createBrowserHistory()
-
-history.listen(() => {
-	window.gtag('config', GAProduct, {
-		page_title: window.location.pathname,
-		page_location: window.location.href,
-	})
-})
+const router = createBrowserRouter([
+	{
+		path: '/',
+		element: (
+			<Suspense fallback={<PageLoader />}>
+				<Splash />
+			</Suspense>
+		),
+	},
+	{
+		path: '/editor',
+		element: (
+			<React.Fragment>
+				<TopNav />
+				<SideNav />
+				<NavContent>
+					<Suspense fallback={<PageLoader />}>
+						<Editor />
+					</Suspense>
+				</NavContent>
+			</React.Fragment>
+		),
+	},
+	{
+		path: '/batches/:batchId/edit',
+		element: (
+			<React.Fragment>
+				<TopNav />
+				<SideNav />
+				<NavContent>
+					<CheckAuth>
+						<Suspense fallback={<PageLoader />}>
+							<BatchTranscriptionCheckoutPage />
+						</Suspense>
+					</CheckAuth>
+				</NavContent>
+			</React.Fragment>
+		),
+	},
+	{
+		path: '/batches/:batchId/status',
+		element: (
+			<React.Fragment>
+				<TopNav />
+				<SideNav />
+				<NavContent>
+					<CheckAuth>
+						<Suspense fallback={<PageLoader />}>
+							<BatchTranscriptionStatusPage />
+						</Suspense>
+					</CheckAuth>
+				</NavContent>
+			</React.Fragment>
+		),
+	},
+	{
+		path: '/account',
+		element: (
+			<React.Fragment>
+				<TopNav />
+				<SideNav />
+				<NavContent>
+					<CheckAuth>
+						<Suspense fallback={<PageLoader />}>
+							<AccountPage />
+						</Suspense>
+					</CheckAuth>
+				</NavContent>
+			</React.Fragment>
+		),
+	},
+	{
+		path: '/privacy',
+		element: (
+			<React.Fragment>
+				<TopNav />
+				<SideNav />
+				<NavContent>
+					<Suspense fallback={<PageLoader />}>
+						<PrivacyPage />
+					</Suspense>
+				</NavContent>
+			</React.Fragment>
+		),
+	},
+])
 
 export default function AppRouter() {
 	return (
 		<UserProvider>
 			<NavProvider>
 				<AuthDialogProvider>
-					<Router history={history}>
-						<Switch>
-							<Route path="/" exact>
-								<Suspense fallback={<PageLoader />}>
-									<Splash />
-								</Suspense>
-							</Route>
-							<Route path="/editor" exact>
-								<TopNav />
-								<SideNav />
-								<NavContent>
-									<Suspense fallback={<PageLoader />}>
-										<Editor />
-									</Suspense>
-								</NavContent>
-							</Route>
-							<Route path="/batches/:batchId/edit" exact>
-								<TopNav />
-								<SideNav />
-								<NavContent>
-									<CheckAuth>
-										<Suspense fallback={<PageLoader />}>
-											<BatchTranscriptionCheckoutPage />
-										</Suspense>
-									</CheckAuth>
-								</NavContent>
-							</Route>
-							<Route path="/batches/:batchId/status" exact>
-								<TopNav />
-								<SideNav />
-								<NavContent>
-									<CheckAuth>
-										<Suspense fallback={<PageLoader />}>
-											<BatchTranscriptionStatusPage />
-										</Suspense>
-									</CheckAuth>
-								</NavContent>
-							</Route>
-							<Route path="/account" exact>
-								<TopNav />
-								<SideNav />
-								<NavContent>
-									<CheckAuth>
-										<Suspense fallback={<PageLoader />}>
-											<AccountPage />
-										</Suspense>
-									</CheckAuth>
-								</NavContent>
-							</Route>
-							<Route path="/privacy" exact>
-								<TopNav />
-								<SideNav />
-								<NavContent>
-									<Suspense fallback={<PageLoader />}>
-										<PrivacyPage />
-									</Suspense>
-								</NavContent>
-							</Route>
-						</Switch>
-					</Router>
+					<RouterProvider router={router} fallbackElement={<PageLoader />} />
 				</AuthDialogProvider>
 			</NavProvider>
 		</UserProvider>

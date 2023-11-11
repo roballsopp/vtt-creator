@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {useHistory} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import {saveAs} from 'file-saver'
 import {IconButton, Menu, MenuItem, Tooltip} from '@material-ui/core'
 import MoreIcon from '@material-ui/icons/MoreVert'
@@ -32,8 +32,6 @@ export default function BatchJobActionMenu({batchJob}) {
 	const classes = useStyles()
 	const [optionsMenuAnchorEl, setOptionsMenuAnchorEl] = React.useState(null)
 
-	const history = useHistory()
-
 	const handleDownload = async (downloadPath) => {
 		setOptionsMenuAnchorEl(null)
 
@@ -48,14 +46,6 @@ export default function BatchJobActionMenu({batchJob}) {
 			const url = new URL(downloadPath, ApiURL)
 			saveAs(`${url.href}?token=${token}`)
 		})
-	}
-
-	const handleGoToCart = () => {
-		history.push(`/batches/${batchJob.id}/edit`)
-	}
-
-	const handleGoToStatus = () => {
-		history.push(`/batches/${batchJob.id}/status`)
 	}
 
 	const onCloseOptionsMenu = () => {
@@ -75,9 +65,13 @@ export default function BatchJobActionMenu({batchJob}) {
 			</Tooltip>
 			<Menu anchorEl={optionsMenuAnchorEl} open={!!optionsMenuAnchorEl} onClose={onCloseOptionsMenu}>
 				{batchJob.startedAt ? (
-					<MenuItem onClick={handleGoToStatus}>Check Status</MenuItem>
+					<MenuItem component={Link} to={`/batches/${batchJob.id}/status`}>
+						Check Status
+					</MenuItem>
 				) : (
-					<MenuItem onClick={handleGoToCart}>Edit batch</MenuItem>
+					<MenuItem component={Link} to={`/batches/${batchJob.id}/edit`}>
+						Edit batch
+					</MenuItem>
 				)}
 				<MenuItem disabled={!batchJob.downloadAvailable} onClick={() => handleDownload(batchJob.downloadLink)}>
 					Download Captions

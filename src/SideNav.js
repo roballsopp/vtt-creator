@@ -1,6 +1,6 @@
 import React from 'react'
 import clsx from 'clsx'
-import {useHistory} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import {Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, Tooltip} from '@material-ui/core'
 import AccountIcon from '@material-ui/icons/AccountCircle'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
@@ -15,7 +15,7 @@ import {useAuthDialog} from './AuthDialog'
 import {useUser} from './common/UserContext'
 import CreateBatchDialog from './CreateBatchDialog'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
 	drawer: {
 		width: SIDE_NAV_WIDTH,
 		flexShrink: 0,
@@ -56,7 +56,6 @@ const useStyles = makeStyles(theme => ({
 SideNav.propTypes = {}
 
 export default function SideNav() {
-	const history = useHistory()
 	const classes = useStyles()
 	const {sideNavOpen, sideNavEvents, setSideNavOpen} = useSideNav()
 	const {openLoginDialog, openSignupDialog} = useAuthDialog()
@@ -65,17 +64,14 @@ export default function SideNav() {
 	const [openCreateBatchDialog, setOpenCreateBatchDialog] = React.useState(false)
 
 	const handleClickEditor = () => {
-		history.push('/editor')
 		setSideNavOpen(false)
 	}
 
 	const handleClickAccount = () => {
-		history.push('/account')
 		setSideNavOpen(false)
 	}
 
 	const handleClickPrivacy = () => {
-		history.push('/privacy')
 		setSideNavOpen(false)
 	}
 
@@ -115,12 +111,12 @@ export default function SideNav() {
 					}),
 				}}
 				SlideProps={{
-					onEnter: e => sideNavEvents.emit('enter', e),
-					onEntering: e => sideNavEvents.emit('entering', e),
-					onEntered: e => sideNavEvents.emit('entered', e),
-					onExit: e => sideNavEvents.emit('exit', e),
-					onExiting: e => sideNavEvents.emit('exiting', e),
-					onExited: e => sideNavEvents.emit('exited', e),
+					onEnter: (e) => sideNavEvents.emit('enter', e),
+					onEntering: (e) => sideNavEvents.emit('entering', e),
+					onEntered: (e) => sideNavEvents.emit('entered', e),
+					onExit: (e) => sideNavEvents.emit('exit', e),
+					onExiting: (e) => sideNavEvents.emit('exiting', e),
+					onExited: (e) => sideNavEvents.emit('exited', e),
 				}}>
 				<div className={classes.drawerHeader}>
 					<Tooltip title="Close Navigation Menu">
@@ -131,7 +127,7 @@ export default function SideNav() {
 				</div>
 				<Divider />
 				<List>
-					<ListItem button onClick={handleClickEditor}>
+					<ListItem button component={Link} to="/editor" onClick={handleClickEditor}>
 						<Tooltip title="Caption Editor">
 							<ListItemIcon>
 								<EditIcon />
@@ -176,7 +172,7 @@ export default function SideNav() {
 						</React.Fragment>
 					)}
 					{Boolean(userLoading || user) && (
-						<ListItem button onClick={handleClickAccount} disabled={userLoading}>
+						<ListItem button component={Link} to="/account" onClick={handleClickAccount} disabled={userLoading}>
 							<Tooltip title="Account">
 								<ListItemIcon>
 									<AccountIcon />
@@ -185,7 +181,7 @@ export default function SideNav() {
 							<ListItemText primary="Account" />
 						</ListItem>
 					)}
-					<ListItem button onClick={handleClickPrivacy}>
+					<ListItem button component={Link} to="/privacy" onClick={handleClickPrivacy}>
 						<Tooltip title="Privacy">
 							<ListItemIcon>
 								<PrivacyIcon />

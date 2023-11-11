@@ -1,5 +1,5 @@
 import React from 'react'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import PropTypes from 'prop-types'
 import {Box, Button, Grid, Hidden, Typography} from '@material-ui/core'
 import {useAuthDialog} from '../AuthDialog'
@@ -30,11 +30,11 @@ AccountPage.propTypes = {
 export default function AccountPage({user, transcriptionRate, translationRate}) {
 	const [deleteAccountDialogOpen, setDeleteAccountDialogOpen] = React.useState(false)
 	const {logout} = useAuthDialog()
-	const history = useHistory()
+	const navigate = useNavigate()
 
 	const handleLogout = () => {
 		logout()
-		history.push('/editor')
+		navigate('/editor')
 	}
 
 	const handleDeleteAccount = async () => {

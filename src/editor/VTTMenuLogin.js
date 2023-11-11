@@ -1,6 +1,6 @@
 import React from 'react'
 import {gql, useQuery} from '@apollo/client'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {MenuItem} from '@material-ui/core'
 import AccountIcon from '@material-ui/icons/AccountCircle'
 import SignUpIcon from '@material-ui/icons/PersonAdd'
@@ -17,7 +17,7 @@ const useStyles = makeStyles({
 export default function VTTMenuLogin() {
 	const classes = useStyles()
 	const {openLoginDialog, openSignupDialog} = useAuthDialog()
-	const history = useHistory()
+	const navigate = useNavigate()
 
 	const {loading, data} = useQuery(gql`
 		query getUser {
@@ -40,11 +40,11 @@ export default function VTTMenuLogin() {
 	if (data || loading) {
 		return (
 			<React.Fragment>
-				<MenuItem disabled={loading} onClick={() => history.push('/account')}>
+				<MenuItem disabled={loading} onClick={() => navigate('/account')}>
 					<AccountIcon className={classes.menuIcon} />
 					Account
 				</MenuItem>
-				<MenuItem onClick={() => history.push('/privacy')}>
+				<MenuItem onClick={() => navigate('/privacy')}>
 					<PrivacyIcon className={classes.menuIcon} />
 					Privacy
 				</MenuItem>
@@ -62,7 +62,7 @@ export default function VTTMenuLogin() {
 				<SignUpIcon className={classes.menuIcon} />
 				Sign Up
 			</MenuItem>
-			<MenuItem onClick={() => history.push('/privacy')}>
+			<MenuItem onClick={() => navigate('/privacy')}>
 				<PrivacyIcon className={classes.menuIcon} />
 				Privacy
 			</MenuItem>

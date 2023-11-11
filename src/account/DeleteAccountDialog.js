@@ -4,7 +4,7 @@ import {Dialog, DialogActions, DialogContent, DialogTitle} from '@material-ui/co
 import {Button} from '../common'
 import {gql, useApolloClient} from '@apollo/client'
 import {useAuthDialog} from '../AuthDialog'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 
 DeleteAccountDialog.propTypes = {
 	open: PropTypes.bool.isRequired,
@@ -14,7 +14,7 @@ DeleteAccountDialog.propTypes = {
 export default function DeleteAccountDialog({open, onClose}) {
 	const apolloClient = useApolloClient()
 	const {logout} = useAuthDialog()
-	const history = useHistory()
+	const navigate = useNavigate()
 
 	const handleDeleteAccount = async () => {
 		await apolloClient.mutate({
@@ -28,7 +28,7 @@ export default function DeleteAccountDialog({open, onClose}) {
 		})
 		logout()
 		onClose()
-		history.push('/editor')
+		navigate('/editor')
 	}
 
 	return (
