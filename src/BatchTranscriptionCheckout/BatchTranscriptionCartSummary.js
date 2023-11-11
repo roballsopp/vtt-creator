@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {useMutation, gql} from '@apollo/client'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {Box, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Tooltip, Typography} from '@material-ui/core'
 import CancelIcon from '@material-ui/icons/DeleteForever'
 import {BatchTranscribe} from '../common/icons'
@@ -22,13 +22,13 @@ BatchTranscriptionCartSummary.propTypes = {
 
 export default function BatchTranscriptionCartSummary({batch}) {
 	const toast = useToast()
-	const history = useHistory()
+	const navigate = useNavigate()
 	const {uploadState} = useUpload()
 
-	const batchUploadState = React.useMemo(() => uploadState.batches[batch.id] || {uploading: false, uploads: []}, [
-		uploadState.batches,
-		batch.id,
-	])
+	const batchUploadState = React.useMemo(
+		() => uploadState.batches[batch.id] || {uploading: false, uploads: []},
+		[uploadState.batches, batch.id]
+	)
 
 	const [creditDialogOpen, setCreditDialogOpen] = React.useState(false)
 	const [confirmDialogOpen, setConfirmDialogOpen] = React.useState(false)
@@ -77,7 +77,7 @@ export default function BatchTranscriptionCartSummary({batch}) {
 		setCreditDialogOpen(false)
 	}
 
-	const handleCreditDialogExited = justPaid => {
+	const handleCreditDialogExited = (justPaid) => {
 		if (justPaid) handleConfirmDialogOpen()
 	}
 
@@ -87,7 +87,7 @@ export default function BatchTranscriptionCartSummary({batch}) {
 				if (!data.canIAffordBatch) return setCreditDialogOpen(true)
 				setConfirmDialogOpen(true)
 			})
-			.catch(err => {
+			.catch((err) => {
 				toast.error('There was a problem confirming the cost of this batch. Please try again.')
 				handleError(err)
 			})
@@ -100,9 +100,9 @@ export default function BatchTranscriptionCartSummary({batch}) {
 	const handleCancelBatch = async () => {
 		cancelBatch({variables: {batchId: batch.id}})
 			.then(() => {
-				history.push('/editor')
+				navigate('/editor')
 			})
-			.catch(err => {
+			.catch((err) => {
 				toast.error('There was a problem cancelling this batch. Please try again.')
 				handleError(err)
 			})
@@ -113,7 +113,7 @@ export default function BatchTranscriptionCartSummary({batch}) {
 			.then(() => {
 				history.replace(`/batches/${batch.id}/status`)
 			})
-			.catch(err => {
+			.catch((err) => {
 				toast.error('There was a problem starting this batch. Please try again.')
 				handleError(err)
 			})

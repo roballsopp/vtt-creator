@@ -1,5 +1,5 @@
 import React from 'react'
-import {useHistory} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import {Box, Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import muiBlueGreys from '@material-ui/core/colors/blueGrey'
@@ -47,7 +47,6 @@ const useStyles = makeStyles({
 
 export default function Splash() {
 	const classes = useStyles()
-	const history = useHistory()
 
 	const [openCreateBatchDialog, setOpenCreateBatchDialog] = React.useState(false)
 
@@ -82,8 +81,9 @@ export default function Splash() {
 									size="large"
 									variant="contained"
 									color="secondary"
+									component={Link}
 									endIcon={<ArrowIcon />}
-									onClick={() => history.push('/editor')}>
+									to="/editor">
 									Create Captions
 								</Button>
 							</Grid>

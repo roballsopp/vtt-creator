@@ -9,7 +9,7 @@ import TextField from '@material-ui/core/TextField'
 import {TranscriptionCost} from './config'
 import {gql, useMutation} from '@apollo/client'
 import {useAuthDialog} from './AuthDialog'
-import {useHistory} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {appendBatch, BatchJobHistoryTable_batchJobsFragment} from './account/BatchJobHistoryTable.graphql'
 
 const Title = styled(DialogTitle)({
@@ -26,7 +26,7 @@ CreateBatchDialog.propTypes = {
 export default function CreateBatchDialog({open, onClose}) {
 	const [batchName, setBatchName] = React.useState('')
 
-	const history = useHistory()
+	const navigate = useNavigate()
 	const {openLoginDialog} = useAuthDialog()
 
 	const [createBatch, {loading: creatingBatch}] = useMutation(
@@ -48,7 +48,7 @@ export default function CreateBatchDialog({open, onClose}) {
 		}
 	)
 
-	const handleChangeBatchName = e => {
+	const handleChangeBatchName = (e) => {
 		setBatchName(e.target.value)
 	}
 
@@ -57,14 +57,14 @@ export default function CreateBatchDialog({open, onClose}) {
 		createBatch({variables: {batchName}})
 			.then(({data}) => {
 				setBatchName('')
-				history.push(`/batches/${data.createBatch.batch.id}/edit`)
+				navigate(`/batches/${data.createBatch.batch.id}/edit`)
 			})
 			.catch(() => {
 				openLoginDialog(
 					`Automatic caption extraction costs $${TranscriptionCost.toFixed(
 						2
 					)} per minute of video and requires an account. Please login or sign up below.`
-				).then(justLoggedIn => {
+				).then((justLoggedIn) => {
 					if (justLoggedIn) handleCreateBatch()
 				})
 			})
@@ -75,7 +75,7 @@ export default function CreateBatchDialog({open, onClose}) {
 		onClose()
 	}
 
-	const useMobileLayout = useMediaQuery(theme => theme.breakpoints.down('sm'))
+	const useMobileLayout = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
 	return (
 		<Dialog
