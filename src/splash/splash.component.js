@@ -1,6 +1,5 @@
 import React from 'react'
-import {Link} from 'react-router-dom'
-import {Box, Grid, Typography} from '@material-ui/core'
+import {Box, Dialog, DialogActions, DialogContent, Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import muiBlueGreys from '@material-ui/core/colors/blueGrey'
 import ArrowIcon from '@material-ui/icons/ArrowForward'
@@ -13,16 +12,13 @@ import {Button} from '../common'
 import {BatchTranscribe} from '../common/icons'
 import {VC as VCIcon} from '../common/icons'
 import BannerBgImg from '../../assets/banner_bg.jpg'
-import Footer from '../footer.component'
-import CreateBatchDialog from '../CreateBatchDialog'
+import {handleError} from '../services/error-handler.service'
 
-const useStyles = makeStyles({
-	root: {
-		display: 'flex',
-		flexDirection: 'column',
-		height: '100%',
-		minHeight: 0,
-		minWidth: 0,
+const useStyles = makeStyles((theme) => ({
+	dialogRoot: {
+		flex: 1,
+		padding: theme.spacing(8, 16),
+		overflowY: 'auto',
 	},
 	titleIcon: {
 		marginRight: 16,
@@ -35,62 +31,44 @@ const useStyles = makeStyles({
 		backgroundColor: muiBlueGreys[900],
 		color: 'white',
 	},
-	bannerButtonContainer: {
-		display: 'flex',
-		justifyContent: 'center',
-		alignItems: 'center',
-	},
 	featureIcon: {
 		fontSize: 80,
 	},
-})
+}))
 
 export default function Splash() {
 	const classes = useStyles()
 
-	const [openCreateBatchDialog, setOpenCreateBatchDialog] = React.useState(false)
+	const splashDismissed = React.useMemo(() => getSplashDismissed(), [])
 
-	const handleOpenCreateBatchDialog = () => {
-		setOpenCreateBatchDialog(true)
-	}
+	const [openSplashDialog, setOpenSplashDialog] = React.useState(!splashDismissed)
 
-	const handleCloseCreateBatchDialog = () => {
-		setOpenCreateBatchDialog(false)
+	const handleCloseSplashDialog = () => {
+		setOpenSplashDialog(false)
+		setSplashDismissed()
 	}
 
 	return (
-		<div className={classes.root}>
-			<Box component="main" display="flex" flex={1} flexDirection="column" alignItems="center">
-				<div className={classes.banner}>
-					<Box maxWidth={1024} py={8} px={4} margin="auto" overflow="hidden">
-						<Grid container spacing={8}>
-							<Grid item container xs={12} justifyContent="center" alignItems="center">
-								<VCIcon className={classes.titleIcon} />
-								<Typography variant="h2" align="center" color="inherit">
-									VTT Creator
-								</Typography>
-							</Grid>
-							<Grid item container xs={12} justifyContent="center" alignItems="center">
-								<Typography variant="h6" align="center">
-									An online editor and visualizer for video captions and subtitles.
-								</Typography>
-							</Grid>
-							<Grid item container xs={12} justifyContent="center" alignItems="center">
-								<Button
-									name="Create Captions"
-									size="large"
-									variant="contained"
-									color="secondary"
-									component={Link}
-									endIcon={<ArrowIcon />}
-									to="/editor">
-									Create Captions
-								</Button>
-							</Grid>
+		<Dialog maxWidth="md" fullWidth open={openSplashDialog} onClose={handleCloseSplashDialog}>
+			<div className={classes.banner}>
+				<Box maxWidth={1024} py={8} px={4} margin="auto" overflow="hidden">
+					<Grid container spacing={8}>
+						<Grid item container xs={12} justifyContent="center" alignItems="center">
+							<VCIcon className={classes.titleIcon} />
+							<Typography variant="h2" align="center" color="inherit">
+								VTT Creator
+							</Typography>
 						</Grid>
-					</Box>
-				</div>
-				<Box maxWidth={1024} py={8} px={4} overflow="hidden">
+						<Grid item container xs={12} justifyContent="center" alignItems="center">
+							<Typography variant="h6" align="center">
+								An online editor and visualizer for video captions and subtitles.
+							</Typography>
+						</Grid>
+					</Grid>
+				</Box>
+			</div>
+			<DialogContent classes={{root: classes.dialogRoot}}>
+				<Box overflow="hidden">
 					<Grid container spacing={8}>
 						<Grid
 							item
@@ -175,20 +153,40 @@ export default function Splash() {
 							<Typography variant="subtitle1" align="center" gutterBottom>
 								Automatically extract captions from many videos at once with Batch Transcribe
 							</Typography>
-							<Button
-								name="Splash Batch Transcribe"
-								variant="contained"
-								color="secondary"
-								endIcon={<ArrowIcon />}
-								onClick={handleOpenCreateBatchDialog}>
-								Batch Transcribe
-							</Button>
 						</Grid>
 					</Grid>
 				</Box>
-			</Box>
-			<Footer />
-			<CreateBatchDialog open={openCreateBatchDialog} onClose={handleCloseCreateBatchDialog} />
-		</div>
+			</DialogContent>
+			<DialogActions>
+				<Button
+					name="Create Captions"
+					onClick={handleCloseSplashDialog}
+					color="primary"
+					variant="contained"
+					endIcon={<ArrowIcon />}>
+					Start Editing
+				</Button>
+			</DialogActions>
+		</Dialog>
 	)
+}
+
+const SPLASH_DISMISSED_KEY = 'vtt_creator_splash_dismissed'
+
+function getSplashDismissed() {
+	try {
+		return JSON.parse(localStorage.getItem(SPLASH_DISMISSED_KEY))
+	} catch (e) {
+		handleError(e)
+		// if local storage is failing, lets just never show the splash
+		return true
+	}
+}
+
+function setSplashDismissed() {
+	try {
+		localStorage.setItem(SPLASH_DISMISSED_KEY, JSON.stringify(true))
+	} catch (e) {
+		handleError(e)
+	}
 }
